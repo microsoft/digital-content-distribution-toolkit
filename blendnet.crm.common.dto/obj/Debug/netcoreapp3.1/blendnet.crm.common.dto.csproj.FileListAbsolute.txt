@@ -1,0 +1,9 @@
+C:\home\code\blendnet\design\blendnet.crm.common.dto\bin\Debug\netcoreapp3.1\blendnet.crm.common.dto.deps.json
+C:\home\code\blendnet\design\blendnet.crm.common.dto\bin\Debug\netcoreapp3.1\blendnet.crm.common.dto.dll
+C:\home\code\blendnet\design\blendnet.crm.common.dto\bin\Debug\netcoreapp3.1\blendnet.crm.common.dto.pdb
+C:\home\code\blendnet\design\blendnet.crm.common.dto\obj\Debug\netcoreapp3.1\blendnet.crm.common.dto.csprojAssemblyReference.cache
+C:\home\code\blendnet\design\blendnet.crm.common.dto\obj\Debug\netcoreapp3.1\blendnet.crm.common.dto.AssemblyInfoInputs.cache
+C:\home\code\blendnet\design\blendnet.crm.common.dto\obj\Debug\netcoreapp3.1\blendnet.crm.common.dto.AssemblyInfo.cs
+C:\home\code\blendnet\design\blendnet.crm.common.dto\obj\Debug\netcoreapp3.1\blendnet.crm.common.dto.csproj.CoreCompileInputs.cache
+C:\home\code\blendnet\design\blendnet.crm.common.dto\obj\Debug\netcoreapp3.1\blendnet.crm.common.dto.dll
+C:\home\code\blendnet\design\blendnet.crm.common.dto\obj\Debug\netcoreapp3.1\blendnet.crm.common.dto.pdb

@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>blendnet.crm.contentprovider.api</name>
+    </assembly>
+    <members>
+        <member name="M:blendnet.crm.contentprovider.api.ContentAdministratorsController.getAllContentAdministrators(System.String)">
+            <summary>
+            Get All Content Adminstrators for a Content Provider
+            </summary>
+            <param name="contentProviderId">The id of the Content Provider</param>
+            <returns>List of all Content Administrators</returns>
+            <response code="201">Returns the list of Content Administrators</response>
+            <response code="400">Incorrect/Inactive Content Provider </response> 
+            <response code="500">In the event of any internal error</response> 
+        </member>
+        <member name="M:blendnet.crm.contentprovider.api.ContentAdministratorsController.addContentAdministrator(blendnet.crm.common.dto.ContentAdministratorDto,System.String)">
+            <summary>
+            Add a new Content Administrator to a Content Provider 
+            </summary>
+            <param name="contentAdministratorDto">Details of the Content Administrator</param>
+            <returns>200</returns>
+        </member>
+        <member name="M:blendnet.crm.contentprovider.api.ContentAdministratorsController.updateContentAdministrator(blendnet.crm.common.dto.ContentAdministratorDto,System.String,System.String)">
+            <summary>
+            Update the Content Administrator details
+            </summary>
+            <param name="contentAdministratorDto"></param>
+            <returns></returns>
+        </member>
+        <member name="T:blendnet.crm.contentprovider.api.ContentProvidersController">
+            <summary>
+            Content Provider Management
+            </summary>
+        </member>
+        <member name="M:blendnet.crm.contentprovider.api.ContentProvidersController.getAllContentProviders">
+            <summary>
+            Get all the Content Providers on BlendNet. This is available only to the platform SA
+            </summary>
+            <returns>List of Content Providers</returns>
+            <response code="201">Returns the list of Content Providers</response>
+            <response code="500">In the event of any internal error</response> 
+        </member>
+        <member name="M:blendnet.crm.contentprovider.api.ContentProvidersController.addNewContentProvider(blendnet.crm.common.dto.ContentProviderDto)">
+            <summary>
+            Add a new Content Provider
+            </summary>
+            <param name="contentProviderDto">ContentProviderDto</param>
+            <returns>the a ContenProviderDto</returns>
+            <response code="201">Returns the newly created item</response>
+            <response code="400">If the item is null</response> 
+        </member>
+        <member name="M:blendnet.crm.contentprovider.api.ContentProvidersController.getContentProvider(System.String)">
+            <summary>
+            get Content Provider details
+            </summary>
+            <param name="contentProviderId">Id of the content provider</param>
+            <returns>ContentProviderDto containing the provider's details</returns>
+            <response code="400">If the Content Provider with the id is non-existent</response>
+        </member>
+        <member name="M:blendnet.crm.contentprovider.api.ContentProvidersController.updateContentProvider(System.String,blendnet.crm.common.dto.ContentProviderDto)">
+            <summary>
+            update the content provider's details
+            </summary>
+            <param name="contentProviderId">Id of the content provider</param>
+            <param name="contentProviderDto">Details of the content provider</param>
+            <returns>200 on successfully updating the content</returns>
+            <response code="400">If the Content Provider with the id is non-existent</response>
+        </member>
+        <member name="M:blendnet.crm.contentprovider.api.ContentProvidersController.activateContentProvider(System.String)">
+            <summary>
+            Activate an exisiting content provider
+            </summary>
+            <param name="contentProviderId">Id of the Content Provider</param>
+            <returns>200 on successfully updating the Content Provider Details</returns>
+            <response code="400">If the Content Provider with the id is non-existent</response>
+        </member>
+        <member name="M:blendnet.crm.contentprovider.api.ContentProvidersController.deactivateContentProvider(System.String)">
+            <summary>
+            Deactivate an exisiting content provider
+            </summary>
+            <param name="contentProviderId">Id of the Content Provider</param>
+            <returns>200 on successfully updating the Content Provider Details</returns>
+            <response code="400">If the Content Provider with the id is non-existent</response>
+        </member>
+    </members>
+</doc>
