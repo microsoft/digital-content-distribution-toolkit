@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\blendnet.crm.contentprovider.api",
+    "\\blendnet.crm.contentprovider.api\\blendnet.crm.contentprovider.api",
+    "\\blendnet.crm.contentprovider.api\\blendnet.crm.contentprovider.api\\Controllers",
+    "\\blendnet.crm.contentprovider.api\\blendnet.crm.contentprovider.api\\Model",
+    "\\blendnet.crm.contentprovider.api\\blendnet.crm.contentprovider.api\\Properties",
+    "\\blendnet.crm.contentprovider.api\\blendnet.crm.contentprovider.api\\Repository",
+    "\\blendnet.crm.contentprovider.api\\blendnet.crm.contentprovider.api\\Repository\\CosmosRepository",
+    "\\blendnet.crm.contentprovider.api\\blendnet.crm.contentprovider.api\\Repository\\Interfaces",
+    "\\infra"
+  ],
+  "SelectedNode": "\\blendnet.crm.contentprovider.api",
+  "PreviewInSolutionExplorer": false
+}

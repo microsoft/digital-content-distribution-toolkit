@@ -1,6 +1,7 @@
 ﻿using blendnet.crm.contentprovider.api.Model;
 using blendnet.crm.contentprovider.api.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,13 @@ namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
     {
         private BlendNetContext _blendNetContext;
 
-        public ContentProviderRepository(BlendNetContext blendNetContext)
+        private readonly ILogger _logger;
+
+        public ContentProviderRepository(BlendNetContext blendNetContext, ILogger<ContentProviderRepository> logger)
         {
             _blendNetContext = blendNetContext;
+
+            _logger = logger;
         }
 
         #region Content Provider Methods

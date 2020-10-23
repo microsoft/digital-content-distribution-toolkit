@@ -10,6 +10,7 @@ using blendnet.crm.contentprovider.api.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace blendnet.crm.contentprovider.api.Controllers
 {
@@ -21,11 +22,15 @@ namespace blendnet.crm.contentprovider.api.Controllers
     [ApiController]
     public class ContentProvidersController : ControllerBase
     {
+        private readonly ILogger _logger;
+
         private IContentProviderRepository _contentProviderRepository;
 
-        public ContentProvidersController(IContentProviderRepository contentProviderRepository)
+        public ContentProvidersController(IContentProviderRepository contentProviderRepository, ILogger<ContentProvidersController> logger)
         {
             _contentProviderRepository = contentProviderRepository;
+
+            _logger = logger;
         }
 
         #region Content Providers Methods

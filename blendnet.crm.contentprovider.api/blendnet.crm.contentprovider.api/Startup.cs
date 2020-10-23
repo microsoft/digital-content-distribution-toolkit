@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using System;
+using Serilog;
 
 namespace blendnet.crm.contentprovider.api
 {
