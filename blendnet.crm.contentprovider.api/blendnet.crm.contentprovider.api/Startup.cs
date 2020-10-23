@@ -17,6 +17,9 @@ using System;
 
 namespace blendnet.crm.contentprovider.api
 {
+    /// <summary>
+    /// References : https://docs.microsoft.com/en-us/samples/azure-samples/active-directory-aspnetcore-webapp-openidconnect-v2/how-to-secure-a-web-api-built-with-aspnet-core-using-the-azure-ad-b2c/
+    /// </summary>
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -27,9 +30,9 @@ namespace blendnet.crm.contentprovider.api
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        //https://docs.microsoft.com/en-us/samples/azure-samples/active-directory-aspnetcore-webapp-openidconnect-v2/how-to-secure-a-web-api-built-with-aspnet-core-using-the-azure-ad-b2c/
         public void ConfigureServices(IServiceCollection services)
         {
+           // configure Azure AD B2C Authentication
            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            .AddMicrosoftIdentityWebApi(options =>
            {
@@ -44,7 +47,6 @@ namespace blendnet.crm.contentprovider.api
             services.AddControllers();
 
             //Configure Swagger
-            // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -73,6 +75,7 @@ namespace blendnet.crm.contentprovider.api
             
             string databaseName = Configuration.GetValue<string>("DatabaseName");
             
+            //Configure Cosmos DB context
             services.AddDbContext<BlendNetContext>(options =>
             
             options.UseCosmos(accountEndPoint,accountKey,databaseName));
