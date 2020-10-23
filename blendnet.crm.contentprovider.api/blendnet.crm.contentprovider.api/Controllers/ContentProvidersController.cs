@@ -55,9 +55,9 @@ namespace blendnet.crm.contentprovider.api.Controllers
         /// <returns></returns>
         [HttpGet("{contentProviderId:guid}",Name = nameof(GetContentProvider))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<ContentProvider>> GetContentProvider(string contentProviderId)
+        public async Task<ActionResult<ContentProvider>> GetContentProvider(Guid contentProviderId)
         {
-            var contentProvider = await _contentProviderRepository.GetContentProviderById(Guid.Parse(contentProviderId));
+            var contentProvider = await _contentProviderRepository.GetContentProviderById(contentProviderId);
 
             if (contentProvider != default(ContentProvider))
             {
