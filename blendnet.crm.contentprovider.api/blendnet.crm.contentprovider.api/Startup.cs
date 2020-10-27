@@ -107,6 +107,10 @@ namespace blendnet.crm.contentprovider.api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler(ExceptionLogger);
+            }
 
             app.UseHttpsRedirection();
 
@@ -140,6 +144,11 @@ namespace blendnet.crm.contentprovider.api
 
                 blendNetContext.Database.EnsureCreated();
             };
+        }
+
+        public void  ExceptionLogger(IApplicationBuilder applicationBuilder)
+        {
+            
         }
     }
 }

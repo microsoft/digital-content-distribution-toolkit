@@ -43,6 +43,8 @@ namespace blendnet.crm.contentprovider.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<List<ContentProvider>>> GetContentProviders()
         {
+            throw new Exception("hello exception");
+
             var contentProviders = await _contentProviderRepository.GetContentProviders();
 
             return Ok(contentProviders);
