@@ -71,7 +71,7 @@ namespace blendnet.crm.contentprovider.api
                 });
             });
 
-            //Configure B2C Authentication
+            //Configure Cosmos DB context
             string accountEndPoint = Configuration.GetValue<string>("AccountEndPoint");
             
             string accountKey = Configuration.GetValue<string>("AccountKey");
@@ -97,9 +97,11 @@ namespace blendnet.crm.contentprovider.api
                 //x.ApiVersionReader = new HeaderApiVersionReader ("x-starterapi-version");
             });
 
+            //Configure Application Insights
+            services.AddApplicationInsightsTelemetry();
+
             //Configure Services
             services.AddTransient<IContentProviderRepository, ContentProviderRepository>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
