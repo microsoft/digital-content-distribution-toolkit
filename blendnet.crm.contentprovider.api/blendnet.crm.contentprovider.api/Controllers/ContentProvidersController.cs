@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using blendnet.crm.common.dto;
 using blendnet.crm.contentprovider.api.Model;
 using blendnet.crm.contentprovider.api.Repository;
 using blendnet.crm.contentprovider.api.Repository.Interfaces;
@@ -29,7 +30,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
         public ContentProvidersController(IContentProviderRepository contentProviderRepository, ILogger<ContentProvidersController> logger)
         {
             _contentProviderRepository = contentProviderRepository;
-
+            
             _logger = logger;
         }
 
@@ -41,10 +42,8 @@ namespace blendnet.crm.contentprovider.api.Controllers
         /// <returns></returns>
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<List<ContentProvider>>> GetContentProviders()
+        public async Task<ActionResult<List<ContentProviderDto>>> GetContentProviders()
         {
-            throw new Exception("hello exception");
-
             var contentProviders = await _contentProviderRepository.GetContentProviders();
 
             return Ok(contentProviders);
@@ -57,11 +56,11 @@ namespace blendnet.crm.contentprovider.api.Controllers
         /// <returns></returns>
         [HttpGet("{contentProviderId:guid}",Name = nameof(GetContentProvider))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<ContentProvider>> GetContentProvider(Guid contentProviderId)
+        public async Task<ActionResult<ContentProviderDto>> GetContentProvider(Guid contentProviderId)
         {
             var contentProvider = await _contentProviderRepository.GetContentProviderById(contentProviderId);
 
-            if (contentProvider != default(ContentProvider))
+            if (contentProvider != default(ContentProviderDto))
             {
                 return Ok(contentProvider);
             }else
@@ -76,7 +75,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
         /// <returns></returns>
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions),nameof(DefaultApiConventions.Create))]
-        public async Task<ActionResult<string>> CreateContentProvider(ContentProvider contentProvider)
+        public async Task<ActionResult<string>> CreateContentProvider(ContentProviderDto contentProvider)
         {
             var contentProviderId = await _contentProviderRepository.CreateContentProvider(contentProvider);
             
@@ -93,7 +92,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<ActionResult> UpdateContentProvider(Guid contentProviderId , ContentProvider contentProvider)
+        public async Task<ActionResult> UpdateContentProvider(Guid contentProviderId , ContentProviderDto contentProvider)
         {
             contentProvider.Id = contentProviderId;
 
@@ -198,11 +197,11 @@ namespace blendnet.crm.contentprovider.api.Controllers
         /// <returns></returns>
         [HttpGet("{contentProviderId:guid}/ContentAdministrators")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<List<ContentAdministrator>>> GetContentAdministrators(Guid contentProviderId)
+        public async Task<ActionResult<List<ContentAdministratorDto>>> GetContentAdministrators(Guid contentProviderId)
         {
             var contentProvider = await _contentProviderRepository.GetContentProviderById(contentProviderId);
 
-            if (contentProvider != default(ContentProvider) 
+            if (contentProvider != default(ContentProviderDto) 
                 && contentProvider.ContentAdministrators != null 
                 && contentProvider.ContentAdministrators.Count > 0)
             {
@@ -222,7 +221,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/ContentAdministrators")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<ActionResult> CreateContentAdministrator(Guid contentProviderId,ContentAdministrator contentAdministrator)
+        public async Task<ActionResult> CreateContentAdministrator(Guid contentProviderId,ContentAdministratorDto contentAdministrator)
         {
             var contentProvider = await _contentProviderRepository.GetContentProviderById(contentProviderId);
 
@@ -232,7 +231,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
 
                 if (contentProvider.ContentAdministrators == null)
                 {
-                    contentProvider.ContentAdministrators = new List<ContentAdministrator>();
+                    contentProvider.ContentAdministrators = new List<ContentAdministratorDto>();
                 }
 
                 contentProvider.ContentAdministrators.Add(contentAdministrator);
@@ -256,7 +255,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/ContentAdministrators/{contentAdministratorId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<ActionResult> UpdateContentAdministrator(Guid contentProviderId, Guid contentAdministratorId,ContentAdministrator contentAdministrator)
+        public async Task<ActionResult> UpdateContentAdministrator(Guid contentProviderId, Guid contentAdministratorId,ContentAdministratorDto contentAdministrator)
         {
             //set the id on the object
             contentAdministrator.Id = contentAdministratorId;

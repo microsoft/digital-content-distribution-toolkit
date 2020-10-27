@@ -1,4 +1,5 @@
-﻿using blendnet.crm.contentprovider.api.Model;
+﻿using blendnet.crm.common.dto;
+using blendnet.crm.contentprovider.api.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,28 +16,28 @@ namespace blendnet.crm.contentprovider.api.Repository.Interfaces
         /// List all content providers
         /// </summary>
         /// <returns></returns>
-        Task<List<ContentProvider>> GetContentProviders();
+        Task<List<ContentProviderDto>> GetContentProviders();
 
         /// <summary>
         /// Get Content Provider by Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<ContentProvider> GetContentProviderById(Guid id);
+        Task<ContentProviderDto> GetContentProviderById(Guid id);
 
         /// <summary>
         /// Creates Content Provider
         /// </summary>
         /// <param name="contentProvider"></param>
         /// <returns></returns>
-        Task<Guid> CreateContentProvider(ContentProvider contentProvider);
+        Task<Guid> CreateContentProvider(ContentProviderDto contentProvider);
         
         /// <summary>
         /// Update Content Provider
         /// </summary>
         /// <param name="updatedContentProvider"></param>
         /// <returns></returns>
-        Task<int> UpdateContentProvider(ContentProvider updatedContentProvider);
+        Task<int> UpdateContentProvider(ContentProviderDto updatedContentProvider);
 
         /// <summary>
         /// Delete Content Provider

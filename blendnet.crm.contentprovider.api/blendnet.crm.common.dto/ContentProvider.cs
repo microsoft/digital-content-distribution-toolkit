@@ -1,24 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace blendnet.crm.contentprovider.api.Model
-{
-    /// <summary>
-    /// Content Provider
-    /// </summary>
-    public class ContentProvider
+namespace blendnet.crm.common.dto{
+    public class ContentProviderDto
     {
         public Guid? Id { get; set; }
 
         [Required]
         public string Name { get; set; }
 
-        public Address Address { get; set; }
+        public AddressDto Address { get; set; }
 
-        public List<ContentAdministrator> ContentAdministrators { get; set; } 
+        public List<ContentAdministratorDto> ContentAdministrators { get; set; }
 
         public bool IsActive { get; set; }
 
@@ -33,9 +27,9 @@ namespace blendnet.crm.contentprovider.api.Model
         {
             this.Id = null;
 
-            if (this.ContentAdministrators !=null && this.ContentAdministrators.Count > 0)
+            if (this.ContentAdministrators != null && this.ContentAdministrators.Count > 0)
             {
-                foreach(ContentAdministrator contentAdministrator in this.ContentAdministrators)
+                foreach (ContentAdministratorDto contentAdministrator in this.ContentAdministrators)
                 {
                     contentAdministrator.Id = null;
                 }

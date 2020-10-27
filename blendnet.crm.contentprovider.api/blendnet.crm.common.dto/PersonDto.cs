@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace blendnet.crm.contentprovider.api.Model
+namespace blendnet.crm.common.dto
 {
     /// <summary>
-    /// Represents Base Person Class
+    /// Person DTO.
     /// </summary>
-    public class Person
+    public class PersonDto
     {
         public Guid? Id { get; set; }
 
@@ -22,13 +20,12 @@ namespace blendnet.crm.contentprovider.api.Model
 
         public string MiddleName { get; set; }
 
-        public Address Address { get; set; }
+        public AddressDto Address { get; set; }
 
         public DateTime DateOfBirth { get; set; }
 
         public string Email { get; set; }
 
         public long Mobile { get; set; }
-
     }
 }

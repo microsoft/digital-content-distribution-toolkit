@@ -15,6 +15,8 @@ using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using System;
 using Serilog;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 
 namespace blendnet.crm.contentprovider.api
 {
@@ -101,6 +103,7 @@ namespace blendnet.crm.contentprovider.api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        //https://docs.microsoft.com/en-us/aspnet/core/web-api/handle-errors?view=aspnetcore-3.1#exception-handler
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -109,7 +112,7 @@ namespace blendnet.crm.contentprovider.api
             }
             else
             {
-                app.UseExceptionHandler(ExceptionLogger);
+                app.UseExceptionHandler("/error");
             }
 
             app.UseHttpsRedirection();
@@ -146,9 +149,6 @@ namespace blendnet.crm.contentprovider.api
             };
         }
 
-        public void  ExceptionLogger(IApplicationBuilder applicationBuilder)
-        {
-            
-        }
+       
     }
 }

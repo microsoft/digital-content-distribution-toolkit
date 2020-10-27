@@ -14,5 +14,9 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\blendnet.crm.common.dto\blendnet.crm.common.dto.csproj" />
+  </ItemGroup>
+
 
 </Project>

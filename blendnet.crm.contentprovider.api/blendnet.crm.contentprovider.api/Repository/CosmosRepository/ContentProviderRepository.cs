@@ -1,4 +1,5 @@
-﻿using blendnet.crm.contentprovider.api.Model;
+﻿using blendnet.crm.common.dto;
+using blendnet.crm.contentprovider.api.Model;
 using blendnet.crm.contentprovider.api.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,7 @@ namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
         /// </summary>
         /// <param name="contentProvider"></param>
         /// <returns></returns>
-        public async Task<Guid> CreateContentProvider(ContentProvider contentProvider)
+        public async Task<Guid> CreateContentProvider(ContentProviderDto contentProvider)
         {
             contentProvider.ResetIdentifiers();
 
@@ -47,7 +48,7 @@ namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<ContentProvider> GetContentProviderById(Guid id)
+        public async Task<ContentProviderDto> GetContentProviderById(Guid id)
         {
             return _blendNetContext.ContentProviders.Where(cp => cp.Id == id).AsNoTracking().FirstOrDefault();
         }
@@ -56,7 +57,7 @@ namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
         /// Return the content providers
         /// </summary>
         /// <returns></returns>
-        public async Task<List<ContentProvider>> GetContentProviders()
+        public async Task<List<ContentProviderDto>> GetContentProviders()
         {
             return await _blendNetContext.ContentProviders.ToListAsync();
         }
@@ -66,13 +67,13 @@ namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
         /// </summary>
         /// <param name="updatedContentProvider"></param>
         /// <returns></returns>
-        public async Task<int> UpdateContentProvider(ContentProvider updatedContentProvider)
+        public async Task<int> UpdateContentProvider(ContentProviderDto updatedContentProvider)
         {
             int recordsAffected = 0;
 
-            ContentProvider existingProvider = await GetContentProviderById(updatedContentProvider.Id.Value);
+            ContentProviderDto existingProvider = await GetContentProviderById(updatedContentProvider.Id.Value);
 
-            if (existingProvider != default(ContentProvider))
+            if (existingProvider != default(ContentProviderDto))
             {
                 var updatedContentProviderEntry = _blendNetContext.Add(updatedContentProvider);
 
@@ -95,9 +96,9 @@ namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
         {
             int recordsAffected = 0;
 
-            ContentProvider existingProvider = await GetContentProviderById(contentProviderId);
+            ContentProviderDto existingProvider = await GetContentProviderById(contentProviderId);
 
-            if (existingProvider != default(ContentProvider))
+            if (existingProvider != default(ContentProviderDto))
             {
                 var deleteContentProviderEntry = _blendNetContext.Add(existingProvider);
 

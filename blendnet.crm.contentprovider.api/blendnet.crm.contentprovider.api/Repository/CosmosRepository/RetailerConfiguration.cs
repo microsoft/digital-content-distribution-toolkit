@@ -1,4 +1,5 @@
-﻿using blendnet.crm.contentprovider.api.Model;
+﻿using blendnet.crm.common.dto;
+using blendnet.crm.contentprovider.api.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
 {
-    public class RetailerConfiguration : IEntityTypeConfiguration<Retailer>
+    public class RetailerConfiguration : IEntityTypeConfiguration<RetailerDto>
     {
-        public void Configure(EntityTypeBuilder<Retailer> modelBuilder)
+        public void Configure(EntityTypeBuilder<RetailerDto> modelBuilder)
         {
             modelBuilder.ToContainer("Retailer");
 

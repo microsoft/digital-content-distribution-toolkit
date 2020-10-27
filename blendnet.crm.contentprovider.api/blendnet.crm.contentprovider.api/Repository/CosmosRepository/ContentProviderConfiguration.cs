@@ -1,4 +1,5 @@
-﻿using blendnet.crm.contentprovider.api.Model;
+﻿using blendnet.crm.common.dto;
+using blendnet.crm.contentprovider.api.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -13,9 +14,9 @@ namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
     /// https://github.com/dotnet/efcore/issues/21396
     /// https://stackoverflow.com/questions/60689345/error-alternate-key-property-id-is-null-with-update-call-to-cosmos-db-and
     /// </summary>
-    public class ContentProviderConfiguration : IEntityTypeConfiguration<ContentProvider>
+    public class ContentProviderConfiguration : IEntityTypeConfiguration<ContentProviderDto>
     {
-        public void Configure(EntityTypeBuilder<ContentProvider> builder)
+        public void Configure(EntityTypeBuilder<ContentProviderDto> builder)
         {
             builder.ToContainer("ContentProvider");
 

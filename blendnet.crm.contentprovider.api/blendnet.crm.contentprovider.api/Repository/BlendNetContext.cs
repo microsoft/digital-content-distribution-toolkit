@@ -1,4 +1,5 @@
-﻿using blendnet.crm.contentprovider.api.Model;
+﻿using blendnet.crm.common.dto;
+using blendnet.crm.contentprovider.api.Model;
 using blendnet.crm.contentprovider.api.Repository.CosmosRepository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -34,8 +35,8 @@ namespace blendnet.crm.contentprovider.api.Repository
             modelBuilder.ApplyConfiguration(new ContentProviderConfiguration());
         }
 
-        public DbSet<Retailer> Retailers { get; set; }
+        public DbSet<RetailerDto> Retailers { get; set; }
 
-        public DbSet<ContentProvider> ContentProviders { get; set; }
+        public DbSet<ContentProviderDto> ContentProviders { get; set; }
     }
 }
