@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\blendnet.crm.contentprovider.api",
-    "\\blendnet.crm.contentprovider.api\\blendnet.crm.contentprovider.api"
+    "\\blendnet.crm.contentprovider.api"
   ],
-  "SelectedNode": "\\blendnet.crm.contentprovider.api\\blendnet.crm.contentprovider.api\\Model",
+  "SelectedNode": "\\blendnet.crm.contentprovider.api",
   "PreviewInSolutionExplorer": false
 }
