@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -13,51 +13,46 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
+import { IconButton } from '@fluentui/react/lib/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+import Grid from '@material-ui/core/Grid';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { ContentProviderDetail } from './ContentProvider/ContentProviderDetail';
 
-function createData(name, contact, address, isActive) {
-  return { name, contact, address, isActive };
 
+function createData(name, contact, address, status) {
+  return { name, contact, address, status };
 }
 
-// function populateData(contentProviderList){
-//   contentProviderList.forEach(element => {
-//     rows = rows.push(createData("test","test","test"));
-    
-//   });
-// }
 function populateData(contentProvidersList){
-  rows =[];
-  contentProvidersList.forEach(element => {
-    rows.push(createData(element.name,
-              element.contentAdministrators!=null?element.contentAdministrators[0]?.mobile:'',
-              element.address.state,
-              element.isActive));
-  });
+  // rows =[];
+  // contentProvidersList.forEach(element => {
+  //   rows.push(createData(element.name,
+  //             element.contentAdministrators!=null?element.contentAdministrators[0]?.mobile:'',
+  //             element.address.state,
+  //             element.isActive));
+  // });
 }
 
-// const list = props.menuitems;
-  
-//     const updatedList = list.map((listItems)=>{​​​​​​​
-//         return <li>{​​​​​​​listItems}​​​​​​​</li>;
-//     }​​​​​​​);
+const rows = [
+  createData('Mishtu Mobile Booth', '+91 9231232341', 'J.P. nagar, Banglore', 'Active'),
+  createData('Apple Care', '+91 9333232341', 'A.M. nagar, Banglore', 'Active'),
+  createData('Dell Center', '+91 9451232341', 'Bilekahalli, Banglore', 'Active'),
+  createData('Random Grocery store', '+91 9454532341', 'Richmond Circle, Banglore', 'Disabled'),
+  createData('Random Tapri', '+91 9231244441', 'Pimpri, Pune','Active'),
+  createData('Small business venture', '+91 9222329341', 'Worli, Mumbai','Disabled'),
+  createData('Medium Business', '+91 5454433441', 'Delhi, India', 'Active'),
+  createData('Blendnet Mobiles', '+91 8234232341', 'Whitefield, Banglore','Disabled'),
+  createData('Samsung Smart booth', '+91 9444442341', 'Bellandur, Banglore', 'Active'),
+  createData('Motorola Store', '+91 8888832341', 'Electronic city, Banglore', 'Active'),
+  createData('Dmart', '+91 9231856233', 'Harlur road, Banglore', 'Disabled'),
+  createData('Reliance', '+91 9245632341', 'Ranka colony, Banglore', 'Active'),
+  createData('List Exhaused', '+91 8981232341', 'JayaNagar, Banglore', 'Disabled'),
+];
 
-// const rows = [
-//   createData('Mishtu Mobile Booth', '+91 9231232341', 'J.P. nagar, Banglore'),
-//   createData('Apple Care1', '+91 9333232341', 'A.M. nagar, Banglore'),
-//   createData('Dell Center', '+91 9451232341', 'Bilekahalli, Banglore'),
-//   createData('Random Grocery store', '+91 9454532341', 'Richmond Circle, Banglore'),
-//   createData('Random Tapri', '+91 9231244441', 'Pimpri, Pune'),
-//   createData('Small business venture', '+91 9222329341', 'Worli, Mumbai'),
-//   createData('Medium Business', '+91 5454433441', 'Delhi, India'),
-//   createData('Blendnet Mobiles', '+91 8234232341', 'Whitefield, Banglore'),
-//   createData('Samsung Smart booth', '+91 9444442341', 'Bellandur, Banglore'),
-//   createData('Motorola Store', '+91 8888832341', 'Electronic city, Banglore'),
-//   createData('Dmart', '+91 9231856233', 'Harlur road, Banglore'),
-//   createData('Reliance', '+91 9245632341', 'Ranka colony, Banglore'),
-//   createData('List Exhaused', '+91 8981232341', 'JayaNagar, Banglore'),
-// ];
-
-let rows = [];
+// let rows = [];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -87,9 +82,9 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'contact', numeric: false, disablePadding: false, label: 'Contact' },
-  { id: 'address', numeric: false, disablePadding: false, label: 'Address' },
-  { id: 'status', numeric: false, disablePadding: false, label: 'Status' }
+  { id: 'contact', numeric: true, disablePadding: false, label: 'Contact' },
+  { id: 'address', numeric: true, disablePadding: false, label: 'Address' },
+  { id: 'status', numeric: true, disablePadding: false, label: 'Status' }
 ];
 
 function EnhancedTableHead(props) {
@@ -102,14 +97,14 @@ function EnhancedTableHead(props) {
     <TableHead>
       <TableRow>
           <TableCell padding="checkbox"></TableCell>
-        {/* <TableCell padding="checkbox">
-          <Checkbox
+        <TableCell padding="checkbox">
+          <MSCheckbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all desserts' }}
+            inputProps={{ 'aria-label': 'select all Content-Providers' }}
           />
-        </TableCell> */}
+        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -136,6 +131,10 @@ function EnhancedTableHead(props) {
   );
 }
 
+function showContentProviderDetail(){
+  this.props.history.push('/content-provider-detail');
+};
+
 EnhancedTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
@@ -152,19 +151,16 @@ const useToolbarStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(1),
   },
   highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
+        {
+          color: "#00000",
+          backgroundColor: "#b3b2b1",
         },
   title: {
     flex: '1 1 100%',
   },
 }));
+
+
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
@@ -186,19 +182,49 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       )}
 
-      {/* {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )} */}
+  
+        {numSelected == 1 ? (
+          <Grid container spacing={1}>
+            <Grid item xs={8}>
+            </Grid>
+            <Grid item xs={2}>
+              <Tooltip title="Edit">
+                <IconButton title="Edit" ariaLabel="Edit"   iconProps={{ iconName: 'Edit' }} 
+                onClick={(event) => showContentProviderDetail()}/>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={2}>
+              <Tooltip title="Delete">
+                <IconButton title="Delete" ariaLabel="Delete"   iconProps={{ iconName: 'Delete' }} />
+              </Tooltip>
+            </Grid>
+          </Grid>
+        ) : (<Grid  item xs={0}/>)}
+
+        {numSelected > 1 ? (
+           <Grid container spacing={1}>
+             <Grid  item xs={10}/>
+              <Grid item xs={1}>
+                <Tooltip title="Delete">
+                  <IconButton title="Delete" ariaLabel="Delete"   iconProps={{ iconName: 'Delete' }} />
+                </Tooltip>
+                </Grid>
+            </Grid>
+        ) :  (<Grid  item xs={0}/>)}
+
+      {numSelected == 0 ? (
+        <Grid container spacing={1}>
+          <Grid  item xs={10}/>
+          <Grid item xs={1}>
+            <Tooltip title="Filter list">
+              <IconButton title="Filter" ariaLabel="Filter"   iconProps={{ iconName: 'Filter' }} />
+            </Tooltip>
+          </Grid>
+        </Grid>
+          
+        ) :   (<Grid  item xs={0}/>)}
+
+   
     </Toolbar>
   );
 };
@@ -234,6 +260,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const MSCheckbox = withStyles({
+  root: {
+    // color: '#0078d4',
+    '&$checked': {
+      color: '#0078d4',
+    },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
+
 export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -241,8 +277,9 @@ export default function EnhancedTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  
+
   populateData(props.rows);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -257,6 +294,7 @@ export default function EnhancedTable(props) {
     }
     setSelected([]);
   };
+
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -293,78 +331,84 @@ export default function EnhancedTable(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer className={classes.tableContainer}>
-          <Table
-            stickyHeader 
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size='medium'
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+    <div>
+      <Router>
+        <Route path="/content-provider-detail" component={ContentProviderDetail} />
+      </Router>
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer className={classes.tableContainer}>
+            <Table
+              stickyHeader 
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size='medium'
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.name);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                    //   onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.name)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.name}
+                        selected={isItemSelected}
+                      >
 
-                    <TableCell padding="checkbox"></TableCell>
-                      {/* <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell> */}
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">{row.contact}</TableCell>
-                      <TableCell align="right">{row.address}</TableCell>
-                      <TableCell align="right">{row.isActive}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
+                      <TableCell padding="checkbox"></TableCell>
+                        <TableCell padding="checkbox">
+                          <MSCheckbox
+                            checked={isItemSelected}
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                        </TableCell>
+                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="right">{row.contact}</TableCell>
+                        <TableCell align="right">{row.address}</TableCell>
+                        <TableCell align="right">{row.status}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </div>
     </div>
+    
   );
 }

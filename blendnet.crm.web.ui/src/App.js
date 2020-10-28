@@ -9,21 +9,22 @@ import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import { IconButton } from '@fluentui/react/lib/Button';
+
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import './custom.css';
-import { ContentProviderList } from './components/ContentProviderList';
-import { HubList } from './components/HubList';
+import { ContentProviderList } from './components/ContentProvider/ContentProviderList';
+import { HubList } from './components/Hubs/HubList';
 import { Profile } from './components/User/Profile';
+import {Home} from './components/Home';
+import {Policies} from './components/Policy/Policies';
+import Tooltip from '@material-ui/core/Tooltip';
+import { ContentProviderDetail } from './components/ContentProvider/ContentProviderDetail';
 import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
-import Avatar from '@material-ui/core/Avatar';
 
 const drawerWidth = 240;
 
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    color: '#ffffff'
   },
   hide: {
     display: 'none',
@@ -63,9 +65,14 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '15%',
     marginTop: '5%',
     width: '70%'
+  },
+  account: {
+    color: '#ffffff'
+  },
+  appBar: {
+    backgroundColor: "#0078d4",
   }
 }));
-
 
 export default function TemporaryDrawer() {
   const classes = useStyles();
@@ -101,30 +108,43 @@ export default function TemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
         <div className={classes.drawerHeader}>
-            <IconButton>
-                <Avatar alt="Mishtu" src="/public/mishtulogo.png" />
-            </IconButton>
-            <IconButton onClick={toggleDrawer(anchor, false)}>
-                <ChevronLeftIcon />
-            </IconButton>
+            <IconButton title="ChevronLeft" ariaLabel="ChevronLeft"   iconProps={{ iconName: 'ChevronLeft' }} />
         </div>
         <Divider></Divider>
         <List>
-            <ListItem button key='Content-Providers'>
-              <ListItemText>
-                  <Link to="/content-provide-list" className={classes.link}>Content-Providers</Link>
-              </ListItemText>
-            </ListItem>
-            <ListItem button key='Hubs'>
-                  <ListItemText>
-                      <Link  className={classes.link} to="/hubs">Hubs</Link>
-                  </ListItemText>
-            </ListItem>
-            <ListItem button key='Policies' >
+            <Link to="/home" className={classes.link}>
+              <ListItem button key='Home'>
                 <ListItemText>
-                    <Link className={classes.link} to="/">Policies</Link>
-              </ListItemText>
-            </ListItem>
+                      <IconButton title="HomeSolid" ariaLabel="HomeSolid"  iconProps={{ iconName: 'HomeSolid' }} /> 
+                      Home 
+                </ListItemText>
+              </ListItem>
+            </Link>
+            <Link to="/content-provide-list" className={classes.link}>
+              <ListItem button key='Home'>
+                <ListItemText>
+                    <IconButton title="Media" ariaLabel="Media"  iconProps={{ iconName: 'Media' }} />
+                      Content-Providers
+                </ListItemText>
+              </ListItem>
+            </Link>
+            <Link  className={classes.link} to="/hubs">
+              <ListItem button key='Hubs'>
+                    <ListItemText>
+                        <IconButton title="Cloud" ariaLabel="Cloud"  iconProps={{ iconName: 'Cloud' }} />
+                        Hubs
+                    </ListItemText>
+              </ListItem>
+            </Link>
+            <Link className={classes.link} to="/policies">
+              <ListItem button key='Policies' >
+                  <ListItemText>
+                      <IconButton title="EntitlementPolicy" ariaLabel="EntitlementPolicy"  iconProps={{ iconName: 'EntitlementPolicy' }} />
+                        Policies
+                </ListItemText>
+              </ListItem>
+            </Link>
+            
         </List>
         <Divider></Divider>
     </div>
@@ -134,31 +154,25 @@ export default function TemporaryDrawer() {
     <div>
         <React.Fragment>
         <AppBar
+          className={classes.appBar}
           position="fixed"
         >
           <Toolbar>
-            <IconButton
-              color="inherit"
+              <IconButton title="Menu" ariaLabel="Menu"  iconProps={{ iconName: 'CollapseMenu' }}  
               aria-label="open drawer"
               onClick={toggleDrawer('left', true)}
               edge="start"
               className={clsx(classes.menuButton, open && classes.hide)}
-            >
-              <MenuIcon />
-            </IconButton>
+              />
             <Typography variant="h6" noWrap className={classes.title}>
               Bine CRM
             </Typography>
             <div>
-              <IconButton
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    onClick={handleMenu}
-                    color="inherit"
-                  >
-                    <AccountCircle />
-              </IconButton>
+            <Tooltip title="Account">
+              <IconButton title="Account" ariaLabel="Account"   iconProps={{ iconName: 'Contact' }} 
+              className={classes.account}
+              onClick={handleMenu}/>
+            </Tooltip>
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -174,13 +188,12 @@ export default function TemporaryDrawer() {
                 open={openAnchor}
                 onClose={handleClose}
                 >
-                <MenuItem> <Link to="/profile" className={classes.link}>Profile</Link></MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <Link to="/profile" className={classes.link}><MenuItem> Profile</MenuItem></Link>
+                <Link to="/profile" className={classes.link}><MenuItem>My account</MenuItem></Link>
               </Menu>
             </div>
           </Toolbar>
         </AppBar>
-          {/* <Button onClick={toggleDrawer('left', true)}>Left</Button> */}
           <Drawer anchor='left' open={state['left']} onClose={toggleDrawer('left', false)}
           classes={{
             paper: classes.drawerPaper,
@@ -194,7 +207,10 @@ export default function TemporaryDrawer() {
             <Route path='/content-provide-list' component={ContentProviderList} />
             <Route path='/hubs' component={HubList} />
             <Route path='/profile' component={Profile} />
+            <Route path='/home' component={Home} />
+            <Route path='/policies' component={Policies} />
+            <Route path='/content-provide-detail' component={ContentProviderDetail} />
           </Container>
-    </div>
+      </div>
   );
 }
