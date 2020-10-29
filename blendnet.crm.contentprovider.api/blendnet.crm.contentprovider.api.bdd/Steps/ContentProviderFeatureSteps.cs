@@ -19,6 +19,17 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
 
         ScenarioContext _scenarioContext;
 
+        struct ScenarioContenxtKeys
+        {
+            public const string CREATE_REQUEST_DATA = "CREATE_REQUEST_DATA";
+            public const string CREATE_RESPONSE_DATA = "CREATE_RESPONSE_DATA";
+            public const string READ_RESPONSE_DATA = "READ_RESPONSE_DATA";
+            public const string UPDATE_REQUEST_DATA = "UPDATE_REQUEST_DATA";
+            public const string UPDATE_RESPONSE_DATA = "UPDATE_RESPONSE_DATA";
+            public const string READ_UPDATE_RESPONSE_DATA = "READ_UPDATE_RESPONSE_DATA";
+        }
+
+
         public ContentProviderFeatureSteps(ScenarioContext scenarioContext, HttpClientDriver httpClientDriver)
         {
             _httpClientDriver = httpClientDriver;
@@ -26,47 +37,167 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
             _scenarioContext = scenarioContext;
         }
 
-        [Given(@"the created content provider")]
-        public void GivenTheCreatedContentProvider()
+        [When(@"I submit the request to read content")]
+        public async Task WhenISubmitTheRequestToReadContent()
         {
+            HttpClientResponse<string> response = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
 
+            string url = $"{_apiBaseUrl}ContentProviders/{response.Data}";
+
+            HttpClientResponse<ContentProviderDto> readResponse = await _httpClientDriver.Get<ContentProviderDto>(url);
+
+            _scenarioContext.Set<HttpClientResponse<ContentProviderDto>>(readResponse, ScenarioContenxtKeys.READ_RESPONSE_DATA);
         }
-        
-        [When(@"I submit the request to read")]
-        public async Task WhenISubmitTheRequestToRead()
+
+        [Then(@"read content response should recieve success with created id")]
+        public void ThenReadContentResponseShouldRecieveSuccess()
+        {
+            HttpClientResponse<ContentProviderDto> readResponse = _scenarioContext.Get<HttpClientResponse<ContentProviderDto>>(ScenarioContenxtKeys.READ_RESPONSE_DATA);
+            
+            HttpClientResponse<string> createResponse = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
+
+            Assert.Equal(readResponse.RawMessage.StatusCode.ToString(), HttpStatusCode.OK.ToString());
+
+            Assert.NotNull(readResponse.Data);
+
+            Assert.Equal(createResponse.Data, readResponse.Data.Id.ToString());
+        }
+
+        [Given(@"admin is ""(.*)"" in the given data to create")]
+        public void GivenAdminIsInTheGivenDataToCreate(bool p0)
+        {
+            string contentProviderName = Guid.NewGuid().ToString();
+
+            ContentProviderDto createRequest = GetContentProviderDto(contentProviderName, p0);
+
+            _scenarioContext.Set<ContentProviderDto>(createRequest, ScenarioContenxtKeys.CREATE_REQUEST_DATA);
+        }
+
+        [When(@"I submit the request to create")]
+        public async Task WhenISubmitTheRequestToCreate()
         {
             string url = $"{_apiBaseUrl}ContentProviders";
 
-            HttpClientResponse<List<ContentProviderDto>> response = await _httpClientDriver.Get<List<ContentProviderDto>>(url);
-            
-            _scenarioContext.Set<HttpClientResponse<List<ContentProviderDto>>>(response, _scenarioContext.ScenarioInfo.Title);
-        }
-        
-        [Then(@"response should recieve success")]
-        public void ThenResponseShouldRecieveSuccess()
-        {
-            HttpClientResponse<List<ContentProviderDto>> response = _scenarioContext.Get<HttpClientResponse<List<ContentProviderDto>>>(_scenarioContext.ScenarioInfo.Title);
+            ContentProviderDto contentProviderRequest = _scenarioContext.Get<ContentProviderDto>(ScenarioContenxtKeys.CREATE_REQUEST_DATA);
 
-            Assert.Equal(response.RawMessage.StatusCode.ToString(), HttpStatusCode.OK.ToString());
+            HttpClientResponse<string> response = await _httpClientDriver.Post<ContentProviderDto, string>(url, contentProviderRequest);
+
+            _scenarioContext.Set<HttpClientResponse<string>>(response, ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
+        }
+
+        [Then(@"create response should recieve created")]
+        public void ThenCreateResponseShouldRecieveCreated()
+        {
+            HttpClientResponse<string> response = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
+
+            Assert.Equal(response.RawMessage.StatusCode.ToString(), HttpStatusCode.Created.ToString());
 
             Assert.NotNull(response.Data);
+        }
+
+        [When(@"I submit the request to read updated content for (.*)")]
+        public async Task WhenISubmitTheRequestToReadUpdatedContent(string action)
+        {
+            ContentProviderDto updateRequest = _scenarioContext.Get<ContentProviderDto>(ScenarioContenxtKeys.UPDATE_REQUEST_DATA);
+
+            string url = $"{_apiBaseUrl}ContentProviders/{updateRequest.Id.ToString()}";
+
+            HttpClientResponse<ContentProviderDto> readResponse = await _httpClientDriver.Get<ContentProviderDto>(url);
+
+            _scenarioContext.Set<HttpClientResponse<ContentProviderDto>>(readResponse, ScenarioContenxtKeys.READ_UPDATE_RESPONSE_DATA);
+        }
+
+        [When(@"I submit the request to update content (.*)")]
+        public async Task WhenISubmitTheRequestToUpdateContent(string actionToPerform)
+        {
+            HttpClientResponse<string> response = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
+
+            string url = string.Empty;
+
+            if (actionToPerform.Equals("name"))
+            {
+                url = $"{_apiBaseUrl}ContentProviders/{response.Data}";
+            }
+            else if (actionToPerform.Equals("activation"))
+            {
+                url = $"{_apiBaseUrl}ContentProviders/{response.Data}/activate";
+            }
+            else if (actionToPerform.Equals("deactivation"))
+            {
+                url = $"{_apiBaseUrl}ContentProviders/{response.Data}/deactivate";
+            }
+           
+            ContentProviderDto contentProviderRequest = _scenarioContext.Get<ContentProviderDto>(ScenarioContenxtKeys.CREATE_REQUEST_DATA);
+
+            contentProviderRequest.Name = Guid.NewGuid().ToString();
+
+            contentProviderRequest.Id = Guid.Parse(response.Data);
+
+            _scenarioContext.Set<ContentProviderDto>(contentProviderRequest, ScenarioContenxtKeys.UPDATE_REQUEST_DATA);
+
+            HttpClientResponse<string> updatedResponse = await _httpClientDriver.Post<ContentProviderDto, string>(url, contentProviderRequest);
+
+            _scenarioContext.Set<HttpClientResponse<string>>(updatedResponse, ScenarioContenxtKeys.UPDATE_RESPONSE_DATA);
 
         }
 
+        [Then(@"update content response should receive nocontent and updated (.*) value")]
+        public void ThenUpdateContentResponseShouldRecieveNocontentAndUpdateValue(string actionValue)
+        {
+            ContentProviderDto updateRequest = _scenarioContext.Get<ContentProviderDto>(ScenarioContenxtKeys.UPDATE_REQUEST_DATA);
 
-        [Given(@"the data to create content provider")]
-        public void GivenTheDataToCreateContentProvider()
+            HttpClientResponse<string> updateResponse = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.UPDATE_RESPONSE_DATA);
+
+            HttpClientResponse<ContentProviderDto> updateReadResponse = _scenarioContext.Get<HttpClientResponse<ContentProviderDto>>(ScenarioContenxtKeys.READ_UPDATE_RESPONSE_DATA);
+
+            Assert.Equal(updateResponse.RawMessage.StatusCode.ToString(), HttpStatusCode.NoContent.ToString());
+
+            Assert.NotNull(updateReadResponse.Data);
+
+            if (actionValue.Equals("name"))
+            {
+                Assert.Equal(updateReadResponse.Data.Name.ToString(), updateRequest.Name);
+            }
+            else if (actionValue.Equals("activated"))
+            {
+                Assert.True(updateReadResponse.Data.IsActive);
+                Assert.NotNull(updateReadResponse.Data.ActivationDate);
+            }
+            else if (actionValue.Equals("deactivated"))
+            {
+                Assert.False(updateReadResponse.Data.IsActive);
+                Assert.NotNull(updateReadResponse.Data.DeactivationDate);
+            }
+        }
+
+        [Then(@"I should delete the created record")]
+        public async Task ThenIShouldDeleteTheCreatedRecord()
+        {
+            HttpClientResponse<string> response = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
+
+            string contentProviderId = response.Data;
+
+            string url = $"{_apiBaseUrl}ContentProviders/{contentProviderId}";
+
+            HttpClientResponse<string> deleteResponse = await _httpClientDriver.Delete<string>(url);
+        }
+
+        #region Data Generation Methods
+        private ContentProviderDto GetContentProviderDto(string contentProviderName, bool addAdmistrator)
         {
             ContentProviderDto contentProvider = new ContentProviderDto();
 
-            contentProvider.Name = "Eros International";
-            contentProvider.Address = new AddressDto() { 
-                City = "Heaven", 
+            contentProvider.Name = contentProviderName;
+
+            contentProvider.Address = new AddressDto()
+            {
+                City = "Delhi",
                 Pin = "110089",
-                State = "Parlok",
-                StreetName = "Seeri",
-                Town = "Trishankhu",
-                MapLocation = new MapLocationDto() { Latitude = 19 , Longitude = 20 } };
+                State = "Delhi",
+                StreetName = "Street 1",
+                Town = "Delhi Town",
+                MapLocation = new MapLocationDto() { Latitude = 19, Longitude = 20 }
+            };
 
             contentProvider.ContentAdministrators = new List<ContentAdministratorDto>();
 
@@ -87,31 +218,15 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
                 }
             };
 
-            contentProvider.ContentAdministrators.Add(contentAdministrator);
+            if (addAdmistrator)
+            {
+                contentProvider.ContentAdministrators.Add(contentAdministrator);
+            }
 
-            _scenarioContext.Set<ContentProviderDto>(contentProvider, $"{_scenarioContext.ScenarioInfo.Title}_request");
+            return contentProvider;
         }
 
-        [When(@"I submit the request to create")]
-        public async Task WhenISubmitTheRequestToCreate()
-        {
-            string url = $"{_apiBaseUrl}ContentProviders";
+        #endregion
 
-            ContentProviderDto contentProviderRequest = _scenarioContext.Get<ContentProviderDto>($"{_scenarioContext.ScenarioInfo.Title}_request");
-
-            HttpClientResponse<string> response = await _httpClientDriver.Post<ContentProviderDto, string>(url, contentProviderRequest);
-
-            _scenarioContext.Set<HttpClientResponse<string>>(response, $"{_scenarioContext.ScenarioInfo.Title}_response");
-        }
-
-        [Then(@"response should recieve created")]
-        public void ThenResponseShouldRecieveCreated()
-        {
-            HttpClientResponse<string> response = _scenarioContext.Get<HttpClientResponse<string>>($"{_scenarioContext.ScenarioInfo.Title}_response");
-
-            Assert.Equal(response.RawMessage.StatusCode.ToString(), HttpStatusCode.Created.ToString());
-
-            Assert.NotNull(response.Data);
-        }
     }
 }
