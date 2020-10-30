@@ -220,27 +220,27 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
                 MapLocation = new MapLocationDto() { Latitude = 19, Longitude = 20 }
             };
 
-            contentProvider.ContentAdministrators = new List<ContentAdministratorDto>();
-
-            ContentAdministratorDto contentAdministrator = new ContentAdministratorDto()
-            {
-                Email = "eros@hotmail.com",
-                FirstName = "Eros",
-                LastName = "Admin",
-                DateOfBirth = DateTime.Now,
-                Mobile = 9999999999,
-                Address = new AddressDto
-                {
-                    City = "Bengaleru",
-                    Pin = "7878777",
-                    State = "KA",
-                    StreetName = "ST",
-                    MapLocation = new MapLocationDto { Latitude = 89, Longitude = 90 }
-                }
-            };
-
             if (addAdmistrator)
             {
+                contentProvider.ContentAdministrators = new List<ContentAdministratorDto>();
+
+                ContentAdministratorDto contentAdministrator = new ContentAdministratorDto()
+                {
+                    Email = "eros@hotmail.com",
+                    FirstName = "Eros",
+                    LastName = "Admin",
+                    DateOfBirth = DateTime.Now,
+                    Mobile = 9999999999,
+                    Address = new AddressDto
+                    {
+                        City = "Bengaleru",
+                        Pin = "7878777",
+                        State = "KA",
+                        StreetName = "ST",
+                        MapLocation = new MapLocationDto { Latitude = 89, Longitude = 90 }
+                    }
+                };
+
                 contentProvider.ContentAdministrators.Add(contentAdministrator);
             }
 
