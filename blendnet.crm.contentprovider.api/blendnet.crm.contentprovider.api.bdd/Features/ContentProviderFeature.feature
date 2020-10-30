@@ -62,3 +62,15 @@ Scenario Outline: DeActivate Content Provider
     | present    |
     | true       |
     | false      |
+
+@contentProvider
+Scenario Outline: Delete Content Provider
+  Given admin is "<present>" in the given data to create
+  When I submit the request to create
+  And I submit the request to delete
+  And I submit the request to read content
+  Then read content response should recieve notfound
+  Examples: 
+    | present    |
+    | true       |
+    | false      |

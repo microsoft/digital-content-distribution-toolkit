@@ -182,6 +182,27 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
             HttpClientResponse<string> deleteResponse = await _httpClientDriver.Delete<string>(url);
         }
 
+        [When(@"I submit the request to delete")]
+        public async Task WhenISubmitTheRequestToDelete()
+        {
+            HttpClientResponse<string> response = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
+
+            string url = $"{_apiBaseUrl}ContentProviders/{response.Data}";
+
+            var deleteResponse = await _httpClientDriver.Delete<string>(url);
+        }
+
+        [Then(@"read content response should recieve notfound")]
+        public void ThenReadContentResponseShouldRecieveNotfound()
+        {
+            HttpClientResponse<ContentProviderDto> readResponse = _scenarioContext.Get<HttpClientResponse<ContentProviderDto>>(ScenarioContenxtKeys.READ_RESPONSE_DATA);
+
+            Assert.Equal(readResponse.RawMessage.StatusCode.ToString(), HttpStatusCode.NotFound.ToString());
+
+            Assert.Null(readResponse.Data);
+        }
+
+
         #region Data Generation Methods
         private ContentProviderDto GetContentProviderDto(string contentProviderName, bool addAdmistrator)
         {
