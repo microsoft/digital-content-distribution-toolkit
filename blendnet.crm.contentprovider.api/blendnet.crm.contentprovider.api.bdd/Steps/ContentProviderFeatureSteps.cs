@@ -2,6 +2,7 @@
 using blendnet.crm.contentprovider.api.bdd.Drivers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -27,6 +28,10 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
             public const string UPDATE_REQUEST_DATA = "UPDATE_REQUEST_DATA";
             public const string UPDATE_RESPONSE_DATA = "UPDATE_RESPONSE_DATA";
             public const string READ_UPDATE_RESPONSE_DATA = "READ_UPDATE_RESPONSE_DATA";
+            public const string CREATE_ADMIN_REQUEST_DATA = "CREATE_ADMIN_REQUEST_DATA";
+            public const string CREATE_ADMIN_RESPONSE_DATA = "CREATE_ADMIN_RESPONSE_DATA";
+            public const string UPDATE_ADMIN_REQUEST_DATA = "UPDATE_ADMIN_REQUEST_DATA";
+            public const string UPDATE_ADMIN_RESPONSE_DATA = "UPDATE_ADMIN_RESPONSE_DATA";
         }
 
 
@@ -53,7 +58,7 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
         public void ThenReadContentResponseShouldRecieveSuccess()
         {
             HttpClientResponse<ContentProviderDto> readResponse = _scenarioContext.Get<HttpClientResponse<ContentProviderDto>>(ScenarioContenxtKeys.READ_RESPONSE_DATA);
-            
+
             HttpClientResponse<string> createResponse = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
 
             Assert.Equal(readResponse.RawMessage.StatusCode.ToString(), HttpStatusCode.OK.ToString());
@@ -126,7 +131,7 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
             {
                 url = $"{_apiBaseUrl}ContentProviders/{response.Data}/deactivate";
             }
-           
+
             ContentProviderDto contentProviderRequest = _scenarioContext.Get<ContentProviderDto>(ScenarioContenxtKeys.CREATE_REQUEST_DATA);
 
             contentProviderRequest.Name = Guid.NewGuid().ToString();
@@ -203,6 +208,115 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
         }
 
 
+        [When(@"I submit the request to create content administrator")]
+        public async Task WhenISubmitTheRequestToCreateContentAdministrator()
+        {
+            HttpClientResponse<string> response = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
+
+            string contentProviderId = response.Data;
+
+            string url = $"{_apiBaseUrl}ContentProviders/{contentProviderId}/ContentAdministrators";
+
+            string email = $"{Guid.NewGuid().ToString()}@hotmail.com";
+
+            ContentAdministratorDto contentAdministratorRequest = GetContentAdministratorDto(email);
+
+            _scenarioContext.Set<ContentAdministratorDto>(contentAdministratorRequest, ScenarioContenxtKeys.CREATE_ADMIN_REQUEST_DATA);
+
+            HttpClientResponse<string> createAdministratorResponse = await _httpClientDriver.Post<ContentAdministratorDto, string>(url, contentAdministratorRequest);
+
+            _scenarioContext.Set<HttpClientResponse<string>>(createAdministratorResponse, ScenarioContenxtKeys.CREATE_ADMIN_RESPONSE_DATA);
+        }
+
+        [Then(@"create content administrator response should recieve nocontent")]
+        public void ThenCreateContentAdministratorResponseShouldRecieveNoContent()
+        {
+            ContentAdministratorDto createAdminRequest = _scenarioContext.Get<ContentAdministratorDto>(ScenarioContenxtKeys.CREATE_ADMIN_REQUEST_DATA);
+
+            HttpClientResponse<string> createdAdminResponse = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_ADMIN_RESPONSE_DATA);
+
+            HttpClientResponse<ContentProviderDto> readResponse = _scenarioContext.Get<HttpClientResponse<ContentProviderDto>>(ScenarioContenxtKeys.READ_RESPONSE_DATA);
+
+            Assert.Equal(createdAdminResponse.RawMessage.StatusCode.ToString(), HttpStatusCode.NoContent.ToString());
+
+            Assert.NotNull(readResponse.Data.ContentAdministrators);
+
+            Assert.NotNull(readResponse.Data);
+
+            Assert.True(readResponse.Data.ContentAdministrators.Count > 0);
+
+            ContentAdministratorDto foundAdministrator = readResponse.Data.ContentAdministrators.Where(ca => ca.Email == createAdminRequest.Email).FirstOrDefault();
+
+            Assert.NotNull(foundAdministrator);
+        }
+
+        [When(@"I submit the request to update content-administrator (.*)")]
+        public async Task WhenISubmitTheRequestToUpdateContent_Administrator(string actionToPerform)
+        {
+            ContentAdministratorDto contentAdministratorRequest = _scenarioContext.Get<ContentAdministratorDto>(ScenarioContenxtKeys.CREATE_ADMIN_REQUEST_DATA);
+
+            HttpClientResponse<ContentProviderDto> readResponse = _scenarioContext.Get<HttpClientResponse<ContentProviderDto>>(ScenarioContenxtKeys.READ_RESPONSE_DATA);
+
+            ContentAdministratorDto createdContentAdministrator = readResponse.Data.ContentAdministrators.Where(ca => ca.Email == contentAdministratorRequest.Email).FirstOrDefault();
+
+            createdContentAdministrator.FirstName = Guid.NewGuid().ToString();
+
+            _scenarioContext.Set<ContentAdministratorDto>(createdContentAdministrator, ScenarioContenxtKeys.UPDATE_ADMIN_REQUEST_DATA);
+
+            string url = string.Empty;
+
+            if (actionToPerform.Equals("name"))
+            {
+                url = $"{_apiBaseUrl}ContentProviders/{readResponse.Data.Id}/ContentAdministrators/{createdContentAdministrator.Id}";
+            }
+            else if (actionToPerform.Equals("activation"))
+            {
+                url = $"{_apiBaseUrl}ContentProviders/{readResponse.Data.Id}/ContentAdministrators/{createdContentAdministrator.Id}/activate";
+            }
+            else if (actionToPerform.Equals("deactivation"))
+            {
+                url = $"{_apiBaseUrl}ContentProviders/{readResponse.Data.Id}/ContentAdministrators/{createdContentAdministrator.Id}/deactivate";
+            }
+
+            HttpClientResponse<string> updatedResponse = await _httpClientDriver.Post<ContentAdministratorDto, string>(url, createdContentAdministrator);
+
+            _scenarioContext.Set<HttpClientResponse<string>>(updatedResponse, ScenarioContenxtKeys.UPDATE_ADMIN_RESPONSE_DATA);
+
+        }
+
+        [Then(@"update content-administrator response should receive nocontent and updated (.*) value")]
+        public void ThenUpdateContent_AdministratorResponseShouldReceiveNocontentAndUpdatedValue(string actionValue)
+        {
+            ContentAdministratorDto updateAdminRequest = _scenarioContext.Get<ContentAdministratorDto>(ScenarioContenxtKeys.UPDATE_ADMIN_REQUEST_DATA);
+
+            HttpClientResponse<string> updateResponse = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.UPDATE_ADMIN_RESPONSE_DATA);
+
+            HttpClientResponse<ContentProviderDto> updateReadResponse = _scenarioContext.Get<HttpClientResponse<ContentProviderDto>>(ScenarioContenxtKeys.READ_RESPONSE_DATA);
+
+            ContentAdministratorDto updatedAdmin =  updateReadResponse.Data.ContentAdministrators.Where(ca => ca.Id == updateAdminRequest.Id).FirstOrDefault();
+
+            Assert.Equal(updateResponse.RawMessage.StatusCode.ToString(), HttpStatusCode.NoContent.ToString());
+
+            Assert.NotNull(updateReadResponse.Data);
+
+            Assert.NotNull(updatedAdmin);
+
+            if (actionValue.Equals("name"))
+            {
+                Assert.Equal(updatedAdmin.FirstName.ToString(), updateAdminRequest.FirstName);
+            }
+            else if (actionValue.Equals("activated"))
+            {
+                Assert.True(updatedAdmin.IsActive);
+                Assert.NotNull(updatedAdmin.ActivationDate);
+            }
+            else if (actionValue.Equals("deactivated"))
+            {
+                Assert.False(updatedAdmin.IsActive);
+                Assert.NotNull(updatedAdmin.DeactivationDate);
+            }
+        }
+
         #region Data Generation Methods
         private ContentProviderDto GetContentProviderDto(string contentProviderName, bool addAdmistrator)
         {
@@ -224,22 +338,7 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
             {
                 contentProvider.ContentAdministrators = new List<ContentAdministratorDto>();
 
-                ContentAdministratorDto contentAdministrator = new ContentAdministratorDto()
-                {
-                    Email = "eros@hotmail.com",
-                    FirstName = "Eros",
-                    LastName = "Admin",
-                    DateOfBirth = DateTime.Now,
-                    Mobile = 9999999999,
-                    Address = new AddressDto
-                    {
-                        City = "Bengaleru",
-                        Pin = "7878777",
-                        State = "KA",
-                        StreetName = "ST",
-                        MapLocation = new MapLocationDto { Latitude = 89, Longitude = 90 }
-                    }
-                };
+                ContentAdministratorDto contentAdministrator = GetContentAdministratorDto("eros@hotmail.com");
 
                 contentProvider.ContentAdministrators.Add(contentAdministrator);
             }
@@ -247,7 +346,27 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
             return contentProvider;
         }
 
-        #endregion
+        private ContentAdministratorDto GetContentAdministratorDto(string contentAdministratorEmail)
+        {
+            ContentAdministratorDto contentAdministrator = new ContentAdministratorDto()
+            {
+                Email = contentAdministratorEmail,
+                FirstName = "Eros",
+                LastName = "Admin",
+                DateOfBirth = DateTime.Now,
+                Mobile = 9999999999,
+                Address = new AddressDto
+                {
+                    City = "Bengaleru",
+                    Pin = "7878777",
+                    State = "KA",
+                    StreetName = "ST",
+                    MapLocation = new MapLocationDto { Latitude = 89, Longitude = 90 }
+                }
+            };
 
+            return contentAdministrator;
+        }
+        #endregion
     }
 }

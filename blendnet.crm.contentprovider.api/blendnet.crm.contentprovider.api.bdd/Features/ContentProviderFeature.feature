@@ -74,3 +74,61 @@ Scenario Outline: Delete Content Provider
     | present    |
     | true       |
     | false      |
+
+@contentProvider
+Scenario Outline: Create Content Administrator
+  Given admin is "<present>" in the given data to create
+  When I submit the request to create
+  And I submit the request to create content administrator
+  And I submit the request to read content
+  Then create content administrator response should recieve nocontent
+  And I should delete the created record
+  Examples: 
+    | present    |
+    | true       |
+    | false      |
+
+@contentProvider
+Scenario Outline: Update Content Administrator
+  Given admin is "<present>" in the given data to create
+  When I submit the request to create
+  And I submit the request to create content administrator
+  And I submit the request to read content
+  And I submit the request to update content-administrator name
+  And I submit the request to read content
+  Then update content-administrator response should receive nocontent and updated name value
+  And I should delete the created record
+  Examples: 
+    | present    |
+    | true       |
+    | false      |
+
+@contentProvider
+Scenario Outline: Activate Content Administrator
+  Given admin is "<present>" in the given data to create
+  When I submit the request to create
+  And I submit the request to create content administrator
+  And I submit the request to read content
+  And I submit the request to update content-administrator activation
+  And I submit the request to read content
+  Then update content-administrator response should receive nocontent and updated activated value
+  And I should delete the created record
+  Examples: 
+    | present    |
+    | true       |
+    | false      |
+
+@contentProvider
+Scenario Outline: DeActivate Content Administrator
+  Given admin is "<present>" in the given data to create
+  When I submit the request to create
+  And I submit the request to create content administrator
+  And I submit the request to read content
+  And I submit the request to update content-administrator deactivation
+  And I submit the request to read content
+  Then update content-administrator response should receive nocontent and updated deactivated value
+  And I should delete the created record
+  Examples: 
+    | present    |
+    | true       |
+    | false      |
