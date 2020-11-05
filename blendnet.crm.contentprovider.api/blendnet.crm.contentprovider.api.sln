@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.common.dto", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.retailer.api.bdd", "blendnet.crm.retailer.api.bdd\blendnet.crm.retailer.api.bdd.csproj", "{84E7CA5F-B377-4368-B195-1AED1DFB01A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.crm.retailer.api", "blendnet.crm.retailer.api\blendnet.crm.retailer.api.csproj", "{78598F0E-A882-4DFD-8691-F4BB7A00D63F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{84E7CA5F-B377-4368-B195-1AED1DFB01A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84E7CA5F-B377-4368-B195-1AED1DFB01A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84E7CA5F-B377-4368-B195-1AED1DFB01A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78598F0E-A882-4DFD-8691-F4BB7A00D63F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78598F0E-A882-4DFD-8691-F4BB7A00D63F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78598F0E-A882-4DFD-8691-F4BB7A00D63F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78598F0E-A882-4DFD-8691-F4BB7A00D63F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
