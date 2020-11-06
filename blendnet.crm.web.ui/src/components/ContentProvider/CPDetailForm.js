@@ -1,9 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Switch from '@material-ui/core/Switch';
+
 import { FormControl } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { withStyles } from '@material-ui/core/styles';
@@ -12,12 +13,18 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { CommandBar, ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import SaveIcon from '@material-ui/icons/Save';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Link } from 'react-router-dom';
+import { ContentProviderList } from './ContentProviderList';
+import { Route } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,8 +47,28 @@ const useStyles = makeStyles((theme) => ({
   pos: {
     marginBottom: 12,
   },
-
-}));
+  link: {
+    textDecoration: 'none',
+    color: 'black'
+  },
+  button: {
+    margin: theme.spacing(1),
+    backgroundColor: '#bababa',
+    '&:hover': {
+      backgroundColor: '#bababa',
+  },
+  color: '#0078d4',
+  },
+  buttonDelete : {
+    margin: theme.spacing(1),
+    backgroundColor: '#bababa',
+    '&:hover': {
+      backgroundColor: '#bababa',
+    },
+    color: 'red',
+  },
+}
+));
 
 const StatusSwitch = withStyles((theme) => ({
   root: {
@@ -104,12 +131,26 @@ export default function DetailForm() {
     status: true,
   });
 
-const [open, setOpen] = React.useState(false);
+const [openSave, setOpenSave] = React.useState(false);
+const [openDelete, setOpenDelete] = React.useState(false);
 
-const handleClose = () => {
-    setOpen(false);
+
+const handleCloseSave = () => {
+  setOpenSave(false);
 };
 
+const handleClickOpenSave = () => {
+  setOpenSave(true);
+};
+
+
+const handleCloseDelete = () => {
+  setOpenDelete(false);
+};
+
+const handleClickOpenDelete = () => {
+  setOpenDelete(true);
+};
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -117,81 +158,139 @@ const handleClose = () => {
 
 
   
-const _items = [
+// const _items = [
     
-  ];
+//   ];
   
-const _farItems= [
-{
-    key: 'back',
-    text: 'Back',
-    // This needs an ariaLabel since it's icon-only
-    ariaLabel: 'Back',
-    iconOnly: true,
-    iconProps: { iconName: 'Back' },
-    onClick:  () => {
-        setOpen(true);
-      },
-},
-{
-    key: 'copy',
-    text: 'Copy',
-    // This needs an ariaLabel since it's icon-only
-    ariaLabel: 'Copy',
-    iconOnly: true,
-    iconProps: { iconName: 'Copy' },
-    onClick:  () => {
-        setOpen(true);
-      },
-},
-{
-    key: 'save',
-    text: 'Save',
-    // This needs an ariaLabel since it's icon-only
-    ariaLabel: 'Save',
-    iconOnly: true,
-    iconProps: { iconName: 'Save' },
-    onClick: () => {
-        setOpen(true);
-      },
-},
-];
+// const _farItems= [
+// {
+//     key: 'back',
+//     text: 'Back',
+//     // This needs an ariaLabel since it's icon-only
+//     ariaLabel: 'Back',
+//     iconOnly: true,
+//     iconProps: { iconName: 'Back' },
+//     onClick:  () => {
+//         setOpen(true);
+//       },
+// },
+// {
+//     key: 'copy',
+//     text: 'Copy',
+//     // This needs an ariaLabel since it's icon-only
+//     ariaLabel: 'Copy',
+//     iconOnly: true,
+//     iconProps: { iconName: 'Copy' },
+//     onClick:  () => {
+//         setOpen(true);
+//       },
+// },
+// {
+//     key: 'save',
+//     text: 'Save',
+//     // This needs an ariaLabel since it's icon-only
+//     ariaLabel: 'Save',
+//     iconOnly: true,
+//     iconProps: { iconName: 'Save' },
+//     onClick: () => {
+//         setOpen(true);
+//       },
+// },
+// ];
   
   
   
 
   return (
       <div>
+        <Route path='/content-provide-list' component={ContentProviderList} />
             <div>
+            <Grid container spacing={0}>
+                <Grid item xs={9}>
                 <h1>
                     Content Provider Detail
                 </h1>
-            </div>
-            <div>
-                <CommandBar
+                </Grid>
+                <Grid item xs={3}>
+
+                  <Link to="/content-provide-list" className={classes.link}>
+                      <Button
+                          variant="contained"
+                          size="small"
+                          className={classes.button}
+                          startIcon={<ArrowBackIcon />}
+                        >
+                          Back
+                        </Button>
+                    </Link>
+                    {/* <SaveIcon />
+                    <DeleteIcon /> */}
+
+                    <Button
+                      variant="contained"
+                      size="small"
+                      className={classes.buttonDelete}
+                      startIcon={<DeleteIcon />}
+                      onClick={handleClickOpenDelete}
+                    >
+                      Delete
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      className={classes.button}
+                      startIcon={<SaveIcon />}
+                      onClick={handleClickOpenSave}
+                    >
+                      Save
+                    </Button>
+                  
+                </Grid>
+            </Grid>
+                {/* <CommandBar
                     items={_items}
                     farItems={_farItems}
                     ariaLabel="Use left and right arrow keys to navigate between commands"
-                />
+                /> */}
             </div>
-            
             <Dialog
-                open={open}
-                onClose={handleClose}
+                open={openDelete}
+                onClose={handleCloseDelete}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">{"Do you want to continue?"}</DialogTitle>
                 <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    Please click OK to continue and CANCEL to Cancel
+                    Clicking OK will delete this record. Please click CANCEL to go back.
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                <Button onClick={handleCloseDelete} color="primary">
                     CANCEL
                 </Button>
-                <Button onClick={handleClose} color="primary" autoFocus>
+                <Button onClick={handleCloseDelete} color="primary" autoFocus>
+                    OK
+                </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openSave}
+                onClose={handleCloseSave}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Do you want to continue?"}</DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    Please click OK to save the changes and CANCEL to discard the changes
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleCloseSave} color="primary">
+                    CANCEL
+                </Button>
+                <Button onClick={handleCloseSave} color="primary" autoFocus>
                     OK
                 </Button>
                 </DialogActions>
@@ -206,7 +305,7 @@ const _farItems= [
                     <TextField
                         id="standard-read-only-input"
                         label="Content Provider Name"
-                        defaultValue="Mishtu Mobile Booth"
+                        defaultValue="ALT Balaji"
                         variant="outlined"
                         required/>
                     </Grid>
@@ -232,7 +331,7 @@ const _farItems= [
                         id="outlined-multiline-static"
                         label="Street"
                         fullWidth
-                        defaultValue="Ranka colony road"
+                        defaultValue="Bandra"
                         variant="outlined"
                         required
                     />
@@ -241,7 +340,7 @@ const _farItems= [
                     <TextField
                         id="outlined-multiline-static"
                         label="City"
-                        defaultValue="Benguluru"
+                        defaultValue="Mumbai"
                         variant="outlined"
                         required
                     />
@@ -250,7 +349,7 @@ const _farItems= [
                     <TextField
                         id="outlined-multiline-static"
                         label="State"
-                        defaultValue="Karnataka"
+                        defaultValue="Maharashtra"
                         variant="outlined"
                         required
                     />
@@ -259,7 +358,7 @@ const _farItems= [
                     <TextField
                         id="outlined-multiline-static"
                         label="Pincode"
-                        defaultValue="560076"
+                        defaultValue="460076"
                         variant="outlined"
                         required
                     />
@@ -290,18 +389,18 @@ const _farItems= [
                     <Card className={classes.card}>
                         <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            Admin 1
+                            Content Admin
                         </Typography>
                         <Typography variant="h5" component="h2">
-                            Admin Name
+                            John Doe
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
-                            Contact
+                            +91 9658965896
                         </Typography>
                         <Typography variant="body2" component="p">
-                            Detail line 1
+                            Mumbai,
                             <br />
-                            Details line 2
+                            MH - 460003
                         </Typography>
                         </CardContent>
                         <CardActions>
@@ -313,18 +412,18 @@ const _farItems= [
                     <Card className={classes.card}>
                         <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            Admin 2
+                          Content Admin
                         </Typography>
                         <Typography variant="h5" component="h2">
-                            Admin Name
+                            Jane Doe
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
-                            Contact
+                            +91 9658555896
                         </Typography>
                         <Typography variant="body2" component="p">
-                            Detail line 1
+                            Worli
                             <br />
-                            Details line 2
+                            MH - 465500
                         </Typography>
                         </CardContent>
                         <CardActions>

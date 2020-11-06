@@ -1,20 +1,23 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import Container from '@material-ui/core/Container';
-import { IconButton } from '@fluentui/react/lib/Button';
-
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import './custom.css';
 import { ContentProviderList } from './components/ContentProvider/ContentProviderList';
 import { HubList } from './components/Hubs/HubList';
@@ -25,19 +28,36 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { ContentProviderDetail } from './components/ContentProvider/ContentProviderDetail';
 import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
+import HomeIcon from '@material-ui/icons/Home';
+import AirplayIcon from '@material-ui/icons/Airplay';
+import TheatersIcon from '@material-ui/icons/Theaters';
+import DeviceHubIcon from '@material-ui/icons/DeviceHub';
+import PolicyIcon from '@material-ui/icons/Policy';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    display: 'flex',
   },
-  title: {
-    flexGrow: 1
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    backgroundColor: "#0078d4",
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   menuButton: {
-    marginRight: theme.spacing(2),
-    color: '#ffffff'
+    marginRight: 36,
   },
   hide: {
     display: 'none',
@@ -45,172 +65,174 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
+    whiteSpace: 'nowrap',
   },
-  drawerPaper: {
+  drawerOpen: {
     width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
-  drawerHeader: {
+  drawerClose: {
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: 'hidden',
+    width: theme.spacing(7) + 1,
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9) + 1,
+    },
+  },
+  toolbar: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+  title: {
+    flexGrow: 1
   },
   link: {
     textDecoration: 'none',
+    color: 'grey'
   },
-  container: {
-    marginLeft: 'auto',
-    marginRight: '15%',
-    marginTop: '5%',
-    width: '70%'
-  },
-  account: {
+  profileLink: {
+    textDecoration: 'none',
     color: '#ffffff'
-  },
-  appBar: {
-    backgroundColor: "#0078d4",
   }
 }));
 
-export default function TemporaryDrawer() {
+export default function MiniDrawer() {
   const classes = useStyles();
+  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const openAnchor = Boolean(anchorEl);
-  const [state, setState] = React.useState({
-    left: false
-  });
 
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-
-    setState({ ...state, [anchor]: open });
+  const handleDrawerOpen = () => {
+    setOpen(true);
   };
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleDrawerClose = () => {
+    setOpen(false);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-
-  const list = (anchor) => (
-    <div
-      className={classes.list}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-        <div className={classes.drawerHeader}>
-            <IconButton title="ChevronLeft" ariaLabel="ChevronLeft"   iconProps={{ iconName: 'ChevronLeft' }} />
-        </div>
-        <Divider></Divider>
-        <List>
-            <Link to="/home" className={classes.link}>
-              <ListItem button key='Home'>
-                <ListItemText>
-                      <IconButton title="HomeSolid" ariaLabel="HomeSolid"  iconProps={{ iconName: 'HomeSolid' }} /> 
-                      Home 
-                </ListItemText>
-              </ListItem>
-            </Link>
-            <Link to="/content-provide-list" className={classes.link}>
-              <ListItem button key='Home'>
-                <ListItemText>
-                    <IconButton title="Media" ariaLabel="Media"  iconProps={{ iconName: 'Media' }} />
-                      Content-Providers
-                </ListItemText>
-              </ListItem>
-            </Link>
-            <Link  className={classes.link} to="/hubs">
-              <ListItem button key='Hubs'>
-                    <ListItemText>
-                        <IconButton title="Cloud" ariaLabel="Cloud"  iconProps={{ iconName: 'Cloud' }} />
-                        Hubs
-                    </ListItemText>
-              </ListItem>
-            </Link>
-            <Link className={classes.link} to="/policies">
-              <ListItem button key='Policies' >
-                  <ListItemText>
-                      <IconButton title="EntitlementPolicy" ariaLabel="EntitlementPolicy"  iconProps={{ iconName: 'EntitlementPolicy' }} />
-                        Policies
-                </ListItemText>
-              </ListItem>
-            </Link>
-            
-        </List>
-        <Divider></Divider>
-    </div>
-  );
 
   return (
-    <div>
-        <React.Fragment>
-        <AppBar
-          className={classes.appBar}
-          position="fixed"
-        >
-          <Toolbar>
-              <IconButton title="Menu" ariaLabel="Menu"  iconProps={{ iconName: 'CollapseMenu' }}  
-              aria-label="open drawer"
-              onClick={toggleDrawer('left', true)}
-              edge="start"
-              className={clsx(classes.menuButton, open && classes.hide)}
-              />
-            <Typography variant="h6" noWrap className={classes.title}>
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, {
+              [classes.hide]: open,
+            })}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap className={classes.title}>
               Bine CRM
-            </Typography>
-            <div>
-            <Tooltip title="Account">
-              <IconButton title="Account" ariaLabel="Account"   iconProps={{ iconName: 'Contact' }} 
-              className={classes.account}
-              onClick={handleMenu}/>
-            </Tooltip>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right"
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right"
-                }}
-                open={openAnchor}
-                onClose={handleClose}
+          </Typography>
+          <div>
+          <Link to="/profile" className={classes.profileLink}>
+            <IconButton
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  color="inherit"
                 >
-                <Link to="/profile" className={classes.link}><MenuItem> Profile</MenuItem></Link>
-                <Link to="/profile" className={classes.link}><MenuItem>My account</MenuItem></Link>
-              </Menu>
+                  <AccountCircle />
+              </IconButton>
+          </Link>
             </div>
           </Toolbar>
-        </AppBar>
-          <Drawer anchor='left' open={state['left']} onClose={toggleDrawer('left', false)}
-          classes={{
-            paper: classes.drawerPaper,
-          }}>
-            {list('left')}
-          </Drawer>
-        </React.Fragment>
-        <div className={classes.drawerHeader} />
-        <CssBaseline />
-          <Container className={classes.container}>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: open,
+          [classes.drawerClose]: !open,
+        })}
+        classes={{
+          paper: clsx({
+            [classes.drawerOpen]: open,
+            [classes.drawerClose]: !open,
+          }),
+        }}
+      >
+       <div className={classes.toolbar}>
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+          <Link to="/home" className={classes.link}>
+            <ListItem button key="Home">
+              <ListItemIcon><HomeIcon /> </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+          </Link>
+        </List>
+        <List>
+          <Link to="/content-provide-list" className={classes.link}>
+            <ListItem button key="ContentProviders">
+              <ListItemIcon><AirplayIcon /> </ListItemIcon>
+              <ListItemText primary="Content-Providers" />
+            </ListItem>
+          </Link>
+        </List>
+        <List>
+          <Link to="/content-provider-detail" className={classes.link}>
+            <ListItem button key="Content">
+              <ListItemIcon><TheatersIcon /> </ListItemIcon>
+              <ListItemText primary="Content" />
+            </ListItem>
+          </Link>
+        </List>
+        <List>
+          <Link  className={classes.link} to="/hubs">
+            <ListItem button key="Hubs">
+              <ListItemIcon><DeviceHubIcon /> </ListItemIcon>
+              <ListItemText primary="Hubs" />
+            </ListItem>
+          </Link>
+        </List>
+        <List>
+          <Link className={classes.link} to="/policies">
+            <ListItem button key="Policies">
+              <ListItemIcon><PolicyIcon /> </ListItemIcon>
+              <ListItemText primary="Policies" />
+            </ListItem>
+          </Link>
+        </List>
+      </Drawer>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <Container className={classes.container}>
             <Route path='/content-provide-list' component={ContentProviderList} />
             <Route path='/hubs' component={HubList} />
             <Route path='/profile' component={Profile} />
             <Route path='/home' component={Home} />
             <Route path='/policies' component={Policies} />
-            <Route path='/content-provide-detail' component={ContentProviderDetail} />
+            <Route path='/content-provider-detail' component={ContentProviderDetail} />
           </Container>
-      </div>
+      </main>
+    </div>
   );
 }
