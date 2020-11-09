@@ -1,13 +1,12 @@
 ﻿using blendnet.crm.common.dto;
-using blendnet.crm.contentprovider.api.Model;
-using blendnet.crm.contentprovider.api.Repository.CosmosRepository;
+using blendnet.crm.retailer.api.Repository.CosmosRepository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace blendnet.crm.contentprovider.api.Repository
+namespace blendnet.crm.retailer.api.Repository
 {
     /// <summary>
     /// EF CORE Blendnet Context
@@ -28,15 +27,12 @@ namespace blendnet.crm.contentprovider.api.Repository
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultContainer("ContentProvider");
+            modelBuilder.HasDefaultContainer("Retailer");
 
-            // modelBuilder.ApplyConfiguration(new RetailerConfiguration());
-
-            modelBuilder.ApplyConfiguration(new ContentProviderConfiguration());
+            modelBuilder.ApplyConfiguration(new RetailerConfiguration());
         }
 
-        // public DbSet<RetailerDto> Retailers { get; set; }
+        public DbSet<RetailerDto> Retailers { get; set; }
 
-        public DbSet<ContentProviderDto> ContentProviders { get; set; }
     }
 }

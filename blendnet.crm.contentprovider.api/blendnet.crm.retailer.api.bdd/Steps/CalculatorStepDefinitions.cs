@@ -24,7 +24,7 @@ namespace blendnet.crm.retailer.api.bdd.Steps
             // additional string/Table parameters can be defined on the step definition
             // method. 
 
-            _scenarioContext.Pending();
+            // _scenarioContext.Pending();
         }
 
         [Given("the second number is (.*)")]
@@ -36,7 +36,7 @@ namespace blendnet.crm.retailer.api.bdd.Steps
             // additional string/Table parameters can be defined on the step definition
             // method. 
 
-            _scenarioContext.Pending();
+            // _scenarioContext.Pending();
         }
 
         [When("the two numbers are added")]
@@ -44,7 +44,7 @@ namespace blendnet.crm.retailer.api.bdd.Steps
         {
             //TODO: implement act (action) logic
 
-            _scenarioContext.Pending();
+            // _scenarioContext.Pending();
         }
 
         [Then("the result should be (.*)")]
@@ -52,7 +52,7 @@ namespace blendnet.crm.retailer.api.bdd.Steps
         {
             //TODO: implement assert (verification) logic
 
-            _scenarioContext.Pending();
+            // _scenarioContext.Pending();
         }
     }
 }
