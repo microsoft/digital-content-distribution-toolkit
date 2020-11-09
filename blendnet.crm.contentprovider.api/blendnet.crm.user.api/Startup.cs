@@ -16,6 +16,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using Microsoft.Graph.Auth;
+using Microsoft.Graph;
+using Microsoft.Identity.Client;
 
 namespace blendnet.crm.user.api
 {
@@ -89,6 +92,28 @@ namespace blendnet.crm.user.api
 
             //Configure Services
             services.AddTransient<IIdentityRespository, IdentityRepository>();
+
+            string graphClientId = Configuration.GetValue<string>("GraphClientId");
+
+            string graphClientTenant = Configuration.GetValue<string>("GraphClientTenant");
+
+            string graphClientSecret = Configuration.GetValue<string>("GraphClientSecret");
+
+            services.AddTransient<IAuthenticationProvider>(iap => {
+
+                IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
+               .Create(graphClientId)
+               .WithTenantId(graphClientTenant)
+               .WithClientSecret(graphClientSecret)
+               .Build();
+
+                ClientCredentialProvider authProvider = new ClientCredentialProvider(confidentialClientApplication);
+
+                return authProvider;
+            });
+
+            services.AddTransient<GraphServiceClient>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

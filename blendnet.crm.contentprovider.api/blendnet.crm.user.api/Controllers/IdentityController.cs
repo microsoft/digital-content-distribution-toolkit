@@ -60,13 +60,13 @@ namespace blendnet.crm.user.api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, ex.Message);
+
                 if (ex.Message.Contains("Request_ResourceNotFound"))
                 {
                     return StatusCode((int)HttpStatusCode.Conflict, new B2CResponseDto("Can not read user groups, user not found", HttpStatusCode.Conflict));
                 }
-
-                _logger.LogError(ex, ex.Message);
-
+                
                 return StatusCode((int)HttpStatusCode.Conflict, new B2CResponseDto("Can not read user groups", HttpStatusCode.Conflict));
             }
         }

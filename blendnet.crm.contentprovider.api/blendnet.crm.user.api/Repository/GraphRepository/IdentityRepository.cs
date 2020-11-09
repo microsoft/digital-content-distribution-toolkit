@@ -14,11 +14,11 @@ namespace blendnet.crm.user.api.Repository.GraphRepository
 {
     public class IdentityRepository : IIdentityRespository
     {
-        private readonly AppSettings _appSettings;
+        GraphServiceClient _graphServiceClient;
 
-        public IdentityRepository(IOptionsMonitor<AppSettings> optionsAccessor)
+        public IdentityRepository(GraphServiceClient graphServiceClient)
         {
-            _appSettings = optionsAccessor.CurrentValue;
+            _graphServiceClient = graphServiceClient;
         }
 
         /// <summary>
@@ -28,11 +28,7 @@ namespace blendnet.crm.user.api.Repository.GraphRepository
         /// <returns></returns>
         public async Task<List<string>> ListMemberOf(string userObjectId)
         {
-            ClientCredentialProvider authProvider = GetClientCredentialsProvider();
-
-            GraphServiceClient graphClient = new GraphServiceClient(authProvider);
-
-            var memberOf = await graphClient.Users[userObjectId].MemberOf
+            var memberOf = await _graphServiceClient.Users[userObjectId].MemberOf
                 .Request()
                 .GetAsync();
 
@@ -55,21 +51,5 @@ namespace blendnet.crm.user.api.Repository.GraphRepository
             return groupsToReturns;
         }
 
-        /// <summary>
-        /// Returns client credential provider
-        /// </summary>
-        /// <returns></returns>
-        private ClientCredentialProvider GetClientCredentialsProvider()
-        {
-            IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
-            .Create(_appSettings.GraphClientId)
-            .WithTenantId(_appSettings.GraphClientTenant)
-            .WithClientSecret(_appSettings.GraphClientSecret)
-            .Build();
-
-            ClientCredentialProvider authProvider = new ClientCredentialProvider(confidentialClientApplication);
-
-            return authProvider;
-        }
     }
 }
