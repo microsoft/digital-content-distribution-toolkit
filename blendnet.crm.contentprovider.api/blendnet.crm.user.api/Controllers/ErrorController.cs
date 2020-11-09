@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace blendnet.crm.contentprovider.api.Controllers
+namespace blendnet.crm.user.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -34,7 +34,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
             {
                 _logger.LogError(context.Error, context.Error.Message);
 
-                return Problem(detail: context.Error.Message,title: context.Error.Message);
+                return Problem(detail: context.Error.Message, title: context.Error.Message);
 
             }
             else
@@ -43,5 +43,6 @@ namespace blendnet.crm.contentprovider.api.Controllers
             }
 
         }
+
     }
 }
