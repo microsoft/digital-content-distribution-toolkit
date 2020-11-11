@@ -17,6 +17,10 @@ using System;
 using Serilog;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using blendnet.crm.common.api;
+using blendnet.crm.common.dto.Identity;
+using blendnet.crm.contentprovider.api.IntegrationEventHandling;
+using blendnet.crm.common.api.ServiceBus;
 
 namespace blendnet.crm.contentprovider.api
 {
@@ -102,6 +106,8 @@ namespace blendnet.crm.contentprovider.api
 
             //Configure Services
             services.AddTransient<IContentProviderRepository, ContentProviderRepository>();
+
+            ConfigureEventBus(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -145,12 +151,58 @@ namespace blendnet.crm.contentprovider.api
               .GetRequiredService<IServiceScopeFactory>()
               .CreateScope())
             {
+                //Make sure database exists
                 var blendNetContext = serviceScope.ServiceProvider.GetService<BlendNetContext>();
 
                 blendNetContext.Database.EnsureCreated();
+
+                //Subcribe for user changed events
+                IEventBus eventBus =  serviceScope.ServiceProvider.GetService<IEventBus>();
+
+                eventBus.Subscribe<UserChangedIntegrationEvent, UserChangedIntegrationEventHandler>();
+
+                eventBus.Subscribe<UserDummyIntegrationEvent, UserDummyIntegrationEventHandler>();
             };
         }
 
-       
+
+        /// <summary>
+        /// Configure Event Bus
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureEventBus(IServiceCollection services)
+        {
+            //event bus related registrations
+            string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
+
+            string serviceBusTopicName = Configuration.GetValue<string>("ServiceBusTopicName");
+
+            string serviceBusSubscriptionName = Configuration.GetValue<string>("ServiceBusSubscriptionName");
+
+            int serviceBusMaxConcurrentCalls = Configuration.GetValue<int>("ServiceBusMaxConcurrentCalls");
+
+            services.AddSingleton<EventBusConnectionData>(ebcd =>
+            {
+                EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
+
+                eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
+
+                eventBusConnectionData.TopicName = serviceBusTopicName;
+
+                //set this only if you want to consume.
+                eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
+
+                eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
+
+                return eventBusConnectionData;
+            });
+
+            services.AddSingleton<IEventBus, EventServiceBus>();
+
+            services.AddTransient<UserChangedIntegrationEventHandler>();
+
+            services.AddTransient<UserDummyIntegrationEventHandler>();
+
+        }
     }
 }

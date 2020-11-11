@@ -19,6 +19,9 @@ using Microsoft.OpenApi.Models;
 using Microsoft.Graph.Auth;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
+using blendnet.crm.common.api;
+using blendnet.crm.common.api.ServiceBus;
+using blendnet.crm.common.dto.Identity;
 
 namespace blendnet.crm.user.api
 {
@@ -99,6 +102,7 @@ namespace blendnet.crm.user.api
 
             string graphClientSecret = Configuration.GetValue<string>("GraphClientSecret");
 
+            //Register graph authentication provider
             services.AddTransient<IAuthenticationProvider>(iap => {
 
                 IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
@@ -112,7 +116,44 @@ namespace blendnet.crm.user.api
                 return authProvider;
             });
 
+            //register graph
             services.AddTransient<GraphServiceClient>();
+
+            ConfigureEventBus(services);
+
+        }
+
+        /// <summary>
+        /// Configure Event Bus
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureEventBus(IServiceCollection services)
+        {
+            //event bus related registrations
+            string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
+
+            string serviceBusTopicName = Configuration.GetValue<string>("ServiceBusTopicName");
+
+            string serviceBusSubscriptionName = Configuration.GetValue<string>("ServiceBusSubscriptionName");
+
+            int serviceBusMaxConcurrentCalls = Configuration.GetValue<int>("ServiceBusMaxConcurrentCalls");
+
+            services.AddSingleton<EventBusConnectionData>(ebcd =>
+            {
+                EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
+
+                eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
+
+                eventBusConnectionData.TopicName = serviceBusTopicName;
+
+                //set this only if you want to consume.
+                //eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
+                //eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
+
+                return eventBusConnectionData;
+            });
+
+            services.AddSingleton<IEventBus, EventServiceBus>();
 
         }
 

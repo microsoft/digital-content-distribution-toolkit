@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using blendnet.crm.common.api;
 using blendnet.crm.common.dto;
 using blendnet.crm.common.dto.Identity;
 using blendnet.crm.user.api.Repository.Interfaces;
@@ -25,11 +26,17 @@ namespace blendnet.crm.user.api.Controllers
 
         private IIdentityRespository _identityRepository;
 
-        public IdentityController(IIdentityRespository identityRepository, ILogger<IdentityController> logger)
+        private IEventBus _eventBus;
+
+        public IdentityController(  IIdentityRespository identityRepository, 
+                                    ILogger<IdentityController> logger,
+                                    IEventBus eventBus)
         {
             _identityRepository = identityRepository;
 
             _logger = logger;
+
+            _eventBus = eventBus;
         }
 
         /// <summary>
@@ -71,12 +78,38 @@ namespace blendnet.crm.user.api.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets invoked by Azure B2C on User Sign up
+        /// </summary>
+        /// <param name="inputClaims"></param>
+        /// <returns></returns>
         [HttpPost("createuserprofile")]
         public async Task<ActionResult> CreateUserProfile(InputClaimsDto inputClaims)
         {
-            return null;
+            UserChangedIntegrationEvent userChangedIntegrationEvent = new UserChangedIntegrationEvent()
+            {
+                FirstName = "Hk",
+                GivenName = "GK",
+                LastName = "LN",
+            };
+
+            UserDummyIntegrationEvent userDummyIntegrationEvent = new UserDummyIntegrationEvent()
+            {
+                
+            };
+
+            await _eventBus.Publish(userChangedIntegrationEvent);
+
+            await _eventBus.Publish(userDummyIntegrationEvent);
+
+            return Ok();
         }
 
+        /// <summary>
+        /// Gets invoked by Azure B2C on User Profile Edit
+        /// </summary>
+        /// <param name="inputClaims"></param>
+        /// <returns></returns>
         [HttpPost("updateuserprofile")]
         public async Task<ActionResult> UpdateUserProfile(InputClaimsDto inputClaims)
         {
