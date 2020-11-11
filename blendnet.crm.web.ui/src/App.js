@@ -25,7 +25,7 @@ import { Profile } from './components/User/Profile';
 import {Home} from './components/Home';
 import {Policies} from './components/Policy/Policies';
 import Tooltip from '@material-ui/core/Tooltip';
-import { ContentProviderDetail } from './components/ContentProvider/ContentProviderDetail';
+import { ContentProviderDetails } from './components/ContentProvider/ContentProviderDetails';
 import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import HomeIcon from '@material-ui/icons/Home';
@@ -198,7 +198,7 @@ export default function MiniDrawer() {
           </Link>
         </List>
         <List>
-          <Link to="/content-provider-detail" className={classes.link}>
+          <Link to="/content-provider-details" className={classes.link}>
             <ListItem button key="Content">
               <ListItemIcon><TheatersIcon /> </ListItemIcon>
               <ListItemText primary="Content" />
@@ -230,7 +230,7 @@ export default function MiniDrawer() {
             <Route path='/profile' component={Profile} />
             <Route path='/home' component={Home} />
             <Route path='/policies' component={Policies} />
-            <Route path='/content-provider-detail' component={ContentProviderDetail} />
+            <Route path='/content-provider-details' component={ContentProviderDetails} /> 
           </Container>
       </main>
     </div>

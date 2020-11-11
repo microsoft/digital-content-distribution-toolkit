@@ -18,7 +18,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import { Route } from 'react-router-dom';
-import { ContentProviderDetail } from './ContentProvider/ContentProviderDetail';
+import { ContentProviderDetails} from './ContentProvider/ContentProviderDetails';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -26,18 +26,22 @@ import { Link, Switch } from 'react-router-dom';
 
 
 
-function createData(name, contact, address, status) {
-  return { name, contact, address, status };
+function createData(id, name, contact, address, status) {
+  return { id, name, contact, address, status };
 }
 
 function populateData(contentProvidersList){
-  // rows =[];
-  // contentProvidersList.forEach(element => {
-  //   rows.push(createData(element.name,
-  //             element.contentAdministrators!=null?element.contentAdministrators[0]?.mobile:'',
-  //             element.address.state,
-  //             element.isActive));
-  // });
+  rows =[];
+  contentProvidersList.forEach(element => {
+      rows.push(
+      createData(
+        element.id,
+        element.name,
+        element.contentAdministrators!=null?element.contentAdministrators[0]?.mobile:'',
+        element.address.state,
+        element.isActive?'Active':'Disabled'));
+  });
+  
 }
 
 // const rows = [
@@ -56,23 +60,23 @@ function populateData(contentProvidersList){
 //   createData('List Exhaused', '+91 8981232341', 'JayaNagar, Banglore', 'Disabled'),
 // ];
 
-const rows = [
-  createData('EROS Now', '+91 9231232341', 'Lokhandwala, Mumbai', 'Active'),
-  createData('Vudu', '+91 9333232341', 'A.M. nagar, Delhi', 'Active'),
-  createData('ALTBalaji', '+91 9451232341', 'Andheri, Mumbai', 'Active'),
-  createData('Hungama Play', '+91 9454532341', 'Richmond Circle, Banglore', 'Disabled'),
-  createData('Voot', '+91 9231244441', 'Pimpri, Pune','Active'),
-  createData('JioCinema', '+91 9222329341', 'Worli, Mumbai','Disabled'),
-  createData('Hotstar', '+91 5454433441', 'Delhi, India', 'Active'),
-  createData('Netflix ', '+91 8234232341', 'Whitefield, Delhi','Disabled'),
-  createData('YuppTV', '+91 9444442341', 'Bandra, Mumbai', 'Active'),
-  createData('Vuclip', '+91 8888832341', 'Electronic city, Banglore', 'Active'),
-  createData('TVFPlay', '+91 9231856233', 'Harlur road, Banglore', 'Disabled'),
-  createData('Amazon Prime Video', '+91 9245632341', 'Ranka colony, Mumbai', 'Active'),
-  createData('ZEE5', '+91 8981232341', 'JayaNagar, Mumbai', 'Disabled'),
-];
+// const rows = [
+//   createData('EROS Now', '+91 9231232341', 'Lokhandwala, Mumbai', 'Active'),
+//   createData('Vudu', '+91 9333232341', 'A.M. nagar, Delhi', 'Active'),
+//   createData('ALTBalaji', '+91 9451232341', 'Andheri, Mumbai', 'Active'),
+//   createData('Hungama Play', '+91 9454532341', 'Richmond Circle, Banglore', 'Disabled'),
+//   createData('Voot', '+91 9231244441', 'Pimpri, Pune','Active'),
+//   createData('JioCinema', '+91 9222329341', 'Worli, Mumbai','Disabled'),
+//   createData('Hotstar', '+91 5454433441', 'Delhi, India', 'Active'),
+//   createData('Netflix ', '+91 8234232341', 'Whitefield, Delhi','Disabled'),
+//   createData('YuppTV', '+91 9444442341', 'Bandra, Mumbai', 'Active'),
+//   createData('Vuclip', '+91 8888832341', 'Electronic city, Banglore', 'Active'),
+//   createData('TVFPlay', '+91 9231856233', 'Harlur road, Banglore', 'Disabled'),
+//   createData('Amazon Prime Video', '+91 9245632341', 'Ranka colony, Mumbai', 'Active'),
+//   createData('ZEE5', '+91 8981232341', 'JayaNagar, Mumbai', 'Disabled'),
+// ];
 
-// let rows = [];
+ let rows = [];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -110,6 +114,7 @@ const headCells = [
 
 function EnhancedTableHead(props) {
   const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -213,7 +218,7 @@ const EnhancedTableToolbar = (props) => {
             </Grid>
             <Grid item xs={2}>
               <Tooltip title="Edit">
-              <Link to="/content-provider-detail" className={classes.link}>
+              <Link to="/content-provider-details" className={classes.link}>
                 <EditIcon />
               </Link>
               </Tooltip>
@@ -303,6 +308,7 @@ const MSCheckbox = withStyles({
   checked: {},
 })((props) => <Checkbox color="default" {...props} />);
 
+let currentRow='';
 export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -417,9 +423,21 @@ export default function EnhancedTable(props) {
                         <TableCell align="right">{row.address}</TableCell>
                         <TableCell align="right" className={row.status === 'Active' ? classes.active : classes.deactive }>{row.status}</TableCell>
                         <TableCell align="left">
-                          <Link to="/content-provider-detail" className={classes.link}>
+                          <Link
+                              to={
+                                  {
+                                     pathname:  '/content-provider-details',
+                                     state:{
+                                        details:row
+                                      }
+                                  }
+                                }
+                          >
                             <EditIcon />
                           </Link>
+                          {/* <Link to="/content-provider-detail" className={classes.link} details={row}>
+                            <EditIcon />
+                          </Link> */}
                         </TableCell>
                       </TableRow>
                     );
@@ -444,7 +462,7 @@ export default function EnhancedTable(props) {
         </Paper>
       </div>
       <Switch>
-        <Route path='/content-provider-detail' component={ContentProviderDetail} />
+        <Route path='/content-provider-details' component={ContentProviderDetails} />
       </Switch>
     </div>
     

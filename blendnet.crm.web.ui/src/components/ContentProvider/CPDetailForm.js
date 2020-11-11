@@ -25,7 +25,13 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'react-router-dom';
 import { ContentProviderList } from './ContentProviderList';
 import { Route } from 'react-router';
+import axios from 'axios';
 
+let details = null;
+
+function populateData(contentProviderId){
+
+}
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiTextField-root': {
@@ -125,7 +131,8 @@ const StatusSwitch = withStyles((theme) => ({
 
 
 
-export default function DetailForm() {
+export default function DetailForm(props) {
+  
   const classes = useStyles();
   const [state, setState] = React.useState({
     status: true,
@@ -133,6 +140,8 @@ export default function DetailForm() {
 
 const [openSave, setOpenSave] = React.useState(false);
 const [openDelete, setOpenDelete] = React.useState(false);
+const [details, setDetails] = React.useState(props.details);
+
 
 
 const handleCloseSave = () => {
@@ -141,6 +150,24 @@ const handleCloseSave = () => {
 
 const handleClickOpenSave = () => {
   setOpenSave(true);
+
+  let contentProvider=null;
+  // let contentProvider={
+  //   Id:this.refs.Id.value,
+  //   Name:this.refs.Name.value,
+  //   Location:this.refs.Location.value,
+  //   Salary:this.refs.Salary.value
+
+  
+  fetch('https://localhost:5001/api/v1/ContentProviders',{
+      method: 'POST',
+      headers:{'Content-type':'application/json'},
+        body: contentProvider
+    }).then(r=>r.json()).then(res=>{
+      if(res){
+        this.setState({message:'Content Provider Updated Successfully'});
+      }
+    });
 };
 
 
@@ -156,52 +183,36 @@ const handleClickOpenDelete = () => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
 
-
-  
-// const _items = [
+  const updateValues = (e) =>{
+    //alert('ok');
+    //alert(event.target.name + " "+ event.target.value);
+    setDetails({ [e.target.name]: e.target.value });
     
-//   ];
-  
-// const _farItems= [
-// {
-//     key: 'back',
-//     text: 'Back',
-//     // This needs an ariaLabel since it's icon-only
-//     ariaLabel: 'Back',
-//     iconOnly: true,
-//     iconProps: { iconName: 'Back' },
-//     onClick:  () => {
-//         setOpen(true);
-//       },
-// },
-// {
-//     key: 'copy',
-//     text: 'Copy',
-//     // This needs an ariaLabel since it's icon-only
-//     ariaLabel: 'Copy',
-//     iconOnly: true,
-//     iconProps: { iconName: 'Copy' },
-//     onClick:  () => {
-//         setOpen(true);
-//       },
-// },
-// {
-//     key: 'save',
-//     text: 'Save',
-//     // This needs an ariaLabel since it's icon-only
-//     ariaLabel: 'Save',
-//     iconOnly: true,
-//     iconProps: { iconName: 'Save' },
-//     onClick: () => {
-//         setOpen(true);
-//       },
-// },
-// ];
-  
-  
-  
+  };
+ 
+  const onSubmit = (e) => {
 
-  return (
+    e.preventDefault();
+    // get our form data out of state
+    console.log(details);
+    //const { fname, lname, email } = this.details;
+
+    // axios.post('/', { fname, lname, email })
+    //   .then((result) => {
+    //     //access the results here....
+    //   });
+    setOpenSave(false);  
+  }
+
+  if(props.details==null){
+    return(
+      <div></div>
+    );
+  }
+  else
+  {
+    console.log(props.details);
+    return (
       <div>
         <Route path='/content-provide-list' component={ContentProviderList} />
             <div>
@@ -290,7 +301,7 @@ const handleClickOpenDelete = () => {
                 <Button onClick={handleCloseSave} color="primary">
                     CANCEL
                 </Button>
-                <Button onClick={handleCloseSave} color="primary" autoFocus>
+                <Button onClick={onSubmit} color="primary" autoFocus>
                     OK
                 </Button>
                 </DialogActions>
@@ -305,7 +316,7 @@ const handleClickOpenDelete = () => {
                     <TextField
                         id="standard-read-only-input"
                         label="Content Provider Name"
-                        defaultValue="ALT Balaji"
+                        defaultValue={props.details.name}
                         variant="outlined"
                         required/>
                     </Grid>
@@ -313,13 +324,13 @@ const handleClickOpenDelete = () => {
                     <TextField
                         id="standard-read-only-input"
                         label="Contact"
-                        defaultValue="9665037918"
+                        defaultValue={props.details.contentAdministrators[0].mobile}
                         variant="outlined"
                         required/>
                     </Grid>
                     <Grid item xs={12} sm={4} lg={4}>
                     <FormControlLabel
-                        control={<StatusSwitch checked={state.status} onChange={handleChange} name="status" />}
+                        control={<StatusSwitch checked={props.details.isActive} onChange={handleChange} name="status" />}
                         label="Status"
                     />
                     </Grid>
@@ -331,7 +342,7 @@ const handleClickOpenDelete = () => {
                         id="outlined-multiline-static"
                         label="Street"
                         fullWidth
-                        defaultValue="Bandra"
+                        defaultValue={props.details.address.streetName}
                         variant="outlined"
                         required
                     />
@@ -340,7 +351,7 @@ const handleClickOpenDelete = () => {
                     <TextField
                         id="outlined-multiline-static"
                         label="City"
-                        defaultValue="Mumbai"
+                        defaultValue={props.details.address.city}
                         variant="outlined"
                         required
                     />
@@ -349,7 +360,7 @@ const handleClickOpenDelete = () => {
                     <TextField
                         id="outlined-multiline-static"
                         label="State"
-                        defaultValue="Maharashtra"
+                        defaultValue={props.details.address.state}
                         variant="outlined"
                         required
                     />
@@ -357,8 +368,10 @@ const handleClickOpenDelete = () => {
                     <Grid item  xs={12} sm={4} lg={4}>
                     <TextField
                         id="outlined-multiline-static"
+                        name="pincode"
+                        onChange={updateValues}
                         label="Pincode"
-                        defaultValue="460076"
+                        defaultValue={props.details.address.pin}
                         variant="outlined"
                         required
                     />
@@ -366,8 +379,9 @@ const handleClickOpenDelete = () => {
                     <Grid item xs={12} sm={4} lg={4}>
                     <TextField
                         id="standard-read-only-input"
+                        name="activationDate"
                         label="Activation Date"
-                        defaultValue="2020-10-28T08:05:36.789Z"
+                        defaultValue={props.details.activationDate}
                         variant="outlined"
                         required/>
                     </Grid>
@@ -375,7 +389,7 @@ const handleClickOpenDelete = () => {
                     <TextField
                         id="standard-read-only-input"
                         label="De-activation Date"
-                        defaultValue="2020-10-28T08:05:36.789Z"
+                        defaultValue={props.details.isActive?'NA':props.details.deactivationDate}
                         variant="outlined"
                         required/>
                     </Grid>
@@ -385,55 +399,36 @@ const handleClickOpenDelete = () => {
                     <Grid item xs={12} sm={12} lg={12}>
                     Content Admistrators
                     </Grid>
-                    <Grid item xs={12} sm={3} lg={3}>
-                    <Card className={classes.card}>
-                        <CardContent>
-                        <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            Content Admin
-                        </Typography>
-                        <Typography variant="h5" component="h2">
-                            John Doe
-                        </Typography>
-                        <Typography className={classes.pos} color="textSecondary">
-                            +91 9658965896
-                        </Typography>
-                        <Typography variant="body2" component="p">
-                            Mumbai,
-                            <br />
-                            MH - 460003
-                        </Typography>
-                        </CardContent>
-                        <CardActions>
-                        <Button size="small">More Info</Button>
-                        </CardActions>
-                    </Card>
-                    </Grid>
-                    <Grid item xs={12} sm={3} lg={3}>
-                    <Card className={classes.card}>
-                        <CardContent>
-                        <Typography className={classes.title} color="textSecondary" gutterBottom>
-                          Content Admin
-                        </Typography>
-                        <Typography variant="h5" component="h2">
-                            Jane Doe
-                        </Typography>
-                        <Typography className={classes.pos} color="textSecondary">
-                            +91 9658555896
-                        </Typography>
-                        <Typography variant="body2" component="p">
-                            Worli
-                            <br />
-                            MH - 465500
-                        </Typography>
-                        </CardContent>
-                        <CardActions>
-                        <Button size="small">More Info</Button>
-                        </CardActions>
-                    </Card>
-                    </Grid>
+                    { props.details.contentAdministrators.map(element => 
+                        (
+                        <Grid item xs={12} sm={3} lg={3}>
+                            <Card className={classes.card}>
+                              <CardContent>
+                                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                    Content Admin
+                                </Typography>
+                                <Typography variant="h5" component="h2">
+                                    {element.firstName+' '+element.middleName+' '+element.lastName }
+                                </Typography>
+                                <Typography className={classes.pos} color="textSecondary">
+                                  {element.mobile}
+                                </Typography>
+                                <Typography variant="body2" component="p">
+                                  {element.email}
+                                </Typography>
+                                </CardContent>
+                                <CardActions>
+                                <Button size="small">More Info</Button>
+                              </CardActions>
+                            </Card>
+                        </Grid>  
+                        ))                      
+                    }
+                   
                 </Grid>
             </div>
     
-  );
+    );
+  }
 }
  
