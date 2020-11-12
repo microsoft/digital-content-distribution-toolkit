@@ -237,7 +237,7 @@ namespace blendnet.crm.common.api.ServiceBus
             }
             catch (MessagingEntityNotFoundException)
             {
-                _logger.LogWarning($"The messaging entity {ruleName} Could not be found.");
+                _logger.LogInformation($"The messaging entity {ruleName} Could not be found.");
             }
         }
 

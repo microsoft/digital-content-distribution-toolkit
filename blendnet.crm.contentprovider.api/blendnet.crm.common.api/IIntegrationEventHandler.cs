@@ -13,6 +13,11 @@ namespace blendnet.crm.common.api
     public interface IIntegrationEventHandler<T>
         where T : IntegrationEvent
     {
+        /// <summary>
+        /// Actual implmentation of the event handler to handle the event raised from service bus.
+        /// </summary>
+        /// <param name="integrationEvent"></param>
+        /// <returns></returns>
         Task Handle(T integrationEvent);
     }
 }
