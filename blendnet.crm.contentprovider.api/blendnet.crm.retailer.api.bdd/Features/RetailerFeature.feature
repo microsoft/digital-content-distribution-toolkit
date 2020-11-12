@@ -75,3 +75,47 @@ Scenario Outline: Delete Retailer
     | present    |
     | true       |
     | false      |
+    
+@retailer
+Scenario Outline: Create hub
+  Given hub is "<present>" in the given data to create
+  When I submit the request to create
+  And I submit the request to create hub
+  And I submit the request to read content
+  Then create hub response should recieve nocontent
+  And I should delete the created record
+  Examples: 
+    | present    |
+    | true       |
+    | false      |
+
+
+@retailer
+Scenario Outline: Activate hub
+  Given hub is "<present>" in the given data to create
+  When I submit the request to create
+  And I submit the request to create hub
+  And I submit the request to read content
+  And I submit the request to update hub activation
+  And I submit the request to read content
+  Then update hub response should receive nocontent and updated activated value
+  And I should delete the created record
+  Examples: 
+    | present    |
+    | true       |
+    | false      |
+
+@retailer
+Scenario Outline: DeActivate hub
+  Given hub is "<present>" in the given data to create
+  When I submit the request to create
+  And I submit the request to create hub
+  And I submit the request to read content
+  And I submit the request to update hub deactivation
+  And I submit the request to read content
+  Then update hub response should receive nocontent and updated deactivated value
+  And I should delete the created record
+  Examples: 
+    | present    |
+    | true       |
+    | false      |

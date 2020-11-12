@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using blendnet.crm.common.dto;
 using blendnet.crm.retailer.api.Repository.Interfaces;
@@ -179,6 +180,132 @@ namespace blendnet.crm.retailer.api.Controllers
     #endregion
 
     #region Hub Methods
+    /// <summary>
+    /// List all hubs
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("{retailerId:guid}/Hubs")]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+    public async Task<ActionResult<List<ContentAdministratorDto>>> GetHubs(Guid retailerId)
+    {
+        var retailer = await _retailerRepository.GetRetailerById(retailerId);
+
+        if (retailer != default(RetailerDto) 
+            && retailer.Hubs != null 
+            && retailer.Hubs.Count > 0)
+        {
+            return Ok(retailer.Hubs);
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
+    /// <summary>
+    /// This is actually an update on retailer only
+    /// </summary>
+    /// <param name="retailerId"></param>
+    /// <param name="hub"></param>
+    /// <returns></returns>
+    [HttpPost("{retailerId:guid}/Hubs")]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+    public async Task<ActionResult> CreateHub(Guid retailerId,HubDto hub)
+    {
+        var retailer = await _retailerRepository.GetRetailerById(retailerId);
+
+        if (retailer != null)
+        {
+            hub.ResetIdentifiers();
+
+            if (retailer.Hubs == null)
+            {
+                retailer.Hubs = new List<HubDto>();
+            }
+
+            retailer.Hubs.Add(hub);
+
+            await _retailerRepository.UpdateRetailer(retailer);
+
+            return NoContent();
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+    
+
+    /// <summary>
+    /// Activate Hub
+    /// </summary>
+    /// <param name="retailerId"></param>
+    /// <param name="hubId"></param>
+    /// <returns></returns>
+    [HttpPost("{retailerId:guid}/Hubs/{hubId:guid}/activate")]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+    public async Task<ActionResult> ActivateHub(Guid retailerId, Guid hubId)
+    {
+        return await ActivateDeactivateHub(retailerId, hubId, true);
+    }
+
+    /// <summary>
+    /// Deactivate Content Administrator
+    /// </summary>
+    /// <param name="retailerId"></param>
+    /// <param name="hubId"></param>
+    /// <returns></returns>
+    [HttpPost("{retailerId:guid}/Hubs/{hubId:guid}/deactivate")]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+    public async Task<ActionResult> DeactivateHub(Guid retailerId, Guid hubId)
+    {
+        return await ActivateDeactivateHub(retailerId, hubId, false);
+    }
+
+    /// <summary>
+    /// Activates or Deactivates hub
+    /// </summary>
+    /// <param name="retailerId"></param>
+    /// <param name="hubId"></param>
+    /// <param name="activate"></param>
+    /// <returns></returns>
+    private async Task<ActionResult> ActivateDeactivateHub(Guid retailerId, Guid hubId, bool activate)
+    {
+        var retailer = await _retailerRepository.GetRetailerById(retailerId);
+
+        if (retailer != null)
+        {
+            //Get the existing adminstrator
+            var hub = retailer.Hubs.Where(h => h.Id == hubId).FirstOrDefault();
+
+            if (hub == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                if (activate)
+                {
+                    hub.ActivationDate = DateTime.Now;
+
+                    hub.IsActive = true;
+                }else
+                {
+                    hub.DeactivationDate = DateTime.Now;
+
+                    hub.IsActive = false;
+                }
+
+                await _retailerRepository.UpdateRetailer(retailer);
+
+                return NoContent();
+            }
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
 
     #endregion
     }

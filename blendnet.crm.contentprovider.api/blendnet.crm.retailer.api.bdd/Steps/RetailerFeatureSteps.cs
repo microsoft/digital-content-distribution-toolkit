@@ -16,7 +16,7 @@ namespace blendnet.crm.retailer.api.bdd.Steps
     {
         private HttpClientDriver _httpClientDriver;
 
-        private string _apiBaseUrl = "https://localhost:44335/api/v1/";
+        private string _apiBaseUrl = "https://localhost:5001/api/v1/";
 
         ScenarioContext _scenarioContext;
 
@@ -228,7 +228,9 @@ namespace blendnet.crm.retailer.api.bdd.Steps
             {
                 retailer.Hubs = new List<HubDto>();
 
-                HubDto hub = GetHubDto();
+                string email = $"{Guid.NewGuid().ToString()}@hotmail.com";
+
+                HubDto hub = GetHubDto(email);
 
                 retailer.Hubs.Add(hub);
             }
@@ -236,11 +238,11 @@ namespace blendnet.crm.retailer.api.bdd.Steps
             return retailer;
         }
 
-        private HubDto GetHubDto()
+        private HubDto GetHubDto(string email)
         {
             HubDto hub = new HubDto()
             {
-                Name = "SKML_Store-1",
+                Name = email,
                 Address = new AddressDto
                 {
                     City = "Bengaleru",
@@ -252,6 +254,114 @@ namespace blendnet.crm.retailer.api.bdd.Steps
             };
 
             return hub;
+        }
+
+
+        [When(@"I submit the request to create hub")]
+        public async Task WhenISubmitTheRequestToCreateHub()
+        {
+            HttpClientResponse<string> response = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_RESPONSE_DATA);
+
+            string retailerId = response.Data;
+
+            string url = $"{_apiBaseUrl}Retailer/{retailerId}/Hubs";
+
+            string email = $"{Guid.NewGuid().ToString()}@hotmail.com";
+
+            HubDto hubRequest = GetHubDto(email);
+
+            _scenarioContext.Set<HubDto>(hubRequest, ScenarioContenxtKeys.CREATE_HUB_REQUEST_DATA);
+
+            HttpClientResponse<string> createAdministratorResponse = await _httpClientDriver.Post<HubDto, string>(url, hubRequest);
+
+            _scenarioContext.Set<HttpClientResponse<string>>(createAdministratorResponse, ScenarioContenxtKeys.CREATE_HUB_RESPONSE_DATA);
+        }
+
+        [Then(@"create hub response should recieve nocontent")]
+        public void ThenCreateHubResponseShouldRecieveNoContent()
+        {
+            HubDto createHubRequest = _scenarioContext.Get<HubDto>(ScenarioContenxtKeys.CREATE_HUB_REQUEST_DATA);
+
+            HttpClientResponse<string> createdHubResponse = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.CREATE_HUB_RESPONSE_DATA);
+
+            HttpClientResponse<RetailerDto> readResponse = _scenarioContext.Get<HttpClientResponse<RetailerDto>>(ScenarioContenxtKeys.READ_RESPONSE_DATA);
+
+            Assert.Equal(createdHubResponse.RawMessage.StatusCode.ToString(), HttpStatusCode.NoContent.ToString());
+
+            Assert.NotNull(readResponse.Data.Hubs);
+
+            Assert.NotNull(readResponse.Data);
+
+            Assert.True(readResponse.Data.Hubs.Count > 0);
+
+            HubDto foundHub = readResponse.Data.Hubs.Where(ca => ca.Name == createHubRequest.Name).FirstOrDefault();
+
+            Assert.NotNull(foundHub);
+        }
+
+        [When(@"I submit the request to update hub (.*)")]
+        public async Task WhenISubmitTheRequestToUpdateHub(string actionToPerform)
+        {
+            HubDto hubRequest = _scenarioContext.Get<HubDto>(ScenarioContenxtKeys.CREATE_HUB_REQUEST_DATA);
+
+            HttpClientResponse<RetailerDto> readResponse = _scenarioContext.Get<HttpClientResponse<RetailerDto>>(ScenarioContenxtKeys.READ_RESPONSE_DATA);
+
+            HubDto createdHub = readResponse.Data.Hubs.Where(ca => ca.Name == hubRequest.Name).FirstOrDefault();
+
+            createdHub.Name = Guid.NewGuid().ToString();
+
+            _scenarioContext.Set<HubDto>(createdHub, ScenarioContenxtKeys.UPDATE_HUB_REQUEST_DATA);
+
+            string url = string.Empty;
+
+            if (actionToPerform.Equals("name"))
+            {
+                url = $"{_apiBaseUrl}Retailer/{readResponse.Data.Id}/Hubs/{createdHub.Id}";
+            }
+            else if (actionToPerform.Equals("activation"))
+            {
+                url = $"{_apiBaseUrl}Retailer/{readResponse.Data.Id}/Hubs/{createdHub.Id}/activate";
+            }
+            else if (actionToPerform.Equals("deactivation"))
+            {
+                url = $"{_apiBaseUrl}Retailer/{readResponse.Data.Id}/Hubs/{createdHub.Id}/deactivate";
+            }
+
+            HttpClientResponse<string> updatedResponse = await _httpClientDriver.Post<HubDto, string>(url, createdHub);
+
+            _scenarioContext.Set<HttpClientResponse<string>>(updatedResponse, ScenarioContenxtKeys.UPDATE_HUB_RESPONSE_DATA);
+
+        }
+
+        [Then(@"update hub response should receive nocontent and updated (.*) value")]
+        public void ThenUpdateHubResponseShouldReceiveNocontentAndUpdatedValue(string actionValue)
+        {
+            HubDto updateHubRequest = _scenarioContext.Get<HubDto>(ScenarioContenxtKeys.UPDATE_HUB_REQUEST_DATA);
+
+            HttpClientResponse<string> updateResponse = _scenarioContext.Get<HttpClientResponse<string>>(ScenarioContenxtKeys.UPDATE_HUB_RESPONSE_DATA);
+
+            HttpClientResponse<RetailerDto> updateReadResponse = _scenarioContext.Get<HttpClientResponse<RetailerDto>>(ScenarioContenxtKeys.READ_RESPONSE_DATA);
+
+            HubDto updatedHub =  updateReadResponse.Data.Hubs.Where(ca => ca.Id == updateHubRequest.Id).FirstOrDefault();
+
+            Assert.Equal(updateResponse.RawMessage.StatusCode.ToString(), HttpStatusCode.NoContent.ToString());
+            Assert.NotNull(updateReadResponse.Data);
+            Assert.NotNull(updatedHub);
+
+            if (actionValue.Equals("name"))
+            {
+                Assert.Equal(updatedHub.Address.Pin,updateHubRequest.Address.Pin);
+            }
+            else if (actionValue.Equals("activated"))
+            {
+                Assert.True(updatedHub.IsActive);
+                Assert.NotNull(updatedHub.ActivationDate);
+            }
+            else if (actionValue.Equals("deactivated"))
+            {
+                Assert.False(updatedHub.IsActive);
+                Assert.NotNull(updatedHub.DeactivationDate);
+            }
         }
         #endregion
 
