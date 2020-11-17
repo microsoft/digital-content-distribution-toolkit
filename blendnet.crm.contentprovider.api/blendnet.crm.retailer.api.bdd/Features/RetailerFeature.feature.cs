@@ -506,7 +506,7 @@ this.ScenarioInitialize(scenarioInfo);
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("present", present);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Activate hub", null, tagsOfScenario, argumentsOfScenario);
-#line 108
+#line 94
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -526,28 +526,28 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 109
+#line 95
   testRunner.Given(string.Format("hub is \"{0}\" in the given data to create", present), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 110
+#line 96
   testRunner.When("I submit the request to create", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 111
+#line 97
   testRunner.And("I submit the request to create hub", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 112
+#line 98
   testRunner.And("I submit the request to read content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 113
+#line 99
   testRunner.And("I submit the request to update hub activation", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 114
+#line 100
   testRunner.And("I submit the request to read content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 115
+#line 101
   testRunner.Then("update hub response should receive nocontent and updated activated value", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 116
+#line 102
   testRunner.And("I should delete the created record", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -572,7 +572,7 @@ this.ScenarioInitialize(scenarioInfo);
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("present", present);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("DeActivate hub", null, tagsOfScenario, argumentsOfScenario);
-#line 123
+#line 109
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -592,28 +592,28 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 124
+#line 110
   testRunner.Given(string.Format("hub is \"{0}\" in the given data to create", present), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 125
+#line 111
   testRunner.When("I submit the request to create", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 126
+#line 112
   testRunner.And("I submit the request to create hub", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 127
+#line 113
   testRunner.And("I submit the request to read content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 128
+#line 114
   testRunner.And("I submit the request to update hub deactivation", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 129
+#line 115
   testRunner.And("I submit the request to read content", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 130
+#line 116
   testRunner.Then("update hub response should receive nocontent and updated deactivated value", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 131
+#line 117
   testRunner.And("I should delete the created record", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

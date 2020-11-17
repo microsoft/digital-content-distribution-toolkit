@@ -1,117 +1,117 @@
-﻿using blendnet.crm.common.dto;
-using blendnet.crm.contentprovider.api.Model;
-using blendnet.crm.contentprovider.api.Repository.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿//using blendnet.crm.common.dto;
+//using blendnet.crm.contentprovider.api.Model;
+//using blendnet.crm.contentprovider.api.Repository.Interfaces;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.Extensions.Logging;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
 
-namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
-{
-    /// <summary>
-    /// Repository implementation
-    /// </summary>
-    public class ContentProviderRepository : IContentProviderRepository
-    {
-        private BlendNetContext _blendNetContext;
+//namespace blendnet.crm.contentprovider.api.Repository.CosmosRepository
+//{
+//    /// <summary>
+//    /// Repository implementation
+//    /// </summary>
+//    public class ContentProviderRepository : IContentProviderRepository
+//    {
+//        private BlendNetContext _blendNetContext;
 
-        private readonly ILogger _logger;
+//        private readonly ILogger _logger;
 
-        public ContentProviderRepository(BlendNetContext blendNetContext, ILogger<ContentProviderRepository> logger)
-        {
-            _blendNetContext = blendNetContext;
+//        public ContentProviderRepository(BlendNetContext blendNetContext, ILogger<ContentProviderRepository> logger)
+//        {
+//            _blendNetContext = blendNetContext;
 
-            _logger = logger;
-        }
+//            _logger = logger;
+//        }
 
-        #region Content Provider Methods
-        /// <summary>
-        /// Creates the content provider
-        /// </summary>
-        /// <param name="contentProvider"></param>
-        /// <returns></returns>
-        public async Task<Guid> CreateContentProvider(ContentProviderDto contentProvider)
-        {
-            contentProvider.ResetIdentifiers();
+//        #region Content Provider Methods
+//        /// <summary>
+//        /// Creates the content provider
+//        /// </summary>
+//        /// <param name="contentProvider"></param>
+//        /// <returns></returns>
+//        public async Task<Guid> CreateContentProvider(ContentProviderDto contentProvider)
+//        {
+//            contentProvider.ResetIdentifiers();
 
-            _blendNetContext.ContentProviders.Add(contentProvider);
+//            _blendNetContext.ContentProviders.Add(contentProvider);
 
-            await _blendNetContext.SaveChangesAsync();
+//            await _blendNetContext.SaveChangesAsync();
 
-            return contentProvider.Id.Value;
-        }
+//            return contentProvider.Id.Value;
+//        }
 
-        /// <summary>
-        /// Get the content provider by Id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<ContentProviderDto> GetContentProviderById(Guid id)
-        {
-            return _blendNetContext.ContentProviders.Where(cp => cp.Id == id).AsNoTracking().FirstOrDefault();
-        }
+//        /// <summary>
+//        /// Get the content provider by Id
+//        /// </summary>
+//        /// <param name="id"></param>
+//        /// <returns></returns>
+//        public async Task<ContentProviderDto> GetContentProviderById(Guid id)
+//        {
+//            return _blendNetContext.ContentProviders.Where(cp => cp.Id == id).AsNoTracking().FirstOrDefault();
+//        }
 
-        /// <summary>
-        /// Return the content providers
-        /// </summary>
-        /// <returns></returns>
-        public async Task<List<ContentProviderDto>> GetContentProviders()
-        {
-            return await _blendNetContext.ContentProviders.ToListAsync();
-        }
+//        /// <summary>
+//        /// Return the content providers
+//        /// </summary>
+//        /// <returns></returns>
+//        public async Task<List<ContentProviderDto>> GetContentProviders()
+//        {
+//            return await _blendNetContext.ContentProviders.ToListAsync();
+//        }
 
-        /// <summary>
-        /// Updates Content Provider
-        /// </summary>
-        /// <param name="updatedContentProvider"></param>
-        /// <returns></returns>
-        public async Task<int> UpdateContentProvider(ContentProviderDto updatedContentProvider)
-        {
-            int recordsAffected = 0;
+//        /// <summary>
+//        /// Updates Content Provider
+//        /// </summary>
+//        /// <param name="updatedContentProvider"></param>
+//        /// <returns></returns>
+//        public async Task<int> UpdateContentProvider(ContentProviderDto updatedContentProvider)
+//        {
+//            int recordsAffected = 0;
 
-            ContentProviderDto existingProvider = await GetContentProviderById(updatedContentProvider.Id.Value);
+//            ContentProviderDto existingProvider = await GetContentProviderById(updatedContentProvider.Id.Value);
 
-            if (existingProvider != default(ContentProviderDto))
-            {
-                var updatedContentProviderEntry = _blendNetContext.Add(updatedContentProvider);
+//            if (existingProvider != default(ContentProviderDto))
+//            {
+//                var updatedContentProviderEntry = _blendNetContext.Add(updatedContentProvider);
 
-                updatedContentProviderEntry.State = EntityState.Unchanged;
+//                updatedContentProviderEntry.State = EntityState.Unchanged;
 
-                _blendNetContext.ContentProviders.Update(updatedContentProvider);
+//                _blendNetContext.ContentProviders.Update(updatedContentProvider);
 
-                recordsAffected = await _blendNetContext.SaveChangesAsync();
-            }
+//                recordsAffected = await _blendNetContext.SaveChangesAsync();
+//            }
             
-            return recordsAffected;
-        }
+//            return recordsAffected;
+//        }
 
-        /// <summary>
-        /// Deletes Content Provider
-        /// </summary>
-        /// <param name="contentProviderId"></param>
-        /// <returns></returns>
-        public async Task<int> DeleteContentProvider(Guid contentProviderId)
-        {
-            int recordsAffected = 0;
+//        /// <summary>
+//        /// Deletes Content Provider
+//        /// </summary>
+//        /// <param name="contentProviderId"></param>
+//        /// <returns></returns>
+//        public async Task<int> DeleteContentProvider(Guid contentProviderId)
+//        {
+//            int recordsAffected = 0;
 
-            ContentProviderDto existingProvider = await GetContentProviderById(contentProviderId);
+//            ContentProviderDto existingProvider = await GetContentProviderById(contentProviderId);
 
-            if (existingProvider != default(ContentProviderDto))
-            {
-                var deleteContentProviderEntry = _blendNetContext.Add(existingProvider);
+//            if (existingProvider != default(ContentProviderDto))
+//            {
+//                var deleteContentProviderEntry = _blendNetContext.Add(existingProvider);
 
-                deleteContentProviderEntry.State = EntityState.Unchanged;
+//                deleteContentProviderEntry.State = EntityState.Unchanged;
 
-                _blendNetContext.ContentProviders.Remove(existingProvider);
+//                _blendNetContext.ContentProviders.Remove(existingProvider);
 
-                recordsAffected = await _blendNetContext.SaveChangesAsync();
-            }
+//                recordsAffected = await _blendNetContext.SaveChangesAsync();
+//            }
 
-            return recordsAffected;
-        }
+//            return recordsAffected;
+//        }
 
-        #endregion
-    }
-}
+//        #endregion
+//    }
+//}

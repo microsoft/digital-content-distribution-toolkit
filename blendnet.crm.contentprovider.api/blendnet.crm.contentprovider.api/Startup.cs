@@ -1,6 +1,3 @@
-using blendnet.crm.contentprovider.api.Repository;
-using blendnet.crm.contentprovider.api.Repository.CosmosRepository;
-using blendnet.crm.contentprovider.api.Repository.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,6 +18,9 @@ using blendnet.crm.common.api;
 using blendnet.crm.common.dto.Identity;
 using blendnet.crm.contentprovider.api.IntegrationEventHandling;
 using blendnet.crm.common.api.ServiceBus;
+using blendnet.crm.contentprovider.repository.Interfaces;
+using blendnet.crm.contentprovider.repository.CosmosRepository;
+using blendnet.crm.contentprovider.repository;
 
 namespace blendnet.crm.contentprovider.api
 {
