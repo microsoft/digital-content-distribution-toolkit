@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using blendnet.common.dto.Events;
 
 namespace blendnet.crm.contentprovider.api.IntegrationEventHandling
 {

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using blendnet.common.dto;
+using blendnet.common.dto.Events;
+using blendnet.common.infrastructure;
 using blendnet.crm.contentprovider.api.Model;
 using blendnet.crm.contentprovider.repository.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -24,13 +26,19 @@ namespace blendnet.crm.contentprovider.api.Controllers
     {
         private readonly ILogger _logger;
 
+        private IEventBus _eventBus;
+
         private IContentProviderRepository _contentProviderRepository;
 
-        public ContentProvidersController(IContentProviderRepository contentProviderRepository, ILogger<ContentProvidersController> logger)
+        public ContentProvidersController(  IContentProviderRepository contentProviderRepository, 
+                                            ILogger<ContentProvidersController> logger,
+                                            IEventBus eventBus)
         {
             _contentProviderRepository = contentProviderRepository;
             
             _logger = logger;
+
+            _eventBus = eventBus;
         }
 
         #region Content Providers Methods
@@ -77,7 +85,15 @@ namespace blendnet.crm.contentprovider.api.Controllers
         public async Task<ActionResult<string>> CreateContentProvider(ContentProviderDto contentProvider)
         {
             var contentProviderId = await _contentProviderRepository.CreateContentProvider(contentProvider);
-            
+
+            //publish the event
+            ContentProviderCreatedIntegrationEvent contentProviderCreatedIntegrationEvent = new ContentProviderCreatedIntegrationEvent()
+            {
+                ContentProviderId = contentProviderId.ToString()
+            };
+
+            await _eventBus.Publish(contentProviderCreatedIntegrationEvent);
+
             return CreatedAtAction( nameof(GetContentProvider), 
                                     new { contentProviderId = contentProviderId, Version = ApiVersion.Default.MajorVersion.ToString() },
                                     contentProviderId.ToString());

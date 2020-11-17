@@ -1,0 +1,49 @@
+2020-11-17T17:19:01.1212802+05:30 [INF] blendnet.cms.listener// Worker running at: 11/17/2020 17:19:01 +05:30
+2020-11-17T17:19:06.1748245+05:30 [INF] blendnet.cms.listener// Worker running at: 11/17/2020 17:19:06 +05:30
+2020-11-17T18:07:52.3862491+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-17T18:08:01.7623617+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-17T18:08:03.5919666+05:30 [ERR] blendnet.cms.listener// The messaging entity 'blendnethk:Topic:blendnet_servicebus|cmsservice' could not be found. To know more visit https://aka.ms/sbResourceMgrExceptions.  TrackingId:3d98274a-73fd-4c85-a258-f758a6012483_B10, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-11-17T12:38:00 TrackingId:da94c28111c44585b022dccb9d11ce8c_G8, SystemTracker:gateway7, Timestamp:2020-11-17T12:38:00
+Microsoft.Azure.ServiceBus.MessagingEntityNotFoundException: The messaging entity 'blendnethk:Topic:blendnet_servicebus|cmsservice' could not be found. To know more visit https://aka.ms/sbResourceMgrExceptions.  TrackingId:3d98274a-73fd-4c85-a258-f758a6012483_B10, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-11-17T12:38:00 TrackingId:da94c28111c44585b022dccb9d11ce8c_G8, SystemTracker:gateway7, Timestamp:2020-11-17T12:38:00
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.OnReceiveAsync(Int32 maxMessageCount, TimeSpan serverWaitTime)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.<>c__DisplayClass65_0.<<ReceiveAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(Int32 maxMessageCount, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.<MessagePumpTaskAsync>b__12_0()
+2020-11-17T18:08:10.2627929+05:30 [ERR] blendnet.cms.listener// Action : Receive |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-11-17T18:09:05.0972479+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-17T18:09:18.4320548+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-17T18:09:32.8756591+05:30 [ERR] blendnet.cms.listener// The messaging entity 'blendnethk:Topic:blendnet_servicebus|cmsservice' could not be found. To know more visit https://aka.ms/sbResourceMgrExceptions.  TrackingId:3d98274a-73fd-4c85-a258-f758a6012483_B10, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-11-17T12:39:13 TrackingId:373a619e04c54ec7ae9a06b49e412868_G26, SystemTracker:gateway7, Timestamp:2020-11-17T12:39:13
+Microsoft.Azure.ServiceBus.MessagingEntityNotFoundException: The messaging entity 'blendnethk:Topic:blendnet_servicebus|cmsservice' could not be found. To know more visit https://aka.ms/sbResourceMgrExceptions.  TrackingId:3d98274a-73fd-4c85-a258-f758a6012483_B10, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-11-17T12:39:13 TrackingId:373a619e04c54ec7ae9a06b49e412868_G26, SystemTracker:gateway7, Timestamp:2020-11-17T12:39:13
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.OnReceiveAsync(Int32 maxMessageCount, TimeSpan serverWaitTime)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.<>c__DisplayClass65_0.<<ReceiveAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(Int32 maxMessageCount, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.<MessagePumpTaskAsync>b__12_0()
+2020-11-17T18:09:59.2421220+05:30 [ERR] blendnet.cms.listener// Action : Receive |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-11-17T18:10:56.2542291+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-17T18:11:01.3552197+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-17T18:11:25.1985027+05:30 [ERR] blendnet.cms.listener// The messaging entity 'blendnethk:Topic:blendnet_servicebus|cmsservice' could not be found. To know more visit https://aka.ms/sbResourceMgrExceptions.  TrackingId:3d98274a-73fd-4c85-a258-f758a6012483_B10, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-11-17T12:41:10 TrackingId:89d4704a65154673858056928dca0d09_G19, SystemTracker:gateway7, Timestamp:2020-11-17T12:41:10
+Microsoft.Azure.ServiceBus.MessagingEntityNotFoundException: The messaging entity 'blendnethk:Topic:blendnet_servicebus|cmsservice' could not be found. To know more visit https://aka.ms/sbResourceMgrExceptions.  TrackingId:3d98274a-73fd-4c85-a258-f758a6012483_B10, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-11-17T12:41:10 TrackingId:89d4704a65154673858056928dca0d09_G19, SystemTracker:gateway7, Timestamp:2020-11-17T12:41:10
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.OnReceiveAsync(Int32 maxMessageCount, TimeSpan serverWaitTime)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.<>c__DisplayClass65_0.<<ReceiveAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(Int32 maxMessageCount, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.<MessagePumpTaskAsync>b__12_0()
+2020-11-17T18:11:49.5501589+05:30 [ERR] blendnet.cms.listener// Action : Receive |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-11-17T18:13:38.9871770+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-17T18:20:58.7298271+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-17T18:20:58.7852517+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-17T18:20:59.0652299+05:30 [INF] blendnet.cms.listener// Stopping Eventlistner of blendnet.cms.listener
+2020-11-17T18:21:59.6267675+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-17T18:22:07.2448747+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-17T18:24:53.2944591+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-17T18:24:55.1266423+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener

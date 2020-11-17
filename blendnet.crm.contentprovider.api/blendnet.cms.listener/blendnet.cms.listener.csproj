@@ -6,11 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.8" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.16.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\blendnet.cms.repository\blendnet.cms.repository.csproj" />
+    <ProjectReference Include="..\blendnet.crm.common.api\blendnet.common.infrastructure.csproj" />
     <ProjectReference Include="..\blendnet.crm.common.dto\blendnet.common.dto.csproj" />
   </ItemGroup>
 </Project>

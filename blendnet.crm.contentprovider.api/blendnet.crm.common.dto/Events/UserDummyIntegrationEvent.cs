@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace blendnet.common.dto.Identity
+namespace blendnet.common.dto.Events
 {
     public class UserDummyIntegrationEvent:IntegrationEvent
     {

@@ -21,6 +21,7 @@ using blendnet.common.infrastructure.ServiceBus;
 using blendnet.crm.contentprovider.repository.Interfaces;
 using blendnet.crm.contentprovider.repository.CosmosRepository;
 using blendnet.crm.contentprovider.repository;
+using blendnet.common.dto.Events;
 
 namespace blendnet.crm.contentprovider.api
 {
@@ -157,11 +158,11 @@ namespace blendnet.crm.contentprovider.api
                 blendNetContext.Database.EnsureCreated();
 
                 //Subcribe for user changed events
-                IEventBus eventBus =  serviceScope.ServiceProvider.GetService<IEventBus>();
+                //IEventBus eventBus =  serviceScope.ServiceProvider.GetService<IEventBus>();
 
-                eventBus.Subscribe<UserChangedIntegrationEvent, UserChangedIntegrationEventHandler>();
+                //eventBus.Subscribe<UserChangedIntegrationEvent, UserChangedIntegrationEventHandler>();
 
-                eventBus.Subscribe<UserDummyIntegrationEvent, UserDummyIntegrationEventHandler>();
+                //eventBus.Subscribe<UserDummyIntegrationEvent, UserDummyIntegrationEventHandler>();
             };
         }
 
@@ -190,18 +191,18 @@ namespace blendnet.crm.contentprovider.api
                 eventBusConnectionData.TopicName = serviceBusTopicName;
 
                 //set this only if you want to consume.
-                eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
+                //eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
 
-                eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
+                //eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
 
                 return eventBusConnectionData;
             });
 
             services.AddSingleton<IEventBus, EventServiceBus>();
 
-            services.AddTransient<UserChangedIntegrationEventHandler>();
+            //services.AddTransient<UserChangedIntegrationEventHandler>();
 
-            services.AddTransient<UserDummyIntegrationEventHandler>();
+            //services.AddTransient<UserDummyIntegrationEventHandler>();
 
         }
     }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using blendnet.crm.user.api.Repository.Interfaces;
+using blendnet.common.dto.Events;
 
 namespace blendnet.crm.user.api.Controllers
 {
