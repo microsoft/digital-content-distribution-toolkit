@@ -1,6 +1,3 @@
-using blendnet.crm.retailer.api.Repository;
-using blendnet.crm.retailer.api.Repository.CosmosRepository;
-using blendnet.crm.retailer.api.Repository.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +13,9 @@ using System;
 using Serilog;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using blendnet.crm.retailer.repository;
+using blendnet.crm.retailer.repository.Interfaces;
+using blendnet.crm.retailer.repository.CosmosRepository;
 
 namespace blendnet.crm.retailer.api
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using blendnet.crm.common.dto;
-using blendnet.crm.retailer.api.Repository.Interfaces;
+using blendnet.crm.retailer.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.common.api", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.crm.contentprovider.repository", "blendnet.crm.contentprovider.repository\blendnet.crm.contentprovider.repository.csproj", "{BBB6CA27-73F8-416B-924A-E059246CDCB5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.crm.retailer.repository", "blendnet.crm.retailer.repository\blendnet.crm.retailer.repository.csproj", "{09093838-BB1D-472E-9064-ACD0E1430FFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{BBB6CA27-73F8-416B-924A-E059246CDCB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBB6CA27-73F8-416B-924A-E059246CDCB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBB6CA27-73F8-416B-924A-E059246CDCB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09093838-BB1D-472E-9064-ACD0E1430FFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09093838-BB1D-472E-9064-ACD0E1430FFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09093838-BB1D-472E-9064-ACD0E1430FFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09093838-BB1D-472E-9064-ACD0E1430FFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

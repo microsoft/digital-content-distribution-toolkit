@@ -1,86 +1,87 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using blendnet.crm.common.dto;
-using blendnet.crm.retailer.api.Repository.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
+//using blendnet.crm.common.dto;
+//using blendnet.crm.retailer.repository;
+//using blendnet.crm.retailer.repository.Interfaces;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.Extensions.Logging;
 
-namespace blendnet.crm.retailer.api.Repository.CosmosRepository
-{
-    public class RetailerRepository : IRetailerRepository
-    {
-        private BlendNetContext _blendNetContext;
+//namespace blendnet.crm.retailer.api.Repository.CosmosRepository
+//{
+//    public class RetailerRepository : IRetailerRepository
+//    {
+//        private BlendNetContext _blendNetContext;
 
-        private readonly ILogger _logger;
+//        private readonly ILogger _logger;
         
-        public RetailerRepository(BlendNetContext blendNetContext, ILogger<RetailerRepository> logger)
-        {
-            _blendNetContext = blendNetContext;
+//        public RetailerRepository(BlendNetContext blendNetContext, ILogger<RetailerRepository> logger)
+//        {
+//            _blendNetContext = blendNetContext;
 
-            _logger = logger;
-        }
+//            _logger = logger;
+//        }
 
-        public async Task<Guid> CreateRetailer(RetailerDto retailer)
-        {
-            retailer.ResetIdentifiers();
+//        public async Task<Guid> CreateRetailer(RetailerDto retailer)
+//        {
+//            retailer.ResetIdentifiers();
 
-            _blendNetContext.Retailers.Add(retailer);
+//            _blendNetContext.Retailers.Add(retailer);
 
-            await _blendNetContext.SaveChangesAsync();
+//            await _blendNetContext.SaveChangesAsync();
 
-            return retailer.Id.Value;
-        }
+//            return retailer.Id.Value;
+//        }
 
-        public async Task<int> DeleteRetailer(Guid retailerId)
-        {
-            int recordsAffected = 0;
+//        public async Task<int> DeleteRetailer(Guid retailerId)
+//        {
+//            int recordsAffected = 0;
 
-            RetailerDto existingRetailer = await GetRetailerById(retailerId);
+//            RetailerDto existingRetailer = await GetRetailerById(retailerId);
 
-            if (existingRetailer != default(RetailerDto))
-            {
-                var deleteRetailerEntry = _blendNetContext.Add(existingRetailer);
+//            if (existingRetailer != default(RetailerDto))
+//            {
+//                var deleteRetailerEntry = _blendNetContext.Add(existingRetailer);
 
-                deleteRetailerEntry.State = EntityState.Unchanged;
+//                deleteRetailerEntry.State = EntityState.Unchanged;
 
-                _blendNetContext.Retailers.Remove(existingRetailer);
+//                _blendNetContext.Retailers.Remove(existingRetailer);
 
-                recordsAffected = await _blendNetContext.SaveChangesAsync();
-            }
+//                recordsAffected = await _blendNetContext.SaveChangesAsync();
+//            }
 
-            return recordsAffected;
-        }
+//            return recordsAffected;
+//        }
 
-        public async Task<RetailerDto> GetRetailerById(Guid id)
-        {
-            return _blendNetContext.Retailers.Where(r => r.Id == id).AsNoTracking().FirstOrDefault();
-        }
+//        public async Task<RetailerDto> GetRetailerById(Guid id)
+//        {
+//            return _blendNetContext.Retailers.Where(r => r.Id == id).AsNoTracking().FirstOrDefault();
+//        }
 
-        public async Task<List<RetailerDto>> GetRetailers()
-        {
-            return await _blendNetContext.Retailers.ToListAsync();
-        }
+//        public async Task<List<RetailerDto>> GetRetailers()
+//        {
+//            return await _blendNetContext.Retailers.ToListAsync();
+//        }
 
-        public async Task<int> UpdateRetailer(RetailerDto updatedRetailer)
-        {
-            int recordsAffected = 0;
+//        public async Task<int> UpdateRetailer(RetailerDto updatedRetailer)
+//        {
+//            int recordsAffected = 0;
 
-            RetailerDto existingRetailer = await GetRetailerById(updatedRetailer.Id.Value);
+//            RetailerDto existingRetailer = await GetRetailerById(updatedRetailer.Id.Value);
 
-            if (existingRetailer != default(RetailerDto))
-            {
-                var updatedRetailerEntry = _blendNetContext.Add(updatedRetailer);
+//            if (existingRetailer != default(RetailerDto))
+//            {
+//                var updatedRetailerEntry = _blendNetContext.Add(updatedRetailer);
 
-                updatedRetailerEntry.State = EntityState.Unchanged;
+//                updatedRetailerEntry.State = EntityState.Unchanged;
 
-                _blendNetContext.Retailers.Update(updatedRetailer);
+//                _blendNetContext.Retailers.Update(updatedRetailer);
 
-                recordsAffected = await _blendNetContext.SaveChangesAsync();
-            }
+//                recordsAffected = await _blendNetContext.SaveChangesAsync();
+//            }
             
-            return recordsAffected;
-        }
-    }
-}
+//            return recordsAffected;
+//        }
+//    }
+//}
