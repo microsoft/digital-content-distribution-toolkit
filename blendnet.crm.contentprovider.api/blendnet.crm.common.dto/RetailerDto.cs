@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace blendnet.crm.common.dto{
+namespace blendnet.common.dto{
     public class RetailerDto :PersonDto
     {
         public List<HubDto> Hubs { get; set; }

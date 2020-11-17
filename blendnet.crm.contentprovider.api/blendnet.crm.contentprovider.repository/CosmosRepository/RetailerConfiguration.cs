@@ -1,4 +1,4 @@
-﻿using blendnet.crm.common.dto;
+﻿using blendnet.common.dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

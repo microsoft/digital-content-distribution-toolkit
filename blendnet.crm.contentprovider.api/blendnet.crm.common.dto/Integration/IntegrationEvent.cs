@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace blendnet.crm.common.dto.Integration
+namespace blendnet.common.dto.Integration
 {
     /// <summary>
     /// Base Class for all the integration Events

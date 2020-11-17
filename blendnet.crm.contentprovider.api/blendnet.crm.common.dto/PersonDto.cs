@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace blendnet.crm.common.dto
+namespace blendnet.common.dto
 {
     /// <summary>
     /// Person DTO.

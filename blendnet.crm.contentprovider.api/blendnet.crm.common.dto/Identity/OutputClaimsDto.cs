@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace blendnet.crm.common.dto.Identity
+namespace blendnet.common.dto.Identity
 {
     public class OutputClaimsDto
     {

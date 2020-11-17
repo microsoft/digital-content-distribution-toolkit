@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace blendnet.crm.common.api.ServiceBus
+namespace blendnet.common.infrastructure.ServiceBus
 {
     /// <summary>
     /// Connection Details for Service Bus

@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace blendnet.crm.common.dto{
+namespace blendnet.common.dto
+{
     public class ContentProviderDto
     {
         public Guid? Id { get; set; }

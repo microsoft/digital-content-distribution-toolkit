@@ -1,10 +1,10 @@
-﻿using blendnet.crm.common.dto.Integration;
+﻿using blendnet.common.dto.Integration;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blendnet.crm.common.api
+namespace blendnet.common.infrastructure
 {
     /// <summary>
     /// To be implemented by the event handlers

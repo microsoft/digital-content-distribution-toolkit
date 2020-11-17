@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\blendnet.crm.common.api\blendnet.crm.common.api.csproj" />
-    <ProjectReference Include="..\blendnet.crm.common.dto\blendnet.crm.common.dto.csproj" />
+    <ProjectReference Include="..\blendnet.crm.common.api\blendnet.common.infrastructure.csproj" />
+    <ProjectReference Include="..\blendnet.crm.common.dto\blendnet.common.dto.csproj" />
     <ProjectReference Include="..\blendnet.crm.contentprovider.repository\blendnet.crm.contentprovider.repository.csproj" />
   </ItemGroup>
 

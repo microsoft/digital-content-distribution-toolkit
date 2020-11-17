@@ -4,13 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using blendnet.crm.common.api;
-using blendnet.crm.common.dto;
-using blendnet.crm.common.dto.Identity;
-using blendnet.crm.user.api.Repository.Interfaces;
+using blendnet.common.infrastructure;
+using blendnet.common.dto;
+using blendnet.common.dto.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using blendnet.crm.user.api.Repository.Interfaces;
 
 namespace blendnet.crm.user.api.Controllers
 {

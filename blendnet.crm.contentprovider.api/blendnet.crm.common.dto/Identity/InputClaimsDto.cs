@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace blendnet.crm.common.dto.Identity
+namespace blendnet.common.dto.Identity
 {
     public class InputClaimsDto
     {

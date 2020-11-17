@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\blendnet.crm.common.dto\blendnet.crm.common.dto.csproj" />
+    <ProjectReference Include="..\blendnet.crm.common.dto\blendnet.common.dto.csproj" />
   </ItemGroup>
 
 </Project>

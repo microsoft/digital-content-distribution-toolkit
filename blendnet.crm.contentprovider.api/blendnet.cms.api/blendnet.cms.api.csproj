@@ -1,9 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.16.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.2.0" />
@@ -16,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\blendnet.crm.common.api\blendnet.common.infrastructure.csproj" />
     <ProjectReference Include="..\blendnet.crm.common.dto\blendnet.common.dto.csproj" />
-    <ProjectReference Include="..\blendnet.crm.retailer.repository\blendnet.crm.retailer.repository.csproj" />
+    <ProjectReference Include="..\blendnet.cms.repository\blendnet.cms.repository.csproj" />
   </ItemGroup>
-
 
 </Project>

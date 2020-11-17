@@ -1,4 +1,4 @@
-﻿using blendnet.crm.common.dto;
+﻿using blendnet.common.dto;
 using blendnet.crm.retailer.repository.CosmosRepository;
 using Microsoft.EntityFrameworkCore;
 using System;

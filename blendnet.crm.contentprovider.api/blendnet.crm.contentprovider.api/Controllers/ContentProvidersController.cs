@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using blendnet.crm.common.dto;
+using blendnet.common.dto;
 using blendnet.crm.contentprovider.api.Model;
 using blendnet.crm.contentprovider.repository.Interfaces;
 using Microsoft.AspNetCore.Http;

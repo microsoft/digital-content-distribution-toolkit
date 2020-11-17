@@ -8,8 +8,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="5.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\blendnet.crm.common.dto\blendnet.common.dto.csproj" />
-  </ItemGroup>
-
 </Project>

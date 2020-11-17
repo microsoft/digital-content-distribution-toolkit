@@ -1,4 +1,4 @@
-﻿using blendnet.crm.common.dto;
+﻿using blendnet.common.dto;
 using blendnet.crm.contentprovider.api.bdd.Drivers;
 using System;
 using System.Collections.Generic;

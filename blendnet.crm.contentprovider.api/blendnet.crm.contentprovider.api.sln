@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.contentprovide
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.contentprovider.api.bdd", "blendnet.crm.contentprovider.api.bdd\blendnet.crm.contentprovider.api.bdd.csproj", "{6C0B47FE-356F-4AC3-A5B3-BACAE2AE0AE6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.common.dto", "blendnet.crm.common.dto\blendnet.crm.common.dto.csproj", "{679DF957-5786-4884-BA05-7F2110AF1824}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.common.dto", "blendnet.crm.common.dto\blendnet.common.dto.csproj", "{679DF957-5786-4884-BA05-7F2110AF1824}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.retailer.api.bdd", "blendnet.crm.retailer.api.bdd\blendnet.crm.retailer.api.bdd.csproj", "{84E7CA5F-B377-4368-B195-1AED1DFB01A4}"
 EndProject
@@ -15,11 +15,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.retailer.api",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.user.api", "blendnet.crm.user.api\blendnet.crm.user.api.csproj", "{DC2E39F5-A9D4-485C-8227-9D19242A7698}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.common.api", "blendnet.crm.common.api\blendnet.crm.common.api.csproj", "{33B426CC-E93B-4422-B062-737E72478A34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.common.infrastructure", "blendnet.crm.common.api\blendnet.common.infrastructure.csproj", "{33B426CC-E93B-4422-B062-737E72478A34}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.crm.contentprovider.repository", "blendnet.crm.contentprovider.repository\blendnet.crm.contentprovider.repository.csproj", "{BBB6CA27-73F8-416B-924A-E059246CDCB5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.crm.retailer.repository", "blendnet.crm.retailer.repository\blendnet.crm.retailer.repository.csproj", "{09093838-BB1D-472E-9064-ACD0E1430FFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.cms.api", "blendnet.cms.api\blendnet.cms.api.csproj", "{87B14389-34D6-4382-957E-2E2E76B302D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.cms.repository", "blendnet.cms.repository\blendnet.cms.repository.csproj", "{DEF5C327-C439-406C-BD56-0DEE18B08BB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.cms.listener", "blendnet.cms.listener\blendnet.cms.listener.csproj", "{8505EAA9-19A5-49D6-8611-B6ABF5084C94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +69,18 @@ Global
 		{09093838-BB1D-472E-9064-ACD0E1430FFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09093838-BB1D-472E-9064-ACD0E1430FFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09093838-BB1D-472E-9064-ACD0E1430FFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87B14389-34D6-4382-957E-2E2E76B302D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87B14389-34D6-4382-957E-2E2E76B302D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87B14389-34D6-4382-957E-2E2E76B302D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87B14389-34D6-4382-957E-2E2E76B302D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEF5C327-C439-406C-BD56-0DEE18B08BB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEF5C327-C439-406C-BD56-0DEE18B08BB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEF5C327-C439-406C-BD56-0DEE18B08BB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEF5C327-C439-406C-BD56-0DEE18B08BB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8505EAA9-19A5-49D6-8611-B6ABF5084C94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8505EAA9-19A5-49D6-8611-B6ABF5084C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8505EAA9-19A5-49D6-8611-B6ABF5084C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8505EAA9-19A5-49D6-8611-B6ABF5084C94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

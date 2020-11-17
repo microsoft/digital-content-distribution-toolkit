@@ -4,7 +4,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 
-namespace blendnet.crm.common.dto.Identity
+namespace blendnet.common.dto.Identity
 {
     public class B2CResponseDto
     {

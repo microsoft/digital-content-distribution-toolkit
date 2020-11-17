@@ -1,4 +1,4 @@
-﻿using blendnet.crm.common.dto;
+﻿using blendnet.common.dto;
 using System;
 using System.Collections.Generic;
 using System.Text;

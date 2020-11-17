@@ -2,7 +2,7 @@
 
 using System;
 
-namespace blendnet.crm.common.dto
+namespace blendnet.common.dto
 {
     public class HubDto
     {

@@ -1,4 +1,4 @@
-﻿using blendnet.crm.common.dto;
+﻿using blendnet.common.dto;
 using blendnet.crm.contentprovider.repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

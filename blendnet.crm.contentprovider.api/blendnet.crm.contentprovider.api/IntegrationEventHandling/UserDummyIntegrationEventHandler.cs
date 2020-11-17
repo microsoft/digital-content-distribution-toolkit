@@ -1,5 +1,5 @@
-﻿using blendnet.crm.common.api;
-using blendnet.crm.common.dto.Identity;
+﻿using blendnet.common.infrastructure;
+using blendnet.common.dto.Identity;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

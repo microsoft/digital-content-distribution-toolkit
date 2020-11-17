@@ -1,9 +1,9 @@
-﻿using blendnet.crm.common.dto.Integration;
+﻿using blendnet.common.dto.Integration;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace blendnet.crm.common.dto.Identity
+namespace blendnet.common.dto.Identity
 {
     public class UserChangedIntegrationEvent:IntegrationEvent
     {
