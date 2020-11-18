@@ -33,11 +33,6 @@ namespace blendnet.cms.listener
            .Enrich.FromLogContext()
            .CreateLogger();
 
-            //Log.Logger = new LoggerConfiguration()
-            //.MinimumLevel.Debug()
-            //.WriteTo.RollingFile("log.txt")
-            //.CreateLogger();
-
             CreateHostBuilder(args).Build().Run();
 
             Log.CloseAndFlush();
