@@ -89,7 +89,8 @@ namespace blendnet.crm.contentprovider.api.Controllers
             //publish the event
             ContentProviderCreatedIntegrationEvent contentProviderCreatedIntegrationEvent = new ContentProviderCreatedIntegrationEvent()
             {
-                ContentProviderId = contentProviderId.ToString()
+                ContentProviderId = contentProviderId.ToString(),
+                ContainerBaseName = "eroscms"
             };
 
             await _eventBus.Publish(contentProviderCreatedIntegrationEvent);

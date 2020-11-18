@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using blendnet.cms.listener.IntegrationEventHandling;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.ServiceBus;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using blendnet.cms.listener.Model;
 
 namespace blendnet.cms.listener
 {
@@ -40,10 +42,19 @@ namespace blendnet.cms.listener
                 {
                     logging.ClearProviders();
 
+                    logging.AddConsole();
+
+                    logging.AddDebug();
+
                     logging.AddSerilog();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    //Configure Application Settings
+                    services.Configure<AppSettings>(hostContext.Configuration);
+
+                    services.AddLogging();
+
                     services.AddHostedService<EventListener>();
 
                     services.AddApplicationInsightsTelemetryWorkerService();
@@ -85,7 +96,5 @@ namespace blendnet.cms.listener
 
             services.AddTransient<ContentProviderCreatedIntegrationEventHandler>();
         }
-
-        
     }
 }

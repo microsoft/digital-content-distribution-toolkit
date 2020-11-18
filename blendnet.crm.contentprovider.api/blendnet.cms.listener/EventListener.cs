@@ -1,6 +1,8 @@
 ﻿using blendnet.cms.listener.IntegrationEventHandling;
 using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,12 +21,13 @@ namespace blendnet.cms.listener
         private readonly ILogger<EventListener> _logger;
 
         private readonly IEventBus _eventBus;
-
+        
         public EventListener(ILogger<EventListener> logger, IEventBus eventBus)
         {
             _logger = logger;
 
             _eventBus = eventBus;
+
         }
 
         /// <summary>
@@ -37,6 +40,8 @@ namespace blendnet.cms.listener
             _logger.LogInformation("Starting Eventlistner of blendnet.cms.listener");
 
             _eventBus.Subscribe<ContentProviderCreatedIntegrationEvent,ContentProviderCreatedIntegrationEventHandler>();
+            
+            _logger.LogInformation("Subscribe complete by blendnet.cms.listener");
 
             return Task.CompletedTask;
         }
