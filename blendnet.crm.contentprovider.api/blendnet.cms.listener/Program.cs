@@ -14,6 +14,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using blendnet.cms.listener.Model;
+using Azure.Storage.Blobs;
+using Serilog.Sinks.File;
 
 namespace blendnet.cms.listener
 {
@@ -30,6 +32,11 @@ namespace blendnet.cms.listener
            .ReadFrom.Configuration(configuration)
            .Enrich.FromLogContext()
            .CreateLogger();
+
+            //Log.Logger = new LoggerConfiguration()
+            //.MinimumLevel.Debug()
+            //.WriteTo.RollingFile("log.txt")
+            //.CreateLogger();
 
             CreateHostBuilder(args).Build().Run();
 
@@ -58,6 +65,16 @@ namespace blendnet.cms.listener
                     services.AddHostedService<EventListener>();
 
                     services.AddApplicationInsightsTelemetryWorkerService();
+
+                    string cmsStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSStorageConnectionString");
+
+                    //Register graph authentication provider
+                    services.AddSingleton<BlobServiceClient>(bsc => {
+                        
+                        var client = new BlobServiceClient(cmsStorageConnectionString);
+                        
+                        return client;
+                    });
 
                     ConfigureEventBus(hostContext, services);
                 });

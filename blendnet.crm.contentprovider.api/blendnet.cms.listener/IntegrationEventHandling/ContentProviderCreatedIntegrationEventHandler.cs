@@ -25,14 +25,17 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
         private readonly AppSettings _appSettings;
 
+        BlobServiceClient _blobServiceClient;
+
         public ContentProviderCreatedIntegrationEventHandler(ILogger<ContentProviderCreatedIntegrationEventHandler> logger, 
-                                                             TelemetryClient tc, IOptionsMonitor<AppSettings> optionsDelegate)
+                                                             TelemetryClient tc, 
+                                                             BlobServiceClient blobServiceClient)
         {
             _logger = logger;
 
             _telemetryClient = tc;
 
-            _appSettings = optionsDelegate.CurrentValue;
+            _blobServiceClient = blobServiceClient;
         }
 
         /// <summary>
@@ -66,8 +69,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <returns></returns>
         public  async Task CreateStorageContainers(ContentProviderCreatedIntegrationEvent integrationEvent)
         {
-            var client = new BlobServiceClient(_appSettings.CMSStorageConnectionString);
-
             var baseName = integrationEvent.ContainerBaseName.Trim().ToLower();
             
             string stagingContainerName = $"{baseName}staginge";
@@ -76,11 +77,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             
             string processedContainerName = $"{baseName}processed";
 
-            var containers = client.GetBlobContainers(prefix: baseName);
+            var containers = _blobServiceClient.GetBlobContainers(prefix: baseName);
 
             if (!containerExists(stagingContainerName))
             {
-                await client.CreateBlobContainerAsync(stagingContainerName);
+                await _blobServiceClient.CreateBlobContainerAsync(stagingContainerName);
             }
             else
             {
@@ -89,7 +90,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             if (!containerExists(mezzContainerName))
             {
-                await client.CreateBlobContainerAsync(mezzContainerName);
+                await _blobServiceClient.CreateBlobContainerAsync(mezzContainerName);
             }else
             {
                 _logger.LogInformation($"{mezzContainerName} already exists");
@@ -97,7 +98,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             if (!containerExists(processedContainerName))
             {
-                await client.CreateBlobContainerAsync(processedContainerName);
+                await _blobServiceClient.CreateBlobContainerAsync(processedContainerName);
             }else
             {
                 _logger.LogInformation($"{processedContainerName} already exists");
