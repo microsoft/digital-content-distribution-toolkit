@@ -25,7 +25,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
         private readonly AppSettings _appSettings;
 
-        //IOptionsMonitor<AppSettings> optionsDelegate
         public ContentProviderCreatedIntegrationEventHandler(ILogger<ContentProviderCreatedIntegrationEventHandler> logger, 
                                                              TelemetryClient tc, IOptionsMonitor<AppSettings> optionsDelegate)
         {
@@ -49,8 +48,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 {
                     _logger.LogInformation($"Message Recieved for content provider id: {integrationEvent.ContentProviderId}");
 
-                    ///_telemetryClient.TrackEvent("Bing call event completed");
-                    ///
                     await CreateStorageContainers(integrationEvent);
 
                     _logger.LogInformation($"Message Process Completed for content provider id: {integrationEvent.ContentProviderId}");
