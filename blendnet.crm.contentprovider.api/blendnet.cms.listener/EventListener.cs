@@ -1,6 +1,7 @@
 ﻿using blendnet.cms.listener.IntegrationEventHandling;
 using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.ServiceBus;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Hosting;
@@ -40,7 +41,16 @@ namespace blendnet.cms.listener
             _logger.LogInformation("Starting Eventlistner of blendnet.cms.listener");
 
             _eventBus.Subscribe<ContentProviderCreatedIntegrationEvent,ContentProviderCreatedIntegrationEventHandler>();
-            
+
+            //todo: read from config once we finalize that we are ok to consume blob created event here.
+            CustomPropertyCorrelationRule correlationRule = new CustomPropertyCorrelationRule()
+            {
+                PropertyName = "aeg-subscription-name",
+                PropertValue = "BLOBTOPICSUBSCRIPTION",
+            };
+
+            _eventBus.Subscribe<MicrosoftStorageBlobCreatedIntegrationEvent, MicrosoftStorageBlobCreatedIntegrationEventHandler>(correlationRule);
+
             _logger.LogInformation("Subscribe complete by blendnet.cms.listener");
 
             return Task.CompletedTask;

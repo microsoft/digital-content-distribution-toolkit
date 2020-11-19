@@ -107,6 +107,8 @@ namespace blendnet.cms.listener
             services.AddSingleton<IEventBus, EventServiceBus>();
 
             services.AddTransient<ContentProviderCreatedIntegrationEventHandler>();
+
+            services.AddTransient<MicrosoftStorageBlobCreatedIntegrationEventHandler>(); 
         }
     }
 }
