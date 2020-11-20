@@ -16,6 +16,10 @@ using Serilog;
 using blendnet.cms.listener.Model;
 using Azure.Storage.Blobs;
 using Serilog.Sinks.File;
+using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
+using blendnet.common.infrastructure.KeyVault;
 
 namespace blendnet.cms.listener
 {
@@ -49,6 +53,26 @@ namespace blendnet.cms.listener
                     logging.AddDebug();
 
                     logging.AddSerilog();
+                })
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    //read the configuration from keyvault in case of production
+                    //https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-5.0
+                    if (context.HostingEnvironment.IsProduction())
+                    {
+                        var builtConfig = config.Build();
+
+                        var azureServiceTokenProvider = new AzureServiceTokenProvider();
+
+                        var keyVaultClient = new KeyVaultClient(
+                            new KeyVaultClient.AuthenticationCallback(
+                                azureServiceTokenProvider.KeyVaultTokenCallback));
+
+                        config.AddAzureKeyVault(
+                            $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+                            keyVaultClient,
+                            new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
+                    }
                 })
                 .ConfigureServices((hostContext, services) =>
                 {

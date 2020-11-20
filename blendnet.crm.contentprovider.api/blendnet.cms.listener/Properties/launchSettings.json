@@ -1,10 +1,13 @@
-﻿{
+{
   "profiles": {
     "blendnet.cms.listener": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "DOTNET_ENVIRONMENT": "Production"
       }
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }

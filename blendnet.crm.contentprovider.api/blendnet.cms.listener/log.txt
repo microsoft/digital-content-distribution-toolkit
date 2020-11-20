@@ -97,3 +97,17 @@ Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invali
 2020-11-19T11:44:34.9009697+05:30 [INF] blendnet.cms.listener// eroscmsprocessed already exists
 2020-11-19T11:44:34.9185635+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: 256e80f9-0567-4714-d21e-08d88c52589d
 2020-11-19T11:45:09.6440518+05:30 [INF] blendnet.cms.listener// No value found on Label property of message. Hence event name is empty. Looking for custom message properties
+2020-11-20T10:49:35.1812837+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-20T10:49:35.2384575+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-20T10:49:36.8369532+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-11-20T11:23:13.1335868+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-20T11:23:13.2138950+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-20T11:23:13.7877309+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-11-20T19:20:09.0856577+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-20T19:20:09.1586498+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-20T19:20:09.7696981+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-11-20T19:20:22.0505164+05:30 [INF] blendnet.cms.listener// Stopping Eventlistner of blendnet.cms.listener
+2020-11-20T19:24:28.3750735+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-20T19:24:28.4749077+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-20T19:24:29.1626268+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-11-20T19:24:30.0306013+05:30 [INF] blendnet.cms.listener// Stopping Eventlistner of blendnet.cms.listener
