@@ -111,3 +111,7 @@ Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invali
 2020-11-20T19:24:28.4749077+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
 2020-11-20T19:24:29.1626268+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
 2020-11-20T19:24:30.0306013+05:30 [INF] blendnet.cms.listener// Stopping Eventlistner of blendnet.cms.listener
+2020-11-26T11:38:47.1346550+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-11-26T11:38:47.1863620+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-11-26T11:38:47.7596840+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-11-26T11:39:00.4910110+05:30 [INF] blendnet.cms.listener// Stopping Eventlistner of blendnet.cms.listener

@@ -1,9 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>ef28dda3-a6f6-4907-8d96-40cc01738981</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.16.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.2.0" />
@@ -15,10 +15,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\blendnet.crm.common.api\blendnet.common.infrastructure.csproj" />
     <ProjectReference Include="..\blendnet.crm.common.dto\blendnet.common.dto.csproj" />
   </ItemGroup>
-
 </Project>

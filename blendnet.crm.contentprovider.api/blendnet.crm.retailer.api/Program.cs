@@ -8,6 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
+using blendnet.common.infrastructure.KeyVault;
 
 namespace blendnet.crm.retailer.api
 {
@@ -37,7 +41,31 @@ namespace blendnet.crm.retailer.api
                 {
                     logging.ClearProviders();
 
+                    logging.AddConsole();
+
+                    logging.AddDebug();
+
                     logging.AddSerilog();
+                })
+                                .ConfigureAppConfiguration((context, config) =>
+                {
+                    //read the configuration from keyvault in case of production
+                    //https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-5.0
+                    if (context.HostingEnvironment.IsProduction())
+                    {
+                        var builtConfig = config.Build();
+
+                        var azureServiceTokenProvider = new AzureServiceTokenProvider();
+
+                        var keyVaultClient = new KeyVaultClient(
+                            new KeyVaultClient.AuthenticationCallback(
+                                azureServiceTokenProvider.KeyVaultTokenCallback));
+
+                        config.AddAzureKeyVault(
+                            $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+                            keyVaultClient,
+                            new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
+                    }
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
