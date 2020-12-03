@@ -7,8 +7,8 @@ namespace blendnet.common.dto.Events
 {
     public class ContentProviderCreatedIntegrationEvent: IntegrationEvent
     {
-        public string ContentProviderId { get; set; }
+        public ContentProviderDto ContentProvider { get; set; }
 
-        public string ContainerBaseName { get; set; } = "cms";
+        public string ContainerBaseName { get; set; }
     }
 }

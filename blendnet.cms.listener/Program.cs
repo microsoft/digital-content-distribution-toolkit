@@ -20,6 +20,9 @@ using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using blendnet.common.infrastructure.KeyVault;
+using Microsoft.Graph;
+using Microsoft.Identity.Client;
+using Microsoft.Graph.Auth;
 
 namespace blendnet.cms.listener
 {
@@ -28,7 +31,7 @@ namespace blendnet.cms.listener
         public static void Main(string[] args)
         {
             var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
             .Build();
 
@@ -95,8 +98,45 @@ namespace blendnet.cms.listener
                         return client;
                     });
 
+                    //Configure Event 
                     ConfigureEventBus(hostContext, services);
+
+                    //Configure Microsoft Graph Client
+                    ConfigureGraphClient(hostContext, services);
+
                 });
+
+
+        /// <summary>
+        /// Configure Microsoft Graph Client
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="services"></param>
+        private static void ConfigureGraphClient (HostBuilderContext context,IServiceCollection services)
+        {
+            string graphClientId = context.Configuration.GetValue<string>("GraphClientId");
+
+            string graphClientTenant = context.Configuration.GetValue<string>("GraphClientTenant");
+
+            string graphClientSecret = context.Configuration.GetValue<string>("GraphClientSecret");
+
+            //Register graph authentication provider
+            services.AddTransient<IAuthenticationProvider>(iap => {
+
+                IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
+               .Create(graphClientId)
+               .WithTenantId(graphClientTenant)
+               .WithClientSecret(graphClientSecret)
+               .Build();
+
+                ClientCredentialProvider authProvider = new ClientCredentialProvider(confidentialClientApplication);
+
+                return authProvider;
+            });
+
+            //register graph
+            services.AddTransient<GraphServiceClient>();
+        }
 
         /// <summary>
         /// Configure Event Bus

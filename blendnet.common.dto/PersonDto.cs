@@ -27,5 +27,7 @@ namespace blendnet.common.dto
         public string Email { get; set; }
 
         public long Mobile { get; set; }
+
+        public string IdentityProviderId { get; set; }
     }
 }

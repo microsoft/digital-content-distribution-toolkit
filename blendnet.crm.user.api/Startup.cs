@@ -96,6 +96,22 @@ namespace blendnet.crm.user.api
             //Configure Services
             services.AddTransient<IIdentityRespository, IdentityRepository>();
 
+            //configure event bus
+            ConfigureEventBus(services);
+
+            //Configure Microsoft Graph Client
+            ConfigureGraphClient(services);
+
+        }
+
+
+        /// <summary>
+        /// Configure Microsoft Graph
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="services"></param>
+        private void ConfigureGraphClient(IServiceCollection services)
+        {
             string graphClientId = Configuration.GetValue<string>("GraphClientId");
 
             string graphClientTenant = Configuration.GetValue<string>("GraphClientTenant");
@@ -118,9 +134,6 @@ namespace blendnet.crm.user.api
 
             //register graph
             services.AddTransient<GraphServiceClient>();
-
-            ConfigureEventBus(services);
-
         }
 
         /// <summary>
