@@ -2,7 +2,7 @@
   "ExpandedNodes": [
     "",
     "\\blendnet.crm.contentprovider.api",
-    "\\blendnet.crm.contentprovider.api\\blendnet.crm.common.dto"
+    "\\blendnet.crm.contentprovider.api\\blendnet.common.dto"
   ],
   "SelectedNode": "\\blendnet.crm.contentprovider.api\\docker-compose.yml",
   "PreviewInSolutionExplorer": false

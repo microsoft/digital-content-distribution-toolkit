@@ -1,2 +1,0 @@
-2020-11-09T15:44:30.0770100+05:30 [WRN] blendnet.crm.retailer.api// Heartbeat took longer than "00:00:01" at "11/09/2020 10:14:29 +00:00". This could be caused by thread pool starvation.
-2020-11-09T15:54:03.2639670+05:30 [WRN] blendnet.crm.retailer.api// Heartbeat took longer than "00:00:01" at "11/09/2020 10:24:03 +00:00". This could be caused by thread pool starvation.
