@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using blendnet.crm.user.api.Repository.Interfaces;
 using blendnet.common.dto.Events;
+using Microsoft.Extensions.Options;
+using blendnet.crm.user.api.Model;
 
 namespace blendnet.crm.user.api.Controllers
 {
@@ -29,6 +31,8 @@ namespace blendnet.crm.user.api.Controllers
 
         private IEventBus _eventBus;
 
+        
+
         public IdentityController(  IIdentityRespository identityRepository, 
                                     ILogger<IdentityController> logger,
                                     IEventBus eventBus)
@@ -38,6 +42,7 @@ namespace blendnet.crm.user.api.Controllers
             _logger = logger;
 
             _eventBus = eventBus;
+
         }
 
         /// <summary>
@@ -80,6 +85,26 @@ namespace blendnet.crm.user.api.Controllers
         }
 
         /// <summary>
+        /// Returns the user
+        /// </summary>
+        /// <param name="upn"></param>
+        /// <returns></returns>
+        [HttpGet("getuser")]
+        public async Task<ActionResult<IdentityUserDto>> GetUser(string upn)
+        {
+            IdentityUserDto identityUser = await _identityRepository.GetUser(upn);
+
+            if (identityUser != null)
+            {
+                return Ok(identityUser);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
         /// Gets invoked by Azure B2C on User Sign up
         /// </summary>
         /// <param name="inputClaims"></param>
@@ -116,5 +141,7 @@ namespace blendnet.crm.user.api.Controllers
         {
             return null;
         }
+
+        
     }
 }
