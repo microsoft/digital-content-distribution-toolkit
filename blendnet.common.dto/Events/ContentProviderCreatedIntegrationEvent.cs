@@ -9,6 +9,5 @@ namespace blendnet.common.dto.Events
     {
         public ContentProviderDto ContentProvider { get; set; }
 
-        public string ContainerBaseName { get; set; }
     }
 }

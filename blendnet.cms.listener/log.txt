@@ -119,3 +119,1344 @@ Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invali
 2020-12-03T11:57:41.1440000+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
 2020-12-03T11:57:41.8641680+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
 2020-12-03T11:57:53.6149660+05:30 [INF] blendnet.cms.listener// Stopping Eventlistner of blendnet.cms.listener
+2020-12-04T12:06:14.8548117+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T12:06:14.9643752+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T12:06:15.5832545+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T12:17:25.8720702+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T12:17:25.9533726+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T12:17:26.7325948+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T12:20:12.5237328+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:12.5705893+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:20:13.6325399+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:13.6446617+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:20:14.4236490+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:14.4309236+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:20:15.2225554+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:15.2350163+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:20:15.9626526+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:15.9763220+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:20:16.7028264+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:16.7126031+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:20:17.4111071+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:17.4250010+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:20:18.1733419+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:18.2084887+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:20:18.9331946+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:18.9438230+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:20:19.8724657+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:20:19.8970487+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:03.6294437+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:03.6399116+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:04.5178410+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:04.5264553+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:05.3182327+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:05.3307487+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:06.2180642+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:06.2282083+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:06.9300347+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:06.9394464+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:07.6541859+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:07.6921424+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:08.3811938+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:08.4059393+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:09.1272340+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:09.1339960+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:09.9006358+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:09.9293321+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:23:11.0486526+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:23:11.0545725+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:26:02.8773395+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T12:26:02.9494609+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T12:26:03.5386945+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T12:29:23.5781533+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:23.6036265+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:29:24.3452851+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:24.3514095+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:29:25.1327391+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:25.1693644+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:29:25.8559371+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:25.8649226+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:29:26.5503517+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:26.5592566+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:29:27.2242132+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:27.2308332+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:29:27.8754376+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:27.8826365+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:29:28.5957931+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:28.6035047+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:29:29.2853998+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:29.2933319+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:29:30.0509929+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:29:30.0587116+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:30:29.3063780+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T12:30:39.6118536+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T12:30:43.5454950+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T12:31:47.6773282+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:47.7108299+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:31:48.5186111+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:48.5427143+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:31:49.3047134+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:49.3137876+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:31:50.0960069+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:50.1158063+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:31:50.9854377+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:50.9926824+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:31:51.6925558+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:51.7144235+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:31:52.3710079+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:52.3822088+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:31:53.0505580+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:53.0628226+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:31:53.7693842+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:53.7775864+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:31:54.5343759+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:31:54.5525820+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:33:07.5108303+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:33:07.5184367+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:33:36.1695688+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:33:50.5178694+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:34:28.3152079+05:30 [ERR] blendnet.cms.listener// Value cannot be null. (Parameter 'clientSecret')
+System.ArgumentNullException: Value cannot be null. (Parameter 'clientSecret')
+   at Microsoft.Identity.Client.ConfidentialClientApplicationBuilder.WithClientSecret(String clientSecret)
+   at blendnet.cms.listener.Program.<>c__DisplayClass2_0.<ConfigureGraphClient>b__0(IServiceProvider iap) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\Program.cs:line 126
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass1_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 244
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:43:29.9358964+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T12:43:33.0365062+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T12:43:33.6556318+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T12:43:58.5488094+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: 52ac532b-1930-4f84-6fcd-08d8982273de
+2020-12-04T12:44:01.7375819+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: 52ac532b-1930-4f84-6fcd-08d8982273de
+2020-12-04T12:47:22.6517240+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T12:47:24.9239639+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T12:47:25.6781397+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T12:47:45.6143805+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: 52ac532b-1930-4f84-6fcd-08d8982273de
+2020-12-04T12:47:47.0097711+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: 52ac532b-1930-4f84-6fcd-08d8982273de
+2020-12-04T12:47:50.9577663+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : 52ac532b-1930-4f84-6fcd-08d8982273de
+2020-12-04T12:49:27.5664630+05:30 [ERR] blendnet.cms.listener// The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:b539b182-595b-4444-b9b3-b7d5cee1799b, TrackingId:baa27cae-79ea-4985-afc5-2803e29bc2ff_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T07:19:31
+Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:b539b182-595b-4444-b9b3-b7d5cee1799b, TrackingId:baa27cae-79ea-4985-afc5-2803e29bc2ff_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T07:19:31
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.OnRenewLockAsync(String lockToken)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.<>c__DisplayClass75_0.<<RenewLockAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.RenewLockAsync(String lockToken)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.RenewLockAsync(Message message)
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.RenewMessageLockTask(Message message, CancellationToken renewLockCancellationToken)
+2020-12-04T12:49:27.7009864+05:30 [ERR] blendnet.cms.listener// Action : RenewLock |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:49:27.7643920+05:30 [ERR] blendnet.cms.listener// Code: Request_BadRequest
+Message: One or more added object references already exist for the following modified properties: 'members'.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:19:31
+	request-id: 00590cb2-cfc0-49e1-8dad-f12de29c5904
+	client-request-id: 00590cb2-cfc0-49e1-8dad-f12de29c5904
+ClientRequestId: 00590cb2-cfc0-49e1-8dad-f12de29c5904
+
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: Request_BadRequest
+Message: One or more added object references already exist for the following modified properties: 'members'.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:19:31
+	request-id: 00590cb2-cfc0-49e1-8dad-f12de29c5904
+	client-request-id: 00590cb2-cfc0-49e1-8dad-f12de29c5904
+ClientRequestId: 00590cb2-cfc0-49e1-8dad-f12de29c5904
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 151
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.Handle(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 70
+2020-12-04T12:49:28.6597567+05:30 [ERR] blendnet.cms.listener// The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:111c090d-7bea-46d4-8a6f-078ad610501a, TrackingId:f74c670b001d000803194b505fc9e289_G7_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T07:19:32
+Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:111c090d-7bea-46d4-8a6f-078ad610501a, TrackingId:f74c670b001d000803194b505fc9e289_G7_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T07:19:32
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.DisposeMessagesAsync(IEnumerable`1 lockTokens, Outcome outcome)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.CompleteAsync(IEnumerable`1 lockTokens)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 256
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T12:49:28.6668062+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T12:49:42.1072336+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: 52ac532b-1930-4f84-6fcd-08d8982273de
+2020-12-04T12:49:42.7142372+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: 52ac532b-1930-4f84-6fcd-08d8982273de
+2020-12-04T12:49:44.0211792+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : 52ac532b-1930-4f84-6fcd-08d8982273de
+2020-12-04T12:49:45.8474577+05:30 [ERR] blendnet.cms.listener// Code: Request_BadRequest
+Message: One or more added object references already exist for the following modified properties: 'members'.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:19:49
+	request-id: db971337-d3ce-479c-954c-270428d31cac
+	client-request-id: db971337-d3ce-479c-954c-270428d31cac
+ClientRequestId: db971337-d3ce-479c-954c-270428d31cac
+
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: Request_BadRequest
+Message: One or more added object references already exist for the following modified properties: 'members'.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:19:49
+	request-id: db971337-d3ce-479c-954c-270428d31cac
+	client-request-id: db971337-d3ce-479c-954c-270428d31cac
+ClientRequestId: db971337-d3ce-479c-954c-270428d31cac
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 151
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.Handle(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 70
+2020-12-04T12:58:26.3301926+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T12:58:29.0660413+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T12:58:29.7339029+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T13:00:38.3128056+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: ef1968d9-7e99-4569-e961-08d8982670a1
+2020-12-04T13:00:38.3217592+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: ef1968d9-7e99-4569-e961-08d8982670a1
+2020-12-04T13:00:38.3528208+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : ef1968d9-7e99-4569-e961-08d8982670a1
+2020-12-04T13:01:21.8067848+05:30 [ERR] blendnet.cms.listener// The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:c3386e25-4fb1-4293-bd32-296005a45edb, TrackingId:42beebd0-c3ff-4ca1-8907-84f790f58a52_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T07:31:25
+Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:c3386e25-4fb1-4293-bd32-296005a45edb, TrackingId:42beebd0-c3ff-4ca1-8907-84f790f58a52_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T07:31:25
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.OnRenewLockAsync(String lockToken)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.<>c__DisplayClass75_0.<<RenewLockAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.RenewLockAsync(String lockToken)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.RenewLockAsync(Message message)
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.RenewMessageLockTask(Message message, CancellationToken renewLockCancellationToken)
+2020-12-04T13:01:22.1218885+05:30 [ERR] blendnet.cms.listener// Action : RenewLock |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T13:01:22.2667206+05:30 [ERR] blendnet.cms.listener// Code: Request_BadRequest
+Message: One or more added object references already exist for the following modified properties: 'members'.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:31:26
+	request-id: 3dc1eb05-086b-4d32-89b3-3da3b7c560ab
+	client-request-id: 3dc1eb05-086b-4d32-89b3-3da3b7c560ab
+ClientRequestId: 3dc1eb05-086b-4d32-89b3-3da3b7c560ab
+
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: Request_BadRequest
+Message: One or more added object references already exist for the following modified properties: 'members'.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:31:26
+	request-id: 3dc1eb05-086b-4d32-89b3-3da3b7c560ab
+	client-request-id: 3dc1eb05-086b-4d32-89b3-3da3b7c560ab
+ClientRequestId: 3dc1eb05-086b-4d32-89b3-3da3b7c560ab
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 156
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.Handle(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 73
+2020-12-04T13:01:22.9902738+05:30 [ERR] blendnet.cms.listener// The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:efc5ede5-8e37-4f3b-835b-774a9961122e, TrackingId:f74c670b001d0008031af65d5fc9e521_G15_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T07:31:27
+Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:efc5ede5-8e37-4f3b-835b-774a9961122e, TrackingId:f74c670b001d0008031af65d5fc9e521_G15_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T07:31:27
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.DisposeMessagesAsync(IEnumerable`1 lockTokens, Outcome outcome)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.CompleteAsync(IEnumerable`1 lockTokens)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 256
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T13:01:22.9971094+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T13:03:53.6198917+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T13:03:56.7671216+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T13:03:57.3724038+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T13:10:34.6585818+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: 2db18245-2bfb-4a79-305c-08d89827cea6
+2020-12-04T13:10:34.9873870+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: 2db18245-2bfb-4a79-305c-08d89827cea6
+2020-12-04T13:10:37.6219782+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : 2db18245-2bfb-4a79-305c-08d89827cea6
+2020-12-04T13:10:45.1464886+05:30 [ERR] blendnet.cms.listener// Code: Request_ResourceNotFound
+Message: Resource 'string' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:40:48
+	request-id: ff559b48-d1ba-4d61-93ef-8562dd98e620
+	client-request-id: ff559b48-d1ba-4d61-93ef-8562dd98e620
+ClientRequestId: ff559b48-d1ba-4d61-93ef-8562dd98e620
+
+Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource 'string' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:40:48
+	request-id: ff559b48-d1ba-4d61-93ef-8562dd98e620
+	client-request-id: ff559b48-d1ba-4d61-93ef-8562dd98e620
+ClientRequestId: ff559b48-d1ba-4d61-93ef-8562dd98e620
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.DirectoryObjectCheckMemberGroupsRequest.PostAsync(CancellationToken cancellationToken)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 147
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.Handle(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 73
+2020-12-04T13:18:03.4167825+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: 3b52b2a1-0cd6-4b14-305d-08d89827cea6
+2020-12-04T13:18:03.4278107+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: 3b52b2a1-0cd6-4b14-305d-08d89827cea6
+2020-12-04T13:18:03.4506346+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : 3b52b2a1-0cd6-4b14-305d-08d89827cea6
+2020-12-04T13:18:10.3497886+05:30 [ERR] blendnet.cms.listener// Code: Request_ResourceNotFound
+Message: Resource 'string' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:48:14
+	request-id: 10f366d8-e55a-42a0-aa0a-a4db50236751
+	client-request-id: 10f366d8-e55a-42a0-aa0a-a4db50236751
+ClientRequestId: 10f366d8-e55a-42a0-aa0a-a4db50236751
+
+Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource 'string' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:48:14
+	request-id: 10f366d8-e55a-42a0-aa0a-a4db50236751
+	client-request-id: 10f366d8-e55a-42a0-aa0a-a4db50236751
+ClientRequestId: 10f366d8-e55a-42a0-aa0a-a4db50236751
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.DirectoryObjectCheckMemberGroupsRequest.PostAsync(CancellationToken cancellationToken)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 147
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.Handle(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 73
+2020-12-04T13:20:25.0367342+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: c15d499a-5fb2-492e-305e-08d89827cea6
+2020-12-04T13:20:26.3911986+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: c15d499a-5fb2-492e-305e-08d89827cea6
+2020-12-04T13:20:28.8720140+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : c15d499a-5fb2-492e-305e-08d89827cea6
+2020-12-04T13:20:59.8555202+05:30 [ERR] blendnet.cms.listener// Code: Request_ResourceNotFound
+Message: Resource 'string' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:51:03
+	request-id: b5fdf4ac-f1dd-4b48-9d6d-0b22422b9371
+	client-request-id: b5fdf4ac-f1dd-4b48-9d6d-0b22422b9371
+ClientRequestId: b5fdf4ac-f1dd-4b48-9d6d-0b22422b9371
+
+Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource 'string' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T07:51:03
+	request-id: b5fdf4ac-f1dd-4b48-9d6d-0b22422b9371
+	client-request-id: b5fdf4ac-f1dd-4b48-9d6d-0b22422b9371
+ClientRequestId: b5fdf4ac-f1dd-4b48-9d6d-0b22422b9371
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.DirectoryObjectCheckMemberGroupsRequest.PostAsync(CancellationToken cancellationToken)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 147
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.Handle(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 73
+2020-12-04T13:31:06.2785933+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: c34d210f-2c24-4b57-305f-08d89827cea6
+2020-12-04T13:31:06.6719852+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: c34d210f-2c24-4b57-305f-08d89827cea6
+2020-12-04T13:31:09.3507699+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : c34d210f-2c24-4b57-305f-08d89827cea6
+2020-12-04T13:32:04.4077052+05:30 [ERR] blendnet.cms.listener// The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:771be8d9-458c-49ea-a7ed-d3e9aa76feda, TrackingId:3697f52b-3b53-44d3-83b3-2b5742bfd505_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T08:02:07
+Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:771be8d9-458c-49ea-a7ed-d3e9aa76feda, TrackingId:3697f52b-3b53-44d3-83b3-2b5742bfd505_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T08:02:07
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.OnRenewLockAsync(String lockToken)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.<>c__DisplayClass75_0.<<RenewLockAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.RenewLockAsync(String lockToken)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.RenewLockAsync(Message message)
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.RenewMessageLockTask(Message message, CancellationToken renewLockCancellationToken)
+2020-12-04T13:32:04.4402817+05:30 [ERR] blendnet.cms.listener// Action : RenewLock |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T13:32:10.1619345+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: c34d210f-2c24-4b57-305f-08d89827cea6
+2020-12-04T13:32:13.1596878+05:30 [ERR] blendnet.cms.listener// The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue, or was received by a different receiver instance.
+Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue, or was received by a different receiver instance.
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.DisposeMessagesAsync(IEnumerable`1 lockTokens, Outcome outcome)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.CompleteAsync(IEnumerable`1 lockTokens)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 256
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T13:32:13.1660832+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T13:32:20.8478137+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: c34d210f-2c24-4b57-305f-08d89827cea6
+2020-12-04T13:32:20.8790246+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: c34d210f-2c24-4b57-305f-08d89827cea6
+2020-12-04T13:32:20.9364188+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : c34d210f-2c24-4b57-305f-08d89827cea6
+2020-12-04T13:32:23.4135619+05:30 [INF] blendnet.cms.listener// User 8e666b98-65af-49c8-9010-daf3dfa669b0 already exists in content administrator group
+2020-12-04T13:32:23.5961951+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: c34d210f-2c24-4b57-305f-08d89827cea6
+2020-12-04T13:33:39.5828208+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: 4630d9e0-34a7-4bcb-3060-08d89827cea6
+2020-12-04T13:33:39.8399324+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: 4630d9e0-34a7-4bcb-3060-08d89827cea6
+2020-12-04T13:33:42.0942050+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : 4630d9e0-34a7-4bcb-3060-08d89827cea6
+2020-12-04T13:33:47.0724190+05:30 [ERR] blendnet.cms.listener// Code: Request_ResourceNotFound
+Message: Resource '8e666b98-65af-49c8-9010-daf3dfa669b' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T08:03:50
+	request-id: d37dc337-7cca-471f-8fee-ea38c2636e13
+	client-request-id: d37dc337-7cca-471f-8fee-ea38c2636e13
+ClientRequestId: d37dc337-7cca-471f-8fee-ea38c2636e13
+
+Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource '8e666b98-65af-49c8-9010-daf3dfa669b' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T08:03:50
+	request-id: d37dc337-7cca-471f-8fee-ea38c2636e13
+	client-request-id: d37dc337-7cca-471f-8fee-ea38c2636e13
+ClientRequestId: d37dc337-7cca-471f-8fee-ea38c2636e13
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.DirectoryObjectCheckMemberGroupsRequest.PostAsync(CancellationToken cancellationToken)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 147
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.Handle(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 73
+2020-12-04T13:44:50.0216079+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T13:44:51.5332115+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T13:44:52.2133264+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T13:52:57.0854187+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: 76336c48-dc29-42f4-1828-08d8982dbe35
+2020-12-04T13:52:57.7855679+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: 76336c48-dc29-42f4-1828-08d8982dbe35
+2020-12-04T13:53:00.9610121+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : 76336c48-dc29-42f4-1828-08d8982dbe35
+2020-12-04T13:53:36.7104257+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: 76336c48-dc29-42f4-1828-08d8982dbe35
+2020-12-04T13:55:02.4312116+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: d4dd3164-b9ef-4f2e-1829-08d8982dbe35
+2020-12-04T13:55:02.7565322+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: d4dd3164-b9ef-4f2e-1829-08d8982dbe35
+2020-12-04T13:55:06.4467594+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : d4dd3164-b9ef-4f2e-1829-08d8982dbe35
+2020-12-04T13:55:57.7553496+05:30 [INF] blendnet.cms.listener// User 8e666b98-65af-49c8-9010-daf3dfa669b does not exist in Azure AD B2C.
+2020-12-04T13:56:02.1767269+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: d4dd3164-b9ef-4f2e-1829-08d8982dbe35
+2020-12-04T13:56:02.2659028+05:30 [ERR] blendnet.cms.listener// The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:3453bac1-4509-44e6-9bbe-7792b63ab5ef, TrackingId:caa8fecb-bed1-45b6-bc12-859898484120_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T08:26:02
+Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue. Reference:3453bac1-4509-44e6-9bbe-7792b63ab5ef, TrackingId:caa8fecb-bed1-45b6-bc12-859898484120_B19, SystemTracker:blendnethk:Topic:blendnet_servicebus|cmsservice, Timestamp:2020-12-04T08:26:02
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.OnRenewLockAsync(String lockToken)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.<>c__DisplayClass75_0.<<RenewLockAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.RenewLockAsync(String lockToken)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.RenewLockAsync(Message message)
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.RenewMessageLockTask(Message message, CancellationToken renewLockCancellationToken)
+2020-12-04T13:56:02.2704921+05:30 [ERR] blendnet.cms.listener// The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue, or was received by a different receiver instance.
+Microsoft.Azure.ServiceBus.MessageLockLostException: The lock supplied is invalid. Either the lock expired, or the message has already been removed from the queue, or was received by a different receiver instance.
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.DisposeMessagesAsync(IEnumerable`1 lockTokens, Outcome outcome)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.CompleteAsync(IEnumerable`1 lockTokens)
+   at blendnet.common.infrastructure.ServiceBus.EventServiceBus.ProcessMessagesAsync(Message message, CancellationToken token) in D:\Data\AGCLI\BlendNet\newfork\blendnet.common.infrastructure\ServiceBus\EventServiceBus.cs:line 256
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.MessageDispatchTask(Message message)
+2020-12-04T13:56:02.2930255+05:30 [ERR] blendnet.cms.listener// Action : RenewLock |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T13:56:02.2978057+05:30 [ERR] blendnet.cms.listener// Action : UserCallback |  Endpoint : blendnethk.servicebus.windows.net | Endpoint : blendnet_servicebus/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet_servicebus/Subscriptions/CMSService
+2020-12-04T13:57:47.4910590+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T13:57:48.6891531+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T13:57:49.3180260+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T13:57:54.1357035+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: d4dd3164-b9ef-4f2e-1829-08d8982dbe35
+2020-12-04T13:57:54.1424444+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: d4dd3164-b9ef-4f2e-1829-08d8982dbe35
+2020-12-04T13:57:54.1470881+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : d4dd3164-b9ef-4f2e-1829-08d8982dbe35
+2020-12-04T13:58:04.3611180+05:30 [INF] blendnet.cms.listener// User 8e666b98-65af-49c8-9010-daf3dfa669b does not exist in Azure AD B2C. - Exception details - Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource '8e666b98-65af-49c8-9010-daf3dfa669b' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T08:28:00
+	request-id: 4ba8b8ac-9287-4e82-b5ee-a2dde9684495
+	client-request-id: 4ba8b8ac-9287-4e82-b5ee-a2dde9684495
+ClientRequestId: 4ba8b8ac-9287-4e82-b5ee-a2dde9684495
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.DirectoryObjectCheckMemberGroupsRequest.PostAsync(CancellationToken cancellationToken)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\newfork\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 149
+2020-12-04T13:58:18.0398133+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: d4dd3164-b9ef-4f2e-1829-08d8982dbe35
+2020-12-04T14:19:19.4212770+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2020-12-04T14:19:21.6219148+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2020-12-04T14:19:22.1901906+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2020-12-04T14:21:57.2239191+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: 289feadd-0b27-411e-2d90-08d89831d2a9
+2020-12-04T14:21:57.2307600+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: 289feadd-0b27-411e-2d90-08d89831d2a9
+2020-12-04T14:21:57.2766394+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : 289feadd-0b27-411e-2d90-08d89831d2a9
+2020-12-04T14:21:59.9562202+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: 289feadd-0b27-411e-2d90-08d89831d2a9
+2020-12-04T14:22:33.8014898+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: f1bbea38-726e-4ae5-2d91-08d89831d2a9
+2020-12-04T14:22:33.8101695+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: f1bbea38-726e-4ae5-2d91-08d89831d2a9
+2020-12-04T14:22:33.8285441+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : f1bbea38-726e-4ae5-2d91-08d89831d2a9
+2020-12-04T14:22:35.6259739+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: f1bbea38-726e-4ae5-2d91-08d89831d2a9

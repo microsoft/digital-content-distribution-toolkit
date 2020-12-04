@@ -11,6 +11,9 @@ namespace blendnet.common.dto
         [Required]
         public string Name { get; set; }
 
+        [Required]
+        public string ContainerBaseName { get; set; }
+
         public AddressDto Address { get; set; }
 
         public List<ContentAdministratorDto> ContentAdministrators { get; set; }

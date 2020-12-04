@@ -91,7 +91,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
             //publish the event
             ContentProviderCreatedIntegrationEvent contentProviderCreatedIntegrationEvent = new ContentProviderCreatedIntegrationEvent()
             {
-                 ContentProvider = contentProvider
+                 ContentProvider = contentProvider,
             };
 
             await _eventBus.Publish(contentProviderCreatedIntegrationEvent);

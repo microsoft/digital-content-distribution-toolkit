@@ -21,5 +21,7 @@ namespace blendnet.cms.listener.Model
         public int ServiceBusMaxConcurrentCalls { get; set; }
         
         public string CMSStorageConnectionString { get; set; }
+
+        public string ContentAdministratorGroupId { get; set; }
     }
 }
