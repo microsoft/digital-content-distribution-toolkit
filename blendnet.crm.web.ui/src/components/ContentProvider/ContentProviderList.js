@@ -33,6 +33,7 @@ export class ContentProviderList extends Component {
     }
 
     componentDidMount() {
+       
         this.populateData();
     }    
 
@@ -76,11 +77,14 @@ export class ContentProviderList extends Component {
         );
       }
     async populateData() {
-        const serviceName='https://localhost:5001/api/v1/ContentProviders'
-         const response = await fetch(serviceName);
-         const data = await response.json();
-
+        
+        const serviceName='https://localhost:5001/api/v1/ContentProviders';
+        const response = await fetch(serviceName);
+        const data = await response.json();
+        
+        
         this.setState({ contentproviders: data, loading: false });
+        
       }
       
 }

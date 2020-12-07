@@ -1,0 +1,521 @@
+2020-12-04T16:37:04.4500481+05:30 [ERR] blendnet.crm.user.api// Code: Request_ResourceNotFound
+Message: Resource 'asdfsadf' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:07:08
+	request-id: 9f60126a-a6cc-4f90-b841-f0691be1223e
+	client-request-id: 9f60126a-a6cc-4f90-b841-f0691be1223e
+ClientRequestId: 9f60126a-a6cc-4f90-b841-f0691be1223e
+
+Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource 'asdfsadf' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:07:08
+	request-id: 9f60126a-a6cc-4f90-b841-f0691be1223e
+	client-request-id: 9f60126a-a6cc-4f90-b841-f0691be1223e
+ClientRequestId: 9f60126a-a6cc-4f90-b841-f0691be1223e
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.UserRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 62
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 92
+2020-12-04T16:37:41.3844382+05:30 [ERR] blendnet.crm.user.api// Code: Request_ResourceNotFound
+Message: Resource 'asdfsadf' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:07:42
+	request-id: 6c089fa1-a3a8-41ee-87e0-f9b9f2953bae
+	client-request-id: 6c089fa1-a3a8-41ee-87e0-f9b9f2953bae
+ClientRequestId: 6c089fa1-a3a8-41ee-87e0-f9b9f2953bae
+
+Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource 'asdfsadf' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:07:42
+	request-id: 6c089fa1-a3a8-41ee-87e0-f9b9f2953bae
+	client-request-id: 6c089fa1-a3a8-41ee-87e0-f9b9f2953bae
+ClientRequestId: 6c089fa1-a3a8-41ee-87e0-f9b9f2953bae
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.UserRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 62
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 92
+2020-12-04T16:43:44.6846559+05:30 [ERR] blendnet.crm.user.api// Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: UnknownError
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:13:48
+	request-id: 206356c6-8731-4734-8a74-70e3d6ed7071
+	client-request-id: 206356c6-8731-4734-8a74-70e3d6ed7071
+ClientRequestId: 206356c6-8731-4734-8a74-70e3d6ed7071
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.UserRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 62
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 92
+Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: UnknownError
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:13:48
+	request-id: 206356c6-8731-4734-8a74-70e3d6ed7071
+	client-request-id: 206356c6-8731-4734-8a74-70e3d6ed7071
+ClientRequestId: 206356c6-8731-4734-8a74-70e3d6ed7071
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.UserRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 62
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 92
+2020-12-04T16:44:04.0693210+05:30 [ERR] blendnet.crm.user.api// Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource '9810059982' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:14:07
+	request-id: 7c417c7d-0efa-4c88-8ec2-77b0f7621d10
+	client-request-id: 7c417c7d-0efa-4c88-8ec2-77b0f7621d10
+ClientRequestId: 7c417c7d-0efa-4c88-8ec2-77b0f7621d10
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.UserRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 62
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 92
+Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource '9810059982' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:14:07
+	request-id: 7c417c7d-0efa-4c88-8ec2-77b0f7621d10
+	client-request-id: 7c417c7d-0efa-4c88-8ec2-77b0f7621d10
+ClientRequestId: 7c417c7d-0efa-4c88-8ec2-77b0f7621d10
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.UserRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 62
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 92
+2020-12-04T16:44:39.9835579+05:30 [ERR] blendnet.crm.user.api// Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: UnknownError
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:14:43
+	request-id: 58b38454-ebc4-4c37-9e10-f47b85f0ef51
+	client-request-id: 58b38454-ebc4-4c37-9e10-f47b85f0ef51
+ClientRequestId: 58b38454-ebc4-4c37-9e10-f47b85f0ef51
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.UserRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 62
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 92
+Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: UnknownError
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:14:43
+	request-id: 58b38454-ebc4-4c37-9e10-f47b85f0ef51
+	client-request-id: 58b38454-ebc4-4c37-9e10-f47b85f0ef51
+ClientRequestId: 58b38454-ebc4-4c37-9e10-f47b85f0ef51
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.UserRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 62
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 92
+2020-12-04T17:03:36.9521155+05:30 [ERR] blendnet.crm.user.api// Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: BadRequest
+Message: Invalid filter clause
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:33:40
+	request-id: 8d252a24-bf80-4c81-915b-e13568f7b5a9
+	client-request-id: 8d252a24-bf80-4c81-915b-e13568f7b5a9
+ClientRequestId: 8d252a24-bf80-4c81-915b-e13568f7b5a9
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 67
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: BadRequest
+Message: Invalid filter clause
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:33:40
+	request-id: 8d252a24-bf80-4c81-915b-e13568f7b5a9
+	client-request-id: 8d252a24-bf80-4c81-915b-e13568f7b5a9
+ClientRequestId: 8d252a24-bf80-4c81-915b-e13568f7b5a9
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 67
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+2020-12-04T17:03:37.4092528+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: BadRequest
+Message: Invalid filter clause
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:33:40
+	request-id: 8d252a24-bf80-4c81-915b-e13568f7b5a9
+	client-request-id: 8d252a24-bf80-4c81-915b-e13568f7b5a9
+ClientRequestId: 8d252a24-bf80-4c81-915b-e13568f7b5a9
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 67
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-12-04T17:08:52.0863849+05:30 [ERR] blendnet.crm.user.api// Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: BadRequest
+Message: Invalid filter clause
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:38:55
+	request-id: 46f3e3b5-2ccd-45db-a467-438fabb6a92a
+	client-request-id: 46f3e3b5-2ccd-45db-a467-438fabb6a92a
+ClientRequestId: 46f3e3b5-2ccd-45db-a467-438fabb6a92a
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 67
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: BadRequest
+Message: Invalid filter clause
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:38:55
+	request-id: 46f3e3b5-2ccd-45db-a467-438fabb6a92a
+	client-request-id: 46f3e3b5-2ccd-45db-a467-438fabb6a92a
+ClientRequestId: 46f3e3b5-2ccd-45db-a467-438fabb6a92a
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 67
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+2020-12-04T17:08:52.4508347+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: BadRequest
+Message: Invalid filter clause
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:38:55
+	request-id: 46f3e3b5-2ccd-45db-a467-438fabb6a92a
+	client-request-id: 46f3e3b5-2ccd-45db-a467-438fabb6a92a
+ClientRequestId: 46f3e3b5-2ccd-45db-a467-438fabb6a92a
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 67
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-12-04T17:17:09.3427051+05:30 [ERR] blendnet.crm.user.api// Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: BadRequest
+Message: Invalid filter clause
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:47:12
+	request-id: 53d9c09c-5d46-476c-a5bd-d43fbf1e0146
+	client-request-id: 53d9c09c-5d46-476c-a5bd-d43fbf1e0146
+ClientRequestId: 53d9c09c-5d46-476c-a5bd-d43fbf1e0146
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 67
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: BadRequest
+Message: Invalid filter clause
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:47:12
+	request-id: 53d9c09c-5d46-476c-a5bd-d43fbf1e0146
+	client-request-id: 53d9c09c-5d46-476c-a5bd-d43fbf1e0146
+ClientRequestId: 53d9c09c-5d46-476c-a5bd-d43fbf1e0146
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 67
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+2020-12-04T17:17:09.6513804+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: BadRequest
+Message: Invalid filter clause
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T11:47:12
+	request-id: 53d9c09c-5d46-476c-a5bd-d43fbf1e0146
+	client-request-id: 53d9c09c-5d46-476c-a5bd-d43fbf1e0146
+ClientRequestId: 53d9c09c-5d46-476c-a5bd-d43fbf1e0146
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 67
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-12-04T17:25:29.7838471+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 'Microsoft.Graph.GraphServiceUsersCollectionPage' does not contain a definition for 'id'
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 72
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-12-04T17:28:28.3171015+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 'Microsoft.Graph.GraphServiceUsersCollectionPage' does not contain a definition for 'id'
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 72
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-12-04T17:28:43.6841695+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 'Microsoft.Graph.GraphServiceUsersCollectionPage' does not contain a definition for 'id'
+   at CallSite.Target(Closure , CallSite , Object )
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 72
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-12-04T17:43:03.4823989+05:30 [ERR] blendnet.crm.user.api// Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: Request_UnsupportedQuery
+Message: Issuer is not set in the query. Issuer issuer, IssuerUserId: issuerUserId
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T12:13:07
+	request-id: bf2ec5b5-7443-4f7e-84c3-25b2bd20b28a
+	client-request-id: bf2ec5b5-7443-4f7e-84c3-25b2bd20b28a
+ClientRequestId: bf2ec5b5-7443-4f7e-84c3-25b2bd20b28a
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 76
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: Request_UnsupportedQuery
+Message: Issuer is not set in the query. Issuer issuer, IssuerUserId: issuerUserId
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T12:13:07
+	request-id: bf2ec5b5-7443-4f7e-84c3-25b2bd20b28a
+	client-request-id: bf2ec5b5-7443-4f7e-84c3-25b2bd20b28a
+ClientRequestId: bf2ec5b5-7443-4f7e-84c3-25b2bd20b28a
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 76
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+2020-12-04T17:43:03.7194731+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Status Code: BadRequest
+Microsoft.Graph.ServiceException: Code: Request_UnsupportedQuery
+Message: Issuer is not set in the query. Issuer issuer, IssuerUserId: issuerUserId
+Inner error:
+	AdditionalData:
+	date: 2020-12-04T12:13:07
+	request-id: bf2ec5b5-7443-4f7e-84c3-25b2bd20b28a
+	client-request-id: bf2ec5b5-7443-4f7e-84c3-25b2bd20b28a
+ClientRequestId: bf2ec5b5-7443-4f7e-84c3-25b2bd20b28a
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.GraphServiceUsersCollectionRequest.GetAsync(CancellationToken cancellationToken)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 76
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-12-04T18:00:51.7761007+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 'Microsoft.Graph.GraphServiceUsersCollectionPage' does not contain a definition for 'id'
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 83
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-12-04T18:01:20.8367189+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 'Microsoft.Graph.GraphServiceUsersCollectionPage' does not contain a definition for 'id'
+   at CallSite.Target(Closure , CallSite , Object )
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 83
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2020-12-04T18:01:46.4439462+05:30 [ERR] blendnet.crm.user.api// An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 'Microsoft.Graph.GraphServiceUsersCollectionPage' does not contain a definition for 'id'
+   at CallSite.Target(Closure , CallSite , Object )
+   at blendnet.crm.user.api.Repository.GraphRepository.IdentityRepository.GetUser(String userPrincipalName) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Repository\GraphRepository\IdentityRepository.cs:line 83
+   at blendnet.crm.user.api.Controllers.IdentityController.GetUser(String upn) in D:\Data\AGCLI\BlendNet\newfork\blendnet.crm.user.api\Controllers\IdentityController.cs:line 97
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
