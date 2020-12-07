@@ -1,0 +1,5 @@
+2020-11-11T16:38:17.8590117+05:30 [INF] blendnet.crm.user.api// No subscriber found for UserChangedIntegrationEvent.
+2020-11-11T16:38:54.5820194+05:30 [INF] blendnet.crm.user.api// No subscriber found for UserChangedIntegrationEvent.
+2020-11-11T17:11:07.2733354+05:30 [INF] blendnet.crm.user.api// No subscriber found for UserChangedIntegrationEvent.
+2020-11-11T17:11:17.6541354+05:30 [INF] blendnet.crm.user.api// No subscriber found for UserChangedIntegrationEvent.
+2020-11-11T17:11:38.4704100+05:30 [INF] blendnet.crm.user.api// No subscriber found for UserChangedIntegrationEvent.

@@ -14,45 +14,69 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import { IconButton } from '@fluentui/react/lib/Button';
 import { withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { ContentProviderDetail } from './ContentProvider/ContentProviderDetail';
+import { Route } from 'react-router-dom';
+import { ContentProviderDetails} from './ContentProvider/ContentProviderDetails';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { Link, Switch } from 'react-router-dom';
 
 
-function createData(name, contact, address, status) {
-  return { name, contact, address, status };
+
+function createData(id, name, contact, address, status) {
+  return { id, name, contact, address, status };
 }
 
 function populateData(contentProvidersList){
-  // rows =[];
-  // contentProvidersList.forEach(element => {
-  //   rows.push(createData(element.name,
-  //             element.contentAdministrators!=null?element.contentAdministrators[0]?.mobile:'',
-  //             element.address.state,
-  //             element.isActive));
-  // });
+  rows =[];
+  contentProvidersList.forEach(element => {
+      rows.push(
+      createData(
+        element.id,
+        element.name,
+        element.contentAdministrators!=null?element.contentAdministrators[0]?.mobile:'',
+        element.address.state,
+        element.isActive?'Active':'Disabled'));
+  });
+  
 }
 
-const rows = [
-  createData('Mishtu Mobile Booth', '+91 9231232341', 'J.P. nagar, Banglore', 'Active'),
-  createData('Apple Care', '+91 9333232341', 'A.M. nagar, Banglore', 'Active'),
-  createData('Dell Center', '+91 9451232341', 'Bilekahalli, Banglore', 'Active'),
-  createData('Random Grocery store', '+91 9454532341', 'Richmond Circle, Banglore', 'Disabled'),
-  createData('Random Tapri', '+91 9231244441', 'Pimpri, Pune','Active'),
-  createData('Small business venture', '+91 9222329341', 'Worli, Mumbai','Disabled'),
-  createData('Medium Business', '+91 5454433441', 'Delhi, India', 'Active'),
-  createData('Blendnet Mobiles', '+91 8234232341', 'Whitefield, Banglore','Disabled'),
-  createData('Samsung Smart booth', '+91 9444442341', 'Bellandur, Banglore', 'Active'),
-  createData('Motorola Store', '+91 8888832341', 'Electronic city, Banglore', 'Active'),
-  createData('Dmart', '+91 9231856233', 'Harlur road, Banglore', 'Disabled'),
-  createData('Reliance', '+91 9245632341', 'Ranka colony, Banglore', 'Active'),
-  createData('List Exhaused', '+91 8981232341', 'JayaNagar, Banglore', 'Disabled'),
-];
+// const rows = [
+//   createData('Mishtu Mobile Booth', '+91 9231232341', 'J.P. nagar, Banglore', 'Active'),
+//   createData('Apple Care', '+91 9333232341', 'A.M. nagar, Banglore', 'Active'),
+//   createData('Dell Center', '+91 9451232341', 'Bilekahalli, Banglore', 'Active'),
+//   createData('Random Grocery store', '+91 9454532341', 'Richmond Circle, Banglore', 'Disabled'),
+//   createData('Random Tapri', '+91 9231244441', 'Pimpri, Pune','Active'),
+//   createData('Small business venture', '+91 9222329341', 'Worli, Mumbai','Disabled'),
+//   createData('Medium Business', '+91 5454433441', 'Delhi, India', 'Active'),
+//   createData('Blendnet Mobiles', '+91 8234232341', 'Whitefield, Banglore','Disabled'),
+//   createData('Samsung Smart booth', '+91 9444442341', 'Bellandur, Banglore', 'Active'),
+//   createData('Motorola Store', '+91 8888832341', 'Electronic city, Banglore', 'Active'),
+//   createData('Dmart', '+91 9231856233', 'Harlur road, Banglore', 'Disabled'),
+//   createData('Reliance', '+91 9245632341', 'Ranka colony, Banglore', 'Active'),
+//   createData('List Exhaused', '+91 8981232341', 'JayaNagar, Banglore', 'Disabled'),
+// ];
 
-// let rows = [];
+// const rows = [
+//   createData('EROS Now', '+91 9231232341', 'Lokhandwala, Mumbai', 'Active'),
+//   createData('Vudu', '+91 9333232341', 'A.M. nagar, Delhi', 'Active'),
+//   createData('ALTBalaji', '+91 9451232341', 'Andheri, Mumbai', 'Active'),
+//   createData('Hungama Play', '+91 9454532341', 'Richmond Circle, Banglore', 'Disabled'),
+//   createData('Voot', '+91 9231244441', 'Pimpri, Pune','Active'),
+//   createData('JioCinema', '+91 9222329341', 'Worli, Mumbai','Disabled'),
+//   createData('Hotstar', '+91 5454433441', 'Delhi, India', 'Active'),
+//   createData('Netflix ', '+91 8234232341', 'Whitefield, Delhi','Disabled'),
+//   createData('YuppTV', '+91 9444442341', 'Bandra, Mumbai', 'Active'),
+//   createData('Vuclip', '+91 8888832341', 'Electronic city, Banglore', 'Active'),
+//   createData('TVFPlay', '+91 9231856233', 'Harlur road, Banglore', 'Disabled'),
+//   createData('Amazon Prime Video', '+91 9245632341', 'Ranka colony, Mumbai', 'Active'),
+//   createData('ZEE5', '+91 8981232341', 'JayaNagar, Mumbai', 'Disabled'),
+// ];
+
+ let rows = [];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -84,11 +108,13 @@ const headCells = [
   { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
   { id: 'contact', numeric: true, disablePadding: false, label: 'Contact' },
   { id: 'address', numeric: true, disablePadding: false, label: 'Address' },
-  { id: 'status', numeric: true, disablePadding: false, label: 'Status' }
+  { id: 'status', numeric: true, disablePadding: false, label: 'Status' },
+  { id: 'action', numeric: false, disablePadding: false, label: ''}
 ];
 
 function EnhancedTableHead(props) {
   const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -98,12 +124,12 @@ function EnhancedTableHead(props) {
       <TableRow>
           <TableCell padding="checkbox"></TableCell>
         <TableCell padding="checkbox">
-          <MSCheckbox
+          {/* <MSCheckbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{ 'aria-label': 'select all Content-Providers' }}
-          />
+          /> */}
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
@@ -112,8 +138,9 @@ function EnhancedTableHead(props) {
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
+ 
             <TableSortLabel
-              active={orderBy === headCell.id}
+              active={orderBy === "headCell.id"}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
@@ -131,9 +158,7 @@ function EnhancedTableHead(props) {
   );
 }
 
-function showContentProviderDetail(){
-  this.props.history.push('/content-provider-detail');
-};
+
 
 EnhancedTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -150,13 +175,17 @@ const useToolbarStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(1),
   },
-  highlight:
-        {
-          color: "#00000",
-          backgroundColor: "#b3b2b1",
-        },
+  // highlight:
+  //       {
+  //         color: "#00000",
+  //         backgroundColor: "#b3b2b1",
+  //       },
   title: {
     flex: '1 1 100%',
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'black'
   },
 }));
 
@@ -168,9 +197,9 @@ const EnhancedTableToolbar = (props) => {
 
   return (
     <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
+      // className={clsx(classes.root, {
+      //   [classes.highlight]: numSelected > 0,
+      // })}
     >
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
@@ -183,19 +212,20 @@ const EnhancedTableToolbar = (props) => {
       )}
 
   
-        {numSelected == 1 ? (
+        {numSelected === 1 ? (
           <Grid container spacing={1}>
             <Grid item xs={8}>
             </Grid>
             <Grid item xs={2}>
               <Tooltip title="Edit">
-                <IconButton title="Edit" ariaLabel="Edit"   iconProps={{ iconName: 'Edit' }} 
-                onClick={(event) => showContentProviderDetail()}/>
+              <Link to="/content-provider-details" className={classes.link}>
+                <EditIcon />
+              </Link>
               </Tooltip>
             </Grid>
             <Grid item xs={2}>
               <Tooltip title="Delete">
-                <IconButton title="Delete" ariaLabel="Delete"   iconProps={{ iconName: 'Delete' }} />
+                <DeleteIcon />
               </Tooltip>
             </Grid>
           </Grid>
@@ -206,19 +236,19 @@ const EnhancedTableToolbar = (props) => {
              <Grid  item xs={10}/>
               <Grid item xs={1}>
                 <Tooltip title="Delete">
-                  <IconButton title="Delete" ariaLabel="Delete"   iconProps={{ iconName: 'Delete' }} />
+                  <DeleteIcon />
                 </Tooltip>
                 </Grid>
             </Grid>
         ) :  (<Grid  item xs={0}/>)}
 
-      {numSelected == 0 ? (
+      {numSelected === 0 ? (
         <Grid container spacing={1}>
           <Grid  item xs={10}/>
           <Grid item xs={1}>
-            <Tooltip title="Filter list">
-              <IconButton title="Filter" ariaLabel="Filter"   iconProps={{ iconName: 'Filter' }} />
-            </Tooltip>
+            {/* <Tooltip title="Filter list">
+              <FilterListIcon />
+            </Tooltip> */}
           </Grid>
         </Grid>
           
@@ -258,6 +288,14 @@ const useStyles = makeStyles((theme) => ({
   tableContainer: {
     maxHeight: 320
   },
+  active: {
+    color : 'green',
+    fontWeight: 'bold',
+  },
+  deactive : {
+    color: 'red',
+    fontWeight: 'bold',
+  }
 }));
 
 const MSCheckbox = withStyles({
@@ -270,6 +308,7 @@ const MSCheckbox = withStyles({
   checked: {},
 })((props) => <Checkbox color="default" {...props} />);
 
+let currentRow='';
 export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -332,9 +371,6 @@ export default function EnhancedTable(props) {
 
   return (
     <div>
-      <Router>
-        <Route path="/content-provider-detail" component={ContentProviderDetail} />
-      </Router>
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} />
@@ -365,7 +401,7 @@ export default function EnhancedTable(props) {
                     return (
                       <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.name)}
+                        // onClick={(event) => handleClick(event, row.name)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
@@ -375,17 +411,34 @@ export default function EnhancedTable(props) {
 
                       <TableCell padding="checkbox"></TableCell>
                         <TableCell padding="checkbox">
-                          <MSCheckbox
+                          {/* <MSCheckbox
                             checked={isItemSelected}
                             inputProps={{ 'aria-labelledby': labelId }}
-                          />
+                          /> */}
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
                           {row.name}
                         </TableCell>
                         <TableCell align="right">{row.contact}</TableCell>
                         <TableCell align="right">{row.address}</TableCell>
-                        <TableCell align="right">{row.status}</TableCell>
+                        <TableCell align="right" className={row.status === 'Active' ? classes.active : classes.deactive }>{row.status}</TableCell>
+                        <TableCell align="left">
+                          <Link
+                              to={
+                                  {
+                                     pathname:  '/content-provider-details',
+                                     state:{
+                                        details:row
+                                      }
+                                  }
+                                }
+                          >
+                            <EditIcon />
+                          </Link>
+                          {/* <Link to="/content-provider-detail" className={classes.link} details={row}>
+                            <EditIcon />
+                          </Link> */}
+                        </TableCell>
                       </TableRow>
                     );
                   })}
@@ -408,6 +461,9 @@ export default function EnhancedTable(props) {
           />
         </Paper>
       </div>
+      <Switch>
+        <Route path='/content-provider-details' component={ContentProviderDetails} />
+      </Switch>
     </div>
     
   );
