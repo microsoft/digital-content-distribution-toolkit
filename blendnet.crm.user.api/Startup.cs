@@ -36,6 +36,8 @@ namespace blendnet.crm.user.api
 
         public IConfiguration Configuration { get; }
 
+        private const string C_CORS_POLICYNAME = "BlendNetSpecificOrigins";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -49,6 +51,20 @@ namespace blendnet.crm.user.api
             },
             options => {
                 Configuration.Bind("AzureAdB2C", options);
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: C_CORS_POLICYNAME,
+                                  builder =>
+                                  {
+                                      //To Do: Remove any Origin and have right value
+                                      //builder.WithOrigins("http://example.com",
+                                      //                    "http://www.contoso.com");
+                                      builder.AllowAnyHeader();
+                                      builder.AllowAnyMethod();
+                                      builder.AllowAnyOrigin();
+                                  });
             });
 
             services.AddControllers();
@@ -197,6 +213,9 @@ namespace blendnet.crm.user.api
             });
 
             app.UseRouting();
+
+            // global cors policy
+            app.UseCors(C_CORS_POLICYNAME);
 
             app.UseAuthentication();
 
