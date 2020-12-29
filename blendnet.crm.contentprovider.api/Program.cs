@@ -52,7 +52,6 @@ namespace blendnet.crm.contentprovider.api
                 })
                 .ConfigureAppConfiguration((context, config) =>
                 {
-
                     //read the configuration from keyvault in case of production
                     //https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-5.0
                     if (context.HostingEnvironment.IsProduction())
@@ -60,6 +59,7 @@ namespace blendnet.crm.contentprovider.api
                         var builtConfig = config.Build();
 
                         var azureServiceTokenProvider = new AzureServiceTokenProvider();
+
                         var keyVaultClient = new KeyVaultClient(
                             new KeyVaultClient.AuthenticationCallback(
                                 azureServiceTokenProvider.KeyVaultTokenCallback));

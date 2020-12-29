@@ -40,17 +40,31 @@ namespace blendnet.crm.contentprovider.api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           // configure Azure AD B2C Authentication
-           services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-           .AddMicrosoftIdentityWebApi(options =>
-           {
-               Configuration.Bind("AzureAdB2C", options);
+            // configure Azure AD B2C Authentication
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddMicrosoftIdentityWebApi(options =>
+            {
+                Configuration.Bind("AzureAdB2C", options);
 
-               options.TokenValidationParameters.NameClaimType = "name";
-           },
-           options => { 
-               Configuration.Bind("AzureAdB2C", options); 
-           });
+                options.TokenValidationParameters.NameClaimType = "name";
+            },
+            options => { 
+                Configuration.Bind("AzureAdB2C", options); 
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "BlendNetSpecificOrigins",
+                                  builder =>
+                                  {
+                                      //To Do: Remove any Origin and have right value
+                                      //builder.WithOrigins("http://example.com",
+                                      //                    "http://www.contoso.com");
+                                      builder.AllowAnyHeader();
+                                      builder.AllowAnyMethod();
+                                      builder.AllowAnyOrigin();
+                                  });
+            });
 
             services.AddControllers();
 
@@ -137,6 +151,9 @@ namespace blendnet.crm.contentprovider.api
             });
 
             app.UseRouting();
+
+            // global cors policy
+            app.UseCors("BlendNetSpecificOrigins");
 
             app.UseAuthentication();
 
