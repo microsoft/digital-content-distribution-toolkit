@@ -22,6 +22,8 @@ using Microsoft.Identity.Client;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.common.dto.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace blendnet.crm.user.api
 {
@@ -42,8 +44,8 @@ namespace blendnet.crm.user.api
             .AddMicrosoftIdentityWebApi(options =>
             {
                 Configuration.Bind("AzureAdB2C", options);
-
                 options.TokenValidationParameters.NameClaimType = "name";
+                options.TokenValidationParameters.RoleClaimType = "groups";
             },
             options => {
                 Configuration.Bind("AzureAdB2C", options);
@@ -195,6 +197,8 @@ namespace blendnet.crm.user.api
             });
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

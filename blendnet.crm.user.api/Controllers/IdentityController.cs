@@ -14,6 +14,7 @@ using blendnet.crm.user.api.Repository.Interfaces;
 using blendnet.common.dto.Events;
 using Microsoft.Extensions.Options;
 using blendnet.crm.user.api.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace blendnet.crm.user.api.Controllers
 {
@@ -23,6 +24,7 @@ namespace blendnet.crm.user.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
+    //[Authorize]
     public class IdentityController : ControllerBase
     {
         private readonly ILogger _logger;

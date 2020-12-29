@@ -1,0 +1,11 @@
+﻿docker build -t blendnet.crm.user.api .
+docker tag blendnet.crm.user.api bineiot.azurecr.io/blendnet.crm.user.api:v1
+docker push bineiot.azurecr.io/blendnet.crm.user.api:v1
+
+docker build --force-rm -f "D:\Data\AGCLI\BlendNet\sprint5\blendnet.crm.user.api\Dockerfile" -t blendnet.crm.user.api "D:\Data\AGCLI\BlendNet\sprint5"
+
+docker run -d -p 8081:80 --name mysampledockapi sampledockapi
+docker image rm sampledockapi
+
+
+docker image rm 57f960a60287
