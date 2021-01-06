@@ -19,7 +19,7 @@ namespace blendnet.crm.contentprovider.repository.CosmosRepository
 
             builder.HasPartitionKey(cp => cp.Id);
 
-            builder.OwnsOne(cp => cp.Address).OwnsOne(cp => cp.MapLocation);
+            //builder.OwnsOne(cp => cp.Address).OwnsOne(cp => cp.MapLocation);
 
             builder.OwnsMany(cp => cp.ContentAdministrators).OwnsOne(ca => ca.Address).OwnsOne(ca => ca.MapLocation); ;
         }

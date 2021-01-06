@@ -98,7 +98,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
 
             return CreatedAtAction( nameof(GetContentProvider), 
                                     new { contentProviderId = contentProviderId, Version = ApiVersion.Default.MajorVersion.ToString() },
-                                    contentProviderId.ToString());
+                                    contentProviderId);
         }
 
         /// <summary>

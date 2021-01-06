@@ -324,15 +324,15 @@ namespace blendnet.crm.contentprovider.api.bdd.Steps
 
             contentProvider.Name = contentProviderName;
 
-            contentProvider.Address = new AddressDto()
-            {
-                City = "Delhi",
-                Pin = "110089",
-                State = "Delhi",
-                StreetName = "Street 1",
-                Town = "Delhi Town",
-                MapLocation = new MapLocationDto() { Latitude = 19, Longitude = 20 }
-            };
+            //contentProvider.Address = new AddressDto()
+            //{
+            //    City = "Delhi",
+            //    Pin = "110089",
+            //    State = "Delhi",
+            //    StreetName = "Street 1",
+            //    Town = "Delhi Town",
+            //    MapLocation = new MapLocationDto() { Latitude = 19, Longitude = 20 }
+            //};
 
             if (addAdmistrator)
             {
