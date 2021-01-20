@@ -21,6 +21,8 @@ namespace blendnet.common.dto
 
         public DateTime? DeactivationDate { get; set; }
 
+        public string LogoUrl { get; set; }
+
         /// <summary>
         /// Resets identifiers
         /// </summary>
