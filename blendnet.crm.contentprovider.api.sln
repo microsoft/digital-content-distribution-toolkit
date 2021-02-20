@@ -32,6 +32,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ingress", "Ingress", "{B013
 		ingress.yaml = ingress.yaml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MPDParser", "MPDParser\MPDParser.csproj", "{AEF52853-B4DE-4974-87F7-DCB04D22FBAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.cms.testutility", "blendnet.cms.testutility\blendnet.cms.testutility.csproj", "{710B1F03-A033-47C2-8E80-4F60408CBE61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +90,14 @@ Global
 		{8505EAA9-19A5-49D6-8611-B6ABF5084C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8505EAA9-19A5-49D6-8611-B6ABF5084C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8505EAA9-19A5-49D6-8611-B6ABF5084C94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEF52853-B4DE-4974-87F7-DCB04D22FBAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEF52853-B4DE-4974-87F7-DCB04D22FBAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEF52853-B4DE-4974-87F7-DCB04D22FBAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEF52853-B4DE-4974-87F7-DCB04D22FBAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{710B1F03-A033-47C2-8E80-4F60408CBE61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{710B1F03-A033-47C2-8E80-4F60408CBE61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{710B1F03-A033-47C2-8E80-4F60408CBE61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{710B1F03-A033-47C2-8E80-4F60408CBE61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

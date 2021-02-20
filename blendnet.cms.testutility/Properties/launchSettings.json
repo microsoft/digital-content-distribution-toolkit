@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "blendnet.cms.testutility": {
+      "commandName": "Project",
+      "commandLineArgs": "https://nimbuscdn-nimbuspm.streaming.mediaservices.windows.net/2b533311-b215-4409-80af-529c3e853622/Ignite-short.mp4"
+    }
+  }
+}
