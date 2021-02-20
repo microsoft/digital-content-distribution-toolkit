@@ -131,8 +131,6 @@ namespace blendnet.cms.testutility
                 data.CopyTo(fileStream);
                 fileStream.Flush();
             }
-
-            Console.WriteLine($"Downloaded - {filename}");
         }
     }
 

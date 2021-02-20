@@ -25,8 +25,8 @@
 		<movie>
 			<file>
 				<filename>ses-dummy.mp4</filename><!--This is requires as movie cannot support tar. This will be a path to a fixed dummy file which will accompy in all tar files-->
-				<filesize>1723915</filesize><!-- fixed size in bytes. ses to share one dummy file and size and checksum -->
-				<checksum>7a07e93ae52a908ece1d4f908b48fa2a</checksum><!-- checksum using SHA256. ses to share one dummy file and size and checksum -->
+				<filesize>224783</filesize><!-- fixed size in bytes. ses to share one dummy file and size and checksum -->
+				<checksum>F1C19AFF0D0CCA95BAD2F0D3A38060E2FF15D2BBF2A69F096BBB0042BFD4670C</checksum><!-- checksum using SHA256. ses to share one dummy file and size and checksum -->
 			</file>
 			<duration>PT00H00M00S</duration><!-- Fixed to PT00H00M00S  -->
 		</movie>

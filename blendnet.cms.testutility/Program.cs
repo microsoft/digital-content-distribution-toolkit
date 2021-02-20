@@ -34,7 +34,14 @@ namespace blendnet.cms.testutility
 
         private static string _finalDirectory = Path.Combine(Directory.GetCurrentDirectory(), _uniqueness_raw.ToString(),"fnl");
 
+        private static string _rootDirectory = Path.Combine(Directory.GetCurrentDirectory(), _uniqueness_raw.ToString());
+
+        private static string _outputLogPath = Path.Combine(Directory.GetCurrentDirectory(), _uniqueness_raw.ToString(),$"{_uniqueness_raw.ToString()}.output.txt");
+
         private static string _xmlTemplateFileName = "sample_ingest_content_rvwd.xml";
+
+        private static string _dummyMp4File = "ses-dummy.mp4";
+
 
         static async Task Main(string[] args)
         {
@@ -44,21 +51,24 @@ namespace blendnet.cms.testutility
                .AddEnvironmentVariables()
                .Build());
 
+            
             if (args == null || args.Length <=0)
             {
                 Console.WriteLine("Please provide media item url");
 
             }else
             {
+                Directory.CreateDirectory(_rootDirectory);
+
+                Directory.CreateDirectory(_workingDirectory);
+
+                Directory.CreateDirectory(_finalDirectory);
+
                 _assestIngestUrl = args[0];
 
-                SegmentInfo segmentInfo = SegmentDownloader.DownloadSegments("https://binemediaservices-aase.streaming.media.azure.net/8784a1c5-67f1-4dea-b121-48272f9da148/Ignite-short.ism/manifest(format=mpd-time-csf,encryption=cenc)", _workingDirectory, _uniqueness_raw.ToString());
-
-                MoveSegmentsToFinal(config, segmentInfo);
-                
-                //await RunAsync(config);
-
                 Console.WriteLine($"Starting transcoding process for {_assestIngestUrl}!");
+
+                await RunAsync(config);
             }
 
             Console.WriteLine("Process Complete!");
@@ -74,7 +84,7 @@ namespace blendnet.cms.testutility
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("TIP: Make sure that you have filled out the appsettings.json file before running this sample.");
+                Console.Error.WriteLine("Make sure that you have filled out the appsettings.json file.");
                 Console.Error.WriteLine($"{e.Message}");
                 return;
             }
@@ -100,7 +110,7 @@ namespace blendnet.cms.testutility
                 // Ensure that you have the desired encoding Transform. This is really a one time setup operation.
                 //Transform transform = await GetOrCreateTransformAsync(client, config.ResourceGroup, config.AccountName, AdaptiveStreamingTransformName);
 
-                Transform transform = EnsureTransformExists(config,client, config.ResourceGroup, config.AccountName, config.BineTransformName);
+                Transform transform = EnsureTransformExists(config, client, config.ResourceGroup, config.AccountName, config.BineTransformName);
 
                 // Output from the encoding Job must be written to an Asset, so let's create one
                 Asset outputAsset = await CreateOutputAssetAsync(client, config.ResourceGroup, config.AccountName, outputAssetName);
@@ -120,7 +130,7 @@ namespace blendnet.cms.testutility
                     // via the Key Delivery component of Azure Media Services.
                     // We are using the ContentKeyIdentifierClaim in the ContentKeyPolicy which means that the token presented
                     // to the Key Delivery Component must have the identifier of the content key in it. 
-                    ContentKeyPolicy policy = await GetOrCreateContentKeyPolicyAsync(config,client, config.ResourceGroup, config.AccountName, config.BineContentKeyPolicyName, TokenSigningKey);
+                    ContentKeyPolicy policy = await GetOrCreateContentKeyPolicyAsync(config, client, config.ResourceGroup, config.AccountName, config.BineContentKeyPolicyName, TokenSigningKey);
 
                     // Sets StreamingLocator.StreamingPolicyName to "Predefined_MultiDrmCencStreaming" policy.
                     StreamingLocator locator = await CreateStreamingLocatorAsync(client, config.ResourceGroup, config.AccountName, outputAsset.Name, locatorName, config.BineContentKeyPolicyName);
@@ -151,31 +161,37 @@ namespace blendnet.cms.testutility
 
                     Console.WriteLine($"Dash URL : {dashPath}");
 
+                    File.AppendAllLines(_outputLogPath, new string[] { $"Dash URL : {dashPath}", System.Environment.NewLine });
+
                     Console.WriteLine("Copy and paste the following URL in your browser to play back the file in the Azure Media Player.");
 
                     Console.WriteLine("You can use Chrome for Widevine.");
-                    
+
                     Console.WriteLine();
-                    
+
                     Console.WriteLine($"https://ampdemo.azureedge.net/?url={dashPath}&widevine=true&token=Bearer%3D{token}");
+
+                    File.AppendAllLines(_outputLogPath, new string[] { $"https://ampdemo.azureedge.net/?url={dashPath}&widevine=true&token=Bearer%3D{token}", System.Environment.NewLine });
 
                     Console.WriteLine();
 
                     Console.WriteLine("****Starting downloading Segments******");
 
-                    SegmentInfo segmentInfo = SegmentDownloader.DownloadSegments(dashPath, _workingDirectory,_uniqueness_raw.ToString());
-                   
-                    Console.WriteLine();
-                    
+                    Console.WriteLine($"****Please monitor progress at {_rootDirectory} ******");
+
+                    SegmentInfo segmentInfo = SegmentDownloader.DownloadSegments(dashPath, _workingDirectory, _uniqueness_raw.ToString());
+
                     Console.WriteLine("****Completed downloading Segments******");
 
-                    Console.WriteLine("****Generating Individual Tar Files******");
+                    Console.WriteLine("****Moving content to Tar Files******");
 
-                    MoveSegmentsToFinal(config,segmentInfo);
-                
+                    MoveContentToFinal(config, segmentInfo);
+
+                    Console.WriteLine("****Tar File Generated******");
                 }
 
                 Console.Out.Flush();
+
                 Console.ReadLine();
             }
             catch (ApiErrorException e)
@@ -185,15 +201,24 @@ namespace blendnet.cms.testutility
                 Console.WriteLine($"\tMessage: {e.Body.Error.Message}");
                 Console.WriteLine();
                 Console.WriteLine("Exiting, cleanup may be necessary...");
+
+                File.AppendAllLines(_outputLogPath, new string[] { $"{e.ToString()}",System.Environment.NewLine});
+
                 Console.ReadLine();
+
+            } catch (Exception ex)
+            {
+                Console.WriteLine("Hit GeneralErrorException");
+
+                File.AppendAllLines(_outputLogPath, new string[] { $"{ex.ToString()}", System.Environment.NewLine });
             }
         }
 
         /// <summary>
-        /// 
+        /// Moves the segments, xml, dummy file to final and creates tar
         /// </summary>
         /// <param name="segmentInfo"></param>
-        public static void MoveSegmentsToFinal(AppSettings config, SegmentInfo segmentInfo)
+        public static void MoveContentToFinal(AppSettings config, SegmentInfo segmentInfo)
         {
             string tarPath;
 
@@ -224,8 +249,17 @@ namespace blendnet.cms.testutility
             //copy the template to final directory
             File.Copy(_xmlTemplateFileName, xmlFilePath);
 
+            //replace tags in xml template
             ReplaceTokenInXml(xmlFilePath, segmentInfo);
 
+            //copy dummy file to final
+            string dummyMp4Path = Path.Combine(_finalDirectory, $"{_dummyMp4File}");
+
+            File.Copy(_dummyMp4File, dummyMp4Path);
+
+            string finalTarPath = Path.Combine(_rootDirectory, $"{_uniqueness_raw.ToString()}.tar");
+
+            TarHelper.TarCreateFromStream(finalTarPath, _finalDirectory,_uniqueness_raw.ToString(),true);
         }
 
         private static void ReplaceTokenInXml(string xmlFilePath, SegmentInfo segmentInfo)
