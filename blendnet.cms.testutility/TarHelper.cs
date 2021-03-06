@@ -13,7 +13,7 @@ namespace blendnet.cms.testutility
     /// </summary>
     public static class TarHelper
     {
-        public static void TarCreateFromStream(string tarFilePath, string tarSourceDirectory, string parentTarEntryName = "", bool useOnlyFileNameForChildTar = false)
+        public static void TarCreateFromStream(string tarFilePath, string tarSourceDirectory)
         {
             // Create an output stream. Does not have to be disk, could be MemoryStream etc.
             string tarOutFn = tarFilePath;
@@ -24,7 +24,7 @@ namespace blendnet.cms.testutility
 
             using (TarOutputStream tarOutputStream = new TarOutputStream(outStream, Encoding.UTF8))
             {
-                CreateTarManually(tarOutputStream, tarSourceDirectory,parentTarEntryName, useOnlyFileNameForChildTar);
+                CreateTarManually(tarOutputStream, tarSourceDirectory);
 
                 // Closing the archive also closes the underlying stream.
                 // If you don't want this (e.g. writing to memorystream), set tarOutputStream.IsStreamOwner = false
@@ -33,18 +33,20 @@ namespace blendnet.cms.testutility
             }
         }
 
-        private static void CreateTarManually(TarOutputStream tarOutputStream, string sourceDirectory, string parentTarEntryName = "", bool useOnlyFileNameForChildTar = false)
+        private static void CreateTarManually(TarOutputStream tarOutputStream, string sourceDirectory)
         {
             // Optionally, write an entry for the directory itself.
             TarEntry tarEntry = TarEntry.CreateEntryFromFile(sourceDirectory);
 
-            if (string.IsNullOrEmpty(parentTarEntryName))
-            {
-                tarEntry.Name = Path.GetFileName(sourceDirectory);
-            }else
-            {
-                tarEntry.Name = "";
-            }
+            tarEntry.Name = "";
+
+            //if (string.IsNullOrEmpty(parentTarEntryName))
+            //{
+            //    tarEntry.Name = Path.GetFileName(sourceDirectory);
+            //}else
+            //{
+            //    tarEntry.Name = "";
+            //}
 
             tarOutputStream.PutNextEntry(tarEntry);
 
@@ -61,14 +63,16 @@ namespace blendnet.cms.testutility
 
                     string tarName;
 
-                    if (useOnlyFileNameForChildTar)
-                    {
-                        tarName = onlyFileName;
-                    }
-                    else
-                    {
-                        tarName = Path.Combine(tarEntry.Name, onlyFileName);
-                    }
+                    tarName = onlyFileName;
+
+                    //if (useOnlyFileNameForChildTar)
+                    //{
+                    //    tarName = onlyFileName;
+                    //}
+                    //else
+                    //{
+                    //    tarName = Path.Combine(tarEntry.Name, onlyFileName);
+                    //}
 
                     long fileSize = inputStream.Length;
 

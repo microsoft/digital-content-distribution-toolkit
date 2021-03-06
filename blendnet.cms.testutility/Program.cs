@@ -259,7 +259,7 @@ namespace blendnet.cms.testutility
 
             string finalTarPath = Path.Combine(_rootDirectory, $"{_uniqueness_raw.ToString()}.tar");
 
-            TarHelper.TarCreateFromStream(finalTarPath, _finalDirectory,_uniqueness_raw.ToString(),true);
+            TarHelper.TarCreateFromStream(finalTarPath, _finalDirectory);
         }
 
         private static void ReplaceTokenInXml(string xmlFilePath, SegmentInfo segmentInfo)
