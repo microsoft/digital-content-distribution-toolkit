@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,13 +7,12 @@ namespace blendnet.common.dto
 {
     public class ContentProviderDto
     {
+        [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
 
         [Required]
         public string Name { get; set; }
 
-        public string ContainerBaseName { get; set; }
-        
         public List<ContentAdministratorDto> ContentAdministrators { get; set; }
 
         public bool IsActive { get; set; } = true;
@@ -26,15 +26,15 @@ namespace blendnet.common.dto
         /// <summary>
         /// Resets identifiers
         /// </summary>
-        public void ResetIdentifiers()
+        public void SetIdentifiers()
         {
-            this.Id = null;
+            this.Id = Guid.NewGuid();
 
             if (this.ContentAdministrators != null && this.ContentAdministrators.Count > 0)
             {
                 foreach (ContentAdministratorDto contentAdministrator in this.ContentAdministrators)
                 {
-                    contentAdministrator.Id = null;
+                    contentAdministrator.Id = Guid.NewGuid();
                 }
             }
         }

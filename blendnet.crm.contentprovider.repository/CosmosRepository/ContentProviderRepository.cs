@@ -31,7 +31,7 @@ namespace blendnet.crm.contentprovider.repository.CosmosRepository
         /// <returns></returns>
         public async Task<Guid> CreateContentProvider(ContentProviderDto contentProvider)
         {
-            contentProvider.ResetIdentifiers();
+            contentProvider.SetIdentifiers();
 
             _blendNetContext.ContentProviders.Add(contentProvider);
 

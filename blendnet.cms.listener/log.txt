@@ -1460,3 +1460,25 @@ ClientRequestId: 4ba8b8ac-9287-4e82-b5ee-a2dde9684495
 2020-12-04T14:22:33.8101695+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: f1bbea38-726e-4ae5-2d91-08d89831d2a9
 2020-12-04T14:22:33.8285441+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : f1bbea38-726e-4ae5-2d91-08d89831d2a9
 2020-12-04T14:22:35.6259739+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: f1bbea38-726e-4ae5-2d91-08d89831d2a9
+2021-03-09T13:07:38.5063968+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2021-03-09T13:07:40.5258407+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2021-03-09T13:10:08.7963027+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2021-03-09T13:10:12.4579194+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2021-03-09T13:11:07.9123264+05:30 [ERR] blendnet.cms.listener// The messaging entity 'sb-blendnet-dev:Topic:blendnet-topic-dev|cmsservice' could not be found. To know more visit https://aka.ms/sbResourceMgrExceptions.  TrackingId:4a35419d-bc7d-4a4d-8d3e-0777cbac9000_B6, SystemTracker:sb-blendnet-dev:Topic:blendnet-topic-dev|cmsservice, Timestamp:2021-03-09T07:40:24 TrackingId:64b666098dbb454aa160504d2a1c66aa_G30, SystemTracker:gateway7, Timestamp:2021-03-09T07:40:24
+Microsoft.Azure.ServiceBus.MessagingEntityNotFoundException: The messaging entity 'sb-blendnet-dev:Topic:blendnet-topic-dev|cmsservice' could not be found. To know more visit https://aka.ms/sbResourceMgrExceptions.  TrackingId:4a35419d-bc7d-4a4d-8d3e-0777cbac9000_B6, SystemTracker:sb-blendnet-dev:Topic:blendnet-topic-dev|cmsservice, Timestamp:2021-03-09T07:40:24 TrackingId:64b666098dbb454aa160504d2a1c66aa_G30, SystemTracker:gateway7, Timestamp:2021-03-09T07:40:24
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.OnReceiveAsync(Int32 maxMessageCount, TimeSpan serverWaitTime)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.<>c__DisplayClass65_0.<<ReceiveAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(Int32 maxMessageCount, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.<MessagePumpTaskAsync>b__12_0()
+2021-03-09T13:11:08.0068902+05:30 [ERR] blendnet.cms.listener// Action : Receive |  Endpoint : sb-blendnet-dev.servicebus.windows.net | Endpoint : blendnet-topic-dev/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet-topic-dev/Subscriptions/CMSService
+2021-03-09T13:21:12.3155831+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2021-03-09T13:23:51.0984256+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2021-03-09T13:23:52.3452737+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2021-03-09T13:24:55.7865547+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: b9d9a358-7f92-444b-abb0-7d30d0a01412
+2021-03-09T13:24:58.9802386+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: b9d9a358-7f92-444b-abb0-7d30d0a01412
+2021-03-09T13:25:38.7087662+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : b9d9a358-7f92-444b-abb0-7d30d0a01412
+2021-03-09T13:25:58.2749620+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: b9d9a358-7f92-444b-abb0-7d30d0a01412

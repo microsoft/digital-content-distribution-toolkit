@@ -65,17 +65,17 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                     _logger.LogInformation($"Creating storage containers for content provider id: {integrationEvent.ContentProvider.Id}");
 
-                    //await CreateStorageContainers(integrationEvent);
+                    await CreateStorageContainers(integrationEvent);
 
                     if (integrationEvent.ContentProvider.ContentAdministrators != null &&
                         integrationEvent.ContentProvider.ContentAdministrators.Count > 0)
                     {
-                        _logger.LogInformation($"Adding administrators to Azure AD for : {integrationEvent.ContentProvider.Id}");
+                        _logger.LogInformation($"Adding administrators to Azure AD for : {integrationEvent.ContentProvider.Id.Value}");
 
                         await AddUserToAzureAD(integrationEvent);
                     }
 
-                    _logger.LogInformation($"Message Process Completed for content provider id: {integrationEvent.ContentProvider.Id}");
+                    _logger.LogInformation($"Message Process Completed for content provider id: {integrationEvent.ContentProvider.Id.Value}");
                 }
             }
             catch (Exception ex)
@@ -93,9 +93,9 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         {
             try
             {
-                var baseName = integrationEvent.ContentProvider.ContainerBaseName.Trim().ToLower();
+                var baseName = integrationEvent.ContentProvider.Id.ToString().Trim().ToLower();
 
-                string stagingContainerName = $"{baseName}staginge";
+                string dumpContainerName = $"{baseName}dump";
 
                 string mezzContainerName = $"{baseName}mezzanine";
 
@@ -103,13 +103,13 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 var containers = _blobServiceClient.GetBlobContainers(prefix: baseName);
 
-                if (!containerExists(stagingContainerName))
+                if (!containerExists(dumpContainerName))
                 {
-                    await _blobServiceClient.CreateBlobContainerAsync(stagingContainerName);
+                    await _blobServiceClient.CreateBlobContainerAsync(dumpContainerName);
                 }
                 else
                 {
-                    _logger.LogInformation($"{stagingContainerName} already exists");
+                    _logger.LogInformation($"{dumpContainerName} already exists");
                 }
 
                 if (!containerExists(mezzContainerName))

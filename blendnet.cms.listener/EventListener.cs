@@ -43,13 +43,13 @@ namespace blendnet.cms.listener
             _eventBus.Subscribe<ContentProviderCreatedIntegrationEvent,ContentProviderCreatedIntegrationEventHandler>();
 
             //todo: read from config once we finalize that we are ok to consume blob created event here.
-            CustomPropertyCorrelationRule correlationRule = new CustomPropertyCorrelationRule()
-            {
-                PropertyName = "aeg-subscription-name",
-                PropertValue = "BLOBTOPICSUBSCRIPTION",
-            };
+            //CustomPropertyCorrelationRule correlationRule = new CustomPropertyCorrelationRule()
+            //{
+            //    PropertyName = "aeg-subscription-name",
+            //    PropertValue = "BLOBTOPICSUBSCRIPTION",
+            //};
 
-            _eventBus.Subscribe<MicrosoftStorageBlobCreatedIntegrationEvent, MicrosoftStorageBlobCreatedIntegrationEventHandler>(correlationRule);
+            //_eventBus.Subscribe<MicrosoftStorageBlobCreatedIntegrationEvent, MicrosoftStorageBlobCreatedIntegrationEventHandler>(correlationRule);
 
             _logger.LogInformation("Subscribe complete by blendnet.cms.listener");
 

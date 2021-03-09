@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using blendnet.cms.repository.CosmosRepository;
+using blendnet.cms.repository.Interfaces;
+using blendnet.common.dto;
+using blendnet.common.dto.cms;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.ServiceBus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,6 +13,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -66,6 +72,9 @@ namespace blendnet.cms.api
                 });
             });
 
+            //Set up App Settings
+            services.Configure<AppSettings>(Configuration);
+
             //Configuring API Versiong
             services.AddApiVersioning(x =>
             {
@@ -83,6 +92,13 @@ namespace blendnet.cms.api
             //Configure Application Insights
             services.AddApplicationInsightsTelemetry();
 
+            //Configure Services
+            services.AddTransient<IContentProviderRepository, ContentProviderRepository>();
+
+            //Configure Cosmos DB
+            ConfigureCosmosDB(services);
+
+            //Configure Service Bus
             ConfigureEventBus(services);
         }
 
@@ -141,6 +157,32 @@ namespace blendnet.cms.api
             });
 
             services.AddSingleton<IEventBus, EventServiceBus>();
+        }
+
+        /// <summary>
+        /// Set up Cosmos DB
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureCosmosDB(IServiceCollection services)
+        {
+            string account = Configuration.GetValue<string>("AccountEndPoint");
+
+            string databaseName = Configuration.GetValue<string>("DatabaseName");
+
+            string key = Configuration.GetValue<string>("AccountKey");
+
+            services.AddSingleton<CosmosClient>((cc) => {
+
+                CosmosClient client = new CosmosClientBuilder(account, key)
+                           .WithSerializerOptions(new CosmosSerializationOptions() { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase })
+                           .Build();
+
+                DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
+
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.ContentProvider, "/id").Result;
+
+                return client;
+            });
         }
     }
 }

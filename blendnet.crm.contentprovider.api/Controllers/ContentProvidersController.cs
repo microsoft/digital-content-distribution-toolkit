@@ -244,7 +244,7 @@ namespace blendnet.crm.contentprovider.api.Controllers
 
             if (contentProvider != null)
             {
-                contentAdministrator.ResetIdentifiers();
+                ///contentAdministrator.ResetIdentifiers();
 
                 if (contentProvider.ContentAdministrators == null)
                 {
@@ -356,14 +356,14 @@ namespace blendnet.crm.contentprovider.api.Controllers
                 {
                     if (activate)
                     {
-                        contentAdmistrator.ActivationDate = DateTime.Now;
+                        //contentAdmistrator.ActivationDate = DateTime.Now;
 
-                        contentAdmistrator.IsActive = true;
+                        //contentAdmistrator.IsActive = true;
                     }else
                     {
-                        contentAdmistrator.DeactivationDate = DateTime.Now;
+                        //contentAdmistrator.DeactivationDate = DateTime.Now;
 
-                        contentAdmistrator.IsActive = false;
+                        //contentAdmistrator.IsActive = false;
                     }
 
                     await _contentProviderRepository.UpdateContentProvider(contentProvider);
