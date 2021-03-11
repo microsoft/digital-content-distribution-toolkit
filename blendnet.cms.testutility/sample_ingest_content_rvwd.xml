@@ -12,6 +12,23 @@
 	<contentbroadcastcommandid>{UNIQUE_ID}</contentbroadcastcommandid><!--Same as the tar file name. Unique for each broadcasting request UUID - GUID -->
 	<contentid>100</contentid><!--Unique id of content from BlendNet CMS  UUID -->
 	<hierarchy>Episode1/Season1/GameOfThrones1/Eros</hierarchy><!--Value of path to root attribute-->
+	<bulkFiles>
+		<file>
+			<file_name>{AUDIO_TAR}</file_name><!--concatenate the tar file id with -audio-->
+			<filesize>{AUDIO_FILE_SIZE}</filesize><!-- size in bytes -->
+			<checksum>{AUDIO_FILE_CHECKSUM}</checksum><!-- checksum using SHA256 -->
+		</file>
+		<file>
+			<file_name>{VIDEO_TAR}</file_name><!--concatenate the tar file id with -video-->
+			<filesize>{VIDEO_FILE_SIZE}</filesize><!-- size in bytes -->
+			<checksum>{VIDEO_FILE_CHECKSUM}</checksum><!-- checksum using SHA256 -->
+		</file>
+		<file>
+			<file_name>{MPD_FILE}</file_name><!--contentbroadcastcommandid_mpd-->
+			<filesize>{MPD_FILE_SIZE}</filesize><!-- size in bytes -->
+			<checksum>{MPD_FILE_CHECKSUM}</checksum><!-- checksum using SHA256 -->
+		</file>
+	</bulkFiles>
 	</userDefined>
 	<VODInfo>
 		<movieID>{UNIQUE_ID}</movieID><!--Same as the tar file name. No .tar extension is requied-->
@@ -24,9 +41,10 @@
 	<videos>
 		<movie>
 			<file>
-				<filename>ses-dummy.mp4</filename><!--This is requires as movie cannot support tar. This will be a path to a fixed dummy file which will accompy in all tar files-->
+				<filename>{MOVIE_NAME}</filename><!--This is requires as movie cannot support tar. This will be a path to a fixed dummy file which will accompy in all tar files-->
 				<filesize>224783</filesize><!-- fixed size in bytes. ses to share one dummy file and size and checksum -->
-				<checksum>F1C19AFF0D0CCA95BAD2F0D3A38060E2FF15D2BBF2A69F096BBB0042BFD4670C</checksum><!-- checksum using SHA256. ses to share one dummy file and size and checksum -->
+				<checksum>bb14d5b986bcf1b1d3d98d8abd4bc8d5</checksum><!-- checksum using SHA256. ses to share one dummy file and size and checksum -->
+				<!-- <checksum>F1C19AFF0D0CCA95BAD2F0D3A38060E2FF15D2BBF2A69F096BBB0042BFD4670C</checksum>checksum using SHA256. ses to share one dummy file and size and checksum -->
 			</file>
 			<duration>PT00H00M00S</duration><!-- Fixed to PT00H00M00S  -->
 		</movie>
@@ -35,24 +53,16 @@
 		<file>
 			<filename>{AUDIO_TAR}</filename><!--concatenate the tar file id with -audio-->
 			<filesize>{AUDIO_FILE_SIZE}</filesize><!-- size in bytes -->
-			<checksum>{AUDIO_FILE_CHECKSUM}</checksum><!-- checksum using SHA256 -->
 		</file>
 		<file>
 			<filename>{VIDEO_TAR}</filename><!--concatenate the tar file id with -video-->
 			<filesize>{VIDEO_FILE_SIZE}</filesize><!-- size in bytes -->
-			<checksum>{VIDEO_FILE_CHECKSUM}</checksum><!-- checksum using SHA256 -->
 		</file>
 		<file>
 			<filename>{MPD_FILE}</filename><!--contentbroadcastcommandid_mpd-->
 			<filesize>{MPD_FILE_SIZE}</filesize><!-- size in bytes -->
-			<checksum>{MPD_FILE_CHECKSUM}</checksum><!-- checksum using SHA256 -->
 		</file>
 	</data>
-	<filters>
-  		<filter>keyword_one</filter><!--Set the filters-->
-  		<filter>keyword_two</filter>
-  		<filter>keyword_three</filter>
-	</filters>
 	<pushInfo>
 		<broadcastStartDate>{START_DATE}</broadcastStartDate><!--Broadcast Start Date and End Date from BlendNet CMS. UTC. Same as Validity Start Date-->
 		<broadcastEndDate>{END_DATE}</broadcastEndDate><!--Broadcast Start Date and End Date from BlendNet CMS. UTC. Same as Validity End Date-->
@@ -64,5 +74,10 @@
 			<nbrMaxBroadcasts>1</nbrMaxBroadcasts><!-- Fixed to 1  -->
 			<priority>5</priority><!-- Fixed to 5  -->
 		</broadcastProfile>
+		<filters>
+  			<filter>keyword_one</filter><!--Set the filters-->
+  			<filter>keyword_two</filter>
+  			<filter>keyword_three</filter>
+		</filters>
 	</pushInfo>
 </quadricast>

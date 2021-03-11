@@ -74,7 +74,6 @@ namespace blendnet.cms.testutility
             Console.WriteLine("Process Complete!");
         }
 
-
         private static async Task RunAsync(AppSettings config)
         {
             IAzureMediaServicesClient client;
@@ -229,9 +228,10 @@ namespace blendnet.cms.testutility
 
             foreach (AdaptiveSetInfo adaptiveSet in segmentInfo.AdaptiveSets)
             {
+
                 tarPath = Path.Combine(_workingDirectory,$"{adaptiveSet.DirectoryName}.tar");
 
-                adaptiveSet.FinalPath = Path.Combine(_finalDirectory, $"{adaptiveSet.DirectoryName}.tar");
+                adaptiveSet.FinalPath = Path.Combine(_finalDirectory, $"{_uniqueness_raw.ToString()+'_'+adaptiveSet.DirectoryName}.tar");
 
                 TarHelper.TarCreateFromStream(tarPath, Path.Combine(_workingDirectory, adaptiveSet.DirectoryName));
 
@@ -244,7 +244,9 @@ namespace blendnet.cms.testutility
 
             File.Move(mpdPath, segmentInfo.FinalMpdPath);
 
-            string xmlFilePath = Path.Combine(_finalDirectory, $"{config.XmlFileName}");
+            string xmlFilePath = Path.Combine(_finalDirectory, $"{_uniqueness_raw.ToString()+config.XmlFileName}");
+
+            // string xmlFilePath = Path.Combine(_finalDirectory, $"{config.XmlFileName}");
             
             //copy the template to final directory
             File.Copy(_xmlTemplateFileName, xmlFilePath);
@@ -253,7 +255,7 @@ namespace blendnet.cms.testutility
             ReplaceTokenInXml(xmlFilePath, segmentInfo);
 
             //copy dummy file to final
-            string dummyMp4Path = Path.Combine(_finalDirectory, $"{_dummyMp4File}");
+            string dummyMp4Path = Path.Combine(_finalDirectory, $"{_uniqueness_raw.ToString()+"_"+_dummyMp4File}");
 
             File.Copy(_dummyMp4File, dummyMp4Path);
 
@@ -268,9 +270,10 @@ namespace blendnet.cms.testutility
 
             
             fileContent = fileContent.Replace(XMLConstants.START_DATE, DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-ddTHH:mm:ss"));
-
+             
             fileContent = fileContent.Replace(XMLConstants.END_DATE, DateTime.UtcNow.AddMonths(6).ToString("yyyy-MM-ddTHH:mm:ss"));
 
+            fileContent = fileContent.Replace(XMLConstants.MOVIE_NAME,_uniqueness_raw.ToString()+'_'+_dummyMp4File);
             AdaptiveSetInfo audioSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == "audio")).FirstOrDefault();
 
             FileInfo fileInfo = new FileInfo(audioSet.FinalPath);
@@ -296,17 +299,16 @@ namespace blendnet.cms.testutility
 
             File.WriteAllText(xmlFilePath, fileContent);
         }
-
         private static string GetChecksum(string file)
         {
             using (FileStream stream = File.OpenRead(file))
             {
                 var sha = new SHA256Managed();
                 byte[] checksum = sha.ComputeHash(stream);
-                return BitConverter.ToString(checksum).Replace("-", String.Empty);
+                return BitConverter.ToString(checksum).Replace("-", String.Empty).ToLowerInvariant();
+                // .Substring(0,32)
             }
         }
-
 
         /// <summary>
         /// Creates a StreamingLocator for the specified asset and with the specified streaming policy name.
