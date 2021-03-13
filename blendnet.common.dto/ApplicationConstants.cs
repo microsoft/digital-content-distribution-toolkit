@@ -16,6 +16,14 @@ namespace blendnet.common.dto
             public const string Raw = "-raw";
             public const string Mezzanine = "-mezzanine";
             public const string Processed = "-processed";
+            public const string Cdn = "-cdn";
+        }
+
+        public struct StorageInstanceNames
+        {
+            public const string CMSStorage = "CMSStorage";
+            public const string CMSCDNStorage = "CMSCDNStorage";
+            
         }
     }
 }

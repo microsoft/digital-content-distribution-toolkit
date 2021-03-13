@@ -1482,3 +1482,328 @@ Microsoft.Azure.ServiceBus.MessagingEntityNotFoundException: The messaging entit
 2021-03-09T13:24:58.9802386+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: b9d9a358-7f92-444b-abb0-7d30d0a01412
 2021-03-09T13:25:38.7087662+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : b9d9a358-7f92-444b-abb0-7d30d0a01412
 2021-03-09T13:25:58.2749620+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: b9d9a358-7f92-444b-abb0-7d30d0a01412
+2021-03-13T20:01:21.3596465+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2021-03-13T20:01:25.2270599+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2021-03-13T20:01:27.2942971+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2021-03-13T20:03:07.4083627+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: 855790d9-b9c2-40d7-ade2-be8638f8a220
+2021-03-13T20:03:07.4164858+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: 855790d9-b9c2-40d7-ade2-be8638f8a220
+2021-03-13T20:03:16.4802632+05:30 [INF] blendnet.cms.listener// Request [83c8a83e-5c1a-40fa-8ed0-f62849185031] GET https://stblendnetcontentdev.blob.core.windows.net/?comp=list&prefix=855790d9-b9c2-40d7-ade2-be8638f8a220
+x-ms-version:2019-02-02
+x-ms-client-request-id:83c8a83e-5c1a-40fa-8ed0-f62849185031
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:33:16 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:03:17.1597811+05:30 [INF] blendnet.cms.listener// Response [83c8a83e-5c1a-40fa-8ed0-f62849185031] 200 OK (00.6s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:fa0e83a7-001e-0053-4315-18618d000000
+x-ms-client-request-id:83c8a83e-5c1a-40fa-8ed0-f62849185031
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:33:23 GMT
+Content-Type:application/xml
+
+2021-03-13T20:03:23.7781992+05:30 [INF] blendnet.cms.listener// Request [18d13f5d-b23a-4aed-8063-08e3666b5c12] PUT https://stblendnetcontentdev.blob.core.windows.net/855790d9-b9c2-40d7-ade2-be8638f8a220-raw?restype=container
+x-ms-version:2019-02-02
+x-ms-client-request-id:18d13f5d-b23a-4aed-8063-08e3666b5c12
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:33:23 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:03:24.0417833+05:30 [INF] blendnet.cms.listener// Response [18d13f5d-b23a-4aed-8063-08e3666b5c12] 201 Created (00.2s)
+ETag:"0x8D8E62CF94BB5D0"
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:fa0e8d39-001e-0053-6415-18618d000000
+x-ms-client-request-id:18d13f5d-b23a-4aed-8063-08e3666b5c12
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:33:30 GMT
+Content-Length:0
+Last-Modified:Sat, 13 Mar 2021 14:33:30 GMT
+
+2021-03-13T20:03:24.1104253+05:30 [INF] blendnet.cms.listener// Request [2a9fbb96-38f9-4af5-a941-af8531c10f49] GET https://stblendnetcontentdev.blob.core.windows.net/?comp=list&prefix=855790d9-b9c2-40d7-ade2-be8638f8a220
+x-ms-version:2019-02-02
+x-ms-client-request-id:2a9fbb96-38f9-4af5-a941-af8531c10f49
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:33:24 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:03:24.1838081+05:30 [INF] blendnet.cms.listener// Response [2a9fbb96-38f9-4af5-a941-af8531c10f49] 200 OK (00.1s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:fa0e8db2-001e-0053-4715-18618d000000
+x-ms-client-request-id:2a9fbb96-38f9-4af5-a941-af8531c10f49
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:33:30 GMT
+Content-Type:application/xml
+
+2021-03-13T20:03:24.1981659+05:30 [INF] blendnet.cms.listener// Request [4a24e68e-e450-40b2-8c6c-60cb74a31a0c] PUT https://stblendnetcontentdev.blob.core.windows.net/855790d9-b9c2-40d7-ade2-be8638f8a220-mezzanine?restype=container
+x-ms-version:2019-02-02
+x-ms-client-request-id:4a24e68e-e450-40b2-8c6c-60cb74a31a0c
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:33:24 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:03:24.3077973+05:30 [INF] blendnet.cms.listener// Response [4a24e68e-e450-40b2-8c6c-60cb74a31a0c] 201 Created (00.1s)
+ETag:"0x8D8E62CF98A2D81"
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:fa0e8dd5-001e-0053-6615-18618d000000
+x-ms-client-request-id:4a24e68e-e450-40b2-8c6c-60cb74a31a0c
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:33:30 GMT
+Content-Length:0
+Last-Modified:Sat, 13 Mar 2021 14:33:31 GMT
+
+2021-03-13T20:03:24.3582670+05:30 [INF] blendnet.cms.listener// Request [026435f5-96d6-4417-a365-24538312fad0] GET https://stblendnetcontentdev.blob.core.windows.net/?comp=list&prefix=855790d9-b9c2-40d7-ade2-be8638f8a220
+x-ms-version:2019-02-02
+x-ms-client-request-id:026435f5-96d6-4417-a365-24538312fad0
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:33:24 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:03:24.5370147+05:30 [INF] blendnet.cms.listener// Response [026435f5-96d6-4417-a365-24538312fad0] 200 OK (00.1s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:fa0e8e15-001e-0053-1e15-18618d000000
+x-ms-client-request-id:026435f5-96d6-4417-a365-24538312fad0
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:33:30 GMT
+Content-Type:application/xml
+
+2021-03-13T20:03:24.6190907+05:30 [INF] blendnet.cms.listener// Request [949b4999-2404-4053-900a-440bb79e5f51] PUT https://stblendnetcontentdev.blob.core.windows.net/855790d9-b9c2-40d7-ade2-be8638f8a220-processed?restype=container
+x-ms-version:2019-02-02
+x-ms-client-request-id:949b4999-2404-4053-900a-440bb79e5f51
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:33:24 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:03:24.7079774+05:30 [INF] blendnet.cms.listener// Response [949b4999-2404-4053-900a-440bb79e5f51] 201 Created (00.1s)
+ETag:"0x8D8E62CF9C7937E"
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:fa0e8e81-001e-0053-0115-18618d000000
+x-ms-client-request-id:949b4999-2404-4053-900a-440bb79e5f51
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:33:30 GMT
+Content-Length:0
+Last-Modified:Sat, 13 Mar 2021 14:33:31 GMT
+
+2021-03-13T20:03:35.5289651+05:30 [INF] blendnet.cms.listener// Request [a66c890c-43f2-4665-bf8b-dad02599306d] GET https://stblendnetcdncontentdev.blob.core.windows.net/?comp=list&prefix=855790d9-b9c2-40d7-ade2-be8638f8a220
+x-ms-version:2019-02-02
+x-ms-client-request-id:a66c890c-43f2-4665-bf8b-dad02599306d
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:33:35 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:03:36.0396790+05:30 [INF] blendnet.cms.listener// Response [a66c890c-43f2-4665-bf8b-dad02599306d] 200 OK (00.5s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:759e2b07-901e-0030-1415-1827a8000000
+x-ms-client-request-id:a66c890c-43f2-4665-bf8b-dad02599306d
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:33:42 GMT
+Content-Type:application/xml
+
+2021-03-13T20:03:37.4737425+05:30 [INF] blendnet.cms.listener// Request [6298717b-9d24-4607-8f45-30672c2d1b59] PUT https://stblendnetcdncontentdev.blob.core.windows.net/855790d9-b9c2-40d7-ade2-be8638f8a220-cdn?restype=container
+x-ms-version:2019-02-02
+x-ms-client-request-id:6298717b-9d24-4607-8f45-30672c2d1b59
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:33:37 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:03:37.6555838+05:30 [INF] blendnet.cms.listener// Response [6298717b-9d24-4607-8f45-30672c2d1b59] 201 Created (00.2s)
+ETag:"0x8D8E62D01735755"
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:759e2d62-901e-0030-2215-1827a8000000
+x-ms-client-request-id:6298717b-9d24-4607-8f45-30672c2d1b59
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:33:44 GMT
+Content-Length:0
+Last-Modified:Sat, 13 Mar 2021 14:33:44 GMT
+
+2021-03-13T20:03:39.8530759+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : 855790d9-b9c2-40d7-ade2-be8638f8a220
+2021-03-13T20:03:45.0187113+05:30 [INF] blendnet.cms.listener// User 23 does not exist in Azure AD B2C. - Exception details - Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource '23' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2021-03-13T14:33:51
+	request-id: a476003c-f078-41c5-bed6-26b739d56b74
+	client-request-id: a476003c-f078-41c5-bed6-26b739d56b74
+ClientRequestId: a476003c-f078-41c5-bed6-26b739d56b74
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.DirectoryObjectCheckMemberGroupsRequest.PostAsync(CancellationToken cancellationToken)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\sprint5\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 200
+2021-03-13T20:03:45.0451658+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: 855790d9-b9c2-40d7-ade2-be8638f8a220
+2021-03-13T20:12:06.2418494+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2021-03-13T20:12:07.8104266+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2021-03-13T20:12:08.8797735+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2021-03-13T20:12:59.7892805+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: b78a00cb-8aea-43e1-adf4-3dfbb6a81472
+2021-03-13T20:12:59.7993536+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: b78a00cb-8aea-43e1-adf4-3dfbb6a81472
+2021-03-13T20:13:01.8215555+05:30 [INF] blendnet.cms.listener// Request [eb1191d6-12af-478e-97fa-f4bc5e3964db] GET https://stblendnetcontentdev.blob.core.windows.net/?comp=list&prefix=b78a00cb-8aea-43e1-adf4-3dfbb6a81472
+x-ms-version:2019-02-02
+x-ms-client-request-id:eb1191d6-12af-478e-97fa-f4bc5e3964db
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:43:01 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:13:02.2358673+05:30 [INF] blendnet.cms.listener// Response [eb1191d6-12af-478e-97fa-f4bc5e3964db] 200 OK (00.4s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:8ea22a2c-901e-0074-1017-18fbc4000000
+x-ms-client-request-id:eb1191d6-12af-478e-97fa-f4bc5e3964db
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:43:08 GMT
+Content-Type:application/xml
+
+2021-03-13T20:13:02.2822642+05:30 [INF] blendnet.cms.listener// Request [237fc1c4-bb7d-4f54-829c-5301c0c6a3ab] PUT https://stblendnetcontentdev.blob.core.windows.net/b78a00cb-8aea-43e1-adf4-3dfbb6a81472-raw?restype=container
+x-ms-version:2019-02-02
+x-ms-client-request-id:237fc1c4-bb7d-4f54-829c-5301c0c6a3ab
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:43:02 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:13:02.4185700+05:30 [INF] blendnet.cms.listener// Response [237fc1c4-bb7d-4f54-829c-5301c0c6a3ab] 201 Created (00.1s)
+ETag:"0x8D8E62E521CAC7A"
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:8ea22a67-901e-0074-4417-18fbc4000000
+x-ms-client-request-id:237fc1c4-bb7d-4f54-829c-5301c0c6a3ab
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:43:08 GMT
+Content-Length:0
+Last-Modified:Sat, 13 Mar 2021 14:43:09 GMT
+
+2021-03-13T20:13:02.4453353+05:30 [INF] blendnet.cms.listener// Request [fb185895-54a8-4771-9d10-d45ff8e16465] GET https://stblendnetcontentdev.blob.core.windows.net/?comp=list&prefix=b78a00cb-8aea-43e1-adf4-3dfbb6a81472
+x-ms-version:2019-02-02
+x-ms-client-request-id:fb185895-54a8-4771-9d10-d45ff8e16465
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:43:02 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:13:02.5394415+05:30 [INF] blendnet.cms.listener// Response [fb185895-54a8-4771-9d10-d45ff8e16465] 200 OK (00.1s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:8ea22ab1-901e-0074-0717-18fbc4000000
+x-ms-client-request-id:fb185895-54a8-4771-9d10-d45ff8e16465
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:43:08 GMT
+Content-Type:application/xml
+
+2021-03-13T20:13:02.5686330+05:30 [INF] blendnet.cms.listener// Request [e2702376-f6c9-4eed-a002-e1f11c516a07] PUT https://stblendnetcontentdev.blob.core.windows.net/b78a00cb-8aea-43e1-adf4-3dfbb6a81472-mezzanine?restype=container
+x-ms-version:2019-02-02
+x-ms-client-request-id:e2702376-f6c9-4eed-a002-e1f11c516a07
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:43:02 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:13:02.7463361+05:30 [INF] blendnet.cms.listener// Response [e2702376-f6c9-4eed-a002-e1f11c516a07] 201 Created (00.1s)
+ETag:"0x8D8E62E52480C8D"
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:8ea22adc-901e-0074-2a17-18fbc4000000
+x-ms-client-request-id:e2702376-f6c9-4eed-a002-e1f11c516a07
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:43:08 GMT
+Content-Length:0
+Last-Modified:Sat, 13 Mar 2021 14:43:09 GMT
+
+2021-03-13T20:13:02.9466383+05:30 [INF] blendnet.cms.listener// Request [7f783c1c-3bf1-4868-bf33-eb839f4a8b5e] GET https://stblendnetcontentdev.blob.core.windows.net/?comp=list&prefix=b78a00cb-8aea-43e1-adf4-3dfbb6a81472
+x-ms-version:2019-02-02
+x-ms-client-request-id:7f783c1c-3bf1-4868-bf33-eb839f4a8b5e
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:43:02 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:13:03.0266075+05:30 [INF] blendnet.cms.listener// Response [7f783c1c-3bf1-4868-bf33-eb839f4a8b5e] 200 OK (00.1s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:8ea22b3a-901e-0074-7917-18fbc4000000
+x-ms-client-request-id:7f783c1c-3bf1-4868-bf33-eb839f4a8b5e
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:43:09 GMT
+Content-Type:application/xml
+
+2021-03-13T20:13:03.0446739+05:30 [INF] blendnet.cms.listener// Request [bdc68f9a-c379-4025-b627-1f47d9b7dd2e] PUT https://stblendnetcontentdev.blob.core.windows.net/b78a00cb-8aea-43e1-adf4-3dfbb6a81472-processed?restype=container
+x-ms-version:2019-02-02
+x-ms-client-request-id:bdc68f9a-c379-4025-b627-1f47d9b7dd2e
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:43:03 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:13:03.1272141+05:30 [INF] blendnet.cms.listener// Response [bdc68f9a-c379-4025-b627-1f47d9b7dd2e] 201 Created (00.1s)
+ETag:"0x8D8E62E528D3C5E"
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:8ea22b56-901e-0074-0f17-18fbc4000000
+x-ms-client-request-id:bdc68f9a-c379-4025-b627-1f47d9b7dd2e
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:43:09 GMT
+Content-Length:0
+Last-Modified:Sat, 13 Mar 2021 14:43:10 GMT
+
+2021-03-13T20:13:03.9752704+05:30 [INF] blendnet.cms.listener// Request [17aabae5-ee77-4c5a-9dab-1ff003037703] GET https://stblendnetcdncontentdev.blob.core.windows.net/?comp=list&prefix=b78a00cb-8aea-43e1-adf4-3dfbb6a81472
+x-ms-version:2019-02-02
+x-ms-client-request-id:17aabae5-ee77-4c5a-9dab-1ff003037703
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:43:03 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:13:04.5114670+05:30 [INF] blendnet.cms.listener// Response [17aabae5-ee77-4c5a-9dab-1ff003037703] 200 OK (00.5s)
+Transfer-Encoding:chunked
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:79e33c64-001e-003e-1017-18cba3000000
+x-ms-client-request-id:17aabae5-ee77-4c5a-9dab-1ff003037703
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:43:10 GMT
+Content-Type:application/xml
+
+2021-03-13T20:13:04.5233445+05:30 [INF] blendnet.cms.listener// Request [85dbe172-d509-4f21-951c-3bd5dd1ecf66] PUT https://stblendnetcdncontentdev.blob.core.windows.net/b78a00cb-8aea-43e1-adf4-3dfbb6a81472-cdn?restype=container
+x-ms-blob-public-access:container
+x-ms-version:2019-02-02
+x-ms-client-request-id:85dbe172-d509-4f21-951c-3bd5dd1ecf66
+x-ms-return-client-request-id:true
+User-Agent:azsdk-net-Storage.Blobs/12.7.0,(.NET Core 3.1.13; Microsoft Windows 10.0.18363)
+x-ms-date:Sat, 13 Mar 2021 14:43:04 GMT
+Authorization:REDACTED
+client assembly: Azure.Storage.Blobs
+2021-03-13T20:13:04.6127404+05:30 [INF] blendnet.cms.listener// Response [85dbe172-d509-4f21-951c-3bd5dd1ecf66] 201 Created (00.1s)
+ETag:"0x8D8E62E5371CBCE"
+Server:Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id:79e33c86-001e-003e-2d17-18cba3000000
+x-ms-client-request-id:85dbe172-d509-4f21-951c-3bd5dd1ecf66
+x-ms-version:2019-02-02
+Date:Sat, 13 Mar 2021 14:43:10 GMT
+Content-Length:0
+Last-Modified:Sat, 13 Mar 2021 14:43:11 GMT
+
+2021-03-13T20:13:04.6223496+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : b78a00cb-8aea-43e1-adf4-3dfbb6a81472
+2021-03-13T20:13:07.6466409+05:30 [INF] blendnet.cms.listener// User nn does not exist in Azure AD B2C. - Exception details - Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource 'nn' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2021-03-13T14:43:14
+	request-id: cb468f7e-6091-49f6-9a80-d7ec6f1672ee
+	client-request-id: cb468f7e-6091-49f6-9a80-d7ec6f1672ee
+ClientRequestId: cb468f7e-6091-49f6-9a80-d7ec6f1672ee
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.DirectoryObjectCheckMemberGroupsRequest.PostAsync(CancellationToken cancellationToken)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\sprint5\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 200
+2021-03-13T20:13:07.6548261+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: b78a00cb-8aea-43e1-adf4-3dfbb6a81472

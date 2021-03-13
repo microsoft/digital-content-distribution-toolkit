@@ -5,6 +5,7 @@ using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
@@ -29,13 +30,15 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
         private readonly AppSettings _appSettings;
 
-        BlobServiceClient _blobServiceClient;
+        BlobServiceClient _cmsBlobServiceClient;
+
+        BlobServiceClient _cmsCdnBlobServiceClient;
 
         GraphServiceClient _graphServiceClient;
 
         public ContentProviderCreatedIntegrationEventHandler(ILogger<ContentProviderCreatedIntegrationEventHandler> logger,
                                                              TelemetryClient tc,
-                                                             BlobServiceClient blobServiceClient,
+                                                             IAzureClientFactory<BlobServiceClient> blobClientFactory,
                                                              GraphServiceClient graphServiceClient,
                                                              IOptionsMonitor<AppSettings> optionsMonitor)
         {
@@ -43,7 +46,9 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             _telemetryClient = tc;
 
-            _blobServiceClient = blobServiceClient;
+            _cmsBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSStorage);
+
+            _cmsCdnBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSCDNStorage);
 
             _graphServiceClient = graphServiceClient;
 
@@ -66,6 +71,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     _logger.LogInformation($"Creating storage containers for content provider id: {integrationEvent.ContentProvider.Id}");
 
                     await CreateStorageContainers(integrationEvent);
+
+                    await CreateCDNStorageContainers(integrationEvent);
 
                     if (integrationEvent.ContentProvider.ContentAdministrators != null &&
                         integrationEvent.ContentProvider.ContentAdministrators.Count > 0)
@@ -101,11 +108,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 string processedContainerName = $"{baseName}{ApplicationConstants.StorageContainerSuffix.Processed}";
 
-                var containers = _blobServiceClient.GetBlobContainers(prefix: baseName);
+                var containers = _cmsBlobServiceClient.GetBlobContainers(prefix: baseName);
 
                 if (!containerExists(dumpContainerName))
                 {
-                    await _blobServiceClient.CreateBlobContainerAsync(dumpContainerName);
+                    await _cmsBlobServiceClient.CreateBlobContainerAsync(dumpContainerName);
                 }
                 else
                 {
@@ -114,7 +121,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 if (!containerExists(mezzContainerName))
                 {
-                    await _blobServiceClient.CreateBlobContainerAsync(mezzContainerName);
+                    await _cmsBlobServiceClient.CreateBlobContainerAsync(mezzContainerName);
                 }
                 else
                 {
@@ -123,7 +130,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 if (!containerExists(processedContainerName))
                 {
-                    await _blobServiceClient.CreateBlobContainerAsync(processedContainerName);
+                    await _cmsBlobServiceClient.CreateBlobContainerAsync(processedContainerName);
                 }
                 else
                 {
@@ -141,6 +148,40 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             }
         }
 
+        /// <summary>
+        /// Creates a container in CDN storage
+        /// </summary>
+        /// <param name="integrationEvent"></param>
+        /// <returns></returns>
+        public async Task CreateCDNStorageContainers(ContentProviderCreatedIntegrationEvent integrationEvent)
+        {
+            try
+            {
+                var baseName = integrationEvent.ContentProvider.Id.ToString().Trim().ToLower();
+
+                string cdnContainerName = $"{baseName}{ApplicationConstants.StorageContainerSuffix.Cdn}";
+
+                var containers = _cmsCdnBlobServiceClient.GetBlobContainers(prefix: baseName);
+
+                if (!containerExists(cdnContainerName))
+                {
+                    await _cmsCdnBlobServiceClient.CreateBlobContainerAsync(cdnContainerName,Azure.Storage.Blobs.Models.PublicAccessType.BlobContainer);
+                }
+                else
+                {
+                    _logger.LogInformation($"{cdnContainerName} already exists");
+                }
+
+                bool containerExists(string containerName)
+                {
+                    return containers.Where(container => container.Name == containerName).ToList().Count > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+        }
 
         /// <summary>
         /// Checks if the user is not the part of group adds it to the Azure AD
