@@ -10,5 +10,12 @@ namespace blendnet.common.dto
         {
             public const string ContentProvider = "ContentProvider";
         }
+
+        public struct StorageContainerSuffix
+        {
+            public const string Raw = "-raw";
+            public const string Mezzanine = "-mezzanine";
+            public const string Processed = "-processed";
+        }
     }
 }

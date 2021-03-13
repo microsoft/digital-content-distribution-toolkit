@@ -95,11 +95,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             {
                 var baseName = integrationEvent.ContentProvider.Id.ToString().Trim().ToLower();
 
-                string dumpContainerName = $"{baseName}dump";
+                string dumpContainerName = $"{baseName}{ApplicationConstants.StorageContainerSuffix.Raw}";
 
-                string mezzContainerName = $"{baseName}mezzanine";
+                string mezzContainerName = $"{baseName}{ApplicationConstants.StorageContainerSuffix.Mezzanine}";
 
-                string processedContainerName = $"{baseName}processed";
+                string processedContainerName = $"{baseName}{ApplicationConstants.StorageContainerSuffix.Processed}";
 
                 var containers = _blobServiceClient.GetBlobContainers(prefix: baseName);
 
