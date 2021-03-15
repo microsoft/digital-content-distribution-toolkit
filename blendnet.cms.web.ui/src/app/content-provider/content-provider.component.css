@@ -1,0 +1,43 @@
+.cms-card {
+    width: 150px;
+    height: 300px;
+    margin-bottom: 32px;
+  }
+  
+  .cms-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+    width:150px;
+    height:200px;
+  }
+  
+    
+  .cms-container {
+    height: 80%;
+    width: 80%;
+    margin-left: 15%;
+    margin-top: 5%;
+  }
+
+  .cms-cp-logo {
+    max-width: 200px;
+    max-height: 200px;
+  }
+  .cp-status-active {
+    color: green  !important;
+  }
+  .cp-status-inactive {
+    color: red  !important;
+  }
+
+  .btn-sec {
+    margin-right: 3rem !important;
+    text-align: right;
+    margin-top: 1.5em;
+  }
+  .update-btn {
+    margin: 5px;
+  }
+  .discard-btn {
+    margin: 5px;
+  }

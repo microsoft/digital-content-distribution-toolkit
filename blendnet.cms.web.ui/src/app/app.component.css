@@ -1,0 +1,43 @@
+.cms-container {
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+}
+.position-fixed{
+    position: fixed
+  }
+  .cms-content {
+    margin-top: 70px
+  }
+.cms-sidenav-content {
+    /* display: flex; */
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.cms-sidenav {
+    user-select: none;
+}
+.full-width {
+    width: 100%;
+}
+.menu-button {
+    transition: 300ms ease-in-out;
+    transform: rotate(0deg);
+}
+.menu-button.rotated {
+    transform: rotate(180deg);
+}
+.submenu {
+    overflow-y: hidden;
+    transition: transform 300ms ease;
+    transform: scaleY(0);
+    transform-origin: top;
+    padding-left: 30px;
+}
+.submenu.expanded {
+    transform: scaleY(1);
+}
+.cms-menu-spacer {
+    flex: 1 1 auto;
+}
