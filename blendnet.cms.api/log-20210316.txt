@@ -1,0 +1,124 @@
+2021-03-16T11:14:15.7354850+05:30 [FTL] blendnet.cms.api// Unable to start Kestrel.
+System.IO.IOException: Failed to bind to address https://127.0.0.1:5001: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Address already in use
+ ---> System.Net.Sockets.SocketException (48): Address already in use
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServer.<>c__DisplayClass21_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindAsync(IServerAddressesFeature addresses, KestrelServerOptions serverOptions, ILogger logger, Func`2 createBinding)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServer.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+2021-03-16T11:28:25.0606400+05:30 [ERR] blendnet.cms.api// An unhandled exception has occurred while executing the request.
+System.ArgumentNullException: Value cannot be null. (Parameter 'connectionString')
+   at Azure.Storage.StorageConnectionString.Parse(String connectionString)
+   at Azure.Storage.Blobs.BlobContainerClient..ctor(String connectionString, String blobContainerName, BlobClientOptions options)
+   at Azure.Storage.Blobs.BlobContainerClient..ctor(String connectionString, String blobContainerName)
+   at blendnet.cms.repository.CosmosRepository.ContentProviderRepository.GenerateSaSToken(Guid contentProviderId) in /Users/vinodhkumar/Documents/BlendNet/bine-crm/blendnet.cms.repository/CosmosRepository/ContentProviderRepository.cs:line 130
+   at blendnet.cms.api.Controllers.ContentProviderController.GenerateToken(Guid contentProviderId) in /Users/vinodhkumar/Documents/BlendNet/bine-crm/blendnet.cms.api/Controllers/ContentProviderController.cs:line 215
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2021-03-16T15:24:07.1285660+05:30 [ERR] blendnet.cms.api// An unhandled exception has occurred while executing the request.
+Azure.RequestFailedException: The specified container does not exist.
+RequestId:e4eec6c1-501e-004b-6c4a-1a4c18000000
+Time:2021-03-16T09:54:07.0175394Z
+Status: 404 (The specified container does not exist.)
+ErrorCode: ContainerNotFound
+
+Headers:
+Server: Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id: e4eec6c1-501e-004b-6c4a-1a4c18000000
+x-ms-client-request-id: 8c668142-6c6f-4d3f-a91a-3f038ef265bd
+x-ms-version: 2020-02-10
+x-ms-error-code: ContainerNotFound
+Date: Tue, 16 Mar 2021 09:54:06 GMT
+Content-Length: 225
+Content-Type: application/xml
+
+   at Azure.Storage.Blobs.BlobRestClient.Container.SetAccessPolicyAsync_CreateResponse(ClientDiagnostics clientDiagnostics, Response response)
+   at Azure.Storage.Blobs.BlobRestClient.Container.SetAccessPolicyAsync(ClientDiagnostics clientDiagnostics, HttpPipeline pipeline, Uri resourceUri, PublicAccessType access, String version, IEnumerable`1 permissions, Nullable`1 timeout, String leaseId, Nullable`1 ifModifiedSince, Nullable`1 ifUnmodifiedSince, String requestId, Boolean async, String operationName, CancellationToken cancellationToken)
+   at Azure.Storage.Blobs.BlobContainerClient.SetAccessPolicyInternal(PublicAccessType accessType, IEnumerable`1 permissions, BlobRequestConditions conditions, Boolean async, CancellationToken cancellationToken)
+   at Azure.Storage.Blobs.BlobContainerClient.SetAccessPolicyAsync(PublicAccessType accessType, IEnumerable`1 permissions, BlobRequestConditions conditions, CancellationToken cancellationToken)
+   at blendnet.cms.repository.CosmosRepository.ContentProviderRepository.CreateStoredAccessPolicyAsync(String containerName) in /Users/vinodhkumar/Documents/BlendNet/bine-crm/blendnet.cms.repository/CosmosRepository/ContentProviderRepository.cs:line 203
+   at blendnet.cms.repository.CosmosRepository.ContentProviderRepository.GenerateSaSToken(Guid contentProviderId) in /Users/vinodhkumar/Documents/BlendNet/bine-crm/blendnet.cms.repository/CosmosRepository/ContentProviderRepository.cs:line 140
+   at blendnet.cms.api.Controllers.ContentProviderController.GenerateToken(Guid contentProviderId) in /Users/vinodhkumar/Documents/BlendNet/bine-crm/blendnet.cms.api/Controllers/ContentProviderController.cs:line 215
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2021-03-16T15:25:16.2787770+05:30 [ERR] blendnet.cms.api// An unhandled exception has occurred while executing the request.
+Azure.RequestFailedException: The specified container does not exist.
+RequestId:e4ef7efe-501e-004b-1d4a-1a4c18000000
+Time:2021-03-16T09:55:16.2441108Z
+Status: 404 (The specified container does not exist.)
+ErrorCode: ContainerNotFound
+
+Headers:
+Server: Windows-Azure-Blob/1.0,Microsoft-HTTPAPI/2.0
+x-ms-request-id: e4ef7efe-501e-004b-1d4a-1a4c18000000
+x-ms-client-request-id: fc74d3a0-f99b-462b-9b74-7fec5787685b
+x-ms-version: 2020-02-10
+x-ms-error-code: ContainerNotFound
+Date: Tue, 16 Mar 2021 09:55:16 GMT
+Content-Length: 225
+Content-Type: application/xml
+
+   at Azure.Storage.Blobs.BlobRestClient.Container.SetAccessPolicyAsync_CreateResponse(ClientDiagnostics clientDiagnostics, Response response)
+   at Azure.Storage.Blobs.BlobRestClient.Container.SetAccessPolicyAsync(ClientDiagnostics clientDiagnostics, HttpPipeline pipeline, Uri resourceUri, PublicAccessType access, String version, IEnumerable`1 permissions, Nullable`1 timeout, String leaseId, Nullable`1 ifModifiedSince, Nullable`1 ifUnmodifiedSince, String requestId, Boolean async, String operationName, CancellationToken cancellationToken)
+   at Azure.Storage.Blobs.BlobContainerClient.SetAccessPolicyInternal(PublicAccessType accessType, IEnumerable`1 permissions, BlobRequestConditions conditions, Boolean async, CancellationToken cancellationToken)
+   at Azure.Storage.Blobs.BlobContainerClient.SetAccessPolicyAsync(PublicAccessType accessType, IEnumerable`1 permissions, BlobRequestConditions conditions, CancellationToken cancellationToken)
+   at blendnet.cms.repository.CosmosRepository.ContentProviderRepository.CreateStoredAccessPolicyAsync(String containerName) in /Users/vinodhkumar/Documents/BlendNet/bine-crm/blendnet.cms.repository/CosmosRepository/ContentProviderRepository.cs:line 203
+   at blendnet.cms.repository.CosmosRepository.ContentProviderRepository.GenerateSaSToken(Guid contentProviderId) in /Users/vinodhkumar/Documents/BlendNet/bine-crm/blendnet.cms.repository/CosmosRepository/ContentProviderRepository.cs:line 140
+   at blendnet.cms.api.Controllers.ContentProviderController.GenerateToken(Guid contentProviderId) in /Users/vinodhkumar/Documents/BlendNet/bine-crm/blendnet.cms.api/Controllers/ContentProviderController.cs:line 215
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)

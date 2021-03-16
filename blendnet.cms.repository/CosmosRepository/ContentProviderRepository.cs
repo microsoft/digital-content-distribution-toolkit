@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using System.Linq;
+using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
+using Azure.Storage.Blobs.Models;
+using Azure;
 
 namespace blendnet.cms.repository.CosmosRepository
 {
@@ -20,12 +24,18 @@ namespace blendnet.cms.repository.CosmosRepository
         
         AppSettings _appSettings;
 
+        BlobServiceClient _blobServiceClient;
+        
         public ContentProviderRepository(   CosmosClient dbClient, 
-                                            IOptionsMonitor<AppSettings> optionsMonitor)
+                                            IOptionsMonitor<AppSettings> optionsMonitor,
+                                            BlobServiceClient blobServiceClient)
         {
             _appSettings = optionsMonitor.CurrentValue;
 
-            this._container = dbClient.GetContainer(_appSettings.DatabaseName,ApplicationConstants.CosmosContainers.ContentProvider);
+            _blobServiceClient = blobServiceClient;
+
+            this._container = dbClient.GetContainer(_appSettings.DatabaseName,ApplicationConstants.CosmosContainers.ContentProvider);       
+            
         }
 
         /// <summary>
@@ -113,5 +123,89 @@ namespace blendnet.cms.repository.CosmosRepository
             }
 
         }
+        /// <summary>
+        /// Generate Sas Token
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <returns></returns>
+        public async Task<SasTokenDto> GenerateSaSToken(Guid contentProviderId)
+        {    
+            var containerName = contentProviderId+ApplicationConstants.StorageContainerSuffix.Raw;
+
+            // BlobContainerClient _client = _blobServiceClient.GetBlobContainerClient(containerName);
+
+            BlobContainerClient client = new BlobContainerClient(_appSettings.CMSStorageConnectionString,containerName);
+            if(client.Exists())
+            {
+                await CreateStoredAccessPolicyAsync(containerName);
+
+                SasTokenDto sasUri = GetServiceSasUriForContainer(client,_appSettings.PolicyName);
+
+                return sasUri;
+            }
+            return null;
+
+        }
+
+
+        private SasTokenDto GetServiceSasUriForContainer(BlobContainerClient containerClient,
+                                                string storedPolicyName = null)
+        {
+            // Check whether this BlobContainerClient object has been authorized with Shared Key.
+            if (containerClient.CanGenerateSasUri)
+            {
+                // Create a SAS token that's valid for one hour.
+                BlobSasBuilder sasBuilder = new BlobSasBuilder()
+                {
+                    BlobContainerName = containerClient.Name,
+                    Resource = "c"
+                };
+                sasBuilder.Identifier = storedPolicyName;
+                // Console.WriteLine(containerClient.CanGenerateSasUri); 
+                Uri sasUri = containerClient.GenerateSasUri(sasBuilder);
+                
+
+                SasTokenDto token = new SasTokenDto();
+                token.storageAccount = _appSettings.StorageAccount;
+                token.containerName = containerClient.Name;
+                token.policyName =  _appSettings.PolicyName;
+                token.sasUri = sasUri;
+                token.expiryInHours = ApplicationConstants.SaSToken.expiryInHours;
+
+                return token;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private async Task CreateStoredAccessPolicyAsync(string containerName)
+        {
+            // string connectionString = _appSettings.CMSStorageConnectionString;
+            // Use the connection string to authorize the operation to create the access policy.
+            // Azure AD does not support the Set Container ACL operation that creates the policy.
+            BlobContainerClient containerClient =  _blobServiceClient.GetBlobContainerClient(containerName);
+
+            // BlobContainerClient containerClient = new BlobContainerClient(connectionString, containerName);
+ 
+            // Create one or more stored access policies.
+            List<BlobSignedIdentifier> signedIdentifiers = new List<BlobSignedIdentifier>
+            {
+                new BlobSignedIdentifier
+                {
+                    Id = _appSettings.PolicyName,
+                    AccessPolicy = new BlobAccessPolicy
+                    {
+                        // StartsOn = DateTimeOffset.UtcNow.AddHours(-1),
+                        // ExpiresOn = DateTimeOffset.UtcNow.AddDays(1),
+                        Permissions = ApplicationConstants.Policy.PolicyPermissions
+                    }      
+                }
+            };
+            // Set the container's access policy.
+            await containerClient.SetAccessPolicyAsync(permissions: signedIdentifiers);
+        }
+
     }
 }
