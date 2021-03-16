@@ -23,7 +23,6 @@ namespace blendnet.common.dto
         {
             public const string CMSStorage = "CMSStorage";
             public const string CMSCDNStorage = "CMSCDNStorage";
-            
         }
     }
 }
