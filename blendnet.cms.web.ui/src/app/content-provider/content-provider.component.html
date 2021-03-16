@@ -7,10 +7,10 @@
                     <div mat-card-avatar>
                         <mat-icon mat-list-icon  *ngIf="cp.status"
                         class="cp-status-active">
-                        check_circle</mat-icon>
+                        stop_circle</mat-icon>
                         <mat-icon mat-list-icon *ngIf="!cp.status"
                         class="cp-status-inactive">
-                        unpublished</mat-icon></div>
+                        stop_circle</mat-icon></div>
                     <mat-card-title>{{cp.name}}</mat-card-title>
                     </mat-card-header>
                     <img mat-card-image class="cms-cp-logo"
@@ -28,7 +28,7 @@
                     <div mat-card-avatar></div>  
                     <mat-card-title></mat-card-title>
                     </mat-card-header>
-                    <img mat-card-image class="cms-cp-logo"
+                    <img mat-card-image class="cms-cp-logo add-cp"
                     (click)="openEditConfirmModal(cp)"
                     src= "https://cdn.iconscout.com/icon/free/png-512/add-new-1439785-1214356.png">
                     <mat-card-content>

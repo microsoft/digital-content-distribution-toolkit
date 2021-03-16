@@ -2,6 +2,9 @@ mat-form-field {
     width: 80%;
   }
 
+  .mat-grid-tile .mat-figure  {
+    justify-content:left !important;
+  }
 
   .btn-sec {
     margin-right: 3rem !important;

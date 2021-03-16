@@ -19,10 +19,10 @@ namespace blendnet.common.dto.cms
 
         public string ServiceBusTopicName { get; set; }
 
-        public string StorageAccount { get; set; }
-
         public string PolicyName { get; set; }
         
         public string CMSStorageConnectionString { get; set; }
+
+        public int SasTokenExpiryInHours { get; set; }
     }
 }

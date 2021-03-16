@@ -1,19 +1,14 @@
 <mat-toolbar color="primary" class="cms-toolbar">
-	<!-- <button mat-icon-button (click)="isExpanded = !isExpanded"><mat-icon>menu</mat-icon></button> -->
 	<span class="cms-menu-spacer"></span>
 	<span><h1 class="cms-app-name">BlendNet CMS</h1></span>
   <span class="cms-menu-spacer"></span>
-  <button mat-icon-button><mat-icon>logout</mat-icon></button>
-  <!-- <button mat-button *ngIf="loginDisplay" (click)="editProfile()">Edit Profile</button>
-  <button mat-raised-button *ngIf="!loginDisplay" (click)="login()">Login</button>
-  <button mat-raised-button *ngIf="loginDisplay" (click)="logout()">Logout</button> -->
+  <button mat-icon-button matTooltip="Login" *ngIf="!loginDisplay" (click)="login()"><mat-icon>login</mat-icon></button>
+  <button mat-icon-button  matTooltip="Logout" *ngIf="loginDisplay" (click)="logout()"><mat-icon>logout</mat-icon></button>
 
 
 </mat-toolbar>
 <mat-sidenav-container class="cms-container" autosize >
-	<!-- <mat-sidenav  *ngIf="loginDisplay" #sidenav class="cms-sidenav" mode="side" opened="true" > -->
-	<mat-sidenav  #sidenav class="cms-sidenav" mode="side" opened="true" >
-	
+	<mat-sidenav  *ngIf="loginDisplay" #sidenav class="cms-sidenav" mode="side" opened="true" >	
 		<mat-nav-list>
 			<mat-list-item class="parent">
 				<span class="full-width" *ngIf="isExpanded">Home</span>

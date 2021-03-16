@@ -27,7 +27,10 @@
     color: green  !important;
   }
   .cp-status-inactive {
-    color: red  !important;
+    color: gray  !important;
+  }
+  .add-cp {
+    cursor: pointer;
   }
 
   .btn-sec {

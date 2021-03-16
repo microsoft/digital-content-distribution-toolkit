@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ContentproviderAdmin } from '../models/contentprovider-admin';
 import { Contentprovider } from '../models/contentprovider.model';
 import { ContentProviderService } from '../services/content-provider.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-content-provider',
@@ -34,7 +35,8 @@ export class AddContentProviderComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<AddContentProviderComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public contentProviderService: ContentProviderService
+    public contentProviderService: ContentProviderService,
+    private toastr: ToastrService
   ) {
     const currentYear = new Date().getFullYear();
     const currentDate= new Date().getDate();
@@ -53,7 +55,6 @@ export class AddContentProviderComponent implements OnInit {
     this.cpForm.get("status").setValue(this.cp.status? "active" : "inactive");
     this.cpForm.get("activationDate").setValue(null);
     this.cpForm.get("deactivationDate").setValue(null);
-    console.log(this.cp.admins);
     this.admins= this.cp.admins
     this.cpForm.get("admins").setValue(this.admins);
   }
@@ -66,19 +67,27 @@ export class AddContentProviderComponent implements OnInit {
     }
   }
 
+  public errorHandling = (control: string, error: string) => {
+    return this.cpForm.controls[control].hasError(error);
+  }
 
   saveOrUpdate() {
     if(this.cp.id) {
       this.contentProviderService.editContentProvider(this.cp).subscribe(res => {
         if(res) {
-
+          this.showSuccess("Update Successful");
         }
       });
     } else {
       this.contentProviderService.createContentProvider(this.cp).subscribe(res => {
-
+        this.showSuccess("New content provider created Successful");
       });
     }
+  }
+
+
+  showSuccess(message) {
+    this.toastr.success(message);
   }
 
   closeDialog(): void {

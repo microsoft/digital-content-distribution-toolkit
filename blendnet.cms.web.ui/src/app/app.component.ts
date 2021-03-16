@@ -1,11 +1,10 @@
 import { Component, Inject, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MsalService, MsalBroadcastService, MSAL_GUARD_CONFIG, MsalGuardConfiguration } from '@azure/msal-angular';
 import { EventMessage, EventType, InteractionType, InteractionStatus, PopupRequest, RedirectRequest, AuthenticationResult, AuthError } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { b2cPolicies } from './b2c-config';
 import { filter, takeUntil } from 'rxjs/operators';
+import { MatSidenav } from '@angular/material/sidenav';
 
 interface IdTokenClaims extends AuthenticationResult {
   idTokenClaims: {
@@ -23,6 +22,7 @@ export class AppComponent {
   isIframe = false;
   loginDisplay = false;
   private readonly _destroying$ = new Subject<void>();
+
 
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded = true;

@@ -1,8 +1,9 @@
 <div *ngIf="!loginDisplay">
-    <p class="welcome">Welcome to the Blendnet CMS!</p>
-    <p>Please sign-in .</p>
+    <p class="welcome">Welcome to the BlendNet CMS</p>
+    <p>Please sign-in</p>
 </div>
 
 <div *ngIf="loginDisplay">
-    <p>Login successful!</p>
+    <p>Welcome {{user}} !!!</p>
+    <p>Your have {{role}} role</p>
 </div>
