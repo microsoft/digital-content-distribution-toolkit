@@ -19,8 +19,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { AddContentProviderComponent } from './add-content-provider/add-content-provider.component';
 import { b2cPolicies, apiConfig } from './b2c-config';
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
-import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
+import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalRedirectComponent, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { HomeComponent } from './home/home.component';
+import { ToastrModule } from 'ngx-toastr';
 
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
@@ -28,6 +29,7 @@ const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigato
 export function loggerCallback(logLevel: LogLevel, message: string) {
   console.log(message);
 }
+
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
@@ -70,8 +72,6 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   };
 }
 
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -97,6 +97,12 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     ReactiveFormsModule,
     FlexLayoutModule ,
     MsalModule,
+    ToastrModule.forRoot({
+      timeOut: 3500,
+      positionClass: 'toast-top-center',
+      preventDuplicates: true
+    }
+    )
   ],
   exports: [RouterModule],
   providers: [
@@ -121,6 +127,6 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MsalGuard,
     MsalBroadcastService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent, MsalRedirectComponent]
 })
 export class AppModule { }

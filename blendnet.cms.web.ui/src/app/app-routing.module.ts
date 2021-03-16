@@ -9,6 +9,8 @@ import { ManageContentComponent } from './manage-content/manage-content.componen
 import { ProcessedComponent } from './processed/processed.component';
 import { SasKeyComponent } from './sas-key/sas-key.component';
 import { UnprocessedComponent } from './unprocessed/unprocessed.component';
+import { roles } from './b2c-config';
+import { RoleGuardService } from './services/role-guard.service';
 
 
 const appRoutes: Routes = [
@@ -17,14 +19,22 @@ const appRoutes: Routes = [
     component: UnprocessedComponent,
     canActivate: [
       MsalGuard,
-    ]
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: roles.SuperUser
+    } 
   },
   {
     path: 'processed-content',
      component: ProcessedComponent,
      canActivate: [
       MsalGuard,
-    ]
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: roles.SuperUser
+    } 
     },
   {
     
@@ -32,35 +42,55 @@ const appRoutes: Routes = [
    component: BroadcastedComponent,
    canActivate: [
     MsalGuard,
-  ]
+    RoleGuardService
+  ],
+    data: { 
+      expectedRole: roles.SuperUser
+    } 
   },
   {
     path: 'devices',
    component: DevicesComponent,
    canActivate: [
     MsalGuard,
-  ]
+    RoleGuardService
+  ],
+    data: { 
+      expectedRole: roles.SuperUser
+    } 
   },
   {
     path: 'manage-content',
    component: ManageContentComponent,
    canActivate: [
     MsalGuard,
-  ]
+    RoleGuardService
+  ],
+    data: { 
+      expectedRole: roles.SuperUser
+    } 
   },
   {
     path: 'content-providers',
      component: ContentProviderComponent,
      canActivate: [
       MsalGuard,
-    ]
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: roles.SuperUser
+    } 
     },
   {
     path: 'sas-key', 
     component: SasKeyComponent,
     canActivate: [
       MsalGuard,
-    ]
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: roles.ContentAdmin
+    } 
   },
   {
     // Needed for hash routing
@@ -87,7 +117,8 @@ const isIframe = window !== window.parent && !window.opener;
 
 @NgModule({
   imports: [RouterModule.forRoot(appRoutes, 
-    { relativeLinkResolution: 'legacy',
+    { 
+      // relativeLinkResolution: 'legacy',
     useHash: true,
     // Don't perform initial navigation in iframes
     initialNavigation: !isIframe ? 'enabled' : 'disabled'})],

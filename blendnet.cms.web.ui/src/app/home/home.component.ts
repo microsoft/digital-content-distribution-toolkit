@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { EventMessage, EventType } from '@azure/msal-browser';
 import { filter } from 'rxjs/operators';
@@ -10,7 +11,15 @@ import { filter } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
   loginDisplay = false;
+  user ="";
+  role="";
 
+  @ViewChild('sidenav') sidenav: MatSidenav;
+  isExpanded = true;
+  showHomeSubmenu: boolean = true;
+  showContentSubmenu: boolean = true;
+  showDeviceSubmenu: boolean = true;
+  
   constructor(private authService: MsalService, private msalBroadcastService: MsalBroadcastService) { }
 
   ngOnInit(): void {

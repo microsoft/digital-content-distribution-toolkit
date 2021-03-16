@@ -1,76 +1,59 @@
-<form [formGroup]="cpForm" novalidate>
-  <div class="add-title">
-      <h2 class="primary">Add Content Provider</h2>
-    </div>
+<form [formGroup]="cpForm">
+      <h2>Add Content Provider</h2>
     <div>
-       <mat-grid-list cols="2" rowHeight="85px">
+       <mat-grid-list cols="2" rowHeight="85px" >
            <mat-grid-tile>
-            <div class="text-inside">
               <mat-form-field>
                 <input matInput placeholder="Name" 
                 formControlName="cpname" required>
-                <!-- <mat-error *ngIf="this.cpForm.invalid">
-                  Please enter name
-                </mat-error> -->
+                <mat-error *ngIf="errorHandling('cpname', 'required')">
+                  You must provide a <strong>name</strong>
+               </mat-error>
               </mat-form-field>
-            </div>
           </mat-grid-tile>
           <mat-grid-tile>
-            <div class="text-inside">
-              <mat-form-field class="example-full-width">
+              <mat-form-field>
                 <input matInput placeholder="Logo URL address"  
                 formControlName="logoUrl">
-                <!-- <mat-error *ngIf="logourl.invalid">
-                  Please enter logourl id
-                </mat-error> -->
               </mat-form-field>
-            </div>
           </mat-grid-tile>
           <mat-grid-tile>
-            <div class="text-inside">
-              <mat-radio-group formControlName="status" class="status">
-                <div style="color:grey;">Status</div>
-                <mat-radio-button color="primary" 
-                style="padding:4px 4px 0px 0px;" value="active"
-                >Active</mat-radio-button>
-                <mat-radio-button  color="primary" 
-                style="padding:4px 0px 0px 24px;" value="inactive"
-                >Inactive</mat-radio-button>
-              </mat-radio-group>
-            </div>
-          </mat-grid-tile>
-          <mat-grid-tile></mat-grid-tile>
-          <mat-grid-tile>
-              <!-- <mat-date-range-input [rangePicker]="picker"> -->
-                <!-- <input matStartDate [min]="aminDate" [max]="amaxDate" 
-                 formControlName="activationdate" 
-                 placeholder="Activation date"> -->
-                <!-- <input matEndDate  [min]="dminDate" [max]="dmaxDate" 
-                formControlName="deactivationdate" placeholder="Deactivation date"> -->
-              <!-- </mat-date-range-input> -->
+            <mat-form-field >
               <mat-label>Activation date</mat-label>
               <input matInput [min]="aminDate" [max]="amaxDate" [matDatepicker]="apicker">
               <mat-datepicker-toggle matSuffix [for]="apicker"></mat-datepicker-toggle>
               <mat-datepicker #apicker></mat-datepicker>
+            </mat-form-field>
           </mat-grid-tile>
           <mat-grid-tile>
-              <!-- <mat-date-range-picker #picker></mat-date-range-picker> -->
+            <mat-form-field>
               <mat-label>Deactivation date</mat-label>
               <input matInput [min]="dminDate" [max]="dmaxDate" [matDatepicker]="dpicker">
               <mat-datepicker-toggle matSuffix [for]="dpicker"></mat-datepicker-toggle>
               <mat-datepicker #dpicker></mat-datepicker>
-            
-              <!-- <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
-              <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error> -->
+            </mat-form-field>
           </mat-grid-tile>
 
+          <mat-grid-tile class="cp-grid">
+              <mat-label style="color:grey;">Is the Content Provider Active ? &nbsp; &nbsp;</mat-label>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-radio-group formControlName="status" >
+                <mat-radio-button color="primary" 
+                style="padding:4px 4px 0px 0px;" value="active"
+                >Yes</mat-radio-button>
+                <mat-radio-button  color="primary" 
+                style="padding:4px 0px 0px 24px;" value="inactive"
+                >No</mat-radio-button>
+              </mat-radio-group>
+          </mat-grid-tile>
+          
           <mat-grid-tile>
-            <div class="text-inside">
-              <mat-form-field class="example-full-width">
+              <mat-form-field >
                 <input matInput placeholder="Admin">
               </mat-form-field>
               <mat-icon>search</mat-icon>
-            </div>
+              
           </mat-grid-tile>
           <mat-grid-tile>
               <mat-chip-list #chipList>
@@ -86,8 +69,8 @@
 
 
         <div class="btn-sec">
-          <button mat-raised-button type="submit" color="primary" class="update-btn" (click)="saveOrUpdate()">Save</button>
           <button mat-raised-button type="button" class="discard-btn" (click)="closeDialog()">Cancel</button>
+          <button mat-raised-button type="submit" color="primary" class="update-btn" (click)="saveOrUpdate()"> Save </button>
         </div>
 
     </div>
