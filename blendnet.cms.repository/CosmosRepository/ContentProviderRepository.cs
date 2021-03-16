@@ -130,7 +130,7 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns></returns>
         public async Task<SasTokenDto> GenerateSaSToken(Guid contentProviderId)
         {    
-            var containerName = contentProviderId+ApplicationConstants.ContainerConstants.ContainerSuffix;
+            var containerName = contentProviderId+ApplicationConstants.StorageContainerSuffix.Raw;
 
             // BlobContainerClient _client = _blobServiceClient.GetBlobContainerClient(containerName);
 

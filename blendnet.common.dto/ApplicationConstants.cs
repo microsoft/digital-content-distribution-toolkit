@@ -22,12 +22,20 @@ namespace blendnet.common.dto
             public const int expiryInHours = 2;
             
         }
-        public struct ContainerConstants
+  
+        public struct StorageContainerSuffix
         {
-            public const string ContainerSuffix = "-raw";
-            
+            public const string Raw = "-raw";
+            public const string Mezzanine = "-mezzanine";
+            public const string Processed = "-processed";
+            public const string Cdn = "-cdn";
         }
 
-        
+        public struct StorageInstanceNames
+        {
+            public const string CMSStorage = "CMSStorage";
+            public const string CMSCDNStorage = "CMSCDNStorage";
+            
+        }
     }
 }

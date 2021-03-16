@@ -1,0 +1,44 @@
+<div class="cms-container">
+    <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+            <mat-card  class="cms-card" 
+            *ngFor="let cp of cps; index as i;">
+            <div *ngIf="cp.id !== null">
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon mat-list-icon  *ngIf="cp.status"
+                        class="cp-status-active">
+                        check_circle</mat-icon>
+                        <mat-icon mat-list-icon *ngIf="!cp.status"
+                        class="cp-status-inactive">
+                        unpublished</mat-icon></div>
+                    <mat-card-title>{{cp.name}}</mat-card-title>
+                    </mat-card-header>
+                    <img mat-card-image class="cms-cp-logo"
+                    src={{cp.logoUrl}} alt="Logo of content provider">
+                    <mat-card-content>
+                    </mat-card-content>
+                    <mat-card-actions>
+                    <button mat-button (click)="openEditConfirmModal(cp)">EDIT</button>
+                    <button mat-button (click)="openDeleteConfirmModal(cp)">DELETE</button>
+                    </mat-card-actions>
+
+            </div>
+            <div *ngIf="cp.id === null">
+                <mat-card-header >
+                    <div mat-card-avatar></div>  
+                    <mat-card-title></mat-card-title>
+                    </mat-card-header>
+                    <img mat-card-image class="cms-cp-logo"
+                    (click)="openEditConfirmModal(cp)"
+                    src= "https://cdn.iconscout.com/icon/free/png-512/add-new-1439785-1214356.png">
+                    <mat-card-content>
+                    </mat-card-content>
+                    <mat-card-actions>
+                    </mat-card-actions>
+            </div>   
+        </mat-card>
+</div>
+
+    
+    
+</div>

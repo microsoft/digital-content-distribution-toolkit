@@ -1,0 +1,52 @@
+<mat-toolbar color="primary" class="cms-toolbar">
+	<!-- <button mat-icon-button (click)="isExpanded = !isExpanded"><mat-icon>menu</mat-icon></button> -->
+	<span class="cms-menu-spacer"></span>
+	<span><h1 class="cms-app-name">BlendNet CMS</h1></span>
+  <span class="cms-menu-spacer"></span>
+  <button mat-icon-button><mat-icon>logout</mat-icon></button>
+  <!-- <button mat-button *ngIf="loginDisplay" (click)="editProfile()">Edit Profile</button>
+  <button mat-raised-button *ngIf="!loginDisplay" (click)="login()">Login</button>
+  <button mat-raised-button *ngIf="loginDisplay" (click)="logout()">Logout</button> -->
+
+
+</mat-toolbar>
+<mat-sidenav-container class="cms-container" autosize >
+	<!-- <mat-sidenav  *ngIf="loginDisplay" #sidenav class="cms-sidenav" mode="side" opened="true" > -->
+	<mat-sidenav  #sidenav class="cms-sidenav" mode="side" opened="true" >
+	
+		<mat-nav-list>
+			<mat-list-item class="parent">
+				<span class="full-width" *ngIf="isExpanded">Home</span>
+				<mat-icon mat-list-icon>home</mat-icon>
+			</mat-list-item>
+			<div class="submenu" [ngClass]="{'expanded' : showHomeSubmenu}" *ngIf="isExpanded">
+        <a mat-list-item [routerLink]="['content-providers']">Content Providers</a>
+				<a mat-list-item [routerLink]="['sas-key']">SAS Key</a>
+      </div>
+      <mat-list-item  class="parent">
+				<span class="full-width" *ngIf="isExpanded">Content</span>
+				<mat-icon mat-list-icon>local_movies</mat-icon>
+			</mat-list-item>
+			<div class="submenu" [ngClass]="{'expanded' : showContentSubmenu}" *ngIf="isExpanded">
+        <a mat-list-item [routerLink]="['unprocessed-content']">Unprocessed</a>
+        <a mat-list-item [routerLink]="['processed-content']">Processed</a>
+        <a mat-list-item [routerLink]="['broadcasted-content']">Broadcasted</a>
+      </div>
+      <mat-list-item class="parent">
+				<span class="full-width" *ngIf="isExpanded">Devices</span>
+				<mat-icon mat-list-icon>router</mat-icon>
+			</mat-list-item>
+			<div class="submenu" [ngClass]="{'expanded' : showDeviceSubmenu}" *ngIf="isExpanded">
+        <a mat-list-item [routerLink]="['devices']">Devices</a>
+        <a mat-list-item [routerLink]="['manage-content']">Manage content</a>
+      </div>
+		</mat-nav-list>
+    <mat-nav-list>
+  </mat-nav-list>
+</mat-sidenav>
+
+	<div class="cms-sidenav-content">
+		<router-outlet *ngIf="!isIframe"></router-outlet>
+	</div>
+
+</mat-sidenav-container>

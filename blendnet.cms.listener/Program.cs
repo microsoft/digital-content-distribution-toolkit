@@ -23,6 +23,8 @@ using blendnet.common.infrastructure.KeyVault;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Microsoft.Graph.Auth;
+using Microsoft.Extensions.Azure;
+using blendnet.common.dto;
 
 namespace blendnet.cms.listener
 {
@@ -90,12 +92,29 @@ namespace blendnet.cms.listener
 
                     string cmsStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSStorageConnectionString");
 
+                    string cmsCDNStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSCDNStorageConnectionString");
+
+
+                    
+
                     //Register graph authentication provider
-                    services.AddSingleton<BlobServiceClient>(bsc => {
-                        
-                        var client = new BlobServiceClient(cmsStorageConnectionString);
-                        
-                        return client;
+                    //https://github.com/Azure/azure-sdk-for-net/issues/8941
+                    //services.AddSingleton<BlobServiceClient>(bsc => {
+                    //    var client = new BlobServiceClient(cmsStorageConnectionString);
+                    //    return client;
+                    //});
+
+                    services.AddAzureClients(builder => 
+                    {
+                        // Register blob service client and initialize it using the Storage section of configuration
+                        builder.AddBlobServiceClient(cmsStorageConnectionString)
+                                .WithName(ApplicationConstants.StorageInstanceNames.CMSStorage)
+                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
+
+                        builder.AddBlobServiceClient(cmsCDNStorageConnectionString)
+                                .WithName(ApplicationConstants.StorageInstanceNames.CMSCDNStorage)
+                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
+
                     });
 
                     //Configure Event 
