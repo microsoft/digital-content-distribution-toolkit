@@ -1482,3 +1482,26 @@ Microsoft.Azure.ServiceBus.MessagingEntityNotFoundException: The messaging entit
 2021-03-09T13:24:58.9802386+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: b9d9a358-7f92-444b-abb0-7d30d0a01412
 2021-03-09T13:25:38.7087662+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : b9d9a358-7f92-444b-abb0-7d30d0a01412
 2021-03-09T13:25:58.2749620+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: b9d9a358-7f92-444b-abb0-7d30d0a01412
+2021-03-15T12:39:33.6236880+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2021-03-15T12:39:33.6610480+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2021-03-15T12:39:33.7352590+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
+2021-03-15T12:39:34.2293490+05:30 [INF] blendnet.cms.listener// Message Recieved for content provider id: b7e991ce-1ffc-40df-9f05-ed85b9337608
+2021-03-15T12:39:34.2313540+05:30 [INF] blendnet.cms.listener// Creating storage containers for content provider id: b7e991ce-1ffc-40df-9f05-ed85b9337608
+2021-03-15T12:39:35.2320990+05:30 [INF] blendnet.cms.listener// Adding administrators to Azure AD for : b7e991ce-1ffc-40df-9f05-ed85b9337608
+2021-03-15T12:39:36.4790600+05:30 [INF] blendnet.cms.listener// User string does not exist in Azure AD B2C. - Exception details - Status Code: NotFound
+Microsoft.Graph.ServiceException: Code: Request_ResourceNotFound
+Message: Resource 'string' does not exist or one of its queried reference-property objects are not present.
+Inner error:
+	AdditionalData:
+	date: 2021-03-15T07:09:36
+	request-id: 6e29123c-5395-4871-a526-1a593fbcac4b
+	client-request-id: 6e29123c-5395-4871-a526-1a593fbcac4b
+ClientRequestId: 6e29123c-5395-4871-a526-1a593fbcac4b
+
+   at Microsoft.Graph.HttpProvider.SendAsync(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationToken cancellationToken)
+   at Microsoft.Graph.BaseRequest.SendRequestAsync(Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.BaseRequest.SendAsync[T](Object serializableObject, CancellationToken cancellationToken, HttpCompletionOption completionOption)
+   at Microsoft.Graph.DirectoryObjectCheckMemberGroupsRequest.PostAsync(CancellationToken cancellationToken)
+   at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in /Users/vinodhkumar/Documents/BlendNet/bine-crm/blendnet.cms.listener/IntegrationEventHandling/ContentProviderCreatedIntegrationEventHandler.cs:line 159
+2021-03-15T12:39:36.4796050+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: b7e991ce-1ffc-40df-9f05-ed85b9337608
+2021-03-15T12:42:03.4012250+05:30 [INF] blendnet.cms.listener// Stopping Eventlistner of blendnet.cms.listener

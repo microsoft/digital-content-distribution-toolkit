@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Storage;
+using Azure.Storage.Blobs;
 using blendnet.cms.repository.CosmosRepository;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
@@ -92,6 +94,21 @@ namespace blendnet.cms.api
             //Configure Application Insights
             services.AddApplicationInsightsTelemetry();
 
+            string cmsStorageConnectionString = Configuration.GetValue<string>("CMSStorageConnectionString");
+
+            // string accountName = Configuration.GetValue<string>("StorageAccountName");
+
+            // string accountKey = Configuration.GetValue<string>("StorageAccountKey");
+
+            // StorageSharedKeyCredential credential = new StorageSharedKeyCredential(accountName, accountKey);
+            
+            services.AddSingleton<BlobServiceClient>(bsc => {
+                    
+                    var client = new BlobServiceClient(cmsStorageConnectionString);
+                    
+                    return client;
+                });
+
             //Configure Services
             services.AddTransient<IContentProviderRepository, ContentProviderRepository>();
 
@@ -108,6 +125,10 @@ namespace blendnet.cms.api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
             }
 
             app.UseHttpsRedirection();
