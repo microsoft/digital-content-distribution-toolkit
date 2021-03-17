@@ -207,7 +207,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/generateSaS")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult> GenerateToken(Guid contentProviderId)
+        public async Task<ActionResult<SasTokenDto>> GenerateToken(Guid contentProviderId)
         {
             SasTokenDto sasUri = await _contentProviderRepository.GenerateSaSToken(contentProviderId);
 

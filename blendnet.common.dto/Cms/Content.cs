@@ -15,7 +15,7 @@ namespace blendnet.common.dto.Cms
         /// Unique Content Id
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Same as Id
@@ -105,11 +105,13 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// If it will appear on home page
         /// </summary>
+        [Required]
         public bool IsHeaderContent { get; set; }
 
         /// <summary>
         /// If no subscription purchase is required
         /// </summary>
+        [Required]
         public bool IsFreeContent { get; set; }
 
         /// <summary>
@@ -147,7 +149,15 @@ namespace blendnet.common.dto.Cms
         /// </summary>
         public ContentUploadStatus? ContentBroadcastStatus { get; set; }
 
+        public void SetIdentifiers()
+        {
+            this.Id = Guid.NewGuid();
+            this.ContentId = this.Id;
+        }
+
     }
+
+
 
     public class Artist
     {
@@ -197,5 +207,7 @@ namespace blendnet.common.dto.Cms
     {
         
     }
+
+    
 
 }

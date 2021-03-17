@@ -112,6 +112,8 @@ namespace blendnet.cms.api
             //Configure Services
             services.AddTransient<IContentProviderRepository, ContentProviderRepository>();
 
+            services.AddTransient<IContentRepository, ContentRepository>();
+
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
 
@@ -202,6 +204,8 @@ namespace blendnet.cms.api
 
                 ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.ContentProvider, "/id").Result;
 
+                ContainerResponse contentcontainerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Content, "/id").Result;
+                
                 return client;
             });
         }
