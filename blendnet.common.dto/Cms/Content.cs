@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,17 +21,17 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Same as Id
         /// </summary>
-        public Guid ContentId { get; set; }
+        public Guid? ContentId { get; set; }
 
         /// <summary>
-        /// Content provider content id
+        /// Content provider content id. In case we need to maintain any linking in future
         /// </summary>
         public string ContentProviderContentId { get; set; }
 
         /// <summary>
         /// Type
         /// </summary>
-        public ContentContainerType Type { get; set; }
+        public ContentContainerType Type { get; set; } = ContentContainerType.Content;
 
         /// <summary>
         /// Content Provider Id
@@ -149,11 +150,17 @@ namespace blendnet.common.dto.Cms
 
     }
 
+    /// <summary>
+    /// Artist
+    /// </summary>
     public class Artist
     {
         public string Name { get; set; }
     }
 
+    /// <summary>
+    /// Attachment
+    /// </summary>
     public class Attachment
     {
         public string Name { get; set; }
@@ -165,6 +172,7 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Represents the Type of Attachment
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum AttachmentType
     {
         Thumbnail = 0,
@@ -174,6 +182,7 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Command Upload Status
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentUploadStatus
     {
         UploadSubmitted = 0,
@@ -185,6 +194,7 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Content Transform Status
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentTransformStatus
     {
         
@@ -193,6 +203,7 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Content Broadcast Status
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentBroadcastStatus
     {
         

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Azure.Storage;
 using Azure.Storage.Blobs;
@@ -50,7 +51,12 @@ namespace blendnet.cms.api
                 Configuration.Bind("AzureAdB2C", options);
             });
 
-            services.AddControllers();
+            services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             //Configure Swagger
             services.AddSwaggerGen(c =>
@@ -111,6 +117,8 @@ namespace blendnet.cms.api
 
             //Configure Services
             services.AddTransient<IContentProviderRepository, ContentProviderRepository>();
+
+            services.AddTransient<IContentRepository, ContentRepository>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -195,12 +203,16 @@ namespace blendnet.cms.api
             services.AddSingleton<CosmosClient>((cc) => {
 
                 CosmosClient client = new CosmosClientBuilder(account, key)
-                           .WithSerializerOptions(new CosmosSerializationOptions() { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase })
+                           .WithSerializerOptions(new CosmosSerializationOptions() 
+                            {   PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase 
+                            })
                            .Build();
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
                 ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.ContentProvider, "/id").Result;
+
+                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Content, "/contentId").Result;
 
                 return client;
             });

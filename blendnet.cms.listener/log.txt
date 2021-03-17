@@ -1831,3 +1831,49 @@ ClientRequestId: cb468f7e-6091-49f6-9a80-d7ec6f1672ee
    at blendnet.cms.listener.IntegrationEventHandling.ContentProviderCreatedIntegrationEventHandler.AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent) in D:\Data\AGCLI\BlendNet\sprint5\blendnet.cms.listener\IntegrationEventHandling\ContentProviderCreatedIntegrationEventHandler.cs:line 200
 2021-03-13T20:13:07.6548261+05:30 [INF] blendnet.cms.listener// Message Process Completed for content provider id: b78a00cb-8aea-43e1-adf4-3dfbb6a81472
 >>>>>>> f947db04764e234d1fcb3c23789bf3c0532a441f
+2021-03-17T17:52:39.4575988+05:30 [INF] blendnet.cms.listener// The messaging entity $Default Could not be found.
+2021-03-17T17:52:43.2217423+05:30 [INF] blendnet.cms.listener// Starting Eventlistner of blendnet.cms.listener
+2021-03-17T17:59:34.4417717+05:30 [ERR] blendnet.cms.listener// The operation did not complete within the allocated time 00:00:00 for object receiver10.
+Microsoft.Azure.ServiceBus.ServiceBusTimeoutException: The operation did not complete within the allocated time 00:00:00 for object receiver10.
+ ---> System.AggregateException: One or more errors occurred. (The operation did not complete within the allocated time 00:00:00 for object receiver10.) (The operation did not complete within the allocated time 00:00:00 for object receiver10.)
+ ---> System.TimeoutException: The operation did not complete within the allocated time 00:00:00 for object receiver10.
+   at Microsoft.Azure.Amqp.ExceptionDispatcher.Throw(Exception exception)
+   at Microsoft.Azure.Amqp.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.OpenAsyncResult.End(IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.EndOpen(IAsyncResult result)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.Amqp.AmqpLinkCreator.CreateAndOpenAmqpLinkAsync()
+   at Microsoft.Azure.Amqp.ExceptionDispatcher.Throw(Exception exception)
+   at Microsoft.Azure.Amqp.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.CloseAsyncResult.End(IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.EndClose(IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.OnSafeCloseComplete(IAsyncResult result)
+   --- End of inner exception stack trace ---
+ ---> (Inner Exception #1) Microsoft.Azure.ServiceBus.ServiceBusTimeoutException: The operation did not complete within the allocated time 00:00:00 for object receiver10.
+ ---> System.TimeoutException: The operation did not complete within the allocated time 00:00:00 for object receiver10.
+   at Microsoft.Azure.Amqp.ExceptionDispatcher.Throw(Exception exception)
+   at Microsoft.Azure.Amqp.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.OpenAsyncResult.End(IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.EndOpen(IAsyncResult result)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.Amqp.AmqpLinkCreator.CreateAndOpenAmqpLinkAsync()
+   at Microsoft.Azure.Amqp.ExceptionDispatcher.Throw(Exception exception)
+   at Microsoft.Azure.Amqp.AsyncResult.End[TAsyncResult](IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.CloseAsyncResult.End(IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.EndClose(IAsyncResult result)
+   at Microsoft.Azure.Amqp.AmqpObject.OnSafeCloseComplete(IAsyncResult result)
+   --- End of inner exception stack trace ---<---
+
+   --- End of inner exception stack trace ---
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.OnReceiveAsync(Int32 maxMessageCount, TimeSpan serverWaitTime)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.<>c__DisplayClass65_0.<<ReceiveAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.RetryPolicy.RunOperation(Func`1 operation, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(Int32 maxMessageCount, TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.Core.MessageReceiver.ReceiveAsync(TimeSpan operationTimeout)
+   at Microsoft.Azure.ServiceBus.MessageReceivePump.<MessagePumpTaskAsync>b__12_0()
+2021-03-17T17:59:34.5213128+05:30 [ERR] blendnet.cms.listener// Action : Receive |  Endpoint : sb-blendnet-dev.servicebus.windows.net | Endpoint : blendnet-topic-dev/Subscriptions/CMSService | ClientId : MessageReceiver3blendnet-topic-dev/Subscriptions/CMSService
+2021-03-17T17:59:35.3475800+05:30 [INF] blendnet.cms.listener// Subscribe complete by blendnet.cms.listener
