@@ -6,7 +6,7 @@ export class Contentprovider {
         public id: string,
         public name: string,
         public logoUrl: string,
-        public status:boolean,
+        public isActive:boolean,
         public activationDate: Date,
         public deactivationDate: Date,
         public admins: ContentproviderAdmin[]

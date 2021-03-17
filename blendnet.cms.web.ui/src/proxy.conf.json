@@ -1,0 +1,7 @@
+{
+    "/api/v1/ContentProvider/*": {
+        "target": "https://localhost:44338",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}

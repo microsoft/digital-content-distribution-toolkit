@@ -25,14 +25,18 @@ export class ContentProviderService {
     // return this.http.get("https://e593e821-3882-4e2b-b9cd-5d59fc200ed9.mock.pstmn.io/contentproviders");
   }
 
-  createContentProvider(cp: Contentprovider) {
+  createContentProvider(cp: Contentprovider) : Observable<HttpResponse<any>>{
+    let url = this.baseUrl + 'ContentProvider';
     this.logger.log(`Creating content providers`);
-    return this.http.post("https://e593e821-3882-4e2b-b9cd-5d59fc200ed9.mock.pstmn.io/contentprovider", cp);
+    return this.http.post(url, cp, { observe: 'response'});
+    // return this.http.post("https://e593e821-3882-4e2b-b9cd-5d59fc200ed9.mock.pstmn.io/contentprovider", cp);
   }
 
-  editContentProvider(cp: Contentprovider) {
-    this.logger.log(`Updating content providers`);
-    return this.http.put("https://e593e821-3882-4e2b-b9cd-5d59fc200ed9.mock.pstmn.io/contentprovider", cp);
+  editContentProvider(cp: Contentprovider) : Observable<HttpResponse<any>> {
+    let url = this.baseUrl + 'ContentProvider' + '/' +cp.id;
+    this.logger.log(`Editing content providers`);
+    return this.http.post(url, cp, { observe: 'response'});
+    // return this.http.post("https://e593e821-3882-4e2b-b9cd-5d59fc200ed9.mock.pstmn.io/contentprovider", cp);
   }
 
   deleteContentProvider(cpId: String) {
