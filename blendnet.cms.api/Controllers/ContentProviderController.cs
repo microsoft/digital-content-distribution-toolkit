@@ -16,6 +16,7 @@ namespace blendnet.cms.api.Controllers
     [ApiController]
     public class ContentProviderController : ControllerBase
     {
+
         private readonly ILogger _logger;
 
         private IEventBus _eventBus;
@@ -98,7 +99,7 @@ namespace blendnet.cms.api.Controllers
 
         /// <summary>
         /// Updates the content provider id
-        /// </summary>
+        /// </summary>  
         /// <param name="contentProviderId"></param>
         /// <param name="contentProvider"></param>
         /// <returns></returns>
@@ -192,6 +193,27 @@ namespace blendnet.cms.api.Controllers
                 await _contentProviderRepository.UpdateContentProvider(contentProvider);
 
                 return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Generates SAS token for the content provider
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <returns></returns>
+        [HttpPost("{contentProviderId:guid}/generateSaS")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult> GenerateToken(Guid contentProviderId)
+        {
+            SasTokenDto sasUri = await _contentProviderRepository.GenerateSaSToken(contentProviderId);
+
+            if (sasUri != null)
+            {
+                return Ok(sasUri);
             }
             else
             {

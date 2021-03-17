@@ -11,6 +11,11 @@ namespace blendnet.common.dto
             public const string ContentProvider = "ContentProvider";
         }
 
+        public struct Policy
+        {
+            public const string PolicyPermissions = "rwlcda";
+            
+        }
         public struct StorageContainerSuffix
         {
             public const string Raw = "-raw";
@@ -23,7 +28,6 @@ namespace blendnet.common.dto
         {
             public const string CMSStorage = "CMSStorage";
             public const string CMSCDNStorage = "CMSCDNStorage";
-            
         }
     }
 }

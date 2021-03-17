@@ -41,5 +41,12 @@ namespace blendnet.cms.repository.Interfaces
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
         Task<int> DeleteContentProvider(Guid contentProviderId);
+    
+        /// <summary>
+        /// Generate SaS token
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <returns></returns>
+        Task<SasTokenDto> GenerateSaSToken(Guid contentProviderId);
     }
 }
