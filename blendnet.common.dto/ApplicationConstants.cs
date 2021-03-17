@@ -16,13 +16,6 @@ namespace blendnet.common.dto
             public const string PolicyPermissions = "rwlcda";
             
         }
-
-        public struct SaSToken
-        {
-            public const int expiryInHours = 2;
-            
-        }
-  
         public struct StorageContainerSuffix
         {
             public const string Raw = "-raw";

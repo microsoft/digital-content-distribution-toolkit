@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using Azure.Storage.Blobs;
@@ -166,11 +167,11 @@ namespace blendnet.cms.repository.CosmosRepository
                 
 
                 SasTokenDto token = new SasTokenDto();
-                token.storageAccount = _appSettings.StorageAccount;
+                token.storageAccount = containerClient.AccountName;
                 token.containerName = containerClient.Name;
-                token.policyName =  _appSettings.PolicyName;
+                token.policyName =  storedPolicyName;
                 token.sasUri = sasUri;
-                token.expiryInHours = ApplicationConstants.SaSToken.expiryInHours;
+                token.expiryInHours = _appSettings.SasTokenExpiryInHours;
 
                 return token;
             }
