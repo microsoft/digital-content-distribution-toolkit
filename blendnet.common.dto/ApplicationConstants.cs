@@ -15,8 +15,17 @@ namespace blendnet.common.dto
         public struct Policy
         {
             public const string PolicyPermissions = "rwlcda";
-            
+            public const string ReadOnlyPolicyPermissions = "r";
         }
+
+
+        public struct StorageContainerPolicyNames
+        {
+            public const string RawReadOnly = "rawreadonly";
+            public const string MezzanineReadOnly = "mezzaninereadonly";
+            public const string ProcessedReadOnly = "processedreadonly";
+        }
+
         public struct StorageContainerSuffix
         {
             public const string Raw = "-raw";

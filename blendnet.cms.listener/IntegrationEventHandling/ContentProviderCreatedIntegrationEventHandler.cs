@@ -1,6 +1,8 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using blendnet.cms.listener.Model;
 using blendnet.common.dto;
+using blendnet.common.dto.cms;
 using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
 using Microsoft.ApplicationInsights;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,7 +105,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             {
                 var baseName = integrationEvent.ContentProvider.Id.ToString().Trim().ToLower();
 
-                string dumpContainerName = $"{baseName}{ApplicationConstants.StorageContainerSuffix.Raw}";
+                string rawContainerName = $"{baseName}{ApplicationConstants.StorageContainerSuffix.Raw}";
 
                 string mezzContainerName = $"{baseName}{ApplicationConstants.StorageContainerSuffix.Mezzanine}";
 
@@ -110,18 +113,29 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 var containers = _cmsBlobServiceClient.GetBlobContainers(prefix: baseName);
 
-                if (!containerExists(dumpContainerName))
+                if (!containerExists(rawContainerName))
                 {
-                    await _cmsBlobServiceClient.CreateBlobContainerAsync(dumpContainerName);
+                    //Create Blob Container
+                    await _cmsBlobServiceClient.CreateBlobContainerAsync(rawContainerName);
+
+                    //Create Container Policy
+                    await CreateContainerPolicy(rawContainerName,
+                                                ApplicationConstants.StorageContainerPolicyNames.RawReadOnly,
+                                                ApplicationConstants.Policy.ReadOnlyPolicyPermissions);
                 }
                 else
                 {
-                    _logger.LogInformation($"{dumpContainerName} already exists");
+                    _logger.LogInformation($"{rawContainerName} already exists");
                 }
 
                 if (!containerExists(mezzContainerName))
                 {
                     await _cmsBlobServiceClient.CreateBlobContainerAsync(mezzContainerName);
+
+                    //Create Container Policy
+                    await CreateContainerPolicy(mezzContainerName,
+                                                ApplicationConstants.StorageContainerPolicyNames.MezzanineReadOnly,
+                                                ApplicationConstants.Policy.ReadOnlyPolicyPermissions);
                 }
                 else
                 {
@@ -131,6 +145,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 if (!containerExists(processedContainerName))
                 {
                     await _cmsBlobServiceClient.CreateBlobContainerAsync(processedContainerName);
+
+                    //Create Container Policy
+                    await CreateContainerPolicy(processedContainerName,
+                                                ApplicationConstants.StorageContainerPolicyNames.ProcessedReadOnly,
+                                                ApplicationConstants.Policy.ReadOnlyPolicyPermissions);
                 }
                 else
                 {
@@ -182,6 +201,36 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 _logger.LogError(ex, ex.Message);
             }
         }
+
+        /// <summary>
+        /// Create Container Policy
+        /// https://docs.microsoft.com/en-us/azure/storage/common/storage-stored-access-policy-define-dotnet?tabs=dotnet
+        /// </summary>
+        /// <param name="containerName"></param>
+        /// <param name="policyName"></param>
+        /// <param name="policyPermissions"></param>
+        /// <returns></returns>
+        public async Task CreateContainerPolicy(string containerName, string policyName, string policyPermissions)
+        {
+            // Create one or more stored access policies.
+            List<BlobSignedIdentifier> signedIdentifiers = new List<BlobSignedIdentifier>
+            {
+                new BlobSignedIdentifier
+                {
+                    Id = policyName,
+                    AccessPolicy = new BlobAccessPolicy
+                    {
+                        Permissions = policyPermissions
+                    }
+                }
+            };
+
+            BlobContainerClient containerClient = _cmsBlobServiceClient.GetBlobContainerClient(containerName);
+
+            // Set the container's access policy.
+            await containerClient.SetAccessPolicyAsync(permissions: signedIdentifiers);
+        }
+
 
         /// <summary>
         /// Checks if the user is not the part of group adds it to the Azure AD

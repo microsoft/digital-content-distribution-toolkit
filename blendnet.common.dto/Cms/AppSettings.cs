@@ -24,5 +24,7 @@ namespace blendnet.common.dto.cms
         public string CMSStorageConnectionString { get; set; }
 
         public int SasTokenExpiryInHours { get; set; }
+
+        public string ContentAdministratorGroupId { get; set; }
     }
 }
