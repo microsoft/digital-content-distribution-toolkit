@@ -233,7 +233,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                         BlockBlobClient sourceBlob = sourceContainer.GetBlockBlobClient(attachment.Name);
 
                         //todo: bring duration from app settings
-                        string blobSasUrl = GetServiceSasUriForContainer(sourceContainer.GetBlobClient(attachment.Name), 
+                        string blobSasUrl = GetServiceSasUriForBlob(sourceContainer.GetBlobClient(attachment.Name), 
                                                                          ApplicationConstants.StorageContainerPolicyNames.RawReadOnly, 
                                                                          _appSettings.SASTokenExpiryToCopyContentInMts);
 
@@ -287,10 +287,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <summary>
         /// https://docs.microsoft.com/en-us/azure/storage/common/storage-stored-access-policy-define-dotnet?tabs=dotnet
         /// </summary>
-        /// <param name="containerClient"></param>
-        /// <param name="containerPolicyName"></param>
+        /// <param name="blobClient"></param>
+        /// <param name="identifier"></param>
+        /// <param name="expiryMinutes"></param>
         /// <returns></returns>
-        private string GetServiceSasUriForContainer(BlobClient blobClient, string identifier, int expiryMinutes)
+        private string GetServiceSasUriForBlob(BlobClient blobClient, string identifier, int expiryMinutes)
         {
             // Create a SAS token that's valid for one hour.
             BlobSasBuilder sasBuilder = new BlobSasBuilder()
