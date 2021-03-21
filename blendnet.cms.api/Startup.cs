@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Azure.Messaging.ServiceBus.Administration;
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using blendnet.cms.repository.CosmosRepository;
@@ -133,7 +134,15 @@ namespace blendnet.cms.api
             ConfigureCosmosDB(services);
 
             //Configure Service Bus
+            string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddServiceBusClient(serviceBusConnectionString);
+            });
+
             ConfigureEventBus(services);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

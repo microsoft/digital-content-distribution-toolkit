@@ -88,12 +88,15 @@ namespace blendnet.cms.api.Controllers
 
                     if(contentBool){
                         //publish the event
-                        // ContentUploadedIntegrationEvent contentUploadedIntegrationEvent = new ContentUploadedIntegrationEvent();
+                        // foreach(Content content in contents)
                         // {
-                        //     // ContentUploadCommand = contents,
-                        // };
-
-                        // await _eventBus.Publish(contentUploadedIntegrationEvent);
+                        //     ContentUploadedIntegrationEvent contentUploadedIntegrationEvent = new ContentUploadedIntegrationEvent()
+                        //     {
+                        //        ContentUploadCommand = content,
+                        //     };
+                        //     await _eventBus.Publish(contentUploadedIntegrationEvent);
+                        // }
+                        
                         return  Ok(contentBool);
                     }
                     else{

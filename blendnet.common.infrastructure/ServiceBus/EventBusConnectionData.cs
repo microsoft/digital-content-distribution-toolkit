@@ -15,7 +15,7 @@ namespace blendnet.common.infrastructure.ServiceBus
 
         public string SubscriptionName { get; set; }
 
-        public int MaxConcurrentCalls { get; set; } = 10;
+        public int MaxConcurrentCalls { get; set; } = 5;
 
     }
 }

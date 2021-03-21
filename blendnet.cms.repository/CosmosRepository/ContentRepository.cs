@@ -15,6 +15,7 @@ using Azure.Storage.Blobs.Models;
 using Azure;
 using blendnet.common.dto.Cms;
 using System.Net;
+using Microsoft.Extensions.Logging;
 
 namespace blendnet.cms.repository.CosmosRepository
 {
@@ -24,15 +25,19 @@ namespace blendnet.cms.repository.CosmosRepository
     public class ContentRepository : IContentRepository
     {
         private Container _container;
+        private readonly ILogger _logger;
         AppSettings _appSettings;
         BlobServiceClient _cmsBlobServiceClient;
         BlobServiceClient _cmsCdnBlobServiceClient;
 
         public ContentRepository(CosmosClient dbClient,
                                 IOptionsMonitor<AppSettings> optionsMonitor,
+                                ILogger<ContentProviderRepository> logger,
                                 IAzureClientFactory<BlobServiceClient> blobClientFactory)
         {
             _appSettings = optionsMonitor.CurrentValue;
+
+            _logger = logger;
 
             _cmsBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSStorage);
 
@@ -221,6 +226,7 @@ namespace blendnet.cms.repository.CosmosRepository
 
         public async Task<bool> CreateContent(List<Content> contents,Guid contentProviderId)
         {
+            string errorMessage = string.Empty;
             // Condition to validate the input jsonfile
             if(await ValidateContents(contents,contentProviderId) == true)
             {
@@ -240,12 +246,17 @@ namespace blendnet.cms.repository.CosmosRepository
             }
             else
             {
+                 errorMessage = $"Content Validation failed";
+
+                _logger.LogError($"{errorMessage}");
                 return false;
             }
         }
 
         private  async Task<bool> ValidateContents(List<Content> contents,Guid contentProviderId)
         {
+            string errorMessage = string.Empty;
+
             if(await ContentIdCheck(contents) == true)
             {
                 if (await FileExists(contents,contentProviderId) == true)
@@ -253,6 +264,10 @@ namespace blendnet.cms.repository.CosmosRepository
                     return true;
                 } 
             }
+            errorMessage = $"Duplicate Content failed";
+
+            _logger.LogError($"{errorMessage}");
+
             return false;
 
         }

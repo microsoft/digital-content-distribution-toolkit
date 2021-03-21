@@ -46,6 +46,11 @@ namespace blendnet.common.dto.Cms
         /// Failure Details
         /// </summary>
         public List<string> FailureDetails { get; set; }
+
+        /// <summary>
+        /// Command Status
+        /// </summary>
+        public CommandStatus CommandStatus { get; set; }
     }
 
     /// <summary>

@@ -25,6 +25,11 @@ using Microsoft.Identity.Client;
 using Microsoft.Graph.Auth;
 using Microsoft.Extensions.Azure;
 using blendnet.common.dto;
+using blendnet.cms.repository.Interfaces;
+using blendnet.cms.repository.CosmosRepository;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
+using blendnet.common.dto.cms;
 
 namespace blendnet.cms.listener
 {
@@ -94,15 +99,7 @@ namespace blendnet.cms.listener
 
                     string cmsCDNStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSCDNStorageConnectionString");
 
-
-                    
-
-                    //Register graph authentication provider
-                    //https://github.com/Azure/azure-sdk-for-net/issues/8941
-                    //services.AddSingleton<BlobServiceClient>(bsc => {
-                    //    var client = new BlobServiceClient(cmsStorageConnectionString);
-                    //    return client;
-                    //});
+                    string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
 
                     services.AddAzureClients(builder => 
                     {
@@ -115,6 +112,9 @@ namespace blendnet.cms.listener
                                 .WithName(ApplicationConstants.StorageInstanceNames.CMSCDNStorage)
                                 .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
 
+                        //Add Service Bus Client
+                        builder.AddServiceBusClient(serviceBusConnectionString);
+
                     });
 
                     //Configure Event 
@@ -122,6 +122,12 @@ namespace blendnet.cms.listener
 
                     //Configure Microsoft Graph Client
                     ConfigureGraphClient(hostContext, services);
+
+                    //Configure the Cosmos DB
+                    ConfigureCosmosDB(hostContext, services);
+
+                    //Configure Repository
+                    services.AddTransient<IContentRepository, ContentRepository>();
 
                 });
 
@@ -191,7 +197,36 @@ namespace blendnet.cms.listener
 
             services.AddTransient<ContentProviderCreatedIntegrationEventHandler>();
 
-            services.AddTransient<MicrosoftStorageBlobCreatedIntegrationEventHandler>(); 
+            services.AddTransient<ContentUploadedIntegrationEventHandler>();
+            
+            services.AddTransient<MicrosoftStorageBlobCreatedIntegrationEventHandler>();
+        }
+
+
+        /// <summary>
+        /// Set up Cosmos DB
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="services"></param>
+        private static void ConfigureCosmosDB(HostBuilderContext context, IServiceCollection services)
+        {
+            string account = context.Configuration.GetValue<string>("AccountEndPoint");
+
+            string databaseName = context.Configuration.GetValue<string>("DatabaseName");
+
+            string key = context.Configuration.GetValue<string>("AccountKey");
+
+            services.AddSingleton<CosmosClient>((cc) => {
+
+                CosmosClient client = new CosmosClientBuilder(account, key)
+                           .WithSerializerOptions(new CosmosSerializationOptions()
+                           {
+                               PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                           })
+                           .Build();
+
+                return client;
+            });
         }
     }
 }
