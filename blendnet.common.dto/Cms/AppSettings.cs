@@ -10,7 +10,7 @@ namespace blendnet.common.dto.cms
     public class AppSettings
     {
         public string AccountEndPoint { get; set; }
-
+        
         public string AccountKey { get; set; }
 
         public string DatabaseName { get; set; }
@@ -26,5 +26,7 @@ namespace blendnet.common.dto.cms
         public int SasTokenExpiryInHours { get; set; }
 
         public string ContentAdministratorGroupId { get; set; }
+
+        public int SASTokenExpiryToCopyContentInMts { get; set; }
     }
 }

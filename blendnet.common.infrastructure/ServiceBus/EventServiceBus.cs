@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,11 +62,13 @@ namespace blendnet.common.infrastructure.ServiceBus
                 {
                     // Indicates whether the message pump should automatically complete the messages after returning from user callback.
                     // False below indicates the complete operation is handled by the user callback as in ProcessMessagesAsync().
-                    AutoCompleteMessages = false,
+                    // AutoCompleteMessages = false,
 
                     // Maximum number of concurrent calls to the callback ProcessMessagesAsync(), set to 1 for simplicity.
                     // Set it according to how many messages the application wants to process in parallel.
-                    MaxConcurrentCalls = _eventBusConnectionData.MaxConcurrentCalls
+                    MaxConcurrentCalls = _eventBusConnectionData.MaxConcurrentCalls,
+
+                    ReceiveMode = ServiceBusReceiveMode.ReceiveAndDelete
                 };
 
                 _serviceBusProcessor = serviceBusClient.CreateProcessor(_eventBusConnectionData.TopicName, _eventBusConnectionData.SubscriptionName, options);
@@ -258,7 +261,7 @@ namespace blendnet.common.infrastructure.ServiceBus
 
                     // Complete the message so that it is not received again.
                     // This can be done only if the subscriptionClient is created in ReceiveMode.PeekLock mode (which is the default).
-                    await args.CompleteMessageAsync(args.Message);
+                    //await args.CompleteMessageAsync(args.Message);
                 }
                 else
                 {

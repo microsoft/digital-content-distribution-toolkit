@@ -2,7 +2,6 @@
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
-using blendnet.cms.listener.Model;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.cms;
@@ -79,7 +78,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 {
                     if (integrationEvent.ContentUploadCommand != null && integrationEvent.ContentUploadCommand.ContentId != null)
                     {
-                        _logger.LogInformation($"(ContentUploadedIntegrationEvent) Message Recieved for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
+                        _logger.LogInformation($"Message Recieved for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
 
                         ContentCommand uploadCommand = integrationEvent.ContentUploadCommand;
 
@@ -100,11 +99,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                             
                             await _contentRepository.UpdateContent(content);
 
-                            _logger.LogInformation($"(ContentUploadedIntegrationEvent) Moving media file for content id: {integrationEvent.ContentUploadCommand.ContentId}");
+                            _logger.LogInformation($"Moving media file for content id: {integrationEvent.ContentUploadCommand.ContentId}");
 
                             await CopyMediaContentToMezzanine(content, uploadCommand);
 
-                            _logger.LogInformation($"(ContentUploadedIntegrationEvent) Moving media file for content id: {integrationEvent.ContentUploadCommand.ContentId}");
+                            _logger.LogInformation($"Moving media file for content id: {integrationEvent.ContentUploadCommand.ContentId}");
 
                             await CopyAttachmentContentToCdn(content, uploadCommand);
 
@@ -121,7 +120,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                             {
                                 uploadCommand.CommandStatus = CommandStatus.Complete;
 
-                                content.ContentUploadStatus = ContentUploadStatus.UploadFailed;
+                                content.ContentUploadStatus = ContentUploadStatus.UploadComplete;
                             }
 
                             currentTime = DateTime.UtcNow;
@@ -134,16 +133,16 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                             await _contentRepository.UpdateContent(content);
 
-                            _logger.LogInformation($"(ContentUploadedIntegrationEvent) Message Process Completed for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
+                            _logger.LogInformation($"Message Process Completed for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
                         }
                         else
                         {
-                            _logger.LogInformation($"(ContentUploadedIntegrationEvent) No content details found in database for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
+                            _logger.LogInformation($"No content details found in database for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
                         }
                     }
                     else
                     {
-                        _logger.LogInformation($"(ContentUploadedIntegrationEvent) No content details found in integration event. Pass correct data to integation event");
+                        _logger.LogInformation($"No content details found in integration event. Pass correct data to integation event");
                     }
                 }
             }
@@ -190,7 +189,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                     uploadCommand.FailureDetails.Add(errorMessage);
 
-                    _logger.LogError($"(ContentUploadedIntegrationEvent) {errorMessage}");
+                    _logger.LogError($"{errorMessage}");
                 }
             }
             catch (Exception ex)
@@ -199,7 +198,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 uploadCommand.FailureDetails.Add(errorMessage);
 
-                _logger.LogError(ex, $"(ContentUploadedIntegrationEvent) {errorMessage}");
+                _logger.LogError(ex, $"{errorMessage}");
             }
         }
 
@@ -226,7 +225,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 BlobContainerClient sourceContainer = this._cmsBlobServiceClient.GetBlobContainerClient(rawContainerName);
 
                 BlobContainerClient destinationContainer = this._cmsCdnBlobServiceClient.GetBlobContainerClient(cdnContainerName);
-                               
 
                 foreach (Attachment attachment in content.Attachments)
                 {
@@ -235,7 +233,9 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                         BlockBlobClient sourceBlob = sourceContainer.GetBlockBlobClient(attachment.Name);
 
                         //todo: bring duration from app settings
-                        string blobSasUrl = GetServiceSasUriForContainer(sourceContainer.GetBlobClient(attachment.Name), ApplicationConstants.StorageContainerPolicyNames.RawReadOnly, 60);
+                        string blobSasUrl = GetServiceSasUriForContainer(sourceContainer.GetBlobClient(attachment.Name), 
+                                                                         ApplicationConstants.StorageContainerPolicyNames.RawReadOnly, 
+                                                                         _appSettings.SASTokenExpiryToCopyContentInMts);
 
                         if (await sourceBlob.ExistsAsync())
                         {
@@ -249,13 +249,13 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                             uploadCommand.FailureDetails.Add(errorMessage);
 
-                            _logger.LogError($"(ContentUploadedIntegrationEvent) {errorMessage}");
+                            _logger.LogError($"{errorMessage}");
                         }
 
                     }
                     catch(Exception ex)
                     {
-                        errorMessage = $" (ContentUploadedIntegrationEvent) Failed to copy attachment for content {content.ContentId.Value.ToString()} attachment {attachment.Name} ";
+                        errorMessage = $"Failed to copy attachment for content {content.ContentId.Value.ToString()} attachment {attachment.Name} ";
 
                         uploadCommand.FailureDetails.Add(errorMessage);
 
@@ -264,7 +264,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 }
             }else
             {
-                _logger.LogInformation($"(CopyAttachmentContentToCdn) for content id: {content.ContentId.ToString()}. No Attachments found.");
+                _logger.LogInformation($"CopyAttachmentContentToCdn for content id: {content.ContentId.ToString()}. No Attachments found.");
             }
         }
 
