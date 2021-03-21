@@ -20,7 +20,8 @@
           <mat-grid-tile>
             <mat-form-field >
               <mat-label>Activation date</mat-label>
-              <input matInput [min]="aminDate" [max]="amaxDate" [matDatepicker]="apicker">
+              <input matInput  [matDatepicker]="apicker"
+              formControlName="activationDate">
               <mat-datepicker-toggle matSuffix [for]="apicker"></mat-datepicker-toggle>
               <mat-datepicker #apicker></mat-datepicker>
             </mat-form-field>
@@ -28,7 +29,8 @@
           <mat-grid-tile>
             <mat-form-field>
               <mat-label>Deactivation date</mat-label>
-              <input matInput [min]="dminDate" [max]="dmaxDate" [matDatepicker]="dpicker">
+              <input matInput  [matDatepicker]="dpicker"
+              formControlName="deactivationDate">
               <mat-datepicker-toggle matSuffix [for]="dpicker"></mat-datepicker-toggle>
               <mat-datepicker #dpicker></mat-datepicker>
             </mat-form-field>
@@ -38,7 +40,7 @@
               <mat-label style="color:grey;">Is the Content Provider Active ? &nbsp; &nbsp;</mat-label>
             </mat-grid-tile>
             <mat-grid-tile>
-              <mat-radio-group formControlName="status" >
+              <mat-radio-group formControlName="isActive" >
                 <mat-radio-button color="primary" 
                 style="padding:4px 4px 0px 0px;" value="active"
                 >Yes</mat-radio-button>
@@ -70,7 +72,8 @@
 
         <div class="btn-sec">
           <button mat-raised-button type="button" class="discard-btn" (click)="closeDialog()">Cancel</button>
-          <button mat-raised-button type="submit" color="primary" class="update-btn" (click)="saveOrUpdate()"> Save </button>
+          <button mat-raised-button type="submit" color="primary" class="update-btn" 
+          [disabled]="cpForm.invalid" (click)="saveOrUpdate()"> Save </button>
         </div>
 
     </div>

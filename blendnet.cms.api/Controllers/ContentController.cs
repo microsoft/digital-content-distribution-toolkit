@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -41,18 +42,6 @@ namespace blendnet.cms.api.Controllers
 
         #region Content Management Methods
 
-        /// <summary>
-        /// List all contents 
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<List<Content>>> GetContents()
-        {
-            var content = await _contentRepository.GetContents();
-
-            return Ok(content);
-        }
 
         /// <summary>
         /// Get Content 
@@ -79,30 +68,52 @@ namespace blendnet.cms.api.Controllers
         /// Upload Contents
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("{contentProviderId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
-        public async Task<ActionResult<string>> UploadContent(IFormFile file)
+        public async Task<ActionResult> UploadContent(IFormFile file, Guid contentProviderId)
         {
-            StreamReader reader = new StreamReader(file.OpenReadStream());
+            string fileExt = System.IO.Path.GetExtension(file.FileName);
 
-            string text = reader.ReadToEnd();
+            if(fileExt == ".json")
+            {
+                StreamReader reader = new StreamReader(file.OpenReadStream());
+                string text = reader.ReadToEnd();
+                reader.Close();
+                reader.Dispose();
+                
+                try{
+                    List<Content> contents = JsonConvert.DeserializeObject<List<Content>>(text);
 
-            List<Content> contents = JsonConvert.DeserializeObject<List<Content>>(text);
+                    var contentBool = await _contentRepository.CreateContent(contents,contentProviderId);
 
-            var contentId = await _contentRepository.UploadContent(contents);
+                    if(contentBool){
+                        //publish the event
+                        // ContentUploadedIntegrationEvent contentUploadedIntegrationEvent = new ContentUploadedIntegrationEvent();
+                        // {
+                        //     // ContentUploadCommand = contents,
+                        // };
 
-            // //publish the event
-            // ContentProviderCreatedIntegrationEvent contentProviderCreatedIntegrationEvent = new ContentProviderCreatedIntegrationEvent()
-            // {
-            //     Content = content,
-            // };
-            // await _eventBus.Publish(contentProviderCreatedIntegrationEvent);
-
-            return Ok(contentId);
+                        // await _eventBus.Publish(contentUploadedIntegrationEvent);
+                        return  Ok(contentBool);
+                    }
+                    else{
+                        return BadRequest();
+                    }
+                }
+                catch(Exception ex){
+                    _logger.LogError(ex.Message);
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                string ex = "File not found or not in Json format";
+                _logger.LogError(ex);
+                return BadRequest();
+            }
 
         }
-
         #endregion
-
     }
 }
+

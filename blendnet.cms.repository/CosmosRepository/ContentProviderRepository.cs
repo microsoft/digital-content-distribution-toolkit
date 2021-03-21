@@ -13,6 +13,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 using Azure.Storage.Blobs.Models;
 using Azure;
+using Microsoft.Extensions.Logging;
 
 namespace blendnet.cms.repository.CosmosRepository
 {
@@ -22,18 +23,21 @@ namespace blendnet.cms.repository.CosmosRepository
     public class ContentProviderRepository : IContentProviderRepository
     {
         private Container _container;
+        private readonly ILogger _logger;
         
         AppSettings _appSettings;
-
-        BlobServiceClient _blobServiceClient;
+        BlobServiceClient _cmsBlobServiceClient;
         
         public ContentProviderRepository(   CosmosClient dbClient, 
                                             IOptionsMonitor<AppSettings> optionsMonitor,
-                                            BlobServiceClient blobServiceClient)
+                                            ILogger<ContentProviderRepository> logger,
+                                            IAzureClientFactory<BlobServiceClient> blobClientFactory)
         {
             _appSettings = optionsMonitor.CurrentValue;
 
-            _blobServiceClient = blobServiceClient;
+            _logger = logger;
+
+            _cmsBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSStorage);
 
             this._container = dbClient.GetContainer(_appSettings.DatabaseName,ApplicationConstants.CosmosContainers.ContentProvider);       
             
@@ -133,19 +137,21 @@ namespace blendnet.cms.repository.CosmosRepository
         {    
             var containerName = contentProviderId+ApplicationConstants.StorageContainerSuffix.Raw;
 
-            // BlobContainerClient _client = _blobServiceClient.GetBlobContainerClient(containerName);
+            // BlobContainerClient _client = _cmsBlobServiceClient.GetBlobContainerClient(containerName);
 
-            BlobContainerClient client = new BlobContainerClient(_appSettings.CMSStorageConnectionString,containerName);
-            if(client.Exists())
-            {
+            try{
+                BlobContainerClient client = new BlobContainerClient(_appSettings.CMSStorageConnectionString,containerName);
+            // if(client.Exists())
                 await CreateStoredAccessPolicyAsync(containerName);
 
                 SasTokenDto sasUri = GetServiceSasUriForContainer(client,_appSettings.PolicyName);
 
                 return sasUri;
             }
-            return null;
-
+            catch(Exception ex){
+                _logger.LogError(ex.Message);
+                return null;
+            }
         }
 
 
@@ -186,7 +192,7 @@ namespace blendnet.cms.repository.CosmosRepository
             // string connectionString = _appSettings.CMSStorageConnectionString;
             // Use the connection string to authorize the operation to create the access policy.
             // Azure AD does not support the Set Container ACL operation that creates the policy.
-            BlobContainerClient containerClient =  _blobServiceClient.GetBlobContainerClient(containerName);
+            BlobContainerClient containerClient =  _cmsBlobServiceClient.GetBlobContainerClient(containerName);
 
             // BlobContainerClient containerClient = new BlobContainerClient(connectionString, containerName);
  

@@ -84,7 +84,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Content Duration
         /// </summary>
-        public int DurationInMts { get; set; }
+        public float DurationInMts { get; set; }
 
         /// <summary>
         /// Content Rating
@@ -117,7 +117,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Artist list
         /// </summary>
-        public List<Artist> Artists { get; set; }
+        public List<String> Artists { get; set; }
 
         /// <summary>
         /// List of Attachments
@@ -159,10 +159,10 @@ namespace blendnet.common.dto.Cms
 
 
 
-    public class Artist
-    {
-        public string Name { get; set; }
-    }
+    // public class Artist
+    // {
+    //     public string Name { get; set; }
+    // }
 
     public class Attachment
     {

@@ -205,7 +205,7 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        [HttpPost("{contentProviderId:guid}/generateSaS")]
+        [HttpGet("{contentProviderId:guid}/generateSaS")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<SasTokenDto>> GenerateToken(Guid contentProviderId)
         {

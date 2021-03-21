@@ -10,8 +10,6 @@ namespace blendnet.common.dto
         {
             public const string ContentProvider = "ContentProvider";
             public const string Content = "Content";
-            public const string ContentUploadCommand = "ContentUploadCommand";
-            
         }
 
         public struct Policy
