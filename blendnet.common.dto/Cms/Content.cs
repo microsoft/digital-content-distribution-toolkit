@@ -141,12 +141,12 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Content Transform Status
         /// </summary>
-        public ContentUploadStatus? ContentTransformStatus { get; set; }
+        public ContentTransformStatus? ContentTransformStatus { get; set; } = Cms.ContentTransformStatus.TranformNotInitialized;
 
         /// <summary>
         /// Content Broadcast Status
         /// </summary>
-        public ContentUploadStatus? ContentBroadcastStatus { get; set; }
+        public ContentBroadcastStatus? ContentBroadcastStatus { get; set; } = Cms.ContentBroadcastStatus.BroadcastNotInitialized;
 
     }
 
@@ -197,7 +197,11 @@ namespace blendnet.common.dto.Cms
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentTransformStatus
     {
-        
+        TranformNotInitialized = 0,
+        TranformSubmitted = 1,
+        TranformInProgress = 2,
+        TranformComplete = 3,
+        TranformFailed = 4
     }
 
     /// <summary>
@@ -206,7 +210,11 @@ namespace blendnet.common.dto.Cms
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentBroadcastStatus
     {
-        
+        BroadcastNotInitialized = 0,
+        BroadcastSubmitted = 1,
+        BroadcastInProgress = 2,
+        BroadcastComplete = 3,
+        BroadcastFailed = 4
     }
 
 }
