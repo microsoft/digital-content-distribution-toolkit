@@ -23,6 +23,11 @@ namespace blendnet.common.dto.Cms
         public Guid ContentId { get; set; }
 
         /// <summary>
+        /// To be populated only in case of Delete
+        /// </summary>
+        public Content Content { get; set; }
+
+        /// <summary>
         /// Content Container Type
         /// </summary>
         public ContentContainerType Type { get; set; } = ContentContainerType.Command;
