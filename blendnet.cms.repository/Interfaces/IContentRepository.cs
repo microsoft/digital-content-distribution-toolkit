@@ -15,12 +15,12 @@ namespace blendnet.cms.repository.Interfaces
     /// </summary>
     public interface IContentRepository
     {
-        /// <summary>
+       /// <summary>
         /// Create Content
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        Task<bool> CreateContent(List<Content> contents,Guid contentProviderId);
+        Task<Guid> CreateContent(Content content);
 
         /// <summary>
         /// Delete Content
@@ -81,7 +81,6 @@ namespace blendnet.cms.repository.Interfaces
         /// <param name="commandType"></param>
         /// <returns></returns>
         Task<List<ContentCommand>> GetCommandByContentId(Guid contentId, common.dto.Cms.CommandType commandType);
-
 
     }
 }

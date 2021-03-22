@@ -15,6 +15,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using System.Net;
+using Azure.Storage.Blobs;
+using Microsoft.Extensions.Azure;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -27,13 +29,18 @@ namespace blendnet.cms.api.Controllers
 
         private IEventBus _eventBus;
 
+        BlobServiceClient _cmsBlobServiceClient;
+
         private IContentRepository _contentRepository;
 
         public ContentController(IContentRepository contentRepository,
                                             ILogger<ContentController> logger,
-                                            IEventBus eventBus)
+                                            IEventBus eventBus,
+                                            IAzureClientFactory<BlobServiceClient> blobClientFactory)
         {
             _contentRepository = contentRepository;
+
+            _cmsBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSStorage);
 
             _logger = logger;
 
@@ -63,6 +70,7 @@ namespace blendnet.cms.api.Controllers
                 return NotFound();
             }
         }
+
 
         /// <summary>
         /// Get Content By ContentProvider
@@ -94,50 +102,195 @@ namespace blendnet.cms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> UploadContent(IFormFile file, Guid contentProviderId)
         {
+            // Check for Json Format
+            if(ValidateFileExtension(file) is false){
+                    string ex = "File not found or not in Json format";
+                    _logger.LogError(ex);                    
+                    return BadRequest(ex);
+            }
+
+            // Convert Json to list of Contents.
+            List<Content> contents = DeSerializeObjects(file);
+
+            if(contents is null){
+                string ex = "Improper JSON File";
+                _logger.LogError(ex);   
+                return BadRequest(ex);
+            }
+
+            // Check for duplicate Ids
+            if(await ValidateDuplicateIdCheck(contents,contentProviderId) is false){
+                    string ex = "Duplicate IDs found";
+                    _logger.LogError(ex);                    
+                    return BadRequest(ex);
+            }
+
+            // Check for File Existence on the raw container.
+            if(await ValidateBlobExistence(contents,contentProviderId) is false){
+                    string ex = "Blob doesn't exist";
+                    _logger.LogError(ex);                    
+                    return BadRequest(ex);
+            }
+
+            // Perform CreateContent and Push it to Service Bus
+            if(await UploadContent(contents,contentProviderId) is false){
+                string ex = "Upload failed";
+                _logger.LogError(ex); 
+                return BadRequest(ex);
+            }
+            return  Ok();
+        }
+
+        private async Task<bool> UploadContent(List<Content> contents, Guid contentProviderId)
+        {
+            foreach(Content content in contents){
+                content.SetIdentifiers();
+                content.ContentProviderId = contentProviderId;
+                // Update the ContentUpload Status to UploadInProgress
+                content.ContentUploadStatus = ContentUploadStatus.UploadSubmitted;
+
+                Guid contentId = await _contentRepository.CreateContent(content);
+
+                if(contentId !=  null){
+                    ContentCommand contentCommand = new ContentCommand();
+                    contentCommand.ContentId = contentId;
+                    //publish the event
+                    ContentUploadedIntegrationEvent contentUploadedIntegrationEvent = new ContentUploadedIntegrationEvent()
+                    {
+                        ContentUploadCommand = contentCommand,
+                    };
+                    await _eventBus.Publish(contentUploadedIntegrationEvent); 
+                }
+                else{
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        private static bool ValidateFileExtension(IFormFile file)
+        {
             string fileExt = System.IO.Path.GetExtension(file.FileName);
-
-            if(fileExt == ".json")
-            {
-                StreamReader reader = new StreamReader(file.OpenReadStream());
-                string text = reader.ReadToEnd();
-                reader.Close();
-                reader.Dispose();
-                
-                try{
-                    List<Content> contents = JsonConvert.DeserializeObject<List<Content>>(text);
-
-                    var contentBool = await _contentRepository.CreateContent(contents,contentProviderId);
-
-                    if(contentBool){
-                        //publish the event
-                        // foreach(Content content in contents)
-                        // {
-                        //     ContentUploadedIntegrationEvent contentUploadedIntegrationEvent = new ContentUploadedIntegrationEvent()
-                        //     {
-                        //        ContentUploadCommand = content,
-                        //     };
-                        //     await _eventBus.Publish(contentUploadedIntegrationEvent);
-                        // }
-                        
-                        return  Ok(contentBool);
-                    }
-                    else{
-                        return BadRequest();
-                    }
-                }
-                catch(Exception ex){
-                    _logger.LogError(ex.Message);
-                    return BadRequest();
-                }
+            if(fileExt.Equals(".json")){
+                return true;
             }
             else
             {
-                string ex = "File not found or not in Json format";
-                _logger.LogError(ex);
-                return BadRequest();
+                return false;
+            }
+        }
+
+        private static List<Content> DeSerializeObjects(IFormFile file){
+
+            using(StreamReader reader = new StreamReader(file.OpenReadStream()))
+            {
+                string text = reader.ReadToEnd();
+
+                reader.Close();
+                reader.Dispose();
+                
+                List<Content> contents = JsonConvert.DeserializeObject<List<Content>>(text);
+
+                return contents;
+            }
+        }
+        private async Task<bool> ValidateDuplicateIdCheck(List<Content> contents, Guid contentProviderId)
+        {
+
+            HashSet<string> contentIds = new HashSet<string>();
+
+            foreach(Content content in contents)
+            {
+                contentIds.Add(content.ContentProviderContentId);
+            }
+            
+            // Duplicate ContentIds in the file
+            if (contents.Count() != contentIds.Count())
+            {
+                return false;
             }
 
+            List<Content> dbcontents = await _contentRepository.GetContentByContentProviderId(contentProviderId);
+
+            HashSet<string> dbcontentIds = new HashSet<string>();
+
+            foreach(Content content in dbcontents)
+            {
+                dbcontentIds.Add(content.ContentProviderContentId);
+            }
+            
+            HashSet<string> commonIds = new HashSet<string>(dbcontentIds) ;
+
+            commonIds.IntersectWith(contentIds);
+            if(commonIds.Count() == 0)
+            {
+                return true;
+            }
+            return false;
+        } 
+
+        private async Task<bool> ValidateBlobExistence(List<Content> contents,Guid contentProviderId)
+        {
+            var containerName = contentProviderId+ApplicationConstants.StorageContainerSuffix.Cdn;
+
+            var rawcontainerName = contentProviderId+ApplicationConstants.StorageContainerSuffix.Raw;
+
+            BlobContainerClient rawClient = _cmsBlobServiceClient.GetBlobContainerClient(rawcontainerName);
+
+            List<String> Mediatypes = ApplicationConstants.SupportedFileFormats.mediaFormats;
+                
+            List<String> Thumbnailtypes = ApplicationConstants.SupportedFileFormats.ThumbnailFormats;
+            
+            foreach(Content content in contents)
+            {
+                
+                BlobClient mediaClient = rawClient.GetBlobClient(content.MediaFileName);
+
+                
+                // string type = mediaClient.GetProperties()
+                if(rawClient.GetBlobClient(content.MediaFileName).Exists() == false)
+                {
+                    return false;
+                }
+
+                string mediatype = FileFormat(content.MediaFileName);
+                if(Mediatypes.Contains(mediatype)== false){
+                    return false;
+                }
+                foreach(Attachment attachment in content.Attachments)
+                {         
+                    if(attachment.Type is AttachmentType.Thumbnail){
+
+                        if(rawClient.GetBlobClient(attachment.Name).Exists() == false){
+                            return false;
+                        }
+                        string imagetype = FileFormat(attachment.Name); 
+
+                        if(Thumbnailtypes.Contains(imagetype)== false){
+                            return false;
+                        }   
+                    }
+                    else{
+                        if(rawClient.GetBlobClient(attachment.Name).Exists() == false){
+                            return false;
+                        }
+                        string imagetype = FileFormat(attachment.Name); 
+                        if(Thumbnailtypes.Contains(imagetype)== false){
+                            return false;
+                        } 
+                    }
+                }
+            }
+            return true;
+        } 
+
+        private static string FileFormat(string Name){
+            string format = Name.Split('.')[1]; 
+            return format;
         }
+
+
         #endregion
     }
 }

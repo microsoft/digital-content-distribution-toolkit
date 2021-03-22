@@ -16,6 +16,7 @@ using Azure;
 using blendnet.common.dto.Cms;
 using System.Net;
 using Microsoft.Extensions.Logging;
+using blendnet.common.dto.Events;
 
 namespace blendnet.cms.repository.CosmosRepository
 {
@@ -224,138 +225,17 @@ namespace blendnet.cms.repository.CosmosRepository
             return returnList;
         }
 
-        public async Task<bool> CreateContent(List<Content> contents,Guid contentProviderId)
+        /// <summary>
+        /// Create Content
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public async Task<Guid> CreateContent(Content content)
         {
-            string errorMessage = string.Empty;
-            // Condition to validate the input jsonfile
-            if(await ValidateContents(contents,contentProviderId) == true)
-            {
-                foreach(Content content in contents)
-                {
-                    // Generate the required Ids
-                    content.SetIdentifiers();
+            await this._container.CreateItemAsync<Content>(content,new PartitionKey(content.ContentId.ToString()));
 
-                    // Update the ContentUpload Status to UploadInProgress
-                    content.ContentProviderId = contentProviderId;
-                    content.ContentUploadStatus = ContentUploadStatus.UploadInProgress;
-
-                    await this._container.CreateItemAsync<Content>(content,
-                                                            new PartitionKey(content.ContentId.ToString()));
-                }
-                return true;      
-            }
-            else
-            {
-                 errorMessage = $"Content Validation failed";
-
-                _logger.LogError($"{errorMessage}");
-                return false;
-            }
+            return content.Id;
         }
 
-        private  async Task<bool> ValidateContents(List<Content> contents,Guid contentProviderId)
-        {
-            string errorMessage = string.Empty;
-
-            if(await ContentIdCheck(contents,contentProviderId) == true)
-            {
-                if (await FileExists(contents,contentProviderId) == true)
-                {
-                    return true;
-                } 
-            }
-            errorMessage = $"Duplicate Content failed";
-
-            _logger.LogError($"{errorMessage}");
-
-            return false;
-
-        }
-
-        private async Task<bool> FileExists(List<Content> contents,Guid contentProviderId)
-        {
-            var containerName = contentProviderId+ApplicationConstants.StorageContainerSuffix.Cdn;
-
-            var rawcontainerName = contentProviderId+ApplicationConstants.StorageContainerSuffix.Raw;
-
-            // BlobContainerClient client = _cmsCdnBlobServiceClient.GetBlobContainerClient(containerName);
-
-            BlobContainerClient rawClient = _cmsBlobServiceClient.GetBlobContainerClient(rawcontainerName);
-            
-            foreach(Content content in contents)
-            {
-                if(rawClient.GetBlobClient(content.MediaFileName).Exists()){
-                    foreach(Attachment attachment in content.Attachments)
-                        {         
-                            if(attachment.Type is AttachmentType.Thumbnail){
-                                var name = attachment.Name;
-                                if(rawClient.GetBlobClient(name).Exists()){
-                                    continue;
-                                }
-                                else{
-                                    return false;
-                                }
-                            }
-                            else{
-                                if(rawClient.GetBlobClient(attachment.Name).Exists()){
-                                    continue;
-                                }
-                                else{
-                                    return false;
-                                } 
-                            }
-                        }
-                        }
-                else{
-                    return false;
-                }
-            }
-            return true;
-        }
-
-
-        private async Task<bool> ContentIdCheck(List<Content> contents, Guid contentProviderId)
-        {
-            List<Content> dbcontents = new List<Content>();
-
-            var queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId";
-
-            var queryDef = new QueryDefinition(queryString);
-
-            queryDef.WithParameter("@type", ContentContainerType.Content);
-
-            queryDef.WithParameter("@contentProviderId", contentProviderId);
-
-            dbcontents = await ExtractDataFromQueryIterator<Content>(queryDef);
-
-            HashSet<string> dbcontentIds = new HashSet<string>();
-
-            foreach(Content content in dbcontents)
-            {
-                dbcontentIds.Add(content.ContentProviderContentId);
-            }
-
-            HashSet<string> contentIds = new HashSet<string>();
-
-            foreach(Content content in contents)
-            {
-                contentIds.Add(content.ContentProviderContentId);
-            }
-            
-            // Duplicate ContentIds in the file
-            if (contents.Count() != contentIds.Count())
-            {
-                return false;
-            }
-            
-            HashSet<string> commonIds = new HashSet<string>(dbcontentIds) ;
-
-            commonIds.IntersectWith(contentIds);
-            if(commonIds.Count() == 0)
-            {
-                return true;
-            }
-            return false;
-        }  
     }
 }
