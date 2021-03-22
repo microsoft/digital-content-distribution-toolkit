@@ -164,7 +164,7 @@ namespace blendnet.cms.repository.CosmosRepository
         {
             List<Content> contentList = new List<Content>();
 
-            var queryString = $"SELECT * FROM c WHERE c.contentContainerType = @type AND c.contentProviderId = @contentProviderId";
+            var queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId";
 
             var queryDef = new QueryDefinition(queryString);
 
@@ -257,7 +257,7 @@ namespace blendnet.cms.repository.CosmosRepository
         {
             string errorMessage = string.Empty;
 
-            if(await ContentIdCheck(contents) == true)
+            if(await ContentIdCheck(contents,contentProviderId) == true)
             {
                 if (await FileExists(contents,contentProviderId) == true)
                 {
@@ -288,7 +288,7 @@ namespace blendnet.cms.repository.CosmosRepository
                     foreach(Attachment attachment in content.Attachments)
                         {         
                             if(attachment.Type is AttachmentType.Thumbnail){
-                                var name = content.Title+"/"+attachment.Name;
+                                var name = attachment.Name;
                                 if(rawClient.GetBlobClient(name).Exists()){
                                     continue;
                                 }
@@ -314,13 +314,17 @@ namespace blendnet.cms.repository.CosmosRepository
         }
 
 
-        private async Task<bool> ContentIdCheck(List<Content> contents)
+        private async Task<bool> ContentIdCheck(List<Content> contents, Guid contentProviderId)
         {
             List<Content> dbcontents = new List<Content>();
 
-            var queryString = $"SELECT * FROM content c";
+            var queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId";
 
             var queryDef = new QueryDefinition(queryString);
+
+            queryDef.WithParameter("@type", ContentContainerType.Content);
+
+            queryDef.WithParameter("@contentProviderId", contentProviderId);
 
             dbcontents = await ExtractDataFromQueryIterator<Content>(queryDef);
 

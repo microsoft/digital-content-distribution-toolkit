@@ -65,6 +65,28 @@ namespace blendnet.cms.api.Controllers
         }
 
         /// <summary>
+        /// Get Content By ContentProvider
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <returns></returns>
+        [HttpGet("{contentProviderId:guid}/getcontents", Name = nameof(GetContentByContentProviderId))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<Content>> GetContentByContentProviderId(Guid contentProviderId)
+        {
+            List<Content> contentlist = await _contentRepository.GetContentByContentProviderId(contentProviderId);
+
+            if (contentlist.Count()>0)
+            {
+                return Ok(contentlist);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+
+
+        /// <summary>
         /// Upload Contents
         /// </summary>
         /// <returns></returns>

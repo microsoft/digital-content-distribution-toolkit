@@ -137,11 +137,9 @@ namespace blendnet.cms.repository.CosmosRepository
         {    
             var containerName = contentProviderId+ApplicationConstants.StorageContainerSuffix.Raw;
 
-            // BlobContainerClient _client = _cmsBlobServiceClient.GetBlobContainerClient(containerName);
-
             try{
-                BlobContainerClient client = new BlobContainerClient(_appSettings.CMSStorageConnectionString,containerName);
-            // if(client.Exists())
+                BlobContainerClient client = _cmsBlobServiceClient.GetBlobContainerClient(containerName);
+                
                 await CreateStoredAccessPolicyAsync(containerName);
 
                 SasTokenDto sasUri = GetServiceSasUriForContainer(client,_appSettings.PolicyName);
@@ -189,12 +187,9 @@ namespace blendnet.cms.repository.CosmosRepository
 
         private async Task CreateStoredAccessPolicyAsync(string containerName)
         {
-            // string connectionString = _appSettings.CMSStorageConnectionString;
             // Use the connection string to authorize the operation to create the access policy.
             // Azure AD does not support the Set Container ACL operation that creates the policy.
             BlobContainerClient containerClient =  _cmsBlobServiceClient.GetBlobContainerClient(containerName);
-
-            // BlobContainerClient containerClient = new BlobContainerClient(connectionString, containerName);
  
             // Create one or more stored access policies.
             List<BlobSignedIdentifier> signedIdentifiers = new List<BlobSignedIdentifier>
