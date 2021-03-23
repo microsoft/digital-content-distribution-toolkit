@@ -1,14 +1,16 @@
-﻿using blendnet.common.dto.Integration;
-using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.ServiceBus.Management;
+﻿using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
+using blendnet.common.dto.Integration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 
 namespace blendnet.common.infrastructure.ServiceBus
 {
@@ -17,13 +19,15 @@ namespace blendnet.common.infrastructure.ServiceBus
     /// </summary>
     public class EventServiceBus : IEventBus
     {
-        private ITopicClient _topicClient;
+        private ServiceBusSender _topicSender;
 
-        private ISubscriptionClient _subscriptionClient;
+        private ServiceBusProcessor _serviceBusProcessor;
 
         private EventBusConnectionData _eventBusConnectionData;
 
         private Dictionary<string, SubscriberData> _subscribers;
+
+        private ServiceBusAdministrationClient _serviceBusAdministrationClient;
 
         private readonly ILogger _logger;
 
@@ -35,7 +39,8 @@ namespace blendnet.common.infrastructure.ServiceBus
         /// <param name="eventBusConnectionData"></param>
         public EventServiceBus( EventBusConnectionData eventBusConnectionData, 
                                 ILogger<EventServiceBus> logger, 
-                                IServiceProvider serviceProvider)
+                                IServiceProvider serviceProvider,
+                                ServiceBusClient serviceBusClient)
         {
             _subscribers = new Dictionary<string, SubscriberData>();
 
@@ -44,16 +49,33 @@ namespace blendnet.common.infrastructure.ServiceBus
             _serviceProvider = serviceProvider;
 
             _eventBusConnectionData = eventBusConnectionData;
-                        
-            _topicClient = new TopicClient(_eventBusConnectionData.ServiceBusConnectionString, _eventBusConnectionData.TopicName);
-            
+
+            _topicSender = serviceBusClient.CreateSender(eventBusConnectionData.TopicName);
+
+            _serviceBusAdministrationClient = new ServiceBusAdministrationClient(eventBusConnectionData.ServiceBusConnectionString);
+
             if (!string.IsNullOrEmpty(_eventBusConnectionData.SubscriptionName))
             {
-                _subscriptionClient = new  SubscriptionClient(_eventBusConnectionData.ServiceBusConnectionString, _eventBusConnectionData.TopicName, _eventBusConnectionData.SubscriptionName);
+                RemoveRule(CreateRuleOptions.DefaultRuleName);
 
-                RemoveRule(RuleDescription.DefaultRuleName);
+                var options = new ServiceBusProcessorOptions
+                {
+                    // Indicates whether the message pump should automatically complete the messages after returning from user callback.
+                    // False below indicates the complete operation is handled by the user callback as in ProcessMessagesAsync().
+                    // AutoCompleteMessages = false,
 
-                RegisterOnMessageHandlerAndReceiveMessages();
+                    // Maximum number of concurrent calls to the callback ProcessMessagesAsync(), set to 1 for simplicity.
+                    // Set it according to how many messages the application wants to process in parallel.
+                    MaxConcurrentCalls = _eventBusConnectionData.MaxConcurrentCalls,
+
+                    ReceiveMode = ServiceBusReceiveMode.ReceiveAndDelete
+                };
+
+                _serviceBusProcessor = serviceBusClient.CreateProcessor(_eventBusConnectionData.TopicName, _eventBusConnectionData.SubscriptionName, options);
+
+                _serviceBusProcessor.ProcessMessageAsync += MessageHandler;
+
+                _serviceBusProcessor.ProcessErrorAsync += ErrorHandler;
             }
         }
 
@@ -69,15 +91,24 @@ namespace blendnet.common.infrastructure.ServiceBus
             var jsonMessage = System.Text.Json.JsonSerializer.Serialize(integrationEvent, integrationEvent.GetType());
 
             var body = Encoding.UTF8.GetBytes(jsonMessage);
-           
-            var message = new Message
-            {
-                MessageId = integrationEvent.Id.ToString(),
-                Body = body,
-                Label = eventName
-            };
 
-            await _topicClient.SendAsync(message);
+            ServiceBusMessage message = new ServiceBusMessage(body);
+
+            message.MessageId = integrationEvent.Id.ToString();
+
+            message.Subject = eventName;
+            
+            await _topicSender.SendMessageAsync(message);
+        }
+        
+
+        /// <summary>
+        /// Start listening
+        /// </summary>
+        /// <returns></returns>
+        public async Task StartProcessing()
+        {
+            await _serviceBusProcessor.StartProcessingAsync();
         }
 
         /// <summary>
@@ -105,15 +136,15 @@ namespace blendnet.common.infrastructure.ServiceBus
         {
             string eventName;
 
-            RuleDescription ruleDescription;
+            CreateRuleOptions ruleOptions;
 
             if (correlationRule == null)
             {
                 eventName = typeof(T).Name;
 
-                ruleDescription = new RuleDescription
+                ruleOptions = new CreateRuleOptions
                 {
-                    Filter = new CorrelationFilter { Label = eventName },
+                    Filter = new CorrelationRuleFilter { Subject = eventName },
                     Name = eventName
                 };
             }
@@ -121,11 +152,11 @@ namespace blendnet.common.infrastructure.ServiceBus
             {
                 eventName = typeof(T).Name;
 
-                CorrelationFilter customerPropertyFilter = new CorrelationFilter();
+                CorrelationRuleFilter customerPropertyFilter = new CorrelationRuleFilter();
                 
-                customerPropertyFilter.Properties.Add(correlationRule.PropertyName, correlationRule.PropertValue);
+                customerPropertyFilter.ApplicationProperties.Add(correlationRule.PropertyName, correlationRule.PropertValue);
 
-                ruleDescription = new RuleDescription
+                ruleOptions = new CreateRuleOptions
                 {
                     Filter = customerPropertyFilter,
                     Name = eventName
@@ -147,14 +178,12 @@ namespace blendnet.common.infrastructure.ServiceBus
 
             _subscribers.Add(eventName, subscriberData);
 
-            var rules = _subscriptionClient.GetRulesAsync().GetAwaiter().GetResult();
-
-            var existingRule = rules.Where(r => r.Name.Equals(eventName)).FirstOrDefault();
-
-            if (existingRule == null)
+            bool ruleExists = _serviceBusAdministrationClient.RuleExistsAsync(_eventBusConnectionData.TopicName, _eventBusConnectionData.SubscriptionName, eventName).Result;
+            
+            if (!ruleExists)
             {
                 //Add the rule to service bus subscription
-                _subscriptionClient.AddRuleAsync(ruleDescription).GetAwaiter().GetResult();
+                _serviceBusAdministrationClient.CreateRuleAsync(_eventBusConnectionData.TopicName, _eventBusConnectionData.SubscriptionName, ruleOptions);
             }
         }
 
@@ -175,37 +204,16 @@ namespace blendnet.common.infrastructure.ServiceBus
 
         }
 
+       
         /// <summary>
-        /// Register Subscriber
+        /// On Message Recieved
         /// </summary>
-        private void RegisterOnMessageHandlerAndReceiveMessages()
-        {
-            // Configure the message handler options in terms of exception handling, number of concurrent messages to deliver, etc.
-            var messageHandlerOptions = new MessageHandlerOptions(ExceptionReceivedHandler)
-            {
-                // Maximum number of concurrent calls to the callback ProcessMessagesAsync(), set to 1 for simplicity.
-                // Set it according to how many messages the application wants to process in parallel.
-                MaxConcurrentCalls = _eventBusConnectionData.MaxConcurrentCalls,
-
-                // Indicates whether the message pump should automatically complete the messages after returning from user callback.
-                // False below indicates the complete operation is handled by the user callback as in ProcessMessagesAsync().
-                AutoComplete = false
-            };
-
-            // Register the function that processes messages.
-            _subscriptionClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
-        }
-
-        /// <summary>
-        /// Gets invoked on the subscription
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="token"></param>
+        /// <param name="args"></param>
         /// <returns></returns>
-        private async Task ProcessMessagesAsync(Message message, CancellationToken token)
+        private async Task MessageHandler(ProcessMessageEventArgs args)
         {
             //for application generated events this values will always be present
-            var eventName = $"{message.Label}";
+            var eventName = $"{args.Message.Subject}";
 
             //in case event name is empty in lable..check if any custom property is configure.
             //Added to handle the events which are added by Event Grid on Blob.
@@ -220,7 +228,7 @@ namespace blendnet.common.infrastructure.ServiceBus
                 {
                     foreach(KeyValuePair<string,SubscriberData> customSubscriber in customSubscribers)
                     {
-                        if (message.UserProperties.ContainsKey(customSubscriber.Value.CorrelationRule.PropertyName))
+                        if (args.Message.ApplicationProperties.ContainsKey(customSubscriber.Value.CorrelationRule.PropertyName))
                         {
                             eventName = customSubscriber.Key;
                             break;
@@ -229,7 +237,7 @@ namespace blendnet.common.infrastructure.ServiceBus
                 }
             }
 
-            var messageData = Encoding.UTF8.GetString(message.Body);
+            var messageData = Encoding.UTF8.GetString(args.Message.Body);
 
             if (_subscribers.ContainsKey(eventName))
             {
@@ -253,7 +261,7 @@ namespace blendnet.common.infrastructure.ServiceBus
 
                     // Complete the message so that it is not received again.
                     // This can be done only if the subscriptionClient is created in ReceiveMode.PeekLock mode (which is the default).
-                    await _subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);
+                    //await args.CompleteMessageAsync(args.Message);
                 }
                 else
                 {
@@ -271,17 +279,15 @@ namespace blendnet.common.infrastructure.ServiceBus
         }
 
         /// <summary>
-        /// Use this handler to examine the exceptions received
+        /// 
         /// </summary>
-        /// <param name="exceptionReceivedEventArgs"></param>
+        /// <param name="args"></param>
         /// <returns></returns>
-        private Task ExceptionReceivedHandler(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
+        private Task ErrorHandler(ProcessErrorEventArgs args)
         {
-            _logger.LogError(exceptionReceivedEventArgs.Exception, exceptionReceivedEventArgs.Exception.Message);
+            _logger.LogError(args.Exception, args.Exception.Message);
 
-            var context = exceptionReceivedEventArgs.ExceptionReceivedContext;
-
-            string exceptionContext = $"Action : {context.Action} |  Endpoint : {context.Endpoint} | Endpoint : {context.EntityPath} | ClientId : {context.ClientId}";
+            string exceptionContext = $"Error Soruce : {args.ErrorSource} |  Namespace : {args.FullyQualifiedNamespace} | Endpoint : {args.EntityPath}";
 
             _logger.LogError(exceptionContext);
 
@@ -293,20 +299,18 @@ namespace blendnet.common.infrastructure.ServiceBus
         /// </summary>
         private void RemoveRule(string ruleName)
         {
-            try
+            bool ruleExists = _serviceBusAdministrationClient.RuleExistsAsync(_eventBusConnectionData.TopicName,
+                                                                _eventBusConnectionData.SubscriptionName,
+                                                                ruleName).Result;
+            if (ruleExists)
             {
-                _subscriptionClient
-                 .RemoveRuleAsync(ruleName)
-                 .GetAwaiter()
-                 .GetResult();
-            }
-            catch (MessagingEntityNotFoundException)
-            {
-                _logger.LogInformation($"The messaging entity {ruleName} Could not be found.");
+                var response = _serviceBusAdministrationClient.DeleteRuleAsync(_eventBusConnectionData.TopicName,
+                                                                _eventBusConnectionData.SubscriptionName,
+                                                                ruleName).Result;
             }
         }
 
-
+      
     }
 
     internal class SubscriberData

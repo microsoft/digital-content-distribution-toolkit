@@ -36,11 +36,17 @@ namespace blendnet.cms.listener
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting Eventlistner of blendnet.cms.listener");
 
             _eventBus.Subscribe<ContentProviderCreatedIntegrationEvent,ContentProviderCreatedIntegrationEventHandler>();
+
+            _eventBus.Subscribe<ContentUploadedIntegrationEvent, ContentUploadedIntegrationEventHandler>();
+
+            _eventBus.Subscribe<ContentDeletedIntegrationEvent, ContentDeletedIntegrationEventHandler>();
+
+            await _eventBus.StartProcessing();
 
             //todo: read from config once we finalize that we are ok to consume blob created event here.
             //CustomPropertyCorrelationRule correlationRule = new CustomPropertyCorrelationRule()
@@ -53,7 +59,7 @@ namespace blendnet.cms.listener
 
             _logger.LogInformation("Subscribe complete by blendnet.cms.listener");
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
 
         /// <summary>

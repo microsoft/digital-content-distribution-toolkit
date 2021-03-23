@@ -5,6 +5,7 @@
     <UserSecretsId>e85b0778-3e20-4a8a-bf6b-c8bacd84c8f4</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.8.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.16.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.2.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.17.0" />

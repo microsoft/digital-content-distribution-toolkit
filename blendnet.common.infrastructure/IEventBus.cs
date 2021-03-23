@@ -18,6 +18,12 @@ namespace blendnet.common.infrastructure
         Task Publish(IntegrationEvent integrationEvent);
 
         /// <summary>
+        /// Start Listening to subscriptions
+        /// </summary>
+        /// <returns></returns>
+        Task StartProcessing();
+
+        /// <summary>
         /// Subscribe to the event and registers the event handler
         /// </summary>
         /// <typeparam name="T"></typeparam>

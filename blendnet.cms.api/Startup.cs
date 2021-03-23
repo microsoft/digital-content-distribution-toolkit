@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Azure.Messaging.ServiceBus.Administration;
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using blendnet.cms.repository.CosmosRepository;
@@ -17,6 +19,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -66,7 +69,12 @@ namespace blendnet.cms.api
                 Configuration.Bind("AzureAdB2C", options);
             });
 
-            services.AddControllers();
+            services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             //Configure Swagger
             services.AddSwaggerGen(c =>
@@ -112,27 +120,45 @@ namespace blendnet.cms.api
 
             string cmsStorageConnectionString = Configuration.GetValue<string>("CMSStorageConnectionString");
 
-            // string accountName = Configuration.GetValue<string>("StorageAccountName");
-
-            // string accountKey = Configuration.GetValue<string>("StorageAccountKey");
-
-            // StorageSharedKeyCredential credential = new StorageSharedKeyCredential(accountName, accountKey);
+            string cmsCDNStorageConnectionString = Configuration.GetValue<string>("CMSCDNStorageConnectionString");
             
-            services.AddSingleton<BlobServiceClient>(bsc => {
+            services.AddAzureClients(builder => 
+                    {
+                        // Register blob service client and initialize it using the Storage section of configuration
+                        builder.AddBlobServiceClient(cmsStorageConnectionString)
+                                .WithName(ApplicationConstants.StorageInstanceNames.CMSStorage)
+                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
+
+                        builder.AddBlobServiceClient(cmsCDNStorageConnectionString)
+                                .WithName(ApplicationConstants.StorageInstanceNames.CMSCDNStorage)
+                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
+
+                    });
+            // services.AddSingleton<BlobServiceClient>(bsc => {
                     
-                    var client = new BlobServiceClient(cmsStorageConnectionString);
+            //         var client = new BlobServiceClient(cmsCDNStorageConnectionString);
                     
-                    return client;
-                });
+            //         return client;
+            //     });
 
             //Configure Services
             services.AddTransient<IContentProviderRepository, ContentProviderRepository>();
+
+            services.AddTransient<IContentRepository, ContentRepository>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
 
             //Configure Service Bus
+            string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddServiceBusClient(serviceBusConnectionString);
+            });
+
             ConfigureEventBus(services);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -213,12 +239,16 @@ namespace blendnet.cms.api
             services.AddSingleton<CosmosClient>((cc) => {
 
                 CosmosClient client = new CosmosClientBuilder(account, key)
-                           .WithSerializerOptions(new CosmosSerializationOptions() { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase })
+                           .WithSerializerOptions(new CosmosSerializationOptions() 
+                            {   PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase 
+                            })
                            .Build();
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
                 ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.ContentProvider, "/id").Result;
+
+                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Content, "/contentId").Result;
 
                 return client;
             });

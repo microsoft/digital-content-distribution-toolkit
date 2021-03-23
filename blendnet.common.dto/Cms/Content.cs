@@ -20,7 +20,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Same as Id
         /// </summary>
-        public Guid ContentId { get; set; }
+        public Guid? ContentId { get; set; }
 
         /// <summary>
         /// Content provider content id
@@ -84,7 +84,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Content Duration
         /// </summary>
-        public int DurationInMts { get; set; }
+        public float DurationInMts { get; set; }
 
         /// <summary>
         /// Content Rating
@@ -105,17 +105,19 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// If it will appear on home page
         /// </summary>
+        [Required]
         public bool IsHeaderContent { get; set; }
 
         /// <summary>
         /// If no subscription purchase is required
         /// </summary>
+        [Required]
         public bool IsFreeContent { get; set; }
 
         /// <summary>
         /// Artist list
         /// </summary>
-        public List<Artist> Artists { get; set; }
+        public List<String> Artists { get; set; }
 
         /// <summary>
         /// List of Attachments
@@ -140,19 +142,26 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Content Transform Status
         /// </summary>
-        public ContentUploadStatus? ContentTransformStatus { get; set; }
+        public ContentTransformStatus? ContentTransformStatus { get; set; } = Cms.ContentTransformStatus.TranformNotInitialized;
 
         /// <summary>
         /// Content Broadcast Status
         /// </summary>
-        public ContentUploadStatus? ContentBroadcastStatus { get; set; }
+        public ContentBroadcastStatus? ContentBroadcastStatus { get; set; } = Cms.ContentBroadcastStatus.BroadcastNotInitialized;
+
+        public void SetIdentifiers()
+        {
+            this.Id = Guid.NewGuid();
+        }
 
     }
 
-    public class Artist
-    {
-        public string Name { get; set; }
-    }
+
+
+    // public class Artist
+    // {
+    //     public string Name { get; set; }
+    // }
 
     public class Attachment
     {
@@ -187,7 +196,11 @@ namespace blendnet.common.dto.Cms
     /// </summary>
     public enum ContentTransformStatus
     {
-        
+        TranformNotInitialized = 0,
+        TranformSubmitted = 1,
+        TranformInProgress = 2,
+        TranformComplete = 3,
+        TranformFailed = 4
     }
 
     /// <summary>
@@ -195,7 +208,13 @@ namespace blendnet.common.dto.Cms
     /// </summary>
     public enum ContentBroadcastStatus
     {
-        
+        BroadcastNotInitialized = 0,
+        BroadcastSubmitted = 1,
+        BroadcastInProgress = 2,
+        BroadcastComplete = 3,
+        BroadcastFailed = 4
     }
+
+    
 
 }
