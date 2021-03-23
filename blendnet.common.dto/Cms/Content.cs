@@ -15,12 +15,12 @@ namespace blendnet.common.dto.Cms
         /// Unique Content Id
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         /// <summary>
         /// Same as Id
         /// </summary>
-        public Guid ContentId { get; set; }
+        public Guid? ContentId { get; set; }
 
         /// <summary>
         /// Content provider content id

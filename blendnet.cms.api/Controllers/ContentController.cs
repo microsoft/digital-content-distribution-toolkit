@@ -103,47 +103,74 @@ namespace blendnet.cms.api.Controllers
         public async Task<ActionResult> UploadContent(IFormFile file, Guid contentProviderId)
         {
             // Check for Json Format
-            if(ValidateFileExtension(file) is false){
-                    string ex = "File not found or not in Json format";
-                    _logger.LogError(ex);                    
-                    return BadRequest(ex);
+            if(! ValidateFileExtension(file)){
+                    string info = "File not found or not in Json format";
+                    return BadRequest(info);
             }
 
             // Convert Json to list of Contents.
-            List<Content> contents = DeSerializeObjects(file);
+            var contents = ValidateJson(file);
+            Type type = typeof(List<Content>); 
+            // using GetType method 
+            Type _contentType = contents.GetType();
 
-            if(contents is null){
-                string ex = "Improper JSON File";
-                _logger.LogError(ex);   
-                return BadRequest(ex);
+
+            if( type != _contentType){
+                return BadRequest(contents);
             }
 
+            // Check for File Extensions on the raw container.
+            var extErrorList = await ValidateFileExtensions(contents,contentProviderId);
+            if(extErrorList.Count>0){
+                    return BadRequest(extErrorList);
+            }     
+
             // Check for duplicate Ids
-            if(await ValidateDuplicateIdCheck(contents,contentProviderId) is false){
-                    string ex = "Duplicate IDs found";
-                    _logger.LogError(ex);                    
-                    return BadRequest(ex);
+            var dupIdList = await ValidateDuplicateIdCheck(contents,contentProviderId);
+            if(dupIdList.Count>0 ){       
+                    return BadRequest(dupIdList);
             }
 
             // Check for File Existence on the raw container.
-            if(await ValidateBlobExistence(contents,contentProviderId) is false){
-                    string ex = "Blob doesn't exist";
-                    _logger.LogError(ex);                    
-                    return BadRequest(ex);
+            var fileErrorList = await ValidateBlobExistence(contents,contentProviderId);
+            if(fileErrorList.Count>0){
+                    return BadRequest(fileErrorList);
             }
 
             // Perform CreateContent and Push it to Service Bus
-            if(await UploadContent(contents,contentProviderId) is false){
-                string ex = "Upload failed";
-                _logger.LogError(ex); 
-                return BadRequest(ex);
-            }
+            await UploadContent(contents,contentProviderId);
             return  Ok();
         }
 
-        private async Task<bool> UploadContent(List<Content> contents, Guid contentProviderId)
+        /// <summary>
+        /// Deletes the content id
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpDelete("{contentId:guid}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        public async Task<ActionResult> DeleteContentProvider(List<Guid> contentIds)
         {
-            foreach(Content content in contents){
+            foreach(Guid contentId in contentIds)
+            {
+            int statusCode = await _contentRepository.DeleteContent(contentId);
+
+            if (statusCode == (int)System.Net.HttpStatusCode.NoContent)
+            {
+                continue;  
+            }
+            else
+            {
+                return NotFound();
+            }
+            }
+            return NoContent();
+        }
+
+        private async Task UploadContent(List<Content> contents, Guid contentProviderId)
+        {
+            foreach(Content content in contents)
+            {
                 content.SetIdentifiers();
                 content.ContentProviderId = contentProviderId;
                 // Update the ContentUpload Status to UploadInProgress
@@ -151,7 +178,6 @@ namespace blendnet.cms.api.Controllers
 
                 Guid contentId = await _contentRepository.CreateContent(content);
 
-                if(contentId !=  null){
                     ContentCommand contentCommand = new ContentCommand();
                     contentCommand.ContentId = contentId;
                     //publish the event
@@ -160,12 +186,7 @@ namespace blendnet.cms.api.Controllers
                         ContentUploadCommand = contentCommand,
                     };
                     await _eventBus.Publish(contentUploadedIntegrationEvent); 
-                }
-                else{
-                    return false;
-                }
             }
-            return true;
         }
 
 
@@ -181,34 +202,45 @@ namespace blendnet.cms.api.Controllers
             }
         }
 
-        private static List<Content> DeSerializeObjects(IFormFile file){
+        private dynamic ValidateJson(IFormFile file){
 
-            using(StreamReader reader = new StreamReader(file.OpenReadStream()))
+            string error  = string.Empty;
+            try
             {
+                StreamReader reader = new StreamReader(file.OpenReadStream());
+
                 string text = reader.ReadToEnd();
 
                 reader.Close();
                 reader.Dispose();
-                
+
                 List<Content> contents = JsonConvert.DeserializeObject<List<Content>>(text);
 
                 return contents;
             }
+            catch (Exception ex)
+            {
+                error  = ex.Message;
+                return error;
+            }
         }
-        private async Task<bool> ValidateDuplicateIdCheck(List<Content> contents, Guid contentProviderId)
+
+        private async Task<List<string>> ValidateDuplicateIdCheck(List<Content> contents, Guid contentProviderId)
         {
+            List<string> errorList = new List<string>();
 
             HashSet<string> contentIds = new HashSet<string>();
 
             foreach(Content content in contents)
             {
-                contentIds.Add(content.ContentProviderContentId);
-            }
-            
-            // Duplicate ContentIds in the file
-            if (contents.Count() != contentIds.Count())
-            {
-                return false;
+                // contentIds.Add(content.ContentProviderContentId);
+                if(!contentIds.Add(content.ContentProviderContentId))
+                {
+                    // Duplicate ContentIds in the file
+                    string info = $"Content with Id {content.ContentProviderContentId} and Title{content.Title} is found multiple times in the uploaded file.";
+                    errorList.Add(info);
+                }
+                
             }
 
             List<Content> dbcontents = await _contentRepository.GetContentByContentProviderId(contentProviderId);
@@ -223,14 +255,58 @@ namespace blendnet.cms.api.Controllers
             HashSet<string> commonIds = new HashSet<string>(dbcontentIds) ;
 
             commonIds.IntersectWith(contentIds);
-            if(commonIds.Count() == 0)
+            foreach(string Id in commonIds)
             {
-                return true;
-            }
-            return false;
-        } 
+                
+                string info = $"Content with Id {Id} and is already uploaded to the Database.";
+                errorList.Add(info);
 
-        private async Task<bool> ValidateBlobExistence(List<Content> contents,Guid contentProviderId)
+            }
+            return errorList;
+        }
+
+        private async Task<List<string>> ValidateFileExtensions(List<Content> contents,Guid contentProviderId)
+        {
+            List<string> errorList = new List<string>();
+
+            List<String> Mediatypes = ApplicationConstants.SupportedFileFormats.mediaFormats;
+                
+            List<String> Thumbnailtypes = ApplicationConstants.SupportedFileFormats.ThumbnailFormats;
+
+            foreach(Content content in contents)
+            {
+                string mediatype = FileFormat(content.MediaFileName);
+
+                if(! Mediatypes.Contains(mediatype)){
+
+                    string info = $"File format of type Media for the Blob {content.MediaFileName} from the content {content.Title} is not supported.";
+                    errorList.Add(info);
+                }
+                foreach(Attachment attachment in content.Attachments)
+                {         
+                    if(attachment.Type is AttachmentType.Thumbnail){
+
+                        string imagetype = FileFormat(attachment.Name); 
+                        if(! Thumbnailtypes.Contains(imagetype))
+                        {
+                            string info = $"File format of type {attachment.Type} for the Blob {attachment.Name} from the content {content.Title} is not supported.";
+                            errorList.Add(info);
+                        }   
+                    }
+                    else{
+                        string teasertype = FileFormat(attachment.Name); 
+                        if(! Mediatypes.Contains(teasertype))
+                        {
+                            string info =$"File format of type {attachment.Type} for the Blob {attachment.Name} from the content {content.Title} is not supported.";
+                            errorList.Add(info);
+                        } 
+                    }
+                }
+            }
+            return  errorList; 
+        }
+
+        private async Task<List<string>> ValidateBlobExistence(List<Content> contents,Guid contentProviderId)
         {
             var containerName = contentProviderId+ApplicationConstants.StorageContainerSuffix.Cdn;
 
@@ -241,48 +317,34 @@ namespace blendnet.cms.api.Controllers
             List<String> Mediatypes = ApplicationConstants.SupportedFileFormats.mediaFormats;
                 
             List<String> Thumbnailtypes = ApplicationConstants.SupportedFileFormats.ThumbnailFormats;
+
+            List<string> errorList = new List<string>();
             
             foreach(Content content in contents)
-            {
-                
-                BlobClient mediaClient = rawClient.GetBlobClient(content.MediaFileName);
-
-                
-                // string type = mediaClient.GetProperties()
-                if(rawClient.GetBlobClient(content.MediaFileName).Exists() == false)
+            {         
+                if(! rawClient.GetBlobClient(content.MediaFileName).Exists())
                 {
-                    return false;
-                }
-
-                string mediatype = FileFormat(content.MediaFileName);
-                if(Mediatypes.Contains(mediatype)== false){
-                    return false;
+                    string info = $"Blob file of type Media with name {content.MediaFileName} from the content {content.Title} is not found.";
+                    errorList.Add(info);
                 }
                 foreach(Attachment attachment in content.Attachments)
                 {         
                     if(attachment.Type is AttachmentType.Thumbnail){
 
-                        if(rawClient.GetBlobClient(attachment.Name).Exists() == false){
-                            return false;
+                        if(! rawClient.GetBlobClient(attachment.Name).Exists()){
+                            string info = $"Blob file of type {attachment.Type} with name {attachment.Name} from the content {content.Title} is not found";
+                            errorList.Add(info);
                         }
-                        string imagetype = FileFormat(attachment.Name); 
-
-                        if(Thumbnailtypes.Contains(imagetype)== false){
-                            return false;
-                        }   
                     }
                     else{
-                        if(rawClient.GetBlobClient(attachment.Name).Exists() == false){
-                            return false;
-                        }
-                        string imagetype = FileFormat(attachment.Name); 
-                        if(Thumbnailtypes.Contains(imagetype)== false){
-                            return false;
+                        if(! rawClient.GetBlobClient(attachment.Name).Exists()){
+                            string info =$"Blob file of type {attachment.Type} with name {attachment.Name} from the content {content.Title} is not found";
+                            errorList.Add(info);
                         } 
                     }
                 }
             }
-            return true;
+            return errorList;
         } 
 
         private static string FileFormat(string Name){

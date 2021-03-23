@@ -143,7 +143,7 @@ namespace blendnet.cms.repository.CosmosRepository
             try
             {
                 var response = await this._container.ReplaceItemAsync<Content>(updatedContent,
-                                                                                        updatedContent.Id.ToString(),
+                                                                                        updatedContent.Id.Value.ToString(),
                                                                                         new PartitionKey(updatedContent.ContentId.ToString()));
 
                 return (int)response.StatusCode;
@@ -234,7 +234,7 @@ namespace blendnet.cms.repository.CosmosRepository
         {
             await this._container.CreateItemAsync<Content>(content,new PartitionKey(content.ContentId.ToString()));
 
-            return content.Id;
+            return content.Id.Value;
         }
 
     }

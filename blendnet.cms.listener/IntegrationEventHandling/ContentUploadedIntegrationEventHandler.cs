@@ -179,13 +179,13 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 if (await sourceBlob.ExistsAsync())
                 {
-                    BlockBlobClient targetBlob = destinationContainer.GetBlockBlobClient($"{content.ContentId.ToString()}/{content.MediaFileName}");
+                    BlockBlobClient targetBlob = destinationContainer.GetBlockBlobClient($"{content.ContentId.Value.ToString()}/{content.MediaFileName}");
 
                     await CopyBlob(sourceBlob, targetBlob);
                 }
                 else
                 {
-                    errorMessage = $"For content {content.ContentId.ToString()} Source File {content.MediaFileName} does not exist in source container";
+                    errorMessage = $"For content {content.ContentId.Value.ToString()} Source File {content.MediaFileName} does not exist in source container";
 
                     uploadCommand.FailureDetails.Add(errorMessage);
 
@@ -194,7 +194,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             }
             catch (Exception ex)
             {
-                errorMessage = $"Failed to copy media for content {content.ContentId.ToString()} Media File {content.MediaFileName}";
+                errorMessage = $"Failed to copy media for content {content.ContentId.Value.ToString()} Media File {content.MediaFileName}";
 
                 uploadCommand.FailureDetails.Add(errorMessage);
 
@@ -232,20 +232,19 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     {
                         BlockBlobClient sourceBlob = sourceContainer.GetBlockBlobClient(attachment.Name);
 
-                        //todo: bring duration from app settings
                         string blobSasUrl = GetServiceSasUriForBlob(sourceContainer.GetBlobClient(attachment.Name), 
                                                                          ApplicationConstants.StorageContainerPolicyNames.RawReadOnly, 
                                                                          _appSettings.SASTokenExpiryToCopyContentInMts);
 
                         if (await sourceBlob.ExistsAsync())
                         {
-                            BlockBlobClient targetBlob = destinationContainer.GetBlockBlobClient($"{content.ContentId.ToString()}/{attachment.Name}");
+                            BlockBlobClient targetBlob = destinationContainer.GetBlockBlobClient($"{content.ContentId.Value.ToString()}/{attachment.Name}");
 
                             await CopyBlob(sourceBlob, targetBlob, blobSasUrl);
                         }
                         else
                         {
-                            errorMessage = $"For content {content.ContentId.ToString()} Source Attachment File {attachment.Name} does not exist in source container";
+                            errorMessage = $"For content {content.ContentId.Value.ToString()} Source Attachment File {attachment.Name} does not exist in source container";
 
                             uploadCommand.FailureDetails.Add(errorMessage);
 
@@ -255,7 +254,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     }
                     catch(Exception ex)
                     {
-                        errorMessage = $"Failed to copy attachment for content {content.ContentId.ToString()} attachment {attachment.Name} ";
+                        errorMessage = $"Failed to copy attachment for content {content.ContentId.Value.ToString()} attachment {attachment.Name} ";
 
                         uploadCommand.FailureDetails.Add(errorMessage);
 

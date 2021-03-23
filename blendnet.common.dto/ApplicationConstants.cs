@@ -42,10 +42,9 @@ namespace blendnet.common.dto
 
         public struct SupportedFileFormats 
         {
-            public static List<string> mediaFormats = new List<string>{ "mp4", "wmv", "mpeg","mpd" };
-            public static List<string> ThumbnailFormats = new List<string>{ "jpeg", "png", "jpg" };
+            public static List<string> mediaFormats = new List<string>{ "mp4", "wmv", "mpeg","mpd"};
+            public static List<string> ThumbnailFormats = new List<string>{"png","jpeg","jpg"};
         }
-        
         
     }
 }
