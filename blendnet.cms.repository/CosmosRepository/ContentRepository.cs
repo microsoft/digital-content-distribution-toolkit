@@ -1,50 +1,52 @@
-﻿using blendnet.cms.repository.Interfaces;
+using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.cms;
-using blendnet.common.dto.Cms;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Options;
+using System.Linq;
+using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
+using Azure.Storage.Blobs.Models;
+using Azure;
+using blendnet.common.dto.Cms;
+using System.Net;
+using Microsoft.Extensions.Logging;
+using blendnet.common.dto.Events;
 
 namespace blendnet.cms.repository.CosmosRepository
 {
     /// <summary>
     /// Content Repository
     /// </summary>
-    public class ContentRepository:IContentRepository
+    public class ContentRepository : IContentRepository
     {
         private Container _container;
-
+        private readonly ILogger _logger;
         AppSettings _appSettings;
+        BlobServiceClient _cmsBlobServiceClient;
+        BlobServiceClient _cmsCdnBlobServiceClient;
+
 
         public ContentRepository(CosmosClient dbClient,
-                                            IOptionsMonitor<AppSettings> optionsMonitor)
+                                IOptionsMonitor<AppSettings> optionsMonitor,
+                                ILogger<ContentProviderRepository> logger,
+                                IAzureClientFactory<BlobServiceClient> blobClientFactory)
         {
             _appSettings = optionsMonitor.CurrentValue;
 
-            this._container = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.Content);
+            _logger = logger;
 
+            _cmsBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSStorage);
+
+            _cmsCdnBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSCDNStorage);
+
+            this._container = dbClient.GetContainer(_appSettings.DatabaseName,ApplicationConstants.CosmosContainers.Content);    
         }
-
-        /// <summary>
-        /// Create Content
-        /// </summary>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        public async Task<Guid> CreateContent(Content content)
-        {
-            content.ContentId = content.Id;
-
-            await this._container.CreateItemAsync<Content>(content,new PartitionKey(content.ContentId.ToString()));
-
-            return content.Id.Value;
-        }
-
         /// <summary>
         /// Delete Content
         /// </summary>
@@ -83,52 +85,19 @@ namespace blendnet.cms.repository.CosmosRepository
             }
         }
 
-        /// <summary>
-        /// Update Content
-        /// </summary>
-        /// <param name="updatedContent"></param>
-        /// <returns></returns>
-        public async Task<int> UpdateContent(Content updatedContent)
+        public async Task<ContentCommand> GetContentCommandById(Guid commandId , Guid contentId)
         {
             try
             {
-                var response = await this._container.ReplaceItemAsync<Content>(updatedContent,
-                                                                                        updatedContent.Id.Value.ToString(),
-                                                                                        new PartitionKey(updatedContent.ContentId.Value.ToString()));
+                ItemResponse<ContentCommand> response = await this._container.ReadItemAsync<ContentCommand>(commandId.ToString(), new PartitionKey(contentId.ToString()));
 
-                return (int)response.StatusCode;
+                return response.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                return (int)ex.StatusCode;
+                return null;
             }
-
         }
-
-
-        /// <summary>
-        /// Return the list of all the contents for the content provider id
-        /// FAN OUT Query. Will look the performance and if reqd look for alternate
-        /// </summary>
-        /// <param name="contentProviderId"></param>
-        /// <returns></returns>
-        public async Task<List<Content>> GetContentByContentProviderId(Guid contentProviderId)
-        {
-            List<Content> contentList = new List<Content>();
-
-            var queryString = $"SELECT * FROM c WHERE c.contentContainerType = @type AND c.contentProviderId = @contentProviderId";
-
-            var queryDef = new QueryDefinition(queryString);
-
-            queryDef.WithParameter("@type", ContentContainerType.Content);
-
-            queryDef.WithParameter("@contentProviderId", contentProviderId);
-
-            contentList = await ExtractDataFromQueryIterator<Content>(queryDef);
-
-            return contentList;
-        }
-
 
         /// <summary>
         /// Create content commad.
@@ -165,22 +134,52 @@ namespace blendnet.cms.repository.CosmosRepository
 
         }
 
-        public async Task<ContentCommand> GetContentCommandById(Guid commandId , Guid contentId)
+        /// <summary>
+        /// Update Content
+        /// </summary>
+        /// <param name="updatedContent"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateContent(Content updatedContent)
         {
             try
             {
-                ItemResponse<ContentCommand> response = await this._container.ReadItemAsync<ContentCommand>(commandId.ToString(), new PartitionKey(contentId.ToString()));
+                var response = await this._container.ReplaceItemAsync<Content>(updatedContent,
+                                                                                        updatedContent.Id.Value.ToString(),
+                                                                                        new PartitionKey(updatedContent.ContentId.ToString()));
 
-                return response.Resource;
+                return (int)response.StatusCode;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                return null;
+                return (int)ex.StatusCode;
             }
+
         }
 
-
         /// <summary>
+        /// Return the list of all the contents for the content provider id
+        /// FAN OUT Query. Will look the performance and if reqd look for alternate
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <returns></returns>
+        public async Task<List<Content>> GetContentByContentProviderId(Guid contentProviderId)
+        {
+            List<Content> contentList = new List<Content>();
+
+            var queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId";
+
+            var queryDef = new QueryDefinition(queryString);
+
+            queryDef.WithParameter("@type", ContentContainerType.Content);
+
+            queryDef.WithParameter("@contentProviderId", contentProviderId);
+
+            contentList = await ExtractDataFromQueryIterator<Content>(queryDef);
+
+            return contentList;
+        }
+
+                /// <summary>
         /// Get Command by Content Id
         /// </summary>
         /// <param name="contentId"></param>
@@ -226,5 +225,20 @@ namespace blendnet.cms.repository.CosmosRepository
 
             return returnList;
         }
+
+        /// <summary>
+        /// Create Content
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public async Task<Guid> CreateContent(Content content)
+        {
+            content.ContentId = content.Id;
+
+            await this._container.CreateItemAsync<Content>(content,new PartitionKey(content.ContentId.ToString()));
+
+            return content.Id.Value;
+        }
+
     }
 }

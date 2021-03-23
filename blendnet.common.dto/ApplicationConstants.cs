@@ -39,5 +39,12 @@ namespace blendnet.common.dto
             public const string CMSStorage = "CMSStorage";
             public const string CMSCDNStorage = "CMSCDNStorage";
         }
+
+        public struct SupportedFileFormats 
+        {
+            public static List<string> mediaFormats = new List<string>{ "mp4", "wmv", "mpeg","mpd"};
+            public static List<string> ThumbnailFormats = new List<string>{"png","jpeg","jpg"};
+        }
+        
     }
 }

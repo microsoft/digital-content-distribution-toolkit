@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,14 +23,14 @@ namespace blendnet.common.dto.Cms
         public Guid? ContentId { get; set; }
 
         /// <summary>
-        /// Content provider content id. In case we need to maintain any linking in future
+        /// Content provider content id
         /// </summary>
         public string ContentProviderContentId { get; set; }
 
         /// <summary>
         /// Type
         /// </summary>
-        public ContentContainerType Type { get; set; } = ContentContainerType.Content;
+        public ContentContainerType Type { get; set; }
 
         /// <summary>
         /// Content Provider Id
@@ -85,7 +84,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Content Duration
         /// </summary>
-        public int DurationInMts { get; set; }
+        public float DurationInMts { get; set; }
 
         /// <summary>
         /// Content Rating
@@ -106,17 +105,19 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// If it will appear on home page
         /// </summary>
+        [Required]
         public bool IsHeaderContent { get; set; }
 
         /// <summary>
         /// If no subscription purchase is required
         /// </summary>
+        [Required]
         public bool IsFreeContent { get; set; }
 
         /// <summary>
         /// Artist list
         /// </summary>
-        public List<Artist> Artists { get; set; }
+        public List<String> Artists { get; set; }
 
         /// <summary>
         /// List of Attachments
@@ -148,19 +149,20 @@ namespace blendnet.common.dto.Cms
         /// </summary>
         public ContentBroadcastStatus? ContentBroadcastStatus { get; set; } = Cms.ContentBroadcastStatus.BroadcastNotInitialized;
 
+        public void SetIdentifiers()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
     }
 
-    /// <summary>
-    /// Artist
-    /// </summary>
-    public class Artist
-    {
-        public string Name { get; set; }
-    }
 
-    /// <summary>
-    /// Attachment
-    /// </summary>
+
+    // public class Artist
+    // {
+    //     public string Name { get; set; }
+    // }
+
     public class Attachment
     {
         public string Name { get; set; }
@@ -172,7 +174,6 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Represents the Type of Attachment
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
     public enum AttachmentType
     {
         Thumbnail = 0,
@@ -182,7 +183,6 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Command Upload Status
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentUploadStatus
     {
         UploadSubmitted = 0,
@@ -194,7 +194,6 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Content Transform Status
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentTransformStatus
     {
         TranformNotInitialized = 0,
@@ -207,7 +206,6 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Content Broadcast Status
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentBroadcastStatus
     {
         BroadcastNotInitialized = 0,
@@ -216,5 +214,7 @@ namespace blendnet.common.dto.Cms
         BroadcastComplete = 3,
         BroadcastFailed = 4
     }
+
+    
 
 }

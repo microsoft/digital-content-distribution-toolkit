@@ -1,4 +1,5 @@
-﻿using blendnet.common.dto.Cms;
+using blendnet.common.dto;
+using blendnet.common.dto.Cms;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +15,7 @@ namespace blendnet.cms.repository.Interfaces
     /// </summary>
     public interface IContentRepository
     {
-        /// <summary>
+       /// <summary>
         /// Create Content
         /// </summary>
         /// <param name="content"></param>
@@ -80,7 +81,6 @@ namespace blendnet.cms.repository.Interfaces
         /// <param name="commandType"></param>
         /// <returns></returns>
         Task<List<ContentCommand>> GetCommandByContentId(Guid contentId, common.dto.Cms.CommandType commandType);
-
 
     }
 }
