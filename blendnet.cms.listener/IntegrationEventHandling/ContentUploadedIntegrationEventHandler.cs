@@ -99,11 +99,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                             
                             await _contentRepository.UpdateContent(content);
 
-                            _logger.LogInformation($"Moving media file for content id: {integrationEvent.ContentUploadCommand.ContentId}");
+                            _logger.LogInformation($"Copying media file for content id: {integrationEvent.ContentUploadCommand.ContentId}");
 
                             await CopyMediaContentToMezzanine(content, uploadCommand);
 
-                            _logger.LogInformation($"Moving media file for content id: {integrationEvent.ContentUploadCommand.ContentId}");
+                            _logger.LogInformation($"Copying attachment file(s) for content id: {integrationEvent.ContentUploadCommand.ContentId}");
 
                             await CopyAttachmentContentToCdn(content, uploadCommand);
 

@@ -31,6 +31,7 @@ namespace blendnet.cms.repository.CosmosRepository
         BlobServiceClient _cmsBlobServiceClient;
         BlobServiceClient _cmsCdnBlobServiceClient;
 
+
         public ContentRepository(CosmosClient dbClient,
                                 IOptionsMonitor<AppSettings> optionsMonitor,
                                 ILogger<ContentProviderRepository> logger,
@@ -232,6 +233,8 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns></returns>
         public async Task<Guid> CreateContent(Content content)
         {
+            content.ContentId = content.Id;
+
             await this._container.CreateItemAsync<Content>(content,new PartitionKey(content.ContentId.ToString()));
 
             return content.Id.Value;

@@ -198,7 +198,9 @@ namespace blendnet.cms.listener
             services.AddTransient<ContentProviderCreatedIntegrationEventHandler>();
 
             services.AddTransient<ContentUploadedIntegrationEventHandler>();
-            
+
+            services.AddTransient<ContentDeletedIntegrationEventHandler>();
+
             services.AddTransient<MicrosoftStorageBlobCreatedIntegrationEventHandler>();
         }
 
