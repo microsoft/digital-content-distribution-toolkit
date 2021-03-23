@@ -17,7 +17,7 @@
                 formControlName="logoUrl">
               </mat-form-field>
           </mat-grid-tile>
-          <mat-grid-tile>
+          <!-- <mat-grid-tile>
             <mat-form-field >
               <mat-label>Activation date</mat-label>
               <input matInput  [matDatepicker]="apicker"
@@ -49,20 +49,27 @@
                 >No</mat-radio-button>
               </mat-radio-group>
           </mat-grid-tile>
-          
+           -->
           <mat-grid-tile>
               <mat-form-field >
-                <input matInput placeholder="Admin">
+                <input matInput placeholder="Admin" 
+                formControlName="adminUpn">
               </mat-form-field>
-              <mat-icon>search</mat-icon>
+              <mat-error >
+               {{adminSearchError}}
+             </mat-error>
+              <button mat-icon-button 
+               (click)="searchAndAddAdmin()"><mat-icon>search</mat-icon></button>
               
           </mat-grid-tile>
+          <mat-grid-tile></mat-grid-tile>
+          
           <mat-grid-tile>
               <mat-chip-list #chipList>
-                <mat-chip *ngFor="let admin of admins" [selectable]="selectable" 
+                <mat-chip *ngFor="let admin of contentAdministrators" [selectable]="selectable" 
                 [removable]="removable"
                   (removed)="remove(admin)">
-                  {{admin.fname + " " + admin.contact}}
+                  {{admin.firstName}}
                   <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                 </mat-chip>
               </mat-chip-list>

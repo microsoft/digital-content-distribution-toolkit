@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, FormGroup, Validators} from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ContentproviderAdmin } from '../models/contentprovider-admin';
 import { Contentprovider } from '../models/contentprovider.model';
@@ -13,9 +13,10 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./add-content-provider.component.css']
 })
 export class AddContentProviderComponent implements OnInit {
-  admins: ContentproviderAdmin[] = [];
+  contentAdministrators: ContentproviderAdmin[] = [];
   selectable = true;
   removable = true;
+  adminSearchError:string="";
   cp: Contentprovider;
   @Output() onCPUpdateOrCreate = new EventEmitter<any>();
 
@@ -23,10 +24,11 @@ export class AddContentProviderComponent implements OnInit {
   cpForm = new FormGroup({
     cpname :  new FormControl(' ', [Validators.required]),
     logoUrl : new FormControl(' '),
-    isActive : new FormControl("inactive", [Validators.required]),
-    activationDate : new FormControl(null, [Validators.required]),
-    deactivationDate : new FormControl(null, [Validators.required]),
-    admins : new FormControl(this.admins)
+    // isActive : new FormControl("inactive", [Validators.required]),
+    // activationDate : new FormControl(null, [Validators.required]),
+    // deactivationDate : new FormControl(null, [Validators.required]),
+    contentAdministrators : new FormControl(this.contentAdministrators),
+    adminUpn: new FormControl('')
   });
 
 
@@ -55,18 +57,39 @@ export class AddContentProviderComponent implements OnInit {
     this.cp = this.data.cp;
     this.cpForm.get("cpname").setValue(this.cp.name);
     this.cpForm.get("logoUrl").setValue(this.cp.logoUrl);
-    this.cpForm.get("isActive").setValue(this.cp.isActive? "active" : "inactive");
-    this.cpForm.get("activationDate").setValue(this.cp.activationDate);
-    this.cpForm.get("deactivationDate").setValue(this.cp.deactivationDate);
-    this.admins= this.cp.admins
-    this.cpForm.get("admins").setValue(this.admins);
+    // this.cpForm.get("isActive").setValue(this.cp.isActive? "active" : "inactive");
+    // this.cpForm.get("activationDate").setValue(this.cp.activationDate);
+    // this.cpForm.get("deactivationDate").setValue(this.cp.deactivationDate);
+    this.contentAdministrators= this.cp.contentAdministrators ? this.cp.contentAdministrators :[];
+    this.cpForm.get("admins").setValue(this.contentAdministrators);
   }
 
+  searchAndAddAdmin() {
+    var upn = this.cpForm.get("adminUpn").value;
+    this.userService.getUserDetails(upn).subscribe(res => {
+      if(res.status === 200) {
+        var newAdmin = {
+          identityProviderId: res.body.id,
+           firstName: res.body.givenName ? res.body.givenName : res.body.displayName,
+           middleName: "",
+           lastName: "",
+           contact: upn,
+           email: "" 
+        }
+        this.contentAdministrators.push(newAdmin);
+      } else if(res.status === 404){
+        this.adminSearchError = "Not Found";
+
+      } else {
+        this.toastr.error("Something went wrong. Please try again!")
+      }
+    })
+  }
 
   remove(admin: ContentproviderAdmin): void {
-    const index = this.admins.indexOf(admin);
+    const index = this.contentAdministrators.indexOf(admin);
     if (index >= 0) {
-      this.admins.splice(index, 1);
+      this.contentAdministrators.splice(index, 1);
     }
   }
 
@@ -79,10 +102,10 @@ export class AddContentProviderComponent implements OnInit {
       id: this.cp.id,
       name: this.cpForm.get("cpname").value,
       logoUrl: this.cpForm.get("logoUrl").value,
-      activationDate: this.cpForm.get("activationDate").value,
-      deactivationDate: this.cpForm.get("deactivationDate").value,
-      isActive: this.cpForm.get("isActive").value === "active" ? true : false,
-      admins: []
+      // activationDate: this.cpForm.get("activationDate").value,
+      // deactivationDate: this.cpForm.get("deactivationDate").value,
+      // isActive: this.cpForm.get("isActive").value === "active" ? true : false,
+      contentAdministrators: this.contentAdministrators
     }
     if(newUpdatedCP.id) {
       this.contentProviderService.editContentProvider(newUpdatedCP).subscribe(res => {

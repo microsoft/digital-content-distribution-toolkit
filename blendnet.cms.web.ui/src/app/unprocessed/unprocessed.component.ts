@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-
+import { environment } from '../../environments/environment';
 export interface UserData {
   id: string;
   name: string;
@@ -32,7 +32,8 @@ export interface DialogData {
 export class UnprocessedComponent implements AfterViewInit {
   displayedColumns: string[] = ['select','id', 'name', 'status', 'isProcessable', 'isDeletable'];
   dataSource: MatTableDataSource<UserData>;
-  fileToUpload: File = null;
+  // fileToUpload: File = null;
+  fileUploadError: string ="";
   showDialog: boolean = false;
   animal: string;
   message: string = "Please press OK to continue.";
@@ -52,6 +53,9 @@ export class UnprocessedComponent implements AfterViewInit {
     this.dataSource = new MatTableDataSource(users);
   }
 
+  
+
+  
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -66,11 +70,23 @@ export class UnprocessedComponent implements AfterViewInit {
     }
   }
 
-  handleFileInput(files: FileList) {
-    this.fileToUpload = files.item(0);
+  handleFileInput(files: any) {
+    this.fileUploadError = null;
+    if (files.target.files && files.target.files[0]) {
+      if(files.target.files[0].size > environment.maxFileUploadSize) {
+        this.fileUploadError="Max file size allowed is : " +  environment.maxFileUploadSize;
+        return false;
+      }
+      if(files.target.files[0].type !== environment.fileAllowedType) {
+        this.fileUploadError="Only " + environment.fileAllowedType + " files are allowed";
+        return false;
+      }
+      this.uploadFile(files.target.files[0]);
+    }
   }
 
-  uploadFile() {
+  uploadFile(file: File) {
+    window.alert("Call upload file service for : " + file.name);
     // this.fileUploadService.postFile(this.fileToUpload).subscribe(data => {
     //   // do something, if upload success
     //   }, error => {

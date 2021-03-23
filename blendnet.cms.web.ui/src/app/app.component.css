@@ -18,6 +18,9 @@
 .cms-sidenav {
     user-select: none;
 }
+.cms-app-name{
+    font-size: small;
+}
 .full-width {
     width: 100%;
 }

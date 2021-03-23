@@ -4,6 +4,7 @@
 </div>
 
 <div *ngIf="loginDisplay">
-    <p>Welcome {{user}} !!!</p>
-    <p>Your have {{role}} role</p>
+    <p>Welcome {{username}} !!!</p>
+    <p>Your have following roles : </p>
+    <li *ngFor="let r of role"> {{r}}</li>
 </div>

@@ -78,7 +78,8 @@ const appRoutes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: roles.SuperUser
+      expectedRole: roles.SuperUser,
+      isContentProviderSelectPage: true
     } 
     },
   {
@@ -89,7 +90,7 @@ const appRoutes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: roles.ContentAdmin
+      expectedRole: roles.SuperUser
     } 
   },
   {

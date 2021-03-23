@@ -2,16 +2,19 @@
     <h1>SAS key</h1>
     <mat-form-field appearance="fill" class= "sas-key-text-area">
         <mat-label>SAS Key</mat-label>
-        <textarea matInput [(ngModel)]="value" 
+        <textarea matInput [(ngModel)]="sasKey" 
         cdkTextareaAutosize cdkAutosizeMinRows="5"></textarea>
     </mat-form-field>
-    <button [cdkCopyToClipboard]="value" mat-icon-button>
+    <button [cdkCopyToClipboard]="sasKey" mat-icon-button>
         <mat-icon  matTooltip="Copy to Clipboard">content_copy</mat-icon>
     </button>
     <br>
+    Token Expires at: {{expiresIn}}
+    <br>
     <div class="sas-key-button-row">
-        <button mat-raised-button color="primary" >Clear </button>
-        <button mat-raised-button color="primary" >Generate</button>
+        <button mat-raised-button color="primary" (click)="clearSAS()">Clear </button>
+        <button mat-raised-button color="primary" 
+        (click)="generateSAS()">Generate</button>
     </div>
 
     

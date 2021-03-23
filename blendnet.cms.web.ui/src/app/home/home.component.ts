@@ -11,8 +11,9 @@ import { filter } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
   loginDisplay = false;
-  user ="";
-  role="";
+  username ="";
+  role:string[]= [];
+  token;
 
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded = true;
@@ -43,6 +44,13 @@ export class HomeComponent implements OnInit {
 
   setLoginDisplay() {
     this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
+    this.token = this.authService.instance.getAllAccounts()[0].idTokenClaims;
+    this.token.groups.forEach(group => {
+      this.role.push(group);
+    });
+    this.username = this.token.givenName;
+    console.log(this.username);
+    console.log(this.role);
   }
 
 }

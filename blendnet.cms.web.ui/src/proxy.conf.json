@@ -3,5 +3,11 @@
         "target": "https://localhost:44338",
         "secure": false,
         "logLevel": "debug"
+    },
+
+    "/api/v1/Identity/*": {
+        "target": "https://localhost:44397",
+        "secure": false,
+        "logLevel": "debug"
     }
 }

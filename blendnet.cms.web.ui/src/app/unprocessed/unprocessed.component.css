@@ -40,4 +40,7 @@ td.mat-footer-cell:last-of-type {
   .discard-btn {
     margin: 5px;
   }
+  .file-upload-error {
+    color: red;
+  }
   

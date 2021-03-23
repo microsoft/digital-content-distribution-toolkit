@@ -33,11 +33,27 @@ namespace blendnet.cms.api
             Configuration = configuration;
         }
 
+        private const string C_CORS_POLICYNAME = "BlendNetSpecificOrigins";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: C_CORS_POLICYNAME,
+                                  builder =>
+                                  {
+                                      //To Do: Remove any Origin and have right value
+                                      //builder.WithOrigins("http://example.com",
+                                      //                    "http://www.contoso.com");
+                                      builder.AllowAnyHeader();
+                                      builder.AllowAnyMethod();
+                                      builder.AllowAnyOrigin();
+                                  });
+            });
+
             // configure Azure AD B2C Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(options =>
@@ -132,6 +148,8 @@ namespace blendnet.cms.api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(C_CORS_POLICYNAME);
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

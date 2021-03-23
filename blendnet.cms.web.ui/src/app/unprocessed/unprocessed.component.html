@@ -3,11 +3,13 @@
         <label for="file"><b>Upload new content/s </b></label>
         <input type="file"
                id="file"
-               (change)="handleFileInput($event.target.files)">
+               (change)="handleFileInput($event)">
 
-        <button mat-raised-button color="primary" (click)="openUploadConfirmModal()">Upload</button>
-
-
+        <button mat-raised-button color="primary" (click)="openUploadConfirmModal()"
+        [disabled] = "fileUploadError !== null">Upload</button>
+        </div>
+        <div class="file-upload-error">
+            {{fileUploadError}}
         </div>
         
     <br>

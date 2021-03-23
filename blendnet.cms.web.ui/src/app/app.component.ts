@@ -5,6 +5,8 @@ import { Subject } from 'rxjs';
 import { b2cPolicies } from './b2c-config';
 import { filter, takeUntil } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
+import { Contentprovider } from './models/contentprovider.model';
+import { ContentProviderService } from './services/content-provider.service';
 
 interface IdTokenClaims extends AuthenticationResult {
   idTokenClaims: {
@@ -29,14 +31,27 @@ export class AppComponent {
   showHomeSubmenu: boolean = true;
   showContentSubmenu: boolean = true;
   showDeviceSubmenu: boolean = true;
+  data: Contentprovider;
+  selectedCP: string  = localStorage.getItem("contentProviderName") ? 
+                          localStorage.getItem("contentProviderName") : "Not Selected";
+  
 
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private authService: MsalService,
-    private msalBroadcastService: MsalBroadcastService
-  ) {}
+    private msalBroadcastService: MsalBroadcastService,
+    private cpService: ContentProviderService
+  ) {
+
+  }
 
     ngOnInit(): void {
+      this.cpService.data$.subscribe(res => {
+        this.data = res;
+        this.selectedCP= this.data.name;
+      }
+        );
+
       this.isIframe = window !== window.parent && !window.opener;
       this.msalBroadcastService.inProgress$
       .pipe(
@@ -128,6 +143,8 @@ export class AppComponent {
     }
 
     logout() {
+      localStorage.removeItem("contentProviderId");
+      localStorage.removeItem("contentProviderName");
       this.authService.logout();
     }
   

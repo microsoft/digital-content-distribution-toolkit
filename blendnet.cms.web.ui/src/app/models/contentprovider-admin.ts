@@ -1,10 +1,10 @@
 export class ContentproviderAdmin {
 
     constructor(
-        public id: string,
-        public fname: string,
-        public mname: string,
-        public lname: string,
+        public identityProviderId: string,
+        public firstName: string,
+        public middleName: string,
+        public lastName: string,
         public contact: string,
         public email: string        
     ) {}

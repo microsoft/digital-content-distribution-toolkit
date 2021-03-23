@@ -6,10 +6,10 @@ export class Contentprovider {
         public id: string,
         public name: string,
         public logoUrl: string,
-        public isActive:boolean,
-        public activationDate: Date,
-        public deactivationDate: Date,
-        public admins: ContentproviderAdmin[]
+        // public isActive:boolean,
+        // public activationDate: Date,
+        // public deactivationDate: Date,
+        public contentAdministrators: ContentproviderAdmin[]
         
     ) {}
 }
