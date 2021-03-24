@@ -5,18 +5,9 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import { environment } from '../../environments/environment';
-export interface UserData {
-  id: string;
-  name: string;
-  status: string;
-  isProcessable: boolean;
-  isDeletable: boolean
-}
+import { Content } from '../models/content.model';
+import { ContentService } from '../services/content.service';
 
-
-const NAMES: string[] = [
-  'Dabangg', 'Bajrangi Bhaijaan', 'Don', 'RamLeela', 'Race 3', 'KingKong'
-];
 
 export interface DialogData {
   message: string;
@@ -30,8 +21,8 @@ export interface DialogData {
   templateUrl: 'unprocessed.component.html',
 })
 export class UnprocessedComponent implements AfterViewInit {
-  displayedColumns: string[] = ['select','id', 'name', 'status', 'isProcessable', 'isDeletable'];
-  dataSource: MatTableDataSource<UserData>;
+  displayedColumns: string[] = ['select', 'title', 'status', 'view', 'isProcessable', 'isDeletable'];
+  dataSource: MatTableDataSource<Content>;
   // fileToUpload: File = null;
   fileUploadError: string ="";
   showDialog: boolean = false;
@@ -39,23 +30,26 @@ export class UnprocessedComponent implements AfterViewInit {
   message: string = "Please press OK to continue.";
   initialSelection = [];
   allowMultiSelect = true;
-  selection = new SelectionModel<UserData>(this.allowMultiSelect, this.initialSelection);
+  selection = new SelectionModel<Content>(this.allowMultiSelect, this.initialSelection);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(public dialog: MatDialog
+  constructor(public dialog: MatDialog,
+    public contentService: ContentService
     ) {
-    // Create 100 users
-    const users = Array.from({length: 100}, (_, k) => createNewUser(k + 1));
-
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(users);
   }
 
   
 
-  
+  ngOnInit(): void {
+    this.contentService.getContentByCpIdAndFilters().subscribe(res => {
+      if(res.status === 200) {
+        this.dataSource = res.body;
+      }
+    })
+  }
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -138,7 +132,45 @@ openDeleteConfirmModal(): void {
   });
 }
 
+viewContent() : void {
+  const dialogRef = this.dialog.open(ContentDetailsDialog, {
+    data: {content: null},
+    // width: '40%'
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+  });
+
 }
+
+}
+
+@Component({
+  selector: 'content-detail-dialog',
+  templateUrl: 'content-detail-dialog.html',
+  styleUrls: ['unprocessed.component.css']
+})
+export class ContentDetailsDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<ContentDetailsDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    content: Content
+
+  ngOnInit(): void {
+    this.content = this.data.content;
+  }
+  onCancelUpload(): void {
+    this.dialogRef.close();
+  }
+
+  onConfirmUpload(): void {
+    this.dialogRef.close();
+  }
+
+}
+
 
 @Component({
   selector: 'upload-confirm-dialog',
@@ -161,22 +193,6 @@ export class UnprocessConfirmDialog {
 
 }
 
-
-/** Builds and returns a new User. */
-function createNewUser(id: number): UserData {
-  const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))] ;
-  const status = id % 2 === 0 ? 'Unprocessed': 'Processing';
-  const isProcessableVal = status === 'Unprocessed'? true: false;
-  const isDeletableVal = status === 'Unprocessed'? true: false;
-
-  return {
-    id: id.toString(),
-    name: name,
-    status: status,
-    isProcessable: isProcessableVal,
-    isDeletable: isDeletableVal
-  };
-}
 
 
 
