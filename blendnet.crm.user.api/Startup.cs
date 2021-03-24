@@ -24,6 +24,7 @@ using blendnet.common.infrastructure.ServiceBus;
 using blendnet.common.dto.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.Extensions.Azure;
 
 namespace blendnet.crm.user.api
 {
@@ -160,6 +161,7 @@ namespace blendnet.crm.user.api
         /// <param name="services"></param>
         private void ConfigureEventBus(IServiceCollection services)
         {
+         
             //event bus related registrations
             string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
 
@@ -168,6 +170,12 @@ namespace blendnet.crm.user.api
             string serviceBusSubscriptionName = Configuration.GetValue<string>("ServiceBusSubscriptionName");
 
             int serviceBusMaxConcurrentCalls = Configuration.GetValue<int>("ServiceBusMaxConcurrentCalls");
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddServiceBusClient(serviceBusConnectionString);
+            });
+
 
             services.AddSingleton<EventBusConnectionData>(ebcd =>
             {
