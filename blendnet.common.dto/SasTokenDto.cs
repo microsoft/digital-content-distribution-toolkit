@@ -4,10 +4,14 @@ namespace blendnet.common.dto
 {
     public class SasTokenDto
     {
-        public string storageAccount { get; set; }
-        public string containerName { get; set; }
-        public string policyName { get; set; }
-        public Uri sasUri { get; set; }
-        public int expiryInHours { get; set; }
+        public string StorageAccount { get; set; }
+
+        public string ContainerName { get; set; }
+        
+        public string PolicyName { get; set; }
+        
+        public Uri SasUri { get; set; }
+
+        public int ExpiryInMinutes { get; set; }
     }
 }

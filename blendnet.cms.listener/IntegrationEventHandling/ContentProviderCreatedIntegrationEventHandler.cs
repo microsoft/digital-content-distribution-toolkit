@@ -118,10 +118,14 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     //Create Blob Container
                     await _cmsBlobServiceClient.CreateBlobContainerAsync(rawContainerName);
 
+                    Dictionary<string, string> policies = new Dictionary<string, string>();
+
+                    policies.Add(ApplicationConstants.StorageContainerPolicyNames.RawReadOnly, ApplicationConstants.Policy.ReadOnlyPolicyPermissions);
+
+                    policies.Add(ApplicationConstants.StorageContainerPolicyNames.RawReadWriteAll, ApplicationConstants.Policy.ReadWriteAllPolicyPermissions);
+
                     //Create Container Policy
-                    await CreateContainerPolicy(rawContainerName,
-                                                ApplicationConstants.StorageContainerPolicyNames.RawReadOnly,
-                                                ApplicationConstants.Policy.ReadOnlyPolicyPermissions);
+                    await CreateContainerPolicy(rawContainerName, policies);
                 }
                 else
                 {
@@ -203,8 +207,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         }
 
         /// <summary>
-        /// Create Container Policy
-        /// https://docs.microsoft.com/en-us/azure/storage/common/storage-stored-access-policy-define-dotnet?tabs=dotnet
+        /// Create container policy
         /// </summary>
         /// <param name="containerName"></param>
         /// <param name="policyName"></param>
@@ -212,18 +215,40 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <returns></returns>
         public async Task CreateContainerPolicy(string containerName, string policyName, string policyPermissions)
         {
-            // Create one or more stored access policies.
-            List<BlobSignedIdentifier> signedIdentifiers = new List<BlobSignedIdentifier>
+            Dictionary<string, string> policies = new Dictionary<string, string>();
+
+            policies.Add(policyName, policyPermissions);
+
+            await CreateContainerPolicy(containerName, policies);
+        }
+
+        /// <summary>
+        /// Create Container Policy
+        /// https://docs.microsoft.com/en-us/azure/storage/common/storage-stored-access-policy-define-dotnet?tabs=dotnet
+        /// </summary>
+        /// <param name="containerName"></param>
+        /// <param name="policyName"></param>
+        /// <param name="policyPermissions"></param>
+        /// <returns></returns>
+        public async Task CreateContainerPolicy(string containerName, Dictionary<string,string> policyDetails)
+        {
+            List<BlobSignedIdentifier> signedIdentifiers = new List<BlobSignedIdentifier>();
+
+            BlobSignedIdentifier blobSignedIdentifier;
+
+            foreach (KeyValuePair<string, string> entry in policyDetails)
             {
-                new BlobSignedIdentifier
+                blobSignedIdentifier = new BlobSignedIdentifier()
                 {
-                    Id = policyName,
+                    Id = entry.Key,
                     AccessPolicy = new BlobAccessPolicy
                     {
-                        Permissions = policyPermissions
+                        Permissions = entry.Value
                     }
-                }
-            };
+                };
+
+                signedIdentifiers.Add(blobSignedIdentifier);
+            }
 
             BlobContainerClient containerClient = _cmsBlobServiceClient.GetBlobContainerClient(containerName);
 
