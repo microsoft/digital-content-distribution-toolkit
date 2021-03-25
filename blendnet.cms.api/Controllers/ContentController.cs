@@ -420,19 +420,17 @@ namespace blendnet.cms.api.Controllers
 
         private async Task<List<string>> ValidateBlobExistence(List<Content> contents,Guid contentProviderId)
         {
-            var rawcontainerName = $"{contentProviderId}ApplicationConstants.StorageContainerSuffix.Raw"; 
+            var rawcontainerName = $"{contentProviderId}{ApplicationConstants.StorageContainerSuffix.Raw}"; 
 
             BlobContainerClient rawClient = _cmsBlobServiceClient.GetBlobContainerClient(rawcontainerName);
-
-            List<String> Mediatypes = ApplicationConstants.SupportedFileFormats.mediaFormats;
-                
-            List<String> Thumbnailtypes = ApplicationConstants.SupportedFileFormats.ThumbnailFormats;
 
             List<string> errorList = new List<string>();
             
             foreach(Content content in contents)
-            {         
-                if(! await rawClient.GetBlobClient(content.MediaFileName).ExistsAsync())
+            {
+                bool exists = rawClient.GetBlobClient(content.MediaFileName).Exists();
+
+                if (!await rawClient.GetBlobClient(content.MediaFileName).ExistsAsync())
                 {
                     string info = $"Blob file of type Media with name {content.MediaFileName} from the content {content.Title} is not found.";
 
