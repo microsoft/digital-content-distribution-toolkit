@@ -28,9 +28,6 @@ namespace blendnet.cms.repository.CosmosRepository
         private Container _container;
         private readonly ILogger _logger;
         AppSettings _appSettings;
-        BlobServiceClient _cmsBlobServiceClient;
-        BlobServiceClient _cmsCdnBlobServiceClient;
-
 
         public ContentRepository(CosmosClient dbClient,
                                 IOptionsMonitor<AppSettings> optionsMonitor,
@@ -40,10 +37,6 @@ namespace blendnet.cms.repository.CosmosRepository
             _appSettings = optionsMonitor.CurrentValue;
 
             _logger = logger;
-
-            _cmsBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSStorage);
-
-            _cmsCdnBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSCDNStorage);
 
             this._container = dbClient.GetContainer(_appSettings.DatabaseName,ApplicationConstants.CosmosContainers.Content);    
         }

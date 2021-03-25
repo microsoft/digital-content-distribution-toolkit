@@ -129,10 +129,6 @@ namespace blendnet.cms.api
                                 .WithName(ApplicationConstants.StorageInstanceNames.CMSStorage)
                                 .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
 
-                        builder.AddBlobServiceClient(cmsCDNStorageConnectionString)
-                                .WithName(ApplicationConstants.StorageInstanceNames.CMSCDNStorage)
-                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
-
                     });
             // services.AddSingleton<BlobServiceClient>(bsc => {
                     
@@ -151,11 +147,6 @@ namespace blendnet.cms.api
 
             //Configure Service Bus
             string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
-
-            services.AddAzureClients(builder =>
-            {
-                builder.AddServiceBusClient(serviceBusConnectionString);
-            });
 
             ConfigureEventBus(services);
 
@@ -209,6 +200,11 @@ namespace blendnet.cms.api
             string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
 
             string serviceBusTopicName = Configuration.GetValue<string>("ServiceBusTopicName");
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddServiceBusClient(serviceBusConnectionString);
+            });
 
             services.AddSingleton<EventBusConnectionData>(ebcd =>
             {
