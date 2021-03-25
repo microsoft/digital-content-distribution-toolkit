@@ -7,7 +7,9 @@ import {MatTableDataSource} from '@angular/material/table';
 import { environment } from '../../environments/environment';
 import { Content } from '../models/content.model';
 import { ContentService } from '../services/content.service';
-
+import {interval, of, Subscription} from 'rxjs';
+import {catchError, map, startWith, switchMap} from 'rxjs/operators';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 
 export interface DialogData {
   message: string;
@@ -31,9 +33,10 @@ export class UnprocessedComponent implements AfterViewInit {
   initialSelection = [];
   allowMultiSelect = true;
   selection = new SelectionModel<Content>(this.allowMultiSelect, this.initialSelection);
-
+  file;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  timeInterval: Subscription;
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService
@@ -43,11 +46,25 @@ export class UnprocessedComponent implements AfterViewInit {
   
 
   ngOnInit(): void {
-    this.contentService.getContentByCpIdAndFilters().subscribe(res => {
-      if(res.status === 200) {
-        this.dataSource = res.body;
-      }
-    })
+    // this.contentService.getContentByCpIdAndFilters().subscribe(res => {
+    //   if(res.status === 200) {
+    //     this.dataSource = res.body;
+    //   }
+    // })
+    this.timeInterval = interval(60000)
+    .pipe(
+      startWith(0),
+      switchMap(() => this.contentService.getContentByCpIdAndFilters())
+    ).subscribe(res => this.dataSource = this.createDataSource(res.body),
+    err => console.log('HTTP Error', err));
+  }
+
+  createDataSource(rawData) {
+    var dataSource: Content[] =[];
+    rawData.forEach( data => {
+      dataSource.push(data);
+    });
+    return new MatTableDataSource(dataSource);
   }
 
   ngAfterViewInit() {
@@ -75,17 +92,40 @@ export class UnprocessedComponent implements AfterViewInit {
         this.fileUploadError="Only " + environment.fileAllowedType + " files are allowed";
         return false;
       }
-      this.uploadFile(files.target.files[0]);
+      this.file = {
+        data: files.target.files[0], 
+        inProgress: false, 
+        progress: 0
+      }
+      //this.uploadFile(files.target.files[0]);
+      this.uploadFile(this.file);
     }
   }
 
-  uploadFile(file: File) {
-    window.alert("Call upload file service for : " + file.name);
-    // this.fileUploadService.postFile(this.fileToUpload).subscribe(data => {
-    //   // do something, if upload success
-    //   }, error => {
-    //     console.log(error);
-    //   });
+  uploadFile(file) {
+    window.alert("Call upload file service for : " + file.data.name);
+    const formData = new FormData(); 
+    formData.append('file', file.data);  
+    file.inProgress = true;
+    this.contentService.uploadContent(formData).pipe(
+      map(event => {
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            file.progress = Math.round(event.loaded * 100 / event.total);
+            break;
+          case HttpEventType.Response:
+            return event;
+        }  
+      }),  
+      catchError((error: HttpErrorResponse) => {
+        file.inProgress = false;
+        return of(`Upload failed: ${file.data.name}`);
+      })).subscribe((event: any) => {
+        if (typeof (event) === 'object') {
+          console.log(event.body);
+        }  
+      });  
+
   }
 
   isAllSelected() {
@@ -132,10 +172,10 @@ openDeleteConfirmModal(): void {
   });
 }
 
-viewContent() : void {
+viewContent(selectedContent) : void {
   const dialogRef = this.dialog.open(ContentDetailsDialog, {
-    data: {content: null},
-    // width: '40%'
+    data: {content: selectedContent},
+    width: '70%'
   });
 
   dialogRef.afterClosed().subscribe(result => {

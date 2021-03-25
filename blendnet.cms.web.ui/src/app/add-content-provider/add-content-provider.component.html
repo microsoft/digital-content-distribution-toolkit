@@ -1,6 +1,37 @@
 <form [formGroup]="cpForm">
       <h2>Add Content Provider</h2>
     <div>
+      <mat-form-field>
+        <input matInput placeholder="Name" 
+        formControlName="cpname" required>
+        <mat-error *ngIf="errorHandling('cpname', 'required')">
+          You must provide a <strong>name</strong>
+       </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Logo URL address"  
+        formControlName="logoUrl">
+      </mat-form-field>
+      <mat-form-field >
+        <input matInput placeholder="Admin" 
+        formControlName="adminUpn">
+        <button mat-icon-button matSuffix
+       (click)="searchAndAddAdmin()"><mat-icon>search</mat-icon></button>
+      </mat-form-field>
+      <mat-error >
+       {{adminSearchError}}
+     </mat-error>
+      
+      
+       <mat-chip-list #chipList>
+        <mat-chip *ngFor="let admin of contentAdministrators" [selectable]="selectable" 
+        [removable]="removable"
+          (removed)="remove(admin)">
+          {{admin.firstName}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-list>
+<!-- 
        <mat-grid-list cols="2" rowHeight="85px" >
            <mat-grid-tile>
               <mat-form-field>
@@ -17,39 +48,7 @@
                 formControlName="logoUrl">
               </mat-form-field>
           </mat-grid-tile>
-          <!-- <mat-grid-tile>
-            <mat-form-field >
-              <mat-label>Activation date</mat-label>
-              <input matInput  [matDatepicker]="apicker"
-              formControlName="activationDate">
-              <mat-datepicker-toggle matSuffix [for]="apicker"></mat-datepicker-toggle>
-              <mat-datepicker #apicker></mat-datepicker>
-            </mat-form-field>
-          </mat-grid-tile>
-          <mat-grid-tile>
-            <mat-form-field>
-              <mat-label>Deactivation date</mat-label>
-              <input matInput  [matDatepicker]="dpicker"
-              formControlName="deactivationDate">
-              <mat-datepicker-toggle matSuffix [for]="dpicker"></mat-datepicker-toggle>
-              <mat-datepicker #dpicker></mat-datepicker>
-            </mat-form-field>
-          </mat-grid-tile>
-
-          <mat-grid-tile class="cp-grid">
-              <mat-label style="color:grey;">Is the Content Provider Active ? &nbsp; &nbsp;</mat-label>
-            </mat-grid-tile>
-            <mat-grid-tile>
-              <mat-radio-group formControlName="isActive" >
-                <mat-radio-button color="primary" 
-                style="padding:4px 4px 0px 0px;" value="active"
-                >Yes</mat-radio-button>
-                <mat-radio-button  color="primary" 
-                style="padding:4px 0px 0px 24px;" value="inactive"
-                >No</mat-radio-button>
-              </mat-radio-group>
-          </mat-grid-tile>
-           -->
+        
           <mat-grid-tile>
               <mat-form-field >
                 <input matInput placeholder="Admin" 
@@ -74,7 +73,7 @@
                 </mat-chip>
               </mat-chip-list>
           </mat-grid-tile>
-        </mat-grid-list>
+        </mat-grid-list> -->
 
 
         <div class="btn-sec">

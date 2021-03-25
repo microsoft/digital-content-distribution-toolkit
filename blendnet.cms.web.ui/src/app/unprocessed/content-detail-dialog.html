@@ -1,140 +1,132 @@
 <h1>
     {{content.title}}
 </h1>
-<table>
+<table mat-table>
     <tr>
-        <td>
-            Content Provider ID
-        </td>
-        <td>
-            {{content.cpId}}
-        </td>
-    </tr>
-    <tr>
-        <td>
+        <td mat-cell>
             Content Provider Content ID 
         </td>
-        <td>
-            {{content.cpContentId}}
+        <td mat-cell>
+            {{content.contentProviderContentId}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Short Description
         </td>
-        <td>
-            {{content.shortDes}}
+        <td mat-cell>
+            {{content.shortDescription}}
         </td>
     </tr>
-    <tr>
-        <td>
+    <!-- <tr>
+        <td mat-cell>
             Long Description
         </td>
-        <td>
-            {{content.longDes}}
+        <td mat-cell>
+            {{content.longDescription}}
         </td>
-    </tr>
+    </tr> 
     <tr>
-        <td>
+        <td mat-cell>
             Additional Description 1
         </td>
-        <td>
-            {{content.addDes1}}
+        <td mat-cell>
+            {{content.addionalDescription1}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Additional Description 2
         </td>
-        <td>
-            {{content.addDes2}}
+        <td mat-cell>
+            {{content.addionalDescription2}}
         </td>
-    </tr>
+    </tr> -->
     <tr>
-        <td>
+        <td mat-cell>
             Genre
         </td>
-        <td>
+        <td mat-cell>
             {{content.genre}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Year of Release
         </td>
-        <td>
+        <td mat-cell>
             {{content.yearOfRelease}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Language
         </td>
-        <td>
+        <td mat-cell>
             {{content.language}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Duration (in minutes)
         </td>
-        <td>
-            {{content.durationInMin}}
+        <td mat-cell>
+            {{content.durationInMts}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Rating
         </td>
-        <td>
+        <td mat-cell>
             {{content.rating}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Media File Name
         </td>
-        <td>
+        <td mat-cell>
             {{content.mediaFileName}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Hierarchy
         </td>
-        <td>
+        <td mat-cell>
             {{content.hierarchy}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Is Header content ?
         </td>
-        <td>
+        <td mat-cell>
             {{content.isHeaderContent}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Is Free content ?
         </td>
-        <td>
+        <td mat-cell>
             {{content.isFreeContent}}
         </td>
     </tr>
     <tr>
-        <td>
-            Artists
+        <td mat-cell>
+            Artists 
         </td>
-        <td>
-            <li *ngFor="let artist of content.artists"> {{artist}}</li>
+        <td mat-cell>
+            {{content.artists}}
         </td>
     </tr>
     <tr>
-        <td>
+        <td mat-cell>
             Attachments
         </td>
-        <td>
+        <td mat-cell>
             <li *ngFor="let attachment of content.attachments"> {{attachment.name}} &nbsp; {{attachment.attachmentType}}</li>
         </td>
     </tr>

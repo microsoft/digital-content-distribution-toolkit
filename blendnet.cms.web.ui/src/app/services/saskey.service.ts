@@ -19,7 +19,7 @@ export class SaskeyService {
     generateSASKey(contentProviderId)  : Observable<HttpResponse<any>>{
       let url = this.baseUrl + "/" +contentProviderId+ "/generateSaS";
       this.logger.log(`Fetching SAS key`);
-      return this.http.post(url, contentProviderId, { observe: 'response'});
+      return this.http.get(url, { observe: 'response'});
     }
 }
 

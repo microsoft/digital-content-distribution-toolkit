@@ -29,18 +29,23 @@ export class ContentProviderComponent implements OnInit {
 
   getContentProviders(): void {
     this.contentProviderService.getContentProviders()
-      .subscribe(cps => {
-        if(!localStorage.getItem("contentProviderId") || 
-            !localStorage.getItem("contentProviderName")) {
+      .subscribe((cps : Contentprovider[]) => {
+        console.log("Response cps received");
+        if(cps.length >= 1 && (!localStorage.getItem("contentProviderId") || 
+            !localStorage.getItem("contentProviderName"))) {
+              console.log("Setting the default Content Provider " + cps[0].name);
               this.data = cps[0];
               this.contentProviderService.changeDefaultCP(this.data);
               this.contentProviderService.data$.subscribe(res => this.data = res);
+              localStorage.setItem("contentProviderId", this.data.id);
+              localStorage.setItem("contentProviderName", this.data.name);
             }
         this.createCPList(cps);
       });
   }
 
   createCPList(cps) {
+    console.log("Create CP list call");
     cps.forEach(cp => {
       // TODO: uncomment when proper data starts flowing in
       //  if (!cp.logoUrl || cp.logoUrl !== "") {

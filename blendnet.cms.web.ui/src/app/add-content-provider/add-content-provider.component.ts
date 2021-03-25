@@ -66,24 +66,31 @@ export class AddContentProviderComponent implements OnInit {
 
   searchAndAddAdmin() {
     var upn = this.cpForm.get("adminUpn").value;
-    this.userService.getUserDetails(upn).subscribe(res => {
-      if(res.status === 200) {
-        var newAdmin = {
-          identityProviderId: res.body.id,
-           firstName: res.body.givenName ? res.body.givenName : res.body.displayName,
-           middleName: "",
-           lastName: "",
-           contact: upn,
-           email: "" 
-        }
-        this.contentAdministrators.push(newAdmin);
-      } else if(res.status === 404){
-        this.adminSearchError = "Not Found";
+    if(this.contentAdministrators.some(admin => admin.mobile === "+91"+upn)) {
+      this.toastr.warning("Provided user is already an admin");
+    } else {
+      this.userService.getUserDetails(upn).subscribe(res => {
+        if(res.status === 200) {
+          var newAdmin = {
+            identityProviderId: res.body.id,
+            firstName: res.body.displayName ? res.body.displayName : res.body.givenName,
+            middleName: "",
+            lastName: "",
+            mobile: "+91" + upn,
+            email: "" 
+          }
+          
+          this.contentAdministrators.push(newAdmin);
+          this.toastr.success("Please click save to add the user as admin");
+          this.cpForm.get("adminUpn").setValue("");
+        } else if(res.status === 404){
+          this.adminSearchError = "Not Found";
 
-      } else {
-        this.toastr.error("Something went wrong. Please try again!")
-      }
-    })
+        } else {
+          this.toastr.error("Something went wrong. Please try again!")
+        }
+      });
+    }
   }
 
   remove(admin: ContentproviderAdmin): void {
