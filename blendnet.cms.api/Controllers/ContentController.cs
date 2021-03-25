@@ -420,7 +420,7 @@ namespace blendnet.cms.api.Controllers
 
         private async Task<List<string>> ValidateBlobExistence(List<Content> contents,Guid contentProviderId)
         {
-            var rawcontainerName = $"{contentProviderId}{ApplicationConstants.StorageContainerSuffix.Raw}"; 
+            var rawcontainerName = $"{contentProviderId}ApplicationConstants.StorageContainerSuffix.Raw"; 
 
             BlobContainerClient rawClient = _cmsBlobServiceClient.GetBlobContainerClient(rawcontainerName);
 
