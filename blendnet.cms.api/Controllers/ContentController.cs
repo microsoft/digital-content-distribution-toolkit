@@ -260,6 +260,8 @@ namespace blendnet.cms.api.Controllers
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
+                serializerOptions.Converters.Add(new JsonStringEnumConverter());
+
                 List<Content> contents = JsonSerializer.Deserialize<List<Content>>(text, serializerOptions);
 
                 return contents;
