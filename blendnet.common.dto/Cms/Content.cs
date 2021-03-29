@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -183,6 +184,7 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Command Upload Status
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentUploadStatus
     {
         UploadSubmitted = 0,
@@ -194,18 +196,21 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Content Transform Status
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentTransformStatus
     {
         TranformNotInitialized = 0,
         TranformSubmitted = 1,
         TranformInProgress = 2,
-        TranformComplete = 3,
-        TranformFailed = 4
+        TranformAMSJobInProgress = 3,
+        TranformComplete = 4,
+        TranformFailed = 5
     }
 
     /// <summary>
     /// Content Broadcast Status
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ContentBroadcastStatus
     {
         BroadcastNotInitialized = 0,

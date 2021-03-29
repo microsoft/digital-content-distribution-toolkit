@@ -201,6 +201,8 @@ namespace blendnet.cms.listener
 
             services.AddTransient<ContentDeletedIntegrationEventHandler>();
 
+            services.AddTransient<ContentTransformIntegrationEventHandler>();
+
             services.AddTransient<MicrosoftStorageBlobCreatedIntegrationEventHandler>();
         }
 

@@ -232,7 +232,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     {
                         BlockBlobClient sourceBlob = sourceContainer.GetBlockBlobClient(attachment.Name);
 
-                        string blobSasUrl = GetServiceSasUriForBlob(sourceContainer.GetBlobClient(attachment.Name), 
+                        string blobSasUrl = EventHandlingUtilities.GetServiceSasUriForBlob(sourceContainer.GetBlobClient(attachment.Name), 
                                                                          ApplicationConstants.StorageContainerPolicyNames.RawReadOnly, 
                                                                          _appSettings.SASTokenExpiryToCopyContentInMts);
 
@@ -283,29 +283,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         }
 
 
-        /// <summary>
-        /// https://docs.microsoft.com/en-us/azure/storage/common/storage-stored-access-policy-define-dotnet?tabs=dotnet
-        /// </summary>
-        /// <param name="blobClient"></param>
-        /// <param name="identifier"></param>
-        /// <param name="expiryMinutes"></param>
-        /// <returns></returns>
-        private string GetServiceSasUriForBlob(BlobClient blobClient, string identifier, int expiryMinutes)
-        {
-            // Create a SAS token that's valid for one hour.
-            BlobSasBuilder sasBuilder = new BlobSasBuilder()
-            {
-                BlobContainerName = blobClient.GetParentBlobContainerClient().Name,
-                BlobName = blobClient.Name,
-                Identifier = identifier,
-                Resource = "b",
-                ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(expiryMinutes)
-            };
-
-            Uri sasUri = blobClient.GenerateSasUri(sasBuilder);
-
-            return sasUri.AbsoluteUri;
-        }
+        
 
         /// <summary>
         /// Copy Blob

@@ -1,0 +1,360 @@
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Specialized;
+using blendnet.cms.repository.Interfaces;
+using blendnet.common.dto;
+using blendnet.common.dto.cms;
+using blendnet.common.dto.Cms;
+using blendnet.common.dto.Events;
+using blendnet.common.infrastructure;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.Azure.Management.Media;
+using Microsoft.Azure.Management.Media.Models;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Rest;
+using Microsoft.Rest.Azure.Authentication;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace blendnet.cms.listener.IntegrationEventHandling
+{
+    /// <summary>
+    /// https://docs.microsoft.com/en-us/azure/media-services/latest/media-services-apis-overview#sdks
+    /// Use a new AzureMediaServicesClient object per thread. 
+    /// </summary>
+    public class ContentTransformIntegrationEventHandler : IIntegrationEventHandler<ContentTransformIntegrationEvent>
+    {
+        private readonly ILogger _logger;
+
+        private TelemetryClient _telemetryClient;
+
+        private readonly AppSettings _appSettings;
+
+        BlobServiceClient _cmsBlobServiceClient;
+
+        IContentRepository _contentRepository;
+
+        /// <summary>
+        /// Content Transform Integration Event
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="tc"></param>
+        /// <param name="blobClientFactory"></param>
+        /// <param name="optionsMonitor"></param>
+        /// <param name="contentRepository"></param>
+        public ContentTransformIntegrationEventHandler(ILogger<ContentTransformIntegrationEventHandler> logger,
+                                                       TelemetryClient tc,
+                                                       IAzureClientFactory<BlobServiceClient> blobClientFactory,
+                                                       IOptionsMonitor<AppSettings> optionsMonitor,
+                                                       IContentRepository contentRepository)
+        {
+            _logger = logger;
+
+            _telemetryClient = tc;
+
+            _cmsBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSStorage);
+
+            _appSettings = optionsMonitor.CurrentValue;
+
+            _contentRepository = contentRepository;
+        }
+
+        public async Task Handle(ContentTransformIntegrationEvent integrationEvent)
+        {
+            try
+            {
+                using (_telemetryClient.StartOperation<RequestTelemetry>("ContentTransformIntegrationEventHandler.Handle"))
+                {
+                    if (integrationEvent.ContentTransformCommand != null && integrationEvent.ContentTransformCommand.ContentId != null)
+                    {
+                        _logger.LogInformation($"Message Recieved for content id: {integrationEvent.ContentTransformCommand.ContentId.ToString()}");
+
+                        ContentCommand transformCommand = integrationEvent.ContentTransformCommand;
+
+                        Content content = await _contentRepository.GetContentById(transformCommand.ContentId);
+
+                        if (content != null)
+                        {
+                            DateTime currentTime = DateTime.UtcNow;
+
+                            PopulateContentCommand(transformCommand, currentTime);
+
+                            //Create a command record with in progress status. It will use the command id as ID and Content Id and partition key
+                            Guid commandId = await _contentRepository.CreateContentCommand(transformCommand);
+
+                            content.ContentTransformStatus = ContentTransformStatus.TranformInProgress;
+
+                            content.ModifiedDate = currentTime;
+
+                            await _contentRepository.UpdateContent(content);
+
+                            _logger.LogInformation($"Transforming for content id: {integrationEvent.ContentTransformCommand.ContentId}");
+
+                            //Perform the content transformation
+                            await SubmitContentTransformationJob(content, transformCommand);
+
+                            content = await _contentRepository.GetContentById(transformCommand.ContentId);
+
+                            //Update the command status. In case of any error, mark it to failure state.
+                            if (transformCommand.FailureDetails.Count > 0)
+                            {
+                                transformCommand.CommandStatus = CommandStatus.Failed;
+
+                                content.ContentTransformStatus = ContentTransformStatus.TranformFailed;
+                            }
+                            else
+                            {
+                                transformCommand.CommandStatus = CommandStatus.InProgress;
+
+                                content.ContentTransformStatus = ContentTransformStatus.TranformAMSJobInProgress;
+                            }
+
+                            currentTime = DateTime.UtcNow;
+
+                            transformCommand.ModifiedDate = currentTime;
+
+                            content.ModifiedDate = currentTime;
+
+                            await _contentRepository.UpdateContentCommand(transformCommand);
+                           
+                            await _contentRepository.UpdateContent(content);
+
+                            _logger.LogInformation($"Request submitted to AMS for content id: {integrationEvent.ContentTransformCommand.ContentId.ToString()}");
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"No content details found in database for content id: {integrationEvent.ContentTransformCommand.ContentId.ToString()}");
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogInformation($"No content details found in integration event. Pass correct data to integation event");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Populate command object with required attributes
+        /// </summary>
+        /// <param name="contentCommand"></param>
+        private void PopulateContentCommand(ContentCommand contentCommand, DateTime currentDateTime)
+        {
+            contentCommand.Id = Guid.NewGuid();
+            contentCommand.CommandType = CommandType.TransformContent;
+            contentCommand.Type = ContentContainerType.Command;
+            contentCommand.CommandStatus = CommandStatus.InProgress;
+            contentCommand.CreatedDate = currentDateTime;
+            contentCommand.ModifiedDate = currentDateTime;
+            contentCommand.FailureDetails = new List<string>();
+        }
+
+        /// <summary>
+        /// Submits the tranformation job
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="tranformCommand"></param>
+        /// <returns></returns>
+        private async Task SubmitContentTransformationJob(Content content, ContentCommand transformCommand)
+        {
+            string uniqueName = $"{content.Id}|{transformCommand.Id}";
+
+            IAzureMediaServicesClient amsclient = await CreateMediaServicesClientAsync();
+
+            await EnsureTransformExists(amsclient);
+
+            _logger.LogInformation($"Ensure Transform Exists executed for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName}");
+
+            await CreateOutputAsset(amsclient, uniqueName);
+
+            _logger.LogInformation($"Output Assest Created for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName}");
+
+            string injestUrl = GetIngestAssetUrl(content);
+
+            _logger.LogInformation($"Injest URL generated for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName} . Url {injestUrl}");
+
+            await SubmitJob(amsclient, injestUrl, uniqueName, uniqueName);
+
+        }
+
+        /// <summary>
+        /// Returns the Injest Url
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        private string GetIngestAssetUrl(Content content)
+        {
+            string mezzContainerName = $"{content.ContentProviderId}{ApplicationConstants.StorageContainerSuffix.Mezzanine}";
+
+            BlobContainerClient sourceContainer = this._cmsBlobServiceClient.GetBlobContainerClient(mezzContainerName);
+
+            string blobName = $"{content.ContentId.Value.ToString()}/{content.MediaFileName}";
+
+            string blobSasUrl = EventHandlingUtilities.GetServiceSasUriForBlob(sourceContainer.GetBlobClient(blobName),
+                                                             ApplicationConstants.StorageContainerPolicyNames.MezzanineReadOnly,
+                                                             _appSettings.SASTokenExpiryForAmsJobInMts);
+
+            return blobSasUrl;
+
+        }
+
+
+        /// <summary>
+        /// Creates the AzureMediaServicesClient object based on the credentials
+        /// supplied in local configuration file.
+        /// </summary>
+        /// <param name="config">The param is of type ConfigWrapper. This class reads values from local configuration file.</param>
+        /// <returns></returns>
+        private async Task<IAzureMediaServicesClient> CreateMediaServicesClientAsync()
+        {
+            var credentials = await GetCredentialsAsync();
+
+            return new AzureMediaServicesClient(new Uri (_appSettings.AmsArmEndPoint), credentials)
+            {
+                SubscriptionId = _appSettings.AmsSubscriptionId
+            };
+        }
+
+        /// <summary>
+        /// Create the ServiceClientCredentials object based on the credentials supplied in local configuration file.
+        /// </summary>
+        private async Task<ServiceClientCredentials> GetCredentialsAsync()
+        {
+           ClientCredential clientCredential = new ClientCredential(_appSettings.AmsClientId, _appSettings.AmsClientSecret);
+
+            return await ApplicationTokenProvider.LoginSilentAsync(_appSettings.AmsTenantId, clientCredential, ActiveDirectoryServiceSettings.Azure);
+        }
+
+
+        /// <summary>
+        /// Ensures that Blendnet Transformation Exists at AMS Instance
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        private async Task<Transform> EnsureTransformExists(IAzureMediaServicesClient client)
+        {
+            Transform transform = await client.Transforms.GetAsync(_appSettings.AmsResourceGroupName,
+                                                        _appSettings.AmsAccountName, 
+                                                        _appSettings.AmsTransformationName);
+
+            if (transform == null)
+            {
+                // Create a new Transform Outputs array - this defines the set of outputs for the Transform
+                TransformOutput[] outputs = new TransformOutput[]
+                {
+                   new TransformOutput(
+                    new StandardEncoderPreset(
+                    codecs: new Codec[]
+                    {
+                        // Add an AAC Audio layer for the audio encoding
+                        new AacAudio(
+                            channels: _appSettings.AmsAacAudioChannels,
+                            samplingRate: _appSettings.AmsAacAudioSamplingRate,
+                            bitrate: _appSettings.AmsAacAudioBitRate,
+                            profile: AacAudioProfile.AacLc
+                        ),
+                        // Next, add a H264Video for the video encoding
+                       new H264Video (
+                            // Set the GOP interval to 2 seconds for both H264Layers
+                            keyFrameInterval:TimeSpan.FromSeconds(_appSettings.AmsH264VideoKeyFrameworkIntervalInSec),
+                            //  Add H264Layers, one at HD and the other at SD. Assign a label that you can use for the output filename
+                            layers:  new H264Layer[]
+                            {
+                                new H264Layer (
+                                    bitrate: _appSettings.AmsH264LayerBitRate,
+                                    width: $"{_appSettings.AmsH264LayerWidth}",
+                                    height: $"{_appSettings.AmsH264LayerHeight}",
+                                    label: $"{_appSettings.AmsH264LayerLabel}"
+                                )
+                            }
+                        ),
+                    },
+                    // Specify the format for the output files - one for video+audio, and another for the thumbnails
+                    formats: new Format[]
+                    {
+                        // Mux the H.264 video and AAC audio into MP4 files, using basename, label, bitrate and extension macros
+                        // Note that since you have multiple H264Layers defined above, you have to use a macro that produces unique names per H264Layer
+                        // Either {Label} or {Bitrate} should suffice
+                        new Mp4Format(
+                            filenamePattern:"Video-{Basename}-{Label}-{Bitrate}{Extension}"
+                        )
+                    }),
+                    onError: OnErrorType.StopProcessingJob,
+                    relativePriority: Priority.Normal)
+                };
+
+                string description = "A custom encoding transform for blendnet";
+
+                // Create the custom Transform with the outputs defined above
+                transform = client.Transforms.CreateOrUpdate(   _appSettings.AmsResourceGroupName,
+                                                                _appSettings.AmsAccountName,
+                                                                _appSettings.AmsTransformationName, 
+                                                                outputs, 
+                                                                description);
+            }
+
+            return transform;
+        }
+
+        /// <summary>
+        /// Create Output Asset
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="assetName"></param>
+        /// <returns></returns>
+        private async Task<Asset> CreateOutputAsset(IAzureMediaServicesClient client, string assetName)
+        {
+            Asset asset = new Asset();
+
+            return await client.Assets.CreateOrUpdateAsync(_appSettings.AmsResourceGroupName,
+                                                            _appSettings.AmsAccountName, 
+                                                            assetName, asset);
+        }
+
+        /// <summary>
+        /// Submit Job to AMS
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="inputAssetUrl"></param>
+        /// <param name="outPutAssetName"></param>
+        /// <param name="jobName"></param>
+        /// <returns></returns>
+        private async Task<Job> SubmitJob(IAzureMediaServicesClient client, 
+                                                        string inputAssetUrl, 
+                                                        string outPutAssetName,
+                                                        string jobName)
+        {
+
+            
+            JobInputHttp jobInput = new JobInputHttp(files: new[] { inputAssetUrl });
+
+            JobOutput[] jobOutputs =
+            {
+                new JobOutputAsset(outPutAssetName),
+            };
+
+            Job job = await client.Jobs.CreateAsync(_appSettings.AmsResourceGroupName,
+                                                    _appSettings.AmsAccountName,
+                                                    _appSettings.AmsTransformationName,
+                                                     jobName,
+                new Job
+                {
+                    Input = jobInput,
+                    Outputs = jobOutputs,
+                });
+
+            return job;
+        }
+
+    }
+}

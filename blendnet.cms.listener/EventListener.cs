@@ -46,6 +46,8 @@ namespace blendnet.cms.listener
 
             _eventBus.Subscribe<ContentDeletedIntegrationEvent, ContentDeletedIntegrationEventHandler>();
 
+            _eventBus.Subscribe<ContentTransformIntegrationEvent, ContentTransformIntegrationEventHandler>();
+
             await _eventBus.StartProcessing();
 
             //todo: read from config once we finalize that we are ok to consume blob created event here.
