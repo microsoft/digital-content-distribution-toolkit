@@ -64,77 +64,71 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             _contentRepository = contentRepository;
         }
 
+        /// <summary>
+        /// Responsible of submitting job to AMS
+        /// </summary>
+        /// <param name="integrationEvent"></param>
+        /// <returns></returns>
+
         public async Task Handle(ContentTransformIntegrationEvent integrationEvent)
         {
             try
             {
                 using (_telemetryClient.StartOperation<RequestTelemetry>("ContentTransformIntegrationEventHandler.Handle"))
                 {
-                    if (integrationEvent.ContentTransformCommand != null && integrationEvent.ContentTransformCommand.ContentId != null)
+                    if (integrationEvent.ContentTransformCommand == null || 
+                        integrationEvent.ContentTransformCommand.ContentId == null)
                     {
-                        _logger.LogInformation($"Message Recieved for content id: {integrationEvent.ContentTransformCommand.ContentId.ToString()}");
+                        _logger.LogInformation($"No content details found in integration event. Pass correct data to integation event");
 
-                        ContentCommand transformCommand = integrationEvent.ContentTransformCommand;
+                        return;
+                    }
+                        
+                    _logger.LogInformation($"Message Recieved for content id: {integrationEvent.ContentTransformCommand.ContentId.ToString()}");
 
-                        Content content = await _contentRepository.GetContentById(transformCommand.ContentId);
+                    ContentCommand transformCommand = integrationEvent.ContentTransformCommand;
 
-                        if (content != null)
-                        {
-                            DateTime currentTime = DateTime.UtcNow;
+                    Content content = await _contentRepository.GetContentById(transformCommand.ContentId);
 
-                            PopulateContentCommand(transformCommand, currentTime);
+                    if (content == null)
+                    {
+                        _logger.LogInformation($"No content details found in database for content id: {integrationEvent.ContentTransformCommand.ContentId.ToString()}");
 
-                            //Create a command record with in progress status. It will use the command id as ID and Content Id and partition key
-                            Guid commandId = await _contentRepository.CreateContentCommand(transformCommand);
+                        return;
+                    }
+                        
+                    DateTime currentTime = DateTime.UtcNow;
 
-                            content.ContentTransformStatus = ContentTransformStatus.TranformInProgress;
+                    PopulateContentCommand(transformCommand, currentTime);
 
-                            content.ModifiedDate = currentTime;
+                    //Create a command record with in progress status. It will use the command id as ID and Content Id and partition key
+                    Guid commandId = await _contentRepository.CreateContentCommand(transformCommand);
 
-                            await _contentRepository.UpdateContent(content);
+                    content.ContentTransformStatus = ContentTransformStatus.TransformInProgress;
 
-                            _logger.LogInformation($"Transforming for content id: {integrationEvent.ContentTransformCommand.ContentId}");
+                    content.ModifiedDate = currentTime;
 
-                            //Perform the content transformation
-                            await SubmitContentTransformationJob(content, transformCommand);
+                    await _contentRepository.UpdateContent(content);
 
-                            content = await _contentRepository.GetContentById(transformCommand.ContentId);
+                    _logger.LogInformation($"Transforming for content id: {integrationEvent.ContentTransformCommand.ContentId} Command Id {transformCommand.Id.Value}");
 
-                            //Update the command status. In case of any error, mark it to failure state.
-                            if (transformCommand.FailureDetails.Count > 0)
-                            {
-                                transformCommand.CommandStatus = CommandStatus.Failed;
+                    //Perform the content transformation
+                    await SubmitContentTransformationJob(content, transformCommand);
 
-                                content.ContentTransformStatus = ContentTransformStatus.TranformFailed;
-                            }
-                            else
-                            {
-                                transformCommand.CommandStatus = CommandStatus.InProgress;
+                    content = await _contentRepository.GetContentById(transformCommand.ContentId);
 
-                                content.ContentTransformStatus = ContentTransformStatus.TranformAMSJobInProgress;
-                            }
-
-                            currentTime = DateTime.UtcNow;
-
-                            transformCommand.ModifiedDate = currentTime;
-
-                            content.ModifiedDate = currentTime;
-
-                            await _contentRepository.UpdateContentCommand(transformCommand);
-                           
-                            await _contentRepository.UpdateContent(content);
-
-                            _logger.LogInformation($"Request submitted to AMS for content id: {integrationEvent.ContentTransformCommand.ContentId.ToString()}");
-                        }
-                        else
-                        {
-                            _logger.LogInformation($"No content details found in database for content id: {integrationEvent.ContentTransformCommand.ContentId.ToString()}");
-                        }
+                    //Update the command status. In case of any error, mark it to failure state.
+                    if (transformCommand.FailureDetails.Count > 0)
+                    {
+                        await UpdateFailedStatus(content, transformCommand);
                     }
                     else
                     {
-                        _logger.LogInformation($"No content details found in integration event. Pass correct data to integation event");
+                        await UpdateInProgressStatus(content, transformCommand);
                     }
+
+                    _logger.LogInformation($"Request submitted to AMS for content id: {integrationEvent.ContentTransformCommand.ContentId} command id : {transformCommand.Id.Value}");
+                        
                 }
             }
             catch (Exception ex)
@@ -143,6 +137,55 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             }
         }
 
+        /// <summary>
+        /// Update Failed Status
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="transformCommand"></param>
+        /// <returns></returns>
+
+        private async Task UpdateFailedStatus(Content content, ContentCommand transformCommand)
+        {
+            content.ContentTransformStatus = ContentTransformStatus.TransformFailed;
+
+            transformCommand.CommandStatus = CommandStatus.Failed;
+
+            await UpdateStatus(content, transformCommand);
+        }
+
+       /// <summary>
+       /// Update In Progress String
+       /// </summary>
+       /// <param name="content"></param>
+       /// <param name="transformCommand"></param>
+       /// <returns></returns>
+        private async Task UpdateInProgressStatus(Content content, ContentCommand transformCommand)
+        {
+            content.ContentTransformStatus = ContentTransformStatus.TransformAMSJobInProgress;
+
+            transformCommand.CommandStatus = CommandStatus.InProgress;
+
+            await UpdateStatus(content, transformCommand);
+        }
+
+        /// <summary>
+        /// Update Status
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="transformCommand"></param>
+        /// <returns></returns>
+        private async Task UpdateStatus(Content content, ContentCommand transformCommand)
+        {
+            DateTime currentTime = DateTime.UtcNow;
+
+            content.ModifiedDate = currentTime;
+
+            transformCommand.ModifiedDate = currentTime;
+
+            await _contentRepository.UpdateContent(content);
+
+            await _contentRepository.UpdateContentCommand(transformCommand);
+        }
 
         /// <summary>
         /// Populate command object with required attributes
@@ -167,24 +210,36 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <returns></returns>
         private async Task SubmitContentTransformationJob(Content content, ContentCommand transformCommand)
         {
-            string uniqueName = $"{content.Id}|{transformCommand.Id}";
+            string errorMessage = string.Empty;
 
-            IAzureMediaServicesClient amsclient = await CreateMediaServicesClientAsync();
+            try
+            {
+                string uniqueName = $"{content.Id.Value}|{transformCommand.Id.Value}";
 
-            await EnsureTransformExists(amsclient);
+                IAzureMediaServicesClient amsclient = await EventHandlingUtilities.CreateMediaServicesClientAsync(_appSettings);
 
-            _logger.LogInformation($"Ensure Transform Exists executed for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName}");
+                await EnsureTransformExists(amsclient);
 
-            await CreateOutputAsset(amsclient, uniqueName);
+                _logger.LogInformation($"Ensure Transform Exists executed for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName}");
 
-            _logger.LogInformation($"Output Assest Created for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName}");
+                await CreateOutputAsset(amsclient, uniqueName);
 
-            string injestUrl = GetIngestAssetUrl(content);
+                _logger.LogInformation($"Output Assest Created for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName}");
 
-            _logger.LogInformation($"Injest URL generated for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName} . Url {injestUrl}");
+                string injestUrl = GetIngestAssetUrl(content);
 
-            await SubmitJob(amsclient, injestUrl, uniqueName, uniqueName);
+                _logger.LogInformation($"Injest URL generated for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName} . Url {injestUrl}");
 
+                await SubmitJob(amsclient, injestUrl, uniqueName, uniqueName);
+            }
+            catch(Exception ex)
+            {
+                errorMessage = $"Failed to submit job with AMS for content {content.ContentId.Value} Command {transformCommand.Id.Value} Exception {ex.Message}";
+
+                transformCommand.FailureDetails.Add(errorMessage);
+
+                _logger.LogError(ex, $"{errorMessage}");
+            }
         }
 
         /// <summary>
@@ -206,33 +261,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             return blobSasUrl;
 
-        }
-
-
-        /// <summary>
-        /// Creates the AzureMediaServicesClient object based on the credentials
-        /// supplied in local configuration file.
-        /// </summary>
-        /// <param name="config">The param is of type ConfigWrapper. This class reads values from local configuration file.</param>
-        /// <returns></returns>
-        private async Task<IAzureMediaServicesClient> CreateMediaServicesClientAsync()
-        {
-            var credentials = await GetCredentialsAsync();
-
-            return new AzureMediaServicesClient(new Uri (_appSettings.AmsArmEndPoint), credentials)
-            {
-                SubscriptionId = _appSettings.AmsSubscriptionId
-            };
-        }
-
-        /// <summary>
-        /// Create the ServiceClientCredentials object based on the credentials supplied in local configuration file.
-        /// </summary>
-        private async Task<ServiceClientCredentials> GetCredentialsAsync()
-        {
-           ClientCredential clientCredential = new ClientCredential(_appSettings.AmsClientId, _appSettings.AmsClientSecret);
-
-            return await ApplicationTokenProvider.LoginSilentAsync(_appSettings.AmsTenantId, clientCredential, ActiveDirectoryServiceSettings.Azure);
         }
 
 

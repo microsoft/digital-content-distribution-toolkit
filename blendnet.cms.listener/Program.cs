@@ -203,7 +203,10 @@ namespace blendnet.cms.listener
 
             services.AddTransient<ContentTransformIntegrationEventHandler>();
 
+            services.AddTransient<MediaServiceJobIntegrationEventHandler>();
+
             services.AddTransient<MicrosoftStorageBlobCreatedIntegrationEventHandler>();
+
         }
 
 

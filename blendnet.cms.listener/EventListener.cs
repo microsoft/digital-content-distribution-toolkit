@@ -1,4 +1,5 @@
 ﻿using blendnet.cms.listener.IntegrationEventHandling;
+using blendnet.common.dto.cms;
 using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.ServiceBus;
@@ -6,6 +7,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,13 +24,18 @@ namespace blendnet.cms.listener
         private readonly ILogger<EventListener> _logger;
 
         private readonly IEventBus _eventBus;
-        
-        public EventListener(ILogger<EventListener> logger, IEventBus eventBus)
+
+        private readonly AppSettings _appSettings;
+
+        public EventListener(   ILogger<EventListener> logger, 
+                                IEventBus eventBus,
+                                IOptionsMonitor<AppSettings> optionsMonitor)
         {
             _logger = logger;
 
             _eventBus = eventBus;
 
+            _appSettings = optionsMonitor.CurrentValue;
         }
 
         /// <summary>
@@ -47,6 +54,14 @@ namespace blendnet.cms.listener
             _eventBus.Subscribe<ContentDeletedIntegrationEvent, ContentDeletedIntegrationEventHandler>();
 
             _eventBus.Subscribe<ContentTransformIntegrationEvent, ContentTransformIntegrationEventHandler>();
+
+            CustomPropertyCorrelationRule correlationRule = new CustomPropertyCorrelationRule()
+            {
+                PropertyName = _appSettings.AmsEventGridPropertyName,
+                PropertValue = _appSettings.AmsEventGridSubscriptionName,
+            };
+
+            _eventBus.Subscribe<MediaServiceJobIntegrationEvent, MediaServiceJobIntegrationEventHandler>(correlationRule);
 
             await _eventBus.StartProcessing();
 

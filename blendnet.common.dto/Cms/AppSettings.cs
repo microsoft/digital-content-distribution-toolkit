@@ -43,6 +43,8 @@ namespace blendnet.common.dto.cms
 
         public string AmsTransformationName { get; set; }
 
+        public string AmsContentPolicyName { get; set; }
+
         public string AmsArmAadAudience { get; set; }
 
         public string AmsArmEndPoint { get; set; }
@@ -63,7 +65,31 @@ namespace blendnet.common.dto.cms
         
         public string AmsH264LayerLabel { get; set; }
 
+        public string AmsEventGridPropertyName { get; set; }
+
+        public string AmsEventGridSubscriptionName { get; set; }
+
+        public string AmsTokenSigningKey { get; set; }
+
+        public string AmsTokenIssuer { get; set; }
+        
+        public string AmsTokenAudience { get; set; }
+
+        public bool AmsWidevineCanPlay { get; set; }
+
+        public bool AmsWidevineCanPersist { get; set; }
+        
+        public bool AmsWidevineCanRenew { get; set; }
+
+        public int AmsWidevineRentalDurationSeconds { get; set; }
+
+        public int AmsWidevinePlaybackDurationSeconds { get; set; }
+
+        public int AmsWidevineLicenseDurationSeconds { get; set; }
+
         public int SASTokenExpiryForAmsJobInMts { get; set; }
+
+        public string AmsStreamingEndpointName { get; set; }
 
     }
 }

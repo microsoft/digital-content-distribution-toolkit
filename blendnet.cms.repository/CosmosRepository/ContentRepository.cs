@@ -78,6 +78,12 @@ namespace blendnet.cms.repository.CosmosRepository
             }
         }
 
+        /// <summary>
+        /// Returns the Content Command By Id
+        /// </summary>
+        /// <param name="commandId"></param>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
         public async Task<ContentCommand> GetContentCommandById(Guid commandId , Guid contentId)
         {
             try

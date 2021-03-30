@@ -47,6 +47,13 @@ namespace blendnet.common.dto
             public static List<string> mediaFormats = new List<string>{ "mp4", "wmv", "mpeg","mpd"};
             public static List<string> ThumbnailFormats = new List<string>{"png","jpeg","jpg"};
         }
+
+        public struct AMSJobStatuses
+        {
+            public const string JobFinished = "Finished";
+            public const string JobCanceled = "Canceled";
+            public const string JobErrored = "Errored";
+        }
         
     }
 }
