@@ -169,13 +169,14 @@ namespace blendnet.cms.testutility
         public const string UNIQUE_ID = "{UNIQUE_ID}";
         public const string START_DATE = "{START_DATE}";
         public const string END_DATE = "{END_DATE}";
-        public const string MOVIE_NAME ="{MOVIE_NAME}";
         public const string AUDIO_TAR = "{AUDIO_TAR}";
         public const string AUDIO_FILE_SIZE = "{AUDIO_FILE_SIZE}";
         public const string AUDIO_FILE_CHECKSUM = "{AUDIO_FILE_CHECKSUM}";
+        public const string AUDIO_TAR_FOLDER_NAME = "{AUDIO_TAR_FOLDER_NAME}";
         public const string VIDEO_TAR = "{VIDEO_TAR}";
         public const string VIDEO_FILE_SIZE = "{VIDEO_FILE_SIZE}";
         public const string VIDEO_FILE_CHECKSUM = "{VIDEO_FILE_CHECKSUM}";
+        public const string VIDEO_TAR_FOLDER_NAME = "{VIDEO_TAR_FOLDER_NAME}";
         public const string MPD_FILE = "{MPD_FILE}";
         public const string MPD_FILE_SIZE = "{MPD_FILE_SIZE}";
         public const string MPD_FILE_CHECKSUM = "{MPD_FILE_CHECKSUM}";

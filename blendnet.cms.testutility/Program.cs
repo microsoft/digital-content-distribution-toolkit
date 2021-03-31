@@ -228,10 +228,9 @@ namespace blendnet.cms.testutility
 
             foreach (AdaptiveSetInfo adaptiveSet in segmentInfo.AdaptiveSets)
             {
-
                 tarPath = Path.Combine(_workingDirectory,$"{adaptiveSet.DirectoryName}.tar");
 
-                adaptiveSet.FinalPath = Path.Combine(_finalDirectory, $"{_uniqueness_raw.ToString()+'_'+adaptiveSet.DirectoryName}.tar");
+                adaptiveSet.FinalPath = Path.Combine(_finalDirectory, $"{_uniqueness_raw.ToString()}_{adaptiveSet.DirectoryName}.tar");
 
                 TarHelper.TarCreateFromStream(tarPath, Path.Combine(_workingDirectory, adaptiveSet.DirectoryName));
 
@@ -244,7 +243,7 @@ namespace blendnet.cms.testutility
 
             File.Move(mpdPath, segmentInfo.FinalMpdPath);
 
-            string xmlFilePath = Path.Combine(_finalDirectory, $"{_uniqueness_raw.ToString()+config.XmlFileName}");
+            string xmlFilePath = Path.Combine(_finalDirectory, $"{_uniqueness_raw}{config.XmlFileName}");
 
             // string xmlFilePath = Path.Combine(_finalDirectory, $"{config.XmlFileName}");
             
@@ -255,9 +254,9 @@ namespace blendnet.cms.testutility
             ReplaceTokenInXml(xmlFilePath, segmentInfo);
 
             //copy dummy file to final
-            string dummyMp4Path = Path.Combine(_finalDirectory, $"{_uniqueness_raw.ToString()+"_"+_dummyMp4File}");
+            //string dummyMp4Path = Path.Combine(_finalDirectory, $"{_uniqueness_raw.ToString()+"_"+_dummyMp4File}");
 
-            File.Copy(_dummyMp4File, dummyMp4Path);
+            //File.Copy(_dummyMp4File, dummyMp4Path);
 
             string finalTarPath = Path.Combine(_rootDirectory, $"{_uniqueness_raw.ToString()}.tar");
 
@@ -268,31 +267,41 @@ namespace blendnet.cms.testutility
         {
             string fileContent = File.ReadAllText(xmlFilePath);
 
-            
             fileContent = fileContent.Replace(XMLConstants.START_DATE, DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-ddTHH:mm:ss"));
              
             fileContent = fileContent.Replace(XMLConstants.END_DATE, DateTime.UtcNow.AddMonths(6).ToString("yyyy-MM-ddTHH:mm:ss"));
 
-            fileContent = fileContent.Replace(XMLConstants.MOVIE_NAME,_uniqueness_raw.ToString()+'_'+_dummyMp4File);
             AdaptiveSetInfo audioSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == "audio")).FirstOrDefault();
 
             FileInfo fileInfo = new FileInfo(audioSet.FinalPath);
+
             fileContent = fileContent.Replace(XMLConstants.AUDIO_TAR, Path.GetFileName(audioSet.FinalPath));
+
             fileContent = fileContent.Replace(XMLConstants.AUDIO_FILE_CHECKSUM, GetChecksum(audioSet.FinalPath));
+
             fileContent = fileContent.Replace(XMLConstants.AUDIO_FILE_SIZE, fileInfo.Length.ToString());
-            
-                        
+
+            fileContent = fileContent.Replace(XMLConstants.AUDIO_TAR_FOLDER_NAME, audioSet.DirectoryName);
+
+
             AdaptiveSetInfo videoSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == "video")).FirstOrDefault();
 
             fileInfo = new FileInfo(videoSet.FinalPath);
+            
             fileContent = fileContent.Replace(XMLConstants.VIDEO_TAR, Path.GetFileName(videoSet.FinalPath));
+            
             fileContent = fileContent.Replace(XMLConstants.VIDEO_FILE_CHECKSUM, GetChecksum(videoSet.FinalPath));
+            
             fileContent = fileContent.Replace(XMLConstants.VIDEO_FILE_SIZE, fileInfo.Length.ToString());
 
+            fileContent = fileContent.Replace(XMLConstants.VIDEO_TAR_FOLDER_NAME, videoSet.DirectoryName);
 
             fileInfo = new FileInfo(segmentInfo.FinalMpdPath);
+            
             fileContent = fileContent.Replace(XMLConstants.MPD_FILE, Path.GetFileName(segmentInfo.FinalMpdPath));
+            
             fileContent = fileContent.Replace(XMLConstants.MPD_FILE_CHECKSUM, GetChecksum(segmentInfo.FinalMpdPath));
+            
             fileContent = fileContent.Replace(XMLConstants.MPD_FILE_SIZE, fileInfo.Length.ToString());
 
             fileContent = fileContent.Replace(XMLConstants.UNIQUE_ID, _uniqueness_raw.ToString());
@@ -306,7 +315,6 @@ namespace blendnet.cms.testutility
                 var sha = new SHA256Managed();
                 byte[] checksum = sha.ComputeHash(stream);
                 return BitConverter.ToString(checksum).Replace("-", String.Empty).ToLowerInvariant();
-                // .Substring(0,32)
             }
         }
 
