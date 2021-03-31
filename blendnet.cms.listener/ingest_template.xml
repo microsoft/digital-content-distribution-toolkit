@@ -10,8 +10,8 @@
 	<userDefined>
 	<title>MStore_tests</title><!--Set it for test content  only-->
 	<contentbroadcastcommandid>{UNIQUE_ID}</contentbroadcastcommandid><!--Same as the tar file name. Unique for each broadcasting request UUID - GUID -->
-	<contentid>100</contentid><!--Unique id of content from BlendNet CMS  UUID -->
-	<hierarchy>Episode1/Season1/GameOfThrones1/Eros</hierarchy><!--Value of path to root attribute-->
+	<contentid>{CONTENT_ID}</contentid><!--Unique id of content from BlendNet CMS  UUID -->
+	<hierarchy>{CONTENT_HIERARCHY}</hierarchy><!--Value of path to root attribute-->
 	<bulkFiles>
 		<file>
       <bulkFileName>{AUDIO_TAR}</bulkFileName><!--concatenate the tar file id with -audio-->

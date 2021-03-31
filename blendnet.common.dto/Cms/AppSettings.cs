@@ -93,5 +93,7 @@ namespace blendnet.common.dto.cms
 
         public string IngestFileName { get; set; }
 
+        public string DownloadDirectory { get; set; }
+
     }
 }

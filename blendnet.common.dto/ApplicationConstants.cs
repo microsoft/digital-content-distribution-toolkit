@@ -82,6 +82,13 @@ namespace blendnet.common.dto
 
         public const string IngestTemplateFileName = "ingest_template.xml";
 
+        public struct AdaptiveSetTypes
+        {
+            public const string Audio = "audio";
+
+            public const string Video = "video";
+        }
+
 
         public struct XMLTokens
         {
@@ -99,7 +106,9 @@ namespace blendnet.common.dto
             public const string MPD_FILE = "{MPD_FILE}";
             public const string MPD_FILE_SIZE = "{MPD_FILE_SIZE}";
             public const string MPD_FILE_CHECKSUM = "{MPD_FILE_CHECKSUM}";
-        }
+            public const string CONTENT_ID = "{CONTENT_ID}";
+            public const string CONTENT_HIERARCHY = "{CONTENT_HIERARCHY}";
+	    }
 
     }
 }

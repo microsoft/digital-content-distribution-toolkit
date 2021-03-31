@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -114,7 +115,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                         _logger.LogInformation($"DASH URL generated for content id: {contentId} command id {commandId}");
 
-                        await DownloadSegements(content, transformCommand);
+                        await DownloadSegments(content, transformCommand);
 
                         _logger.LogInformation($"Segments downloaded and moved to final for content id: {contentId} command id {commandId}");
 
@@ -257,23 +258,23 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <param name="content"></param>
         /// <param name="transformCommand"></param>
         /// <returns></returns>
-        private async Task DownloadSegements(Content content, ContentCommand transformCommand)
+        private async Task DownloadSegments(Content content, ContentCommand transformCommand)
         {
             string errorMessage;
 
             try
             {
-                string rootDirectory = Path.Combine(Directory.GetCurrentDirectory(), $"{transformCommand.Id.Value}");
+                string rootDirectory = Path.Combine(_appSettings.DownloadDirectory, $"{transformCommand.Id.Value}");
 
                 _logger.LogInformation($"Root Directory Path {rootDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
-                string workingDirectory = Path.Combine(Directory.GetCurrentDirectory(),
+                string workingDirectory = Path.Combine(_appSettings.DownloadDirectory,
                                                         $"{transformCommand.Id.Value}",
                                                         ApplicationConstants.DownloadDirectoryNames.Working);
 
                 _logger.LogInformation($"Working Directory Path {workingDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
-                string finalDirectory = Path.Combine(Directory.GetCurrentDirectory(),
+                string finalDirectory = Path.Combine(_appSettings.DownloadDirectory,
                                                         $"{transformCommand.Id.Value}",
                                                         ApplicationConstants.DownloadDirectoryNames.Final);
 
@@ -332,6 +333,9 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 _tarGenerator.TarCreateFromStream(tarPath, Path.Combine(workingDirectory, adaptiveSet.DirectoryName));
 
                 File.Move(tarPath, adaptiveSet.FinalPath);
+
+                _logger.LogInformation($"Moved file {adaptiveSet.FinalPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
             }
 
             string mpdPath = Path.Combine(workingDirectory, $"{mpdInfo.MpdName}");
@@ -340,6 +344,86 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             File.Copy(mpdPath, mpdInfo.FinalMpdPath);
 
+            _logger.LogInformation($"Copied file {mpdInfo.FinalMpdPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+
+            string xmlFilePath = Path.Combine(workingDirectory, string.Format(_appSettings.IngestFileName,transformCommand.Id.Value));
+
+            //copy the template to final directory
+            File.Copy(ApplicationConstants.IngestTemplateFileName, xmlFilePath);
+
+            //replace tags in xml template
+            ReplaceTokenInXml(xmlFilePath, mpdInfo,content,transformCommand);
+
+            _logger.LogInformation($"XML Token Replaced for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+        }
+
+        /// <summary>
+        /// Replaces Token
+        /// </summary>
+        /// <param name="xmlFilePath"></param>
+        /// <param name="segmentInfo"></param>
+        /// <param name="content"></param>
+        /// <param name="tranformCommand"></param>
+        private void ReplaceTokenInXml(string xmlFilePath, MpdInfo segmentInfo, Content content, ContentCommand tranformCommand)
+        {
+            string fileContent = File.ReadAllText(xmlFilePath);
+
+            AdaptiveSetInfo audioSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == ApplicationConstants.AdaptiveSetTypes.Audio)).FirstOrDefault();
+
+            FileInfo fileInfo = new FileInfo(audioSet.FinalPath);
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.AUDIO_TAR, Path.GetFileName(audioSet.FinalPath));
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.AUDIO_FILE_CHECKSUM, GetChecksum(audioSet.FinalPath));
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.AUDIO_FILE_SIZE, fileInfo.Length.ToString());
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.AUDIO_TAR_FOLDER_NAME, audioSet.DirectoryName);
+
+            AdaptiveSetInfo videoSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == ApplicationConstants.AdaptiveSetTypes.Video)).FirstOrDefault();
+
+            fileInfo = new FileInfo(videoSet.FinalPath);
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.VIDEO_TAR, Path.GetFileName(videoSet.FinalPath));
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.VIDEO_FILE_CHECKSUM, GetChecksum(videoSet.FinalPath));
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.VIDEO_FILE_SIZE, fileInfo.Length.ToString());
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.VIDEO_TAR_FOLDER_NAME, videoSet.DirectoryName);
+
+            fileInfo = new FileInfo(segmentInfo.FinalMpdPath);
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE, Path.GetFileName(segmentInfo.FinalMpdPath));
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE_CHECKSUM, GetChecksum(segmentInfo.FinalMpdPath));
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE_SIZE, fileInfo.Length.ToString());
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.UNIQUE_ID, tranformCommand.Id.Value.ToString());
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.CONTENT_HIERARCHY, string.IsNullOrEmpty(content.Hierarchy) ? "" : content.Hierarchy);
+
+            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.CONTENT_ID, content.Id.Value.ToString());
+
+            File.WriteAllText(xmlFilePath, fileContent);
+        }
+
+        /// <summary>
+        /// Returns SHA256 Checksum
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        private static string GetChecksum(string file)
+        {
+            using (FileStream stream = File.OpenRead(file))
+            {
+                var sha = new SHA256Managed();
+                byte[] checksum = sha.ComputeHash(stream);
+                return BitConverter.ToString(checksum).Replace("-", String.Empty).ToLowerInvariant();
+            }
         }
 
         /// <summary>
