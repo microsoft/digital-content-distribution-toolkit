@@ -10,6 +10,7 @@ import { ContentService } from '../services/content.service';
 import {interval, of, Subscription} from 'rxjs';
 import {catchError, map, startWith, switchMap} from 'rxjs/operators';
 import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 export interface DialogData {
   message: string;
@@ -36,27 +37,30 @@ export class UnprocessedComponent implements AfterViewInit {
   file;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  timeInterval: Subscription;
+  @ViewChild('jsonFileInput') jsonFileInput;
+  polling: Subscription;
 
   constructor(public dialog: MatDialog,
-    public contentService: ContentService
+    public contentService: ContentService,
+    private toastr: ToastrService
     ) {
   }
 
   
 
   ngOnInit(): void {
-    // this.contentService.getContentByCpIdAndFilters().subscribe(res => {
-    //   if(res.status === 200) {
-    //     this.dataSource = res.body;
-    //   }
-    // })
-    this.timeInterval = interval(60000)
+    this.polling = interval(5000)
     .pipe(
       startWith(0),
       switchMap(() => this.contentService.getContentByCpIdAndFilters())
     ).subscribe(res => this.dataSource = this.createDataSource(res.body),
     err => console.log('HTTP Error', err));
+  }
+
+  ngOnDestroy() {
+    if(this.polling){    
+    this.polling.unsubscribe();
+    }
   }
 
   createDataSource(rawData) {
@@ -66,7 +70,15 @@ export class UnprocessedComponent implements AfterViewInit {
     });
     return new MatTableDataSource(dataSource);
   }
+  isContentProcessable(row) {
+    return row.contentUploadStatus !== "UploadComplete";
+  }
 
+  isContentDeletable(row) {
+    return (row.contentUploadStatus === "UploadInProgress" 
+      || row.contentUploadStatus === "UploadSubmitted");
+
+  }
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -103,7 +115,6 @@ export class UnprocessedComponent implements AfterViewInit {
   }
 
   uploadFile(file) {
-    window.alert("Call upload file service for : " + file.data.name);
     const formData = new FormData(); 
     formData.append('file', file.data);  
     file.inProgress = true;
@@ -117,8 +128,9 @@ export class UnprocessedComponent implements AfterViewInit {
             return event;
         }  
       }),  
-      catchError((error: HttpErrorResponse) => {
+      catchError((error) => {
         file.inProgress = false;
+        this.toastr.error(error);
         return of(`Upload failed: ${file.data.name}`);
       })).subscribe((event: any) => {
         if (typeof (event) === 'object') {
@@ -126,6 +138,7 @@ export class UnprocessedComponent implements AfterViewInit {
         }  
       });  
 
+      this.jsonFileInput.nativeElement.value = '';
   }
 
   isAllSelected() {
@@ -175,7 +188,8 @@ openDeleteConfirmModal(): void {
 viewContent(selectedContent) : void {
   const dialogRef = this.dialog.open(ContentDetailsDialog, {
     data: {content: selectedContent},
-    width: '70%'
+    width: '70%',
+    height: '70%'
   });
 
   dialogRef.afterClosed().subscribe(result => {

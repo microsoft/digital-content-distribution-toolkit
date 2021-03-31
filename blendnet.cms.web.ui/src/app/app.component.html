@@ -1,10 +1,12 @@
 <mat-toolbar color="primary" class="cms-toolbar">
-	<span><div class="cms-app-name">Content Provider: {{selectedCP}}</div></span>
+	<span><div class="cms-app-name">
+		Content Provider : {{selectedCPName}}
+	</div></span>
 	<span class="cms-menu-spacer"></span>
 	<span><h1>BlendNet CMS</h1></span>
   <span class="cms-menu-spacer"></span>
   
-  <button mat-icon-button matTooltip="Login" *ngIf="!loginDisplay" (click)="login()"><mat-icon>login</mat-icon></button>
+  <button matTooltip="Login" *ngIf="!loginDisplay" (click)="login()">Login</button>
   <button mat-icon-button  matTooltip="Logout" *ngIf="loginDisplay" (click)="logout()"><mat-icon>logout</mat-icon></button>
 
 

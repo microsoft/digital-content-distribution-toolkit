@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SaskeyService } from '../services/saskey.service';
 import { ToastrService } from 'ngx-toastr';
+import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-sas-key',
@@ -8,8 +10,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./sas-key.component.css']
 })
 export class SasKeyComponent implements OnInit {
-  sasKey:String ="";
-  expiresIn:String= "";
+  sasKey:string ="";
+  expiresIn:string= "";
 
   constructor( 
     private sasKeyService: SaskeyService,
@@ -27,17 +29,17 @@ export class SasKeyComponent implements OnInit {
 
   generateSAS() {
     var cpId = localStorage.getItem("contentProviderId");
-    this.sasKeyService.generateSASKey(cpId).subscribe(res => {
-      if(res.status === 200) {
-        this.sasKey = res.body.sasUri;
+    this.sasKeyService.generateSASKey(cpId)
+      .subscribe( res => {
+        this.sasKey  = res.sasUri;
         var today = new Date();
-        today.setHours(today.getHours() + res.body.expiryInHours);
+        today.setMinutes(today.getMinutes() + res.expiryInMinutes);
         this.expiresIn = today + "";
-        this.showSuccess("SAS Generated sucessfully");
-      } else {
-        this.showError("SAS generation failed !")
-      }
-    });
+        this.showSuccess("SAS Uri Generated sucessfully");
+      },
+      error => {
+        this.toastr.error(error); 
+      });
   }
 
   showSuccess(message) {

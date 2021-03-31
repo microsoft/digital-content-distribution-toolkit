@@ -43,4 +43,14 @@ td.mat-footer-cell:last-of-type {
   .file-upload-error {
     color: red;
   }
-  
+.content-detail-name {
+  width: 20%;
+  font-weight: bolder;
+  color: grey;
+}
+.content-detail-table {
+  border: 1px;
+  border-color: rgb(176, 176, 241);
+  /* overflow-y: auto; */
+  height: 75%;
+}

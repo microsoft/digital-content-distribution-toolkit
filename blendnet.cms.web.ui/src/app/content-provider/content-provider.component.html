@@ -1,16 +1,16 @@
 <div class="cms-container">
     <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start">
             <mat-card  class="cms-card" 
-            *ngFor="let cp of cps; index as i;">
+            *ngFor="let cp of cps$ | async; index as i;">
             <div *ngIf="cp.id !== null">
                 <mat-card-header>
-                    <div mat-card-avatar>
+                    <!-- <div mat-card-avatar>
                         <mat-icon mat-list-icon  *ngIf="cp.status"
                         class="cp-status-active">
                         stop_circle</mat-icon>
                         <mat-icon mat-list-icon *ngIf="!cp.status"
                         class="cp-status-inactive">
-                        stop_circle</mat-icon></div>
+                        stop_circle</mat-icon></div> -->
                     <mat-card-title>{{cp.name}}</mat-card-title>
                     </mat-card-header>
                     <img mat-card-image class="cms-cp-logo"

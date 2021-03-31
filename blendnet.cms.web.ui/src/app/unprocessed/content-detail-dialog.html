@@ -1,136 +1,144 @@
-<h1>
+<h2 mat-dialog-title>
     {{content.title}}
-</h1>
-<table mat-table>
+</h2>
+<div mat-dialog-content class="mat-typography">
+<table class="content-detail-table">
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
+            Content ID 
+        </td>
+        <td>
+            {{content.id}}
+        </td>
+    </tr>
+    <tr>
+        <td class="content-detail-name">
             Content Provider Content ID 
         </td>
-        <td mat-cell>
+        <td>
             {{content.contentProviderContentId}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Short Description
         </td>
-        <td mat-cell>
+        <td>
             {{content.shortDescription}}
         </td>
     </tr>
-    <!-- <tr>
-        <td mat-cell>
+    <tr>
+        <td class="content-detail-name">
             Long Description
         </td>
-        <td mat-cell>
+        <td>
             {{content.longDescription}}
         </td>
     </tr> 
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Additional Description 1
         </td>
-        <td mat-cell>
+        <td>
             {{content.addionalDescription1}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Additional Description 2
         </td>
-        <td mat-cell>
+        <td>
             {{content.addionalDescription2}}
         </td>
-    </tr> -->
+    </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name"> 
             Genre
         </td>
-        <td mat-cell>
+        <td>
             {{content.genre}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Year of Release
         </td>
-        <td mat-cell>
+        <td>
             {{content.yearOfRelease}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Language
         </td>
-        <td mat-cell>
+        <td>
             {{content.language}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Duration (in minutes)
         </td>
-        <td mat-cell>
+        <td>
             {{content.durationInMts}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Rating
         </td>
-        <td mat-cell>
+        <td>
             {{content.rating}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Media File Name
         </td>
-        <td mat-cell>
+        <td>
             {{content.mediaFileName}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Hierarchy
         </td>
-        <td mat-cell>
+        <td>
             {{content.hierarchy}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Is Header content ?
         </td>
-        <td mat-cell>
-            {{content.isHeaderContent}}
+        <td>
+            {{content.isHeaderContent ? "Yes" : "No"}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Is Free content ?
         </td>
-        <td mat-cell>
-            {{content.isFreeContent}}
+        <td>
+            {{content.isFreeContent ? "Yes" : "No"}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Artists 
         </td>
-        <td mat-cell>
+        <td>
             {{content.artists}}
         </td>
     </tr>
     <tr>
-        <td mat-cell>
+        <td class="content-detail-name">
             Attachments
         </td>
-        <td mat-cell>
+        <td>
             <li *ngFor="let attachment of content.attachments"> {{attachment.name}} &nbsp; {{attachment.attachmentType}}</li>
         </td>
     </tr>
 </table>
-<div>
-    <button>Close</button>
 </div>
+

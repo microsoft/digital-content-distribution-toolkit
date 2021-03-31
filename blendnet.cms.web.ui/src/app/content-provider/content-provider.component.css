@@ -5,7 +5,7 @@
   }
   
   .cms-header-image {
-    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    /* background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg'); */
     background-size: cover;
     width:150px;
     height:200px;
@@ -44,3 +44,15 @@
   .discard-btn {
     margin: 5px;
   }
+
+  @media (max-width: 800px) {
+    .btn-sec {
+      margin-right: 1rem !important;
+    }
+  }
+  @media (max-width: 600px) {
+    .btn-sec {
+      margin-right: 1rem !important;
+    }
+  }
+  

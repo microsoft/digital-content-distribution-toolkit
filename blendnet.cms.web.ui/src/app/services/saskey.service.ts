@@ -16,10 +16,10 @@ export class SaskeyService {
     private http: HttpClient) 
     { }
 
-    generateSASKey(contentProviderId)  : Observable<HttpResponse<any>>{
+    generateSASKey(contentProviderId)  : Observable<any> {
       let url = this.baseUrl + "/" +contentProviderId+ "/generateSaS";
       this.logger.log(`Fetching SAS key`);
-      return this.http.get(url, { observe: 'response'});
+      return this.http.get(url);
     }
 }
 

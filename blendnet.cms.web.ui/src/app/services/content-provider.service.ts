@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { Contentprovider } from '../models/contentprovider.model';
 import { LogService } from './log.service';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -11,19 +10,18 @@ import { environment } from '../../environments/environment';
 })
 export class ContentProviderService {
   baseUrl = environment.contentProviderApiUrl;
-  defaultCP: Contentprovider = null;
-  private data = new BehaviorSubject(this.defaultCP);
-  data$ = this.data.asObservable();
+  private selectedCP = new BehaviorSubject<Contentprovider>(null);
+  sharedSelectedCP$ = this.selectedCP.asObservable();
   
   constructor(
     private logger: LogService,
     private http: HttpClient
   ) { }
 
-  getContentProviders(){
+  getContentProviders() : Observable<Contentprovider[]>{
     let url = this.baseUrl;
     this.logger.log(`Fetching content providers`);
-    return this.http.get(url);
+    return this.http.get<Contentprovider[]>(url);
   }
 
   createContentProvider(cp: Contentprovider) : Observable<HttpResponse<any>>{
@@ -46,7 +44,7 @@ export class ContentProviderService {
 
 
 
-  changeDefaultCP(data: Contentprovider) {
-    this.data.next(data)
+  changeDefaultCP(selectedCP: Contentprovider) {
+    this.selectedCP.next(selectedCP)
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -15,9 +15,9 @@ export class UserService {
     private http: HttpClient
   ) { }
 
-  getUserDetails(upn): Observable<HttpResponse<any>>{
+  getUserDetails(upn): Observable<any>{
     let url = this.baseUrl + '/getuser?upn=%2B91' + upn;
     this.logger.log(`Fetching user details`);
-    return this.http.get(url, { observe: 'response'});
+    return this.http.get(url);
   }
 }

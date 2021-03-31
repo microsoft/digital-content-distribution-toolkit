@@ -1,10 +1,12 @@
-<div *ngIf="!loginDisplay">
-    <p class="welcome">Welcome to the BlendNet CMS</p>
-    <p>Please sign-in</p>
-</div>
-
-<div *ngIf="loginDisplay">
-    <p>Welcome {{username}} !!!</p>
-    <p>Your have following roles : </p>
-    <li *ngFor="let r of role"> {{r}}</li>
+<div class="content-home">
+    <div *ngIf="!loginDisplay">
+        <p class="welcome">Welcome to the BlendNet CMS</p>
+        <p>Please sign-in</p>
+    </div>
+    
+    <div *ngIf="loginDisplay">
+        <p>Welcome {{username}} !!!</p>
+        <p>Your have following roles : </p>
+        <li *ngFor="let r of role"> {{r}}</li>
+    </div>
 </div>

@@ -31,10 +31,13 @@ export class AppComponent {
   showHomeSubmenu: boolean = true;
   showContentSubmenu: boolean = true;
   showDeviceSubmenu: boolean = true;
-  data: Contentprovider;
-  selectedCP: string  = localStorage.getItem("contentProviderName") ? 
+  selectedCP: Contentprovider;
+  selectedCPName: string  = localStorage.getItem("contentProviderName") ? 
                           localStorage.getItem("contentProviderName") : "Not Selected";
   
+
+  
+
 
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -46,12 +49,6 @@ export class AppComponent {
   }
 
     ngOnInit(): void {
-      this.cpService.data$.subscribe(res => {
-        this.data = res;
-        this.selectedCP= this.data.name;
-      }
-        );
-
       this.isIframe = window !== window.parent && !window.opener;
       this.msalBroadcastService.inProgress$
       .pipe(
@@ -107,8 +104,18 @@ export class AppComponent {
             }
           }
         });
+
+        this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
+          this.selectedCPName= selectedCP.name;
+        });
     }
 
+    ngDoCheck() {
+      this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
+        this.selectedCPName= selectedCP.name;
+      });
+    }
+    
     setLoginDisplay() {
       console.log(this.authService.instance.getAllAccounts().length);
       this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;

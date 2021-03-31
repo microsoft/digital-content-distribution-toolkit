@@ -22,6 +22,7 @@ import { IPublicClientApplication, PublicClientApplication, InteractionType, Bro
 import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalRedirectComponent, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { HomeComponent } from './home/home.component';
 import { ToastrModule } from 'ngx-toastr';
+import { HttpErrorInterceptor } from './services/http-error.interceptor';
 
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
@@ -84,7 +85,6 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     SasKeyComponent,
     AddContentProviderComponent,
     HomeComponent
-    
   ],
   imports: [
     HttpClientModule,
@@ -109,6 +109,11 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
       multi: true
     },
     {
