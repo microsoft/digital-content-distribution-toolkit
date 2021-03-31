@@ -30,6 +30,7 @@ using blendnet.cms.repository.CosmosRepository;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
 using blendnet.common.dto.cms;
+using blendnet.cms.listener.Common;
 
 namespace blendnet.cms.listener
 {
@@ -95,6 +96,14 @@ namespace blendnet.cms.listener
 
                     services.AddApplicationInsightsTelemetryWorkerService();
 
+                    string amsStreamingBaseUrl = hostContext.Configuration.GetValue<string>("AmsStreamingBaseUrl"); 
+
+                    services.AddHttpClient(ApplicationConstants.HttpClientNames.AMS, c =>
+                    {
+                        c.BaseAddress = new Uri($"{amsStreamingBaseUrl}");
+                        c.DefaultRequestHeaders.Add("Accept", "application/json");
+                    });
+
                     string cmsStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSStorageConnectionString");
 
                     string cmsCDNStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSCDNStorageConnectionString");
@@ -128,6 +137,12 @@ namespace blendnet.cms.listener
 
                     //Configure Repository
                     services.AddTransient<IContentRepository, ContentRepository>();
+
+                    //Configure Segment Downloader
+                    services.AddTransient<SegmentDowloader>();
+
+                    //Configure Tar Generator
+                    services.AddTransient<TarGenerator>();
 
                 });
 

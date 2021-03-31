@@ -104,6 +104,11 @@ namespace blendnet.common.dto.Cms
         public string Hierarchy { get; set; }
 
         /// <summary>
+        /// Dash Url
+        /// </summary>
+        public string DashUrl { get; set; }
+
+        /// <summary>
         /// If it will appear on home page
         /// </summary>
         [Required]

@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using blendnet.cms.listener.Common;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.cms;
@@ -14,7 +15,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,12 +40,17 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
         IContentRepository _contentRepository;
 
+        SegmentDowloader _segmentDowloader;
+
+        TarGenerator _tarGenerator;
 
         public MediaServiceJobIntegrationEventHandler(ILogger<ContentUploadedIntegrationEventHandler> logger,
                                                             TelemetryClient tc,
                                                             IAzureClientFactory<BlobServiceClient> blobClientFactory,
                                                             IOptionsMonitor<AppSettings> optionsMonitor,
-                                                            IContentRepository contentRepository)
+                                                            IContentRepository contentRepository,
+                                                            SegmentDowloader segmentDowloader,
+                                                            TarGenerator tarGenerator)
         {
             _logger = logger;
 
@@ -53,6 +61,10 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             _appSettings = optionsMonitor.CurrentValue;
 
             _contentRepository = contentRepository;
+
+            _segmentDowloader = segmentDowloader;
+
+            _tarGenerator = tarGenerator;
         }
 
         /// <summary>
@@ -99,6 +111,12 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                          StringComparison.InvariantCultureIgnoreCase))
                     {
                         await ProcessAMSCompletedJob(content, transformCommand);
+
+                        _logger.LogInformation($"DASH URL generated for content id: {contentId} command id {commandId}");
+
+                        await DownloadSegements(content, transformCommand);
+
+                        _logger.LogInformation($"Segments downloaded and moved to final for content id: {contentId} command id {commandId}");
 
                         //Update the command status. In case of any error, mark it to failure state.
                         if (transformCommand.FailureDetails.Count > 0)
@@ -181,7 +199,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <summary>
         /// Creates Content Policy
         /// Create Streaming locator
-        /// Downloads Content
         /// </summary>
         /// <param name="content"></param>
         /// <param name="contentCommand"></param>
@@ -218,6 +235,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 _logger.LogInformation($"Process AMS Job - Dash Url {dashUrl} generated for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
+                content.DashUrl = dashUrl;
+
                 await DeleteAmsJob(amsclient,uniqueName);
 
                 _logger.LogInformation($"Process AMS Job - Deleted AMS Job for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
@@ -230,6 +249,97 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 _logger.LogError(ex, $"{errorMessage}");
             }
+        }
+
+        /// <summary>
+        /// Downloads the Segments using the DASH URL
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="transformCommand"></param>
+        /// <returns></returns>
+        private async Task DownloadSegements(Content content, ContentCommand transformCommand)
+        {
+            string errorMessage;
+
+            try
+            {
+                string rootDirectory = Path.Combine(Directory.GetCurrentDirectory(), $"{transformCommand.Id.Value}");
+
+                _logger.LogInformation($"Root Directory Path {rootDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+                string workingDirectory = Path.Combine(Directory.GetCurrentDirectory(),
+                                                        $"{transformCommand.Id.Value}",
+                                                        ApplicationConstants.DownloadDirectoryNames.Working);
+
+                _logger.LogInformation($"Working Directory Path {workingDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+                string finalDirectory = Path.Combine(Directory.GetCurrentDirectory(),
+                                                        $"{transformCommand.Id.Value}",
+                                                        ApplicationConstants.DownloadDirectoryNames.Final);
+
+                //Create Final Directory If does not exists
+                if (!Directory.Exists(finalDirectory))
+                {
+                    Directory.CreateDirectory(finalDirectory);
+                }
+
+                _logger.LogInformation($"Finals Directory Path {finalDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+                MpdInfo mpdInfo = await _segmentDowloader.DownloadSegments(content.DashUrl, workingDirectory, transformCommand.Id.Value.ToString());
+
+                _logger.LogInformation($"Download Segment Complete for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+                MoveContentToFinal(content, transformCommand, mpdInfo, rootDirectory, workingDirectory, finalDirectory);
+
+                _logger.LogInformation($"Moved the content to final directory for : {content.Id.Value} command id {transformCommand.Id.Value}");
+            }
+            catch(Exception ex)
+            {
+                errorMessage = $"Failed to download segments for content {content.ContentId.Value} Command {transformCommand.Id.Value} Exception {ex.Message}";
+
+                transformCommand.FailureDetails.Add(errorMessage);
+
+                _logger.LogError(ex, $"{errorMessage}");
+            }
+        }
+
+
+        /// <summary>
+        /// Move the content to final directory
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="transformCommand"></param>
+        /// <param name="mpdInfo"></param>
+        /// <param name="rootDirectory"></param>
+        /// <param name="workingDirectory"></param>
+        /// <param name="finalDirectory"></param>
+        private void MoveContentToFinal(
+                                        Content content,
+                                        ContentCommand transformCommand,
+                                        MpdInfo mpdInfo, 
+                                        string rootDirectory,
+                                        string workingDirectory, 
+                                        string finalDirectory)
+        {
+            string tarPath;
+
+            foreach (AdaptiveSetInfo adaptiveSet in mpdInfo.AdaptiveSets)
+            {
+                tarPath = Path.Combine(workingDirectory, $"{adaptiveSet.DirectoryName}.tar");
+
+                adaptiveSet.FinalPath = Path.Combine(finalDirectory, $"{transformCommand.Id.Value.ToString()}_{adaptiveSet.DirectoryName}.tar");
+
+                _tarGenerator.TarCreateFromStream(tarPath, Path.Combine(workingDirectory, adaptiveSet.DirectoryName));
+
+                File.Move(tarPath, adaptiveSet.FinalPath);
+            }
+
+            string mpdPath = Path.Combine(workingDirectory, $"{mpdInfo.MpdName}");
+
+            mpdInfo.FinalMpdPath = Path.Combine(finalDirectory, $"{mpdInfo.MpdName}");
+
+            File.Copy(mpdPath, mpdInfo.FinalMpdPath);
+
         }
 
         /// <summary>

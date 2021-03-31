@@ -1,0 +1,211 @@
+﻿using blendnet.common.dto;
+using blendnet.common.dto.cms;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IIS.Media.DASH.MPDParser;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace blendnet.cms.listener
+{
+    /// <summary>
+    /// Responsible for Downloading Segments from MPD Url
+    /// </summary>
+    public class SegmentDowloader
+    {
+        private readonly ILogger _logger;
+
+        private readonly AppSettings _appSettings;
+
+        private HttpClient _httpClient;
+
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="optionsMonitor"></param>
+        /// <param name="clientFactory"></param>
+        public SegmentDowloader(ILogger<SegmentDowloader> logger,
+                                IOptionsMonitor<AppSettings> optionsMonitor,
+                                IHttpClientFactory clientFactory)
+        {
+            _logger = logger;
+
+            _appSettings = optionsMonitor.CurrentValue;
+
+            _httpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientNames.AMS);
+        }
+        
+        /// <summary>
+        /// Download the segments to the given directory
+        /// </summary>
+        /// <param name="dashUrl"></param>
+        /// <param name="downloadDirectory"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        public async Task<MpdInfo> DownloadSegments(string dashUrl, string downloadDirectory, string uniqueId)
+        {
+            MpdInfo mpdInfo = new MpdInfo() { AdaptiveSets = new List<AdaptiveSetInfo>() };
+
+            MPDParser parser = new MPDParser();
+
+            MPD manifest = parser.parse(dashUrl);
+
+            Uri manifestUrl = new Uri(dashUrl);
+
+            AdaptiveSetInfo adaptiveSetInfo;
+
+            //Download audio and video segments
+            foreach (var adaptationSet in manifest.Periods[0].AdaptationSets)
+            {
+                uint bandwidth = adaptationSet.Representations[0].Bandwidth;
+
+                string fullName = adaptationSet.SegmentTemplate.InitializationAttribute.Replace(ApplicationConstants.MPDTokens.Bandwidth, 
+                                                                                                bandwidth.ToString());
+                string directoryName = fullName.Split('/')[0];
+
+                string filename = fullName.Split('/')[1];
+                
+                adaptiveSetInfo = new AdaptiveSetInfo() { DirectoryName = directoryName, Type = adaptationSet.ContentType };
+
+                mpdInfo.AdaptiveSets.Add(adaptiveSetInfo);
+
+                string pathToDownload;
+
+                if (!Directory.Exists(Path.Combine(downloadDirectory, directoryName)))
+                {
+                    Directory.CreateDirectory(Path.Combine(downloadDirectory, directoryName));
+                }
+
+                pathToDownload = Path.Combine(downloadDirectory, directoryName, filename);
+
+                //download init file
+                Uri initSegmentUrl = FormatInitUrl(manifestUrl, adaptationSet.SegmentTemplate.InitializationAttribute, bandwidth);
+
+                await DownloadToFile(initSegmentUrl, pathToDownload);
+
+                uint timescale = adaptationSet.SegmentTemplate.Timescale;
+
+                ulong currentTimeStamp = adaptationSet.SegmentTemplate.StartNumber;
+
+                //dowload Segments
+                foreach (var timelineEntry in adaptationSet.SegmentTemplate.SegmentTimeline.Ss)
+                {
+                    ulong downloadCount = 0;
+
+                    do
+                    {
+                        fullName = adaptationSet.SegmentTemplate.Media.Replace(ApplicationConstants.MPDTokens.Bandwidth, 
+                                                                               bandwidth.ToString());
+
+                        fullName = fullName.Replace(ApplicationConstants.MPDTokens.Timeline, currentTimeStamp.ToString());
+
+                        directoryName = fullName.Split('/')[0];
+
+                        filename = fullName.Split('/')[1];
+
+                        pathToDownload = Path.Combine(downloadDirectory, directoryName, filename);
+
+                        Uri currentUri = FormatFragmentUrl(manifestUrl, adaptationSet.SegmentTemplate.Media, bandwidth, currentTimeStamp);
+
+                        await DownloadToFile(currentUri, pathToDownload);
+
+                        currentTimeStamp += timelineEntry.D;
+
+                        downloadCount++;
+
+                    } while (downloadCount <= timelineEntry.R);
+                }
+            }
+
+
+            mpdInfo.MpdName = $"{uniqueId}.mpd";
+            
+            await DownloadToFile(manifestUrl, Path.Combine(downloadDirectory, mpdInfo.MpdName));
+
+            return mpdInfo;
+        }
+
+        /// <summary>
+        /// Returns the Init Url
+        /// </summary>
+        /// <param name="manifestUrl"></param>
+        /// <param name="initUrlSegment"></param>
+        /// <param name="bandwidth"></param>
+        /// <returns></returns>
+        Uri FormatInitUrl(Uri manifestUrl, string initUrlSegment, uint bandwidth)
+        {
+            string relativeSegment = initUrlSegment.Replace(ApplicationConstants.MPDTokens.Bandwidth, Convert.ToString(bandwidth));
+
+            return new Uri(manifestUrl, relativeSegment);
+        }
+
+        /// <summary>
+        /// Get the Fragment URL
+        /// </summary>
+        /// <param name="manifestUrl"></param>
+        /// <param name="initUrlSegment"></param>
+        /// <param name="bandwidth"></param>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
+        Uri FormatFragmentUrl(Uri manifestUrl, string initUrlSegment, uint bandwidth, ulong timestamp)
+        {
+            string relativeSegment = initUrlSegment.Replace(ApplicationConstants.MPDTokens.Bandwidth, Convert.ToString(bandwidth));
+
+            relativeSegment = relativeSegment.Replace(ApplicationConstants.MPDTokens.Timeline, Convert.ToString(timestamp));
+            
+            return new Uri(manifestUrl, relativeSegment);
+        }
+
+        /// <summary>
+        /// Download Segment
+        /// </summary>
+        /// <param name="downloadUri"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        async Task DownloadToFile(Uri downloadUri, string filename)
+        {
+            using (var fileStream = File.Create(filename))
+            {
+                using (Stream data = await _httpClient.GetStreamAsync(downloadUri))
+                {
+                    data.CopyTo(fileStream);
+
+                    fileStream.Flush();
+                }
+            }
+        }
+    }
+
+
+
+    /// <summary>
+    /// Adaptive Set Info
+    /// </summary>
+    public class AdaptiveSetInfo
+    {
+        public string Type { get; set; }
+
+        public string DirectoryName { get; set; }
+
+        public string FinalPath { get; set; }
+
+    }
+
+    /// <summary>
+    /// MpdInfo
+    /// </summary>
+    public class MpdInfo
+    {
+        public string FinalMpdPath { get; set; }
+
+        public string MpdName { get; set; }
+
+        public List<AdaptiveSetInfo> AdaptiveSets { get; set; }
+    }
+}

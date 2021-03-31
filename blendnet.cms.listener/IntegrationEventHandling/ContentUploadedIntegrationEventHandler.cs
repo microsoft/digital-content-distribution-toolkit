@@ -76,81 +76,82 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             {
                 using (_telemetryClient.StartOperation<RequestTelemetry>("ContentUploadedIntegrationEventHandler.Handle"))
                 {
-                    if (integrationEvent.ContentUploadCommand != null && integrationEvent.ContentUploadCommand.ContentId != null)
+                    _logger.LogInformation($"Message Recieved for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
+
+                    if (integrationEvent.ContentUploadCommand == null || 
+                        integrationEvent.ContentUploadCommand.ContentId == null)
                     {
-                        _logger.LogInformation($"Message Recieved for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
+                        _logger.LogInformation($"No content details found in integration event. Pass correct data to integation event");
 
-                        ContentCommand uploadCommand = integrationEvent.ContentUploadCommand;
+                        return;
+                    }
 
-                        Content content = await _contentRepository.GetContentById(uploadCommand.ContentId);
+                    ContentCommand uploadCommand = integrationEvent.ContentUploadCommand;
 
-                        if (content != null)
-                        {
-                            DateTime currentTime = DateTime.UtcNow;
+                    Content content = await _contentRepository.GetContentById(uploadCommand.ContentId);
 
-                            PopulateContentCommand(uploadCommand, currentTime);
+                    if (content == null)
+                    {
+                        _logger.LogInformation($"No content details found in database for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
+
+                        return;
+                    }
+
+                    DateTime currentTime = DateTime.UtcNow;
+
+                    PopulateContentCommand(uploadCommand, currentTime);
                             
-                            //Create a command record with in progress status. It will use the command id as ID and Content Id and partition key
-                            Guid commandId = await _contentRepository.CreateContentCommand(uploadCommand);
+                    //Create a command record with in progress status. It will use the command id as ID and Content Id and partition key
+                    Guid commandId = await _contentRepository.CreateContentCommand(uploadCommand);
 
-                            content.ContentUploadStatus = ContentUploadStatus.UploadInProgress;
+                    content.ContentUploadStatus = ContentUploadStatus.UploadInProgress;
 
-                            content.ModifiedDate = currentTime;
+                    content.ModifiedDate = currentTime;
                             
-                            await _contentRepository.UpdateContent(content);
+                    await _contentRepository.UpdateContent(content);
 
-                            _logger.LogInformation($"Copying media file for content id: {integrationEvent.ContentUploadCommand.ContentId}");
+                    _logger.LogInformation($"Copying media file for content id: {integrationEvent.ContentUploadCommand.ContentId}");
 
-                            await CopyMediaContentToMezzanine(content, uploadCommand);
+                    await CopyMediaContentToMezzanine(content, uploadCommand);
 
-                            _logger.LogInformation($"Copying attachment file(s) for content id: {integrationEvent.ContentUploadCommand.ContentId}");
+                    _logger.LogInformation($"Copying attachment file(s) for content id: {integrationEvent.ContentUploadCommand.ContentId}");
 
-                            await CopyAttachmentContentToCdn(content, uploadCommand);
+                    await CopyAttachmentContentToCdn(content, uploadCommand);
 
-                            content = await _contentRepository.GetContentById(uploadCommand.ContentId);
+                    content = await _contentRepository.GetContentById(uploadCommand.ContentId);
 
-                            //Update the command status. In case of any error, mark it to failure state.
-                            if (uploadCommand.FailureDetails.Count > 0)
-                            {
-                                uploadCommand.CommandStatus = CommandStatus.Failed;
+                    //Update the command status. In case of any error, mark it to failure state.
+                    if (uploadCommand.FailureDetails.Count > 0)
+                    {
+                        uploadCommand.CommandStatus = CommandStatus.Failed;
 
-                                content.ContentUploadStatus = ContentUploadStatus.UploadFailed;
-                            }
-                            else
-                            {
-                                uploadCommand.CommandStatus = CommandStatus.Complete;
-
-                                content.ContentUploadStatus = ContentUploadStatus.UploadComplete;
-                            }
-
-                            currentTime = DateTime.UtcNow;
-
-                            uploadCommand.ModifiedDate = currentTime;
-
-                            content.ModifiedDate = currentTime;
-
-                            await _contentRepository.UpdateContentCommand(uploadCommand);
-
-                            await _contentRepository.UpdateContent(content);
-
-                            _logger.LogInformation($"Message Process Completed for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
-                        }
-                        else
-                        {
-                            _logger.LogInformation($"No content details found in database for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
-                        }
+                        content.ContentUploadStatus = ContentUploadStatus.UploadFailed;
                     }
                     else
                     {
-                        _logger.LogInformation($"No content details found in integration event. Pass correct data to integation event");
+                        uploadCommand.CommandStatus = CommandStatus.Complete;
+
+                        content.ContentUploadStatus = ContentUploadStatus.UploadComplete;
                     }
+
+                    currentTime = DateTime.UtcNow;
+
+                    uploadCommand.ModifiedDate = currentTime;
+
+                    content.ModifiedDate = currentTime;
+
+                    await _contentRepository.UpdateContentCommand(uploadCommand);
+
+                    await _contentRepository.UpdateContent(content);
+
+                    _logger.LogInformation($"Message Process Completed for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
+
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
             }
-
         }
 
         /// <summary>

@@ -19,7 +19,6 @@ namespace blendnet.common.dto
             public const string ReadWriteAllPolicyPermissions = "rwlcda";
         }
 
-
         public struct StorageContainerPolicyNames
         {
             public const string RawReadOnly = "rawreadonly";
@@ -54,6 +53,53 @@ namespace blendnet.common.dto
             public const string JobCanceled = "Canceled";
             public const string JobErrored = "Errored";
         }
-        
+
+        public struct HttpClientNames
+        {
+            public const string AMS = "AMS";
+        }
+
+        /// <summary>
+        /// MPD Tokens
+        /// </summary>
+        public struct MPDTokens
+        {
+            public const string Bandwidth = "$Bandwidth$";
+
+            public const string Timeline = "$Time$";
+        }
+
+        /// <summary>
+        /// Folder Names 
+        /// </summary>
+        public struct DownloadDirectoryNames
+        {
+            public const string Working = "wrking";
+
+            public const string Final = "fnl";
+        }
+
+
+        public const string IngestTemplateFileName = "ingest_template.xml";
+
+
+        public struct XMLTokens
+        {
+            public const string UNIQUE_ID = "{UNIQUE_ID}";
+            public const string START_DATE = "{START_DATE}";
+            public const string END_DATE = "{END_DATE}";
+            public const string AUDIO_TAR = "{AUDIO_TAR}";
+            public const string AUDIO_FILE_SIZE = "{AUDIO_FILE_SIZE}";
+            public const string AUDIO_FILE_CHECKSUM = "{AUDIO_FILE_CHECKSUM}";
+            public const string AUDIO_TAR_FOLDER_NAME = "{AUDIO_TAR_FOLDER_NAME}";
+            public const string VIDEO_TAR = "{VIDEO_TAR}";
+            public const string VIDEO_FILE_SIZE = "{VIDEO_FILE_SIZE}";
+            public const string VIDEO_FILE_CHECKSUM = "{VIDEO_FILE_CHECKSUM}";
+            public const string VIDEO_TAR_FOLDER_NAME = "{VIDEO_TAR_FOLDER_NAME}";
+            public const string MPD_FILE = "{MPD_FILE}";
+            public const string MPD_FILE_SIZE = "{MPD_FILE_SIZE}";
+            public const string MPD_FILE_CHECKSUM = "{MPD_FILE_CHECKSUM}";
+        }
+
     }
 }
