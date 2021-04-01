@@ -120,8 +120,6 @@ namespace blendnet.cms.api
 
             string cmsStorageConnectionString = Configuration.GetValue<string>("CMSStorageConnectionString");
 
-            string cmsCDNStorageConnectionString = Configuration.GetValue<string>("CMSCDNStorageConnectionString");
-            
             services.AddAzureClients(builder => 
                     {
                         // Register blob service client and initialize it using the Storage section of configuration
@@ -130,12 +128,6 @@ namespace blendnet.cms.api
                                 .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
 
                     });
-            // services.AddSingleton<BlobServiceClient>(bsc => {
-                    
-            //         var client = new BlobServiceClient(cmsCDNStorageConnectionString);
-                    
-            //         return client;
-            //     });
 
             //Configure Services
             services.AddTransient<IContentProviderRepository, ContentProviderRepository>();

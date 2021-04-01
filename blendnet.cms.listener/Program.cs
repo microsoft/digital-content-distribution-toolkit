@@ -96,7 +96,7 @@ namespace blendnet.cms.listener
 
                     services.AddApplicationInsightsTelemetryWorkerService();
 
-                    string amsStreamingBaseUrl = hostContext.Configuration.GetValue<string>("AmsStreamingBaseUrl"); 
+                    string amsStreamingBaseUrl = hostContext.Configuration.GetValue<string>("AmsStreamingBaseUrl");
 
                     services.AddHttpClient(ApplicationConstants.HttpClientNames.AMS, c =>
                     {
@@ -161,21 +161,32 @@ namespace blendnet.cms.listener
             string graphClientSecret = context.Configuration.GetValue<string>("GraphClientSecret");
 
             //Register graph authentication provider
-            services.AddTransient<IAuthenticationProvider>(iap => {
+            //services.AddTransient<IAuthenticationProvider>(iap => {
+            //    IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
+            //   .Create(graphClientId)
+            //   .WithTenantId(graphClientTenant)
+            //   .WithClientSecret(graphClientSecret)
+            //   .Build();
 
-                IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
-               .Create(graphClientId)
-               .WithTenantId(graphClientTenant)
-               .WithClientSecret(graphClientSecret)
-               .Build();
+            //    ClientCredentialProvider authProvider = new ClientCredentialProvider(confidentialClientApplication);
 
-                ClientCredentialProvider authProvider = new ClientCredentialProvider(confidentialClientApplication);
+            //    return authProvider;
+            //});
 
-                return authProvider;
-            });
+            IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
+           .Create(graphClientId)
+           .WithTenantId(graphClientTenant)
+           .WithClientSecret(graphClientSecret)
+           .Build();
+
+            IAuthenticationProvider authenticationProvider = new ClientCredentialProvider(confidentialClientApplication);
 
             //register graph
-            services.AddTransient<GraphServiceClient>();
+            services.AddTransient<GraphServiceClient>((sp) => 
+                                                      { 
+                                                            return new GraphServiceClient(authenticationProvider); 
+                                                      });
+                    
         }
 
         /// <summary>
