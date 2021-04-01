@@ -101,6 +101,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                     PopulateContentCommand(transformCommand, currentTime);
 
+                    _logger.LogInformation($"Transforming for content id: {integrationEvent.ContentTransformCommand.ContentId} Command Id {transformCommand.Id.Value}");
+
                     //Create a command record with in progress status. It will use the command id as ID and Content Id and partition key
                     Guid commandId = await _contentRepository.CreateContentCommand(transformCommand);
 
@@ -110,12 +112,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                     await _contentRepository.UpdateContent(content);
 
-                    _logger.LogInformation($"Transforming for content id: {integrationEvent.ContentTransformCommand.ContentId} Command Id {transformCommand.Id.Value}");
-
                     //Perform the content transformation
                     await SubmitContentTransformationJob(content, transformCommand);
-
-                    content = await _contentRepository.GetContentById(transformCommand.ContentId);
 
                     //Update the command status. In case of any error, mark it to failure state.
                     if (transformCommand.FailureDetails.Count > 0)

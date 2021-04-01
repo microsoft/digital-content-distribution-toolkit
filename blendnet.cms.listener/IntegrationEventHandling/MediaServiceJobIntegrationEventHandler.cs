@@ -90,12 +90,12 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                     if(string.IsNullOrEmpty(contentId) || string.IsNullOrEmpty(commandId))
                     {
-                        _logger.LogInformation($"Failed to extract content id and command id from topic: {integrationEvent.topic}");
+                        _logger.LogInformation($"Failed to extract content id and command id from subject: {integrationEvent.subject}");
 
                         return;
                     }
 
-                    _logger.LogInformation($"Extracted content id: {contentId} Command Id {commandId} from topic");
+                    _logger.LogInformation($"Extracted content id: {contentId} Command Id {commandId} from subject");
 
                     ContentCommand transformCommand = await _contentRepository.GetContentCommandById(Guid.Parse(commandId), Guid.Parse(contentId));
 
@@ -111,13 +111,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     if ( integrationEvent.data.state.Equals(ApplicationConstants.AMSJobStatuses.JobFinished,
                          StringComparison.InvariantCultureIgnoreCase))
                     {
+                        //Change the content status to download in progress
+                        await UpdateDownloadInProgressStatus(content, transformCommand);
+
+                        //Also updates the DASH URL Property on Content
                         await ProcessAMSCompletedJob(content, transformCommand);
-
-                        _logger.LogInformation($"DASH URL generated for content id: {contentId} command id {commandId}");
-
-                        await DownloadSegments(content, transformCommand);
-
-                        _logger.LogInformation($"Segments downloaded and moved to final for content id: {contentId} command id {commandId}");
 
                         //Update the command status. In case of any error, mark it to failure state.
                         if (transformCommand.FailureDetails.Count > 0)
@@ -131,7 +129,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     }
                     else
                     {
-                        transformCommand.FailureDetails.Add($"AMS status recieved for Content Id {content.Id.Value} Command Id {transformCommand.Id.Value} is {integrationEvent.data.state}.");
+                        transformCommand.FailureDetails.Add($"AMS status recieved {integrationEvent.data.state} for Content Id {content.Id.Value} Command Id {transformCommand.Id.Value}.");
 
                         await UpdateFailedStatus(content, transformCommand);
                     }
@@ -146,12 +144,26 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         }
 
         /// <summary>
+        /// Updates the status to Download in Progress
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="transformCommand"></param>
+        /// <returns></returns>
+        private async Task UpdateDownloadInProgressStatus(Content content, ContentCommand transformCommand)
+        {
+            content.ContentTransformStatus = ContentTransformStatus.TransformDownloadInProgress;
+
+            transformCommand.CommandStatus = CommandStatus.InProgress;
+
+            await UpdateStatus(content, transformCommand);
+        }
+
+        /// <summary>
         /// Update Failed Status
         /// </summary>
         /// <param name="content"></param>
         /// <param name="transformCommand"></param>
         /// <returns></returns>
-
         private async Task UpdateFailedStatus(Content content, ContentCommand transformCommand)
         {
             content.ContentTransformStatus = ContentTransformStatus.TransformFailed;
@@ -238,9 +250,15 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 content.DashUrl = dashUrl;
 
+                //Since JOB is success, lets delete to remove the clutter from AMS portal
                 await DeleteAmsJob(amsclient,uniqueName);
 
                 _logger.LogInformation($"Process AMS Job - Deleted AMS Job for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+                await DownloadSegments(content, transformCommand);
+
+                _logger.LogInformation($"Segments downloaded and moved to final for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
             }
             catch (Exception ex)
             {
@@ -260,48 +278,36 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <returns></returns>
         private async Task DownloadSegments(Content content, ContentCommand transformCommand)
         {
-            string errorMessage;
+            string rootDirectory = Path.Combine(_appSettings.DownloadDirectory, $"{transformCommand.Id.Value}");
 
-            try
+            _logger.LogInformation($"Root Directory Path {rootDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+            string workingDirectory = Path.Combine(_appSettings.DownloadDirectory,
+                                                    $"{transformCommand.Id.Value}",
+                                                    ApplicationConstants.DownloadDirectoryNames.Working);
+
+            _logger.LogInformation($"Working Directory Path {workingDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+            string finalDirectory = Path.Combine(_appSettings.DownloadDirectory,
+                                                    $"{transformCommand.Id.Value}",
+                                                    ApplicationConstants.DownloadDirectoryNames.Final);
+
+            //Create Final Directory If does not exists
+            if (!Directory.Exists(finalDirectory))
             {
-                string rootDirectory = Path.Combine(_appSettings.DownloadDirectory, $"{transformCommand.Id.Value}");
-
-                _logger.LogInformation($"Root Directory Path {rootDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
-
-                string workingDirectory = Path.Combine(_appSettings.DownloadDirectory,
-                                                        $"{transformCommand.Id.Value}",
-                                                        ApplicationConstants.DownloadDirectoryNames.Working);
-
-                _logger.LogInformation($"Working Directory Path {workingDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
-
-                string finalDirectory = Path.Combine(_appSettings.DownloadDirectory,
-                                                        $"{transformCommand.Id.Value}",
-                                                        ApplicationConstants.DownloadDirectoryNames.Final);
-
-                //Create Final Directory If does not exists
-                if (!Directory.Exists(finalDirectory))
-                {
-                    Directory.CreateDirectory(finalDirectory);
-                }
-
-                _logger.LogInformation($"Finals Directory Path {finalDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
-
-                MpdInfo mpdInfo = await _segmentDowloader.DownloadSegments(content.DashUrl, workingDirectory, transformCommand.Id.Value.ToString());
-
-                _logger.LogInformation($"Download Segment Complete for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
-
-                MoveContentToFinal(content, transformCommand, mpdInfo, rootDirectory, workingDirectory, finalDirectory);
-
-                _logger.LogInformation($"Moved the content to final directory for : {content.Id.Value} command id {transformCommand.Id.Value}");
+                Directory.CreateDirectory(finalDirectory);
             }
-            catch(Exception ex)
-            {
-                errorMessage = $"Failed to download segments for content {content.ContentId.Value} Command {transformCommand.Id.Value} Exception {ex.Message}";
 
-                transformCommand.FailureDetails.Add(errorMessage);
+            _logger.LogInformation($"Final Directory Path {finalDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
-                _logger.LogError(ex, $"{errorMessage}");
-            }
+            MpdInfo mpdInfo = await _segmentDowloader.DownloadSegments(content.DashUrl, workingDirectory, transformCommand.Id.Value.ToString());
+
+            _logger.LogInformation($"Download Segment Complete for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+            MoveContentToFinal(content, transformCommand, mpdInfo, workingDirectory, finalDirectory);
+
+            _logger.LogInformation($"Moved the content to final directory for : {content.Id.Value} command id {transformCommand.Id.Value}");
+           
         }
 
 
@@ -318,7 +324,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                                         Content content,
                                         ContentCommand transformCommand,
                                         MpdInfo mpdInfo, 
-                                        string rootDirectory,
                                         string workingDirectory, 
                                         string finalDirectory)
         {
@@ -328,13 +333,13 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             {
                 tarPath = Path.Combine(workingDirectory, $"{adaptiveSet.DirectoryName}.tar");
 
-                adaptiveSet.FinalPath = Path.Combine(finalDirectory, $"{transformCommand.Id.Value.ToString()}_{adaptiveSet.DirectoryName}.tar");
-
                 _tarGenerator.TarCreateFromStream(tarPath, Path.Combine(workingDirectory, adaptiveSet.DirectoryName));
+
+                adaptiveSet.FinalPath = Path.Combine(finalDirectory, $"{transformCommand.Id.Value.ToString()}_{adaptiveSet.DirectoryName}.tar");
 
                 File.Move(tarPath, adaptiveSet.FinalPath);
 
-                _logger.LogInformation($"Moved file {adaptiveSet.FinalPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+                _logger.LogInformation($"Moved file from {tarPath} to {adaptiveSet.FinalPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
             }
 
@@ -344,13 +349,14 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             File.Copy(mpdPath, mpdInfo.FinalMpdPath);
 
-            _logger.LogInformation($"Copied file {mpdInfo.FinalMpdPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
-
+            _logger.LogInformation($"Copied file from {mpdPath} to {mpdInfo.FinalMpdPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
             string xmlFilePath = Path.Combine(workingDirectory, string.Format(_appSettings.IngestFileName,transformCommand.Id.Value));
 
             //copy the template to final directory
             File.Copy(ApplicationConstants.IngestTemplateFileName, xmlFilePath);
+
+            _logger.LogInformation($"Copied XML Template from {ApplicationConstants.IngestTemplateFileName} to {xmlFilePath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
             //replace tags in xml template
             ReplaceTokenInXml(xmlFilePath, mpdInfo,content,transformCommand);
@@ -420,9 +426,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         {
             using (FileStream stream = File.OpenRead(file))
             {
-                var sha = new SHA256Managed();
-                byte[] checksum = sha.ComputeHash(stream);
-                return BitConverter.ToString(checksum).Replace("-", String.Empty).ToLowerInvariant();
+                using (var sha = new SHA256Managed())
+                {
+                    byte[] checksum = sha.ComputeHash(stream);
+                    return BitConverter.ToString(checksum).Replace("-", String.Empty).ToLowerInvariant();
+                }
             }
         }
 
