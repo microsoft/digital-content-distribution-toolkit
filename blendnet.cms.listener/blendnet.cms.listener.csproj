@@ -31,4 +31,9 @@
     <ProjectReference Include="..\blendnet.common.dto\blendnet.common.dto.csproj" />
     <ProjectReference Include="..\MPDParser\MPDParser.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="ingest_template.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
