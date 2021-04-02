@@ -444,7 +444,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 tarPath = $"{workingDirectory}/{tarFileName}";
 
-                tarSourceDirectory = $"{workingDirectory}/{adaptiveSet.DirectoryName}";
+                //appending slash at the end so that list blobs returns all the child values only
+                tarSourceDirectory = $"{workingDirectory}/{adaptiveSet.DirectoryName}/";
 
                 adaptiveSet.Length = await _tarGenerator.TarCreateFromBlobStream(mezzContainer, tarPath,tarFileName,tarSourceDirectory);
 
