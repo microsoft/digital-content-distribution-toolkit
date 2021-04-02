@@ -182,7 +182,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 {
                     BlockBlobClient targetBlob = destinationContainer.GetBlockBlobClient($"{content.ContentId.Value.ToString()}/{content.MediaFileName}");
 
-                    await CopyBlob(sourceBlob, targetBlob);
+                    await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob);
                 }
                 else
                 {
@@ -202,8 +202,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 _logger.LogError(ex, $"{errorMessage}");
             }
         }
-
-       
 
         /// <summary>
         /// Populates the media content to CDN storage Container
@@ -241,7 +239,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                         {
                             BlockBlobClient targetBlob = destinationContainer.GetBlockBlobClient($"{content.ContentId.Value.ToString()}/{attachment.Name}");
 
-                            await CopyBlob(sourceBlob, targetBlob, blobSasUrl);
+                            await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob, blobSasUrl);
                         }
                         else
                         {
@@ -281,56 +279,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             contentCommand.CreatedDate = currentDateTime;
             contentCommand.ModifiedDate = currentDateTime;
             contentCommand.FailureDetails = new List<string>();
-        }
-
-
-        
-
-        /// <summary>
-        /// Copy Blob
-        /// </summary>
-        /// <param name="sourceBlob"></param>
-        /// <param name="targetBlob"></param>
-        /// <returns></returns>
-        private async Task CopyBlob(BlockBlobClient sourceBlob, BlockBlobClient targetBlob, string sourceBlobUrl="")
-        {
-            BlobLeaseClient lease = null;
-
-            try
-            {
-                // Lease the source blob for the copy operation to prevent another client from modifying it.
-                lease = sourceBlob.GetBlobLeaseClient();
-
-                // Specifying -1 for the lease interval creates an infinite lease.
-                await lease.AcquireAsync(TimeSpan.FromSeconds(-1));
-
-                CopyFromUriOperation copyFromUriOperation;
-
-                if (string.IsNullOrEmpty(sourceBlobUrl))
-                {
-                    // Start the copy operation.
-                    copyFromUriOperation = await targetBlob.StartCopyFromUriAsync(sourceBlob.Uri);
-                }
-                else
-                {
-                    copyFromUriOperation = await targetBlob.StartCopyFromUriAsync(new Uri(sourceBlobUrl));
-                }
-
-                //wait for the operation to complete
-                await copyFromUriOperation.WaitForCompletionAsync();
-
-            }
-            finally
-            {
-                // Update the source blob's properties.
-                var sourceProperties = await sourceBlob.GetPropertiesAsync();
-
-                if (sourceProperties.Value.LeaseState == LeaseState.Leased)
-                {
-                    // Break the lease on the source blob.
-                    await lease.BreakAsync();
-                }
-            }
         }
 
     }
