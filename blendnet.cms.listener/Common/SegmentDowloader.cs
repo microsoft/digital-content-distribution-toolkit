@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IIS.Media.DASH.MPDParser;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -62,6 +63,8 @@ namespace blendnet.cms.listener
             //Download audio and video segments
             foreach (var adaptationSet in manifest.Periods[0].AdaptationSets)
             {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+
                 uint bandwidth = adaptationSet.Representations[0].Bandwidth;
 
                 string fullName = adaptationSet.SegmentTemplate.InitializationAttribute.Replace(ApplicationConstants.MPDTokens.Bandwidth,
@@ -137,6 +140,11 @@ namespace blendnet.cms.listener
 
                     } while (downloadCount <= timelineEntry.R);
                 }
+
+                stopwatch.Stop();
+
+                _logger.LogInformation($"Dowloaded Segments for {adaptiveSetInfo.DirectoryName} Download Directory {downloadDirectory}. Duration Milisecond : {stopwatch.ElapsedMilliseconds}");
+
             }
 
             mpdInfo.MpdName = $"{uniqueId}.mpd";
@@ -255,6 +263,8 @@ namespace blendnet.cms.listener
 
         public long Length { get; set; }
 
+        public string Checksum { get; set; }
+
     }
 
     /// <summary>
@@ -265,6 +275,10 @@ namespace blendnet.cms.listener
         public string FinalMpdPath { get; set; }
 
         public string MpdName { get; set; }
+
+        public long Length { get; set; }
+
+        public string Checksum { get; set; }
 
         public List<AdaptiveSetInfo> AdaptiveSets { get; set; }
     }

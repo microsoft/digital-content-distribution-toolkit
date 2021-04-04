@@ -1,4 +1,7 @@
-﻿using Microsoft.Azure.Management.Media;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
+using Microsoft.Azure.Management.Media;
 using Microsoft.Azure.Management.Media.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
@@ -36,12 +39,15 @@ namespace blendnet.cms.testutility
 
         private static string _rootDirectory = Path.Combine(Directory.GetCurrentDirectory(), _uniqueness_raw.ToString());
 
+        private static string _blobrootDirectory = _uniqueness_raw.ToString();
+
+        private static string _blobFinalDirectory = $"{_uniqueness_raw.ToString()}/fnl";
+
+        private static string _blobworkingDirectory = $"{_uniqueness_raw.ToString()}/wrking";
+
         private static string _outputLogPath = Path.Combine(Directory.GetCurrentDirectory(), _uniqueness_raw.ToString(),$"{_uniqueness_raw.ToString()}.output.txt");
 
         private static string _xmlTemplateFileName = "sample_ingest_content_rvwd.xml";
-
-        private static string _dummyMp4File = "ses-dummy.mp4";
-
 
         static async Task Main(string[] args)
         {
@@ -66,7 +72,41 @@ namespace blendnet.cms.testutility
 
                 _assestIngestUrl = args[0];
 
-                Console.WriteLine($"Starting transcoding process for {_assestIngestUrl}!");
+                Console.WriteLine($"Starting transcoding process for {_assestIngestUrl}! - {_uniqueness_raw.ToString()}");
+
+                #region Direct Test
+                //********************************
+                //try
+                //{
+                //    BlobServiceClient blobServiceClient = new BlobServiceClient(config.StorageConnection);
+
+                //    BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient("sourcecontainer");
+
+                //    Console.WriteLine($"****Starting downloading Segments to blob****** {DateTime.Now.ToString()}");
+
+                //    MpdInfo segmentInfo = await SegmentDownloader.DownloadSegments(_assestIngestUrl,
+                //                                                           _blobworkingDirectory,
+                //                                                           _uniqueness_raw.ToString(),
+                //                                                           blobContainerClient);
+
+                //    Console.WriteLine($"****Completed downloading Segments to blob****** {DateTime.Now.ToString()}");
+
+                //    Console.WriteLine($"****Moving content to Tar Files to blob****** {DateTime.Now.ToString()}");
+
+                //    await MoveContentToFinalBlob(config, blobContainerClient, segmentInfo);
+
+                //    Console.WriteLine($"****Moving content ended to Tar Files to blob****** {DateTime.Now.ToString()}");
+
+                //}
+                //catch (Exception ex)
+                //{
+                //    string exs = ex.ToString();
+
+                //    Console.WriteLine(exs);
+                //}
+
+                //*****************
+                #endregion
 
                 await RunAsync(config);
             }
@@ -174,19 +214,44 @@ namespace blendnet.cms.testutility
 
                     Console.WriteLine();
 
-                    Console.WriteLine("****Starting downloading Segments******");
+                    Console.WriteLine($"****Starting downloading Segments - {DateTime.Now.ToString()}******");
 
                     Console.WriteLine($"****Please monitor progress at {_rootDirectory} ******");
 
-                    SegmentInfo segmentInfo = SegmentDownloader.DownloadSegments(dashPath, _workingDirectory, _uniqueness_raw.ToString());
+                    MpdInfo segmentInfo;
 
-                    Console.WriteLine("****Completed downloading Segments******");
+                    if (config.DownloadToBlob)
+                    {
+                        BlobServiceClient blobServiceClient = new BlobServiceClient(config.StorageConnection);
 
-                    Console.WriteLine("****Moving content to Tar Files******");
+                        BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient("sourcecontainer");
 
-                    MoveContentToFinal(config, segmentInfo);
+                        segmentInfo = await SegmentDownloader.DownloadSegments(dashPath,
+                                                                               _blobworkingDirectory, 
+                                                                               _uniqueness_raw.ToString(), 
+                                                                               blobContainerClient);
 
-                    Console.WriteLine("****Tar File Generated******");
+                        Console.WriteLine($"****Completed downloading Segments to blob - {DateTime.Now.ToString()}******");
+
+                        Console.WriteLine($"****Moving content to Tar Files to blob****** - {DateTime.Now.ToString()}***");
+
+                        await MoveContentToFinalBlob(config, blobContainerClient, segmentInfo);
+
+                       Console.WriteLine("****Tar File Generated at blob******");
+                    }
+                    else
+                    {
+                        segmentInfo = await SegmentDownloader.DownloadSegments(dashPath, _workingDirectory, _uniqueness_raw.ToString());
+
+                        Console.WriteLine("****Completed downloading Segments******");
+
+                        Console.WriteLine("****Moving content to Tar Files******");
+
+                        MoveContentToFinal(config, segmentInfo);
+
+                        Console.WriteLine("****Tar File Generated******");
+
+                    }
                 }
 
                 Console.Out.Flush();
@@ -217,7 +282,7 @@ namespace blendnet.cms.testutility
         /// Moves the segments, xml, dummy file to final and creates tar
         /// </summary>
         /// <param name="segmentInfo"></param>
-        public static void MoveContentToFinal(AppSettings config, SegmentInfo segmentInfo)
+        public static void MoveContentToFinal(AppSettings config, MpdInfo segmentInfo)
         {
             string tarPath;
 
@@ -245,25 +310,121 @@ namespace blendnet.cms.testutility
 
             string xmlFilePath = Path.Combine(_finalDirectory, $"{_uniqueness_raw}{config.XmlFileName}");
 
-            // string xmlFilePath = Path.Combine(_finalDirectory, $"{config.XmlFileName}");
-            
             //copy the template to final directory
             File.Copy(_xmlTemplateFileName, xmlFilePath);
 
             //replace tags in xml template
             ReplaceTokenInXml(xmlFilePath, segmentInfo);
 
-            //copy dummy file to final
-            //string dummyMp4Path = Path.Combine(_finalDirectory, $"{_uniqueness_raw.ToString()+"_"+_dummyMp4File}");
-
-            //File.Copy(_dummyMp4File, dummyMp4Path);
-
             string finalTarPath = Path.Combine(_rootDirectory, $"{_uniqueness_raw.ToString()}.tar");
 
             TarHelper.TarCreateFromStream(finalTarPath, _finalDirectory);
         }
 
-        private static void ReplaceTokenInXml(string xmlFilePath, SegmentInfo segmentInfo)
+        private static async Task MoveContentToFinalBlob(AppSettings config,
+                                                    BlobContainerClient mezzContainer,
+                                                    MpdInfo mpdInfo)
+        {
+            string tarFileName;
+
+            string tarPath;
+
+            string tarSourceDirectory;
+
+            BlockBlobClient sourceBlob;
+
+            BlockBlobClient targetBlob;
+
+            foreach (AdaptiveSetInfo adaptiveSet in mpdInfo.AdaptiveSets)
+            {
+                tarFileName = $"{adaptiveSet.DirectoryName}.tar";
+
+                tarPath = $"{_blobworkingDirectory}/{tarFileName}";
+
+                //appending slash at the end so that list blobs returns all the child values only
+                tarSourceDirectory = $"{_blobworkingDirectory}/{adaptiveSet.DirectoryName}/";
+
+                adaptiveSet.Length = await TarHelper.TarCreateFromMemoryStream(mezzContainer, tarPath, tarSourceDirectory);
+
+                adaptiveSet.FinalPath = $"{_blobFinalDirectory}/{_uniqueness_raw}_{adaptiveSet.DirectoryName}.tar";
+
+                sourceBlob = mezzContainer.GetBlockBlobClient(tarPath);
+
+                targetBlob = mezzContainer.GetBlockBlobClient(adaptiveSet.FinalPath);
+
+                await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob);
+
+            }
+
+            string mpdPath = $"{_blobworkingDirectory}/{mpdInfo.MpdName}";
+
+            mpdInfo.FinalMpdPath = $"{_blobFinalDirectory}/{mpdInfo.MpdName}";
+
+            sourceBlob = mezzContainer.GetBlockBlobClient(mpdPath);
+
+            targetBlob = mezzContainer.GetBlockBlobClient(mpdInfo.FinalMpdPath);
+
+            await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob);
+
+            string xmlFilePath = $"{_blobFinalDirectory}/{_uniqueness_raw}{config.XmlFileName}";
+
+            string xmlFileContent = File.ReadAllText(_xmlTemplateFileName);
+
+            xmlFileContent = await ReplaceTokenInXmlString(mezzContainer, xmlFileContent, mpdInfo);
+
+            await EventHandlingUtilities.UploadBlob(mezzContainer, xmlFilePath, xmlFileContent);
+
+            string finalTarPath = $"{_blobrootDirectory}/{_uniqueness_raw}.tar";
+
+            string finalTarFileName = $"{_uniqueness_raw}.tar";
+
+            await TarHelper.TarCreateFromMemoryStream(mezzContainer, finalTarPath,_blobFinalDirectory);
+
+        }
+
+        private static  async Task<string> ReplaceTokenInXmlString(BlobContainerClient mezzContainer,
+                                       string xmlContent,
+                                       MpdInfo segmentInfo)
+        {
+            AdaptiveSetInfo audioSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == ApplicationConstants.AdaptiveSetTypes.Audio)).FirstOrDefault();
+
+            BlobProperties blobProperties = await mezzContainer.GetBlockBlobClient(audioSet.FinalPath).GetPropertiesAsync();
+
+            xmlContent = xmlContent.Replace(XMLConstants.AUDIO_TAR, audioSet.FinalPath.Split('/').Last());
+
+            //xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.AUDIO_FILE_CHECKSUM, GetChecksum(audioSet.FinalPath));
+
+            xmlContent = xmlContent.Replace(XMLConstants.AUDIO_FILE_SIZE, blobProperties.ContentLength.ToString());
+
+            xmlContent = xmlContent.Replace(XMLConstants.AUDIO_TAR_FOLDER_NAME, audioSet.DirectoryName);
+
+            AdaptiveSetInfo videoSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == ApplicationConstants.AdaptiveSetTypes.Video)).FirstOrDefault();
+
+            blobProperties = await mezzContainer.GetBlockBlobClient(videoSet.FinalPath).GetPropertiesAsync();
+
+            xmlContent = xmlContent.Replace(XMLConstants.VIDEO_TAR, videoSet.FinalPath.Split('/').Last());
+
+            //xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.VIDEO_FILE_CHECKSUM, GetChecksum(videoSet.FinalPath));
+
+            xmlContent = xmlContent.Replace(XMLConstants.VIDEO_FILE_SIZE, blobProperties.ContentLength.ToString());
+
+            xmlContent = xmlContent.Replace(XMLConstants.VIDEO_TAR_FOLDER_NAME, videoSet.DirectoryName);
+
+            blobProperties = await mezzContainer.GetBlockBlobClient(segmentInfo.FinalMpdPath).GetPropertiesAsync();
+
+            xmlContent = xmlContent.Replace(XMLConstants.MPD_FILE, segmentInfo.FinalMpdPath.Split('/').Last());
+
+            //xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE_CHECKSUM, GetChecksum(segmentInfo.FinalMpdPath));
+
+            xmlContent = xmlContent.Replace(XMLConstants.MPD_FILE_SIZE, blobProperties.ContentLength.ToString());
+
+            xmlContent = xmlContent.Replace(XMLConstants.UNIQUE_ID,_uniqueness_raw.ToString());
+
+            return xmlContent;
+        }
+
+
+        private static void ReplaceTokenInXml(string xmlFilePath, MpdInfo segmentInfo)
         {
             string fileContent = File.ReadAllText(xmlFilePath);
 
@@ -308,6 +469,8 @@ namespace blendnet.cms.testutility
 
             File.WriteAllText(xmlFilePath, fileContent);
         }
+
+
         private static string GetChecksum(string file)
         {
             using (FileStream stream = File.OpenRead(file))

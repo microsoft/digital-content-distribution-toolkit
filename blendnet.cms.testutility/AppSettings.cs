@@ -160,8 +160,15 @@ namespace blendnet.cms.testutility
             get { return _config["BineContentKeyPolicyName"]; }
         }
 
-        
+        public string StorageConnection
+        {
+            get { return _config["StorageConnection"]; }
+        }
 
+        public bool DownloadToBlob
+        {
+            get { return System.Convert.ToBoolean(_config["DownloadToBlob"]); }
+        }
     }
 
     public struct XMLConstants
