@@ -5,7 +5,7 @@ Client id of cluster : fcedf24e-52be-4883-a8e2-a6af4deba21f
 
 az aks update -n blendnetdev1 -g fieldtrial_dev1_rg --attach-acr blendnetcr.azurecr.io
 
-
+git reset --soft HEAD~
 
 
 *****AAD Identity Set-up*******
