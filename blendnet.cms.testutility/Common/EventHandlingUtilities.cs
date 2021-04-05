@@ -2,21 +2,17 @@
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
-using blendnet.common.dto.cms;
 using Microsoft.Azure.Management.Media;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Rest;
 using Microsoft.Rest.Azure.Authentication;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blendnet.cms.listener.IntegrationEventHandling
+namespace blendnet.cms.testutility
 {
     public static class EventHandlingUtilities
     {
@@ -44,13 +40,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 
         }
 
-        /// <summary>
-        /// Uploads Blob
-        /// </summary>
-        /// <param name="containerClient"></param>
-        /// <param name="fileName"></param>
-        /// <param name="stream"></param>
-        /// <returns></returns>
+
         public static async Task UploadBlob(BlobContainerClient containerClient, string fileName, MemoryStream stream)
         {
             // Get a reference to a blob
@@ -59,32 +49,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             // Open the file and upload its data
             await blobClient.UploadAsync(stream, true);
 
-        }
-
-        /// <summary>
-        /// Returns the check sum
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        public static string GetChecksum(ILogger logger, string fileName, MemoryStream stream)
-        {
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            string checksum = string.Empty;
-
-            using (var sha = SHA256.Create())
-            {
-                byte[] checksumBytes = sha.ComputeHash(stream);
-
-                checksum = BitConverter.ToString(checksumBytes).Replace("-", String.Empty).ToLowerInvariant();
-            }
-
-            stopwatch.Stop();
-
-            logger.LogInformation($"Generated Checksum for {fileName}. Duration Milisecond : {stopwatch.ElapsedMilliseconds}");
-
-            return checksum;
         }
 
         /// <summary>
@@ -135,7 +99,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         }
 
         /// <summary>
-        /// Generates SAS URI for Blob
         /// https://docs.microsoft.com/en-us/azure/storage/common/storage-stored-access-policy-define-dotnet?tabs=dotnet
         /// </summary>
         /// <param name="blobClient"></param>
@@ -159,30 +122,6 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             return sasUri.AbsoluteUri;
         }
 
-        /// <summary>
-        /// Creates the AzureMediaServicesClient object based on the credentials
-        /// supplied in local configuration file.
-        /// </summary>
-        /// <param name="config">The param is of type ConfigWrapper. This class reads values from local configuration file.</param>
-        /// <returns></returns>
-        public static async Task<IAzureMediaServicesClient> CreateMediaServicesClientAsync(AppSettings appSettings)
-        {
-            var credentials = await GetCredentialsAsync(appSettings);
-
-            return new AzureMediaServicesClient(new Uri(appSettings.AmsArmEndPoint), credentials)
-            {
-                SubscriptionId = appSettings.AmsSubscriptionId
-            };
-        }
-
-        /// <summary>
-        /// Create the ServiceClientCredentials object based on the credentials supplied in local configuration file.
-        /// </summary>
-        private static async Task<ServiceClientCredentials> GetCredentialsAsync(AppSettings appSettings)
-        {
-            ClientCredential clientCredential = new ClientCredential(appSettings.AmsClientId, appSettings.AmsClientSecret);
-
-            return await ApplicationTokenProvider.LoginSilentAsync(appSettings.AmsTenantId, clientCredential, ActiveDirectoryServiceSettings.Azure);
-        }
+       
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 using blendnet.cms.listener.Common;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
@@ -255,7 +257,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 _logger.LogInformation($"Process AMS Job - Deleted AMS Job for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
-                await DownloadSegments(content, transformCommand);
+                await DownloadSegmentsToBlob(content, transformCommand);
 
                 _logger.LogInformation($"Segments downloaded and moved to final for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
@@ -271,168 +273,200 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         }
 
         /// <summary>
-        /// Downloads the Segments using the DASH URL
+        /// Download segments directory to Blob
         /// </summary>
         /// <param name="content"></param>
         /// <param name="transformCommand"></param>
         /// <returns></returns>
-        private async Task DownloadSegments(Content content, ContentCommand transformCommand)
+
+        private async Task DownloadSegmentsToBlob(Content content, ContentCommand transformCommand)
         {
-            string rootDirectory = Path.Combine(_appSettings.DownloadDirectory, $"{transformCommand.Id.Value}");
+            var baseName = content.ContentProviderId.ToString().Trim().ToLower();
 
-            _logger.LogInformation($"Root Directory Path {rootDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+            string mezzContainerName = $"{baseName}{ApplicationConstants.StorageContainerSuffix.Mezzanine}";
 
-            string workingDirectory = Path.Combine(_appSettings.DownloadDirectory,
-                                                    $"{transformCommand.Id.Value}",
-                                                    ApplicationConstants.DownloadDirectoryNames.Working);
+            BlobContainerClient mezzContainer = this._cmsBlobServiceClient.GetBlobContainerClient(mezzContainerName);
 
-            _logger.LogInformation($"Working Directory Path {workingDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+            string rootDirectory = ($"{content.Id.Value}/{transformCommand.Id.Value}");
 
-            string finalDirectory = Path.Combine(_appSettings.DownloadDirectory,
-                                                    $"{transformCommand.Id.Value}",
-                                                    ApplicationConstants.DownloadDirectoryNames.Final);
+            _logger.LogInformation($"Blob Root Directory Path {rootDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
-            //Create Final Directory If does not exists
-            if (!Directory.Exists(finalDirectory))
-            {
-                Directory.CreateDirectory(finalDirectory);
-            }
+            string workingDirectory = ($"{content.Id.Value}/{transformCommand.Id.Value}/{ApplicationConstants.DownloadDirectoryNames.Working}");
 
-            _logger.LogInformation($"Final Directory Path {finalDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+            _logger.LogInformation($"Blob Working Directory Path {workingDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
-            MpdInfo mpdInfo = await _segmentDowloader.DownloadSegments(content.DashUrl, workingDirectory, transformCommand.Id.Value.ToString());
+            string finalDirectory = ($"{content.Id.Value}/{transformCommand.Id.Value}/{ApplicationConstants.DownloadDirectoryNames.Final}");
 
-            _logger.LogInformation($"Download Segment Complete for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+            _logger.LogInformation($"Blob Final Directory Path {finalDirectory} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
-            MoveContentToFinal(content, transformCommand, mpdInfo, workingDirectory, finalDirectory);
+            MpdInfo mpdInfo = await _segmentDowloader.DownloadSegments(content.DashUrl, workingDirectory, transformCommand.Id.Value.ToString(), mezzContainer);
 
-            _logger.LogInformation($"Moved the content to final directory for : {content.Id.Value} command id {transformCommand.Id.Value}");
-           
+            _logger.LogInformation($"Download Segment on Blob Complete for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+            await MoveContentToFinalBlob(mezzContainer,content, transformCommand, mpdInfo, workingDirectory, finalDirectory);
+
         }
 
 
         /// <summary>
-        /// Move the content to final directory
+        /// Generate TAR for segments and move the child tar to final
         /// </summary>
+        /// <param name="mezzContainer"></param>
         /// <param name="content"></param>
         /// <param name="transformCommand"></param>
         /// <param name="mpdInfo"></param>
-        /// <param name="rootDirectory"></param>
         /// <param name="workingDirectory"></param>
         /// <param name="finalDirectory"></param>
-        private void MoveContentToFinal(
-                                        Content content,
-                                        ContentCommand transformCommand,
-                                        MpdInfo mpdInfo, 
-                                        string workingDirectory, 
-                                        string finalDirectory)
+        /// <returns></returns>
+        private async Task MoveContentToFinalBlob(  BlobContainerClient mezzContainer,
+                                                    Content content,
+                                                    ContentCommand transformCommand,
+                                                    MpdInfo mpdInfo,
+                                                    string workingDirectory,
+                                                    string finalDirectory)
         {
+            string tarFileName;
+
             string tarPath;
+
+            string tarSourceDirectory;
+
+            BlockBlobClient sourceBlob;
+
+            BlockBlobClient targetBlob;
+
+            Tuple<long, string> infodata;
 
             foreach (AdaptiveSetInfo adaptiveSet in mpdInfo.AdaptiveSets)
             {
-                tarPath = Path.Combine(workingDirectory, $"{adaptiveSet.DirectoryName}.tar");
+                tarFileName = $"{adaptiveSet.DirectoryName}.tar";
 
-                _tarGenerator.TarCreateFromStream(tarPath, Path.Combine(workingDirectory, adaptiveSet.DirectoryName));
+                tarPath = $"{workingDirectory}/{tarFileName}";
 
-                adaptiveSet.FinalPath = Path.Combine(finalDirectory, $"{transformCommand.Id.Value.ToString()}_{adaptiveSet.DirectoryName}.tar");
+                //appending slash at the end so that list blobs returns all the child values only
+                tarSourceDirectory = $"{workingDirectory}/{adaptiveSet.DirectoryName}/";
 
-                File.Move(tarPath, adaptiveSet.FinalPath);
+                infodata = await _tarGenerator.CreateTar(mezzContainer, tarPath,tarFileName,tarSourceDirectory,true);
+
+                adaptiveSet.Length = infodata.Item1;
+
+                adaptiveSet.Checksum = infodata.Item2;
+
+                _logger.LogInformation($"TAR file generated at {tarPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+
+                adaptiveSet.FinalPath = $"{finalDirectory}/{transformCommand.Id.Value}_{adaptiveSet.DirectoryName}.tar";
+
+                 sourceBlob = mezzContainer.GetBlockBlobClient(tarPath);
+
+                targetBlob = mezzContainer.GetBlockBlobClient(adaptiveSet.FinalPath);
+
+                await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob);
 
                 _logger.LogInformation($"Moved file from {tarPath} to {adaptiveSet.FinalPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
-
             }
 
-            string mpdPath = Path.Combine(workingDirectory, $"{mpdInfo.MpdName}");
+            string mpdPath = $"{workingDirectory}/{mpdInfo.MpdName}";
 
-            mpdInfo.FinalMpdPath = Path.Combine(finalDirectory, $"{mpdInfo.MpdName}");
+            mpdInfo.FinalMpdPath = $"{finalDirectory}/{mpdInfo.MpdName}";
 
-            File.Copy(mpdPath, mpdInfo.FinalMpdPath);
+            sourceBlob = mezzContainer.GetBlockBlobClient(mpdPath);
+
+            targetBlob = mezzContainer.GetBlockBlobClient(mpdInfo.FinalMpdPath);
+
+            await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob);
+
+            infodata = await GetBlobChecksumAndLength(mpdInfo.FinalMpdPath, targetBlob);
+
+            mpdInfo.Length = infodata.Item1;
+
+            mpdInfo.Checksum = infodata.Item2;
 
             _logger.LogInformation($"Copied file from {mpdPath} to {mpdInfo.FinalMpdPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
-            string xmlFilePath = Path.Combine(workingDirectory, string.Format(_appSettings.IngestFileName,transformCommand.Id.Value));
+            string xmlFilePath = $"{workingDirectory}/{string.Format(_appSettings.IngestFileName, transformCommand.Id.Value)}";
 
-            //copy the template to final directory
-            File.Copy(ApplicationConstants.IngestTemplateFileName, xmlFilePath);
+            string xmlFileContent = File.ReadAllText(ApplicationConstants.IngestTemplateFileName);
 
+            xmlFileContent = ReplaceTokenInXmlString(mezzContainer, xmlFileContent, mpdInfo,content, transformCommand);
+
+            await EventHandlingUtilities.UploadBlob(mezzContainer, xmlFilePath, xmlFileContent);
+                        
             _logger.LogInformation($"Copied XML Template from {ApplicationConstants.IngestTemplateFileName} to {xmlFilePath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
-
-            //replace tags in xml template
-            ReplaceTokenInXml(xmlFilePath, mpdInfo,content,transformCommand);
-
-            _logger.LogInformation($"XML Token Replaced for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
         }
 
         /// <summary>
-        /// Replaces Token
+        /// Generates the checksum for blob
         /// </summary>
-        /// <param name="xmlFilePath"></param>
+        /// <param name="blockBlobClient"></param>
+        /// <returns></returns>
+        private async Task<Tuple<long,string>> GetBlobChecksumAndLength(string filepath,BlockBlobClient blockBlobClient)
+        {
+            string checksum =  string.Empty;
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                await blockBlobClient.DownloadToAsync(stream);
+
+                checksum = EventHandlingUtilities.GetChecksum(_logger, filepath, stream);
+            }
+
+            BlobProperties blobProperties = await blockBlobClient.GetPropertiesAsync();
+
+            return new Tuple<long, string>(blobProperties.ContentLength, checksum);
+
+         }
+
+        /// <summary>
+        /// Replaces the values in XML Template
+        /// </summary>
+        /// <param name="mezzContainer"></param>
+        /// <param name="xmlContent"></param>
         /// <param name="segmentInfo"></param>
         /// <param name="content"></param>
         /// <param name="tranformCommand"></param>
-        private void ReplaceTokenInXml(string xmlFilePath, MpdInfo segmentInfo, Content content, ContentCommand tranformCommand)
+        /// <returns></returns>
+        private string ReplaceTokenInXmlString( BlobContainerClient mezzContainer,
+                                        string xmlContent, 
+                                        MpdInfo segmentInfo, 
+                                        Content content, 
+                                        ContentCommand tranformCommand)
         {
-            string fileContent = File.ReadAllText(xmlFilePath);
-
             AdaptiveSetInfo audioSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == ApplicationConstants.AdaptiveSetTypes.Audio)).FirstOrDefault();
 
-            FileInfo fileInfo = new FileInfo(audioSet.FinalPath);
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.AUDIO_TAR, audioSet.FinalPath.Split('/').Last());
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.AUDIO_TAR, Path.GetFileName(audioSet.FinalPath));
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.AUDIO_FILE_CHECKSUM, audioSet.Checksum);
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.AUDIO_FILE_CHECKSUM, GetChecksum(audioSet.FinalPath));
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.AUDIO_FILE_SIZE, audioSet.Length.ToString());
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.AUDIO_FILE_SIZE, fileInfo.Length.ToString());
-
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.AUDIO_TAR_FOLDER_NAME, audioSet.DirectoryName);
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.AUDIO_TAR_FOLDER_NAME, audioSet.DirectoryName);
 
             AdaptiveSetInfo videoSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == ApplicationConstants.AdaptiveSetTypes.Video)).FirstOrDefault();
 
-            fileInfo = new FileInfo(videoSet.FinalPath);
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.VIDEO_TAR, videoSet.FinalPath.Split('/').Last());
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.VIDEO_TAR, Path.GetFileName(videoSet.FinalPath));
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.VIDEO_FILE_CHECKSUM, videoSet.Checksum);
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.VIDEO_FILE_CHECKSUM, GetChecksum(videoSet.FinalPath));
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.VIDEO_FILE_SIZE, videoSet.Length.ToString());
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.VIDEO_FILE_SIZE, fileInfo.Length.ToString());
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.VIDEO_TAR_FOLDER_NAME, videoSet.DirectoryName);
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.VIDEO_TAR_FOLDER_NAME, videoSet.DirectoryName);
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE, segmentInfo.FinalMpdPath.Split('/').Last());
 
-            fileInfo = new FileInfo(segmentInfo.FinalMpdPath);
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE_CHECKSUM, segmentInfo.Checksum);
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE, Path.GetFileName(segmentInfo.FinalMpdPath));
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE_SIZE, segmentInfo.Length.ToString());
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE_CHECKSUM, GetChecksum(segmentInfo.FinalMpdPath));
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.UNIQUE_ID, tranformCommand.Id.Value.ToString());
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.MPD_FILE_SIZE, fileInfo.Length.ToString());
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.CONTENT_HIERARCHY, string.IsNullOrEmpty(content.Hierarchy) ? "" : content.Hierarchy);
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.UNIQUE_ID, tranformCommand.Id.Value.ToString());
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.CONTENT_ID, content.Id.Value.ToString());
 
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.CONTENT_HIERARCHY, string.IsNullOrEmpty(content.Hierarchy) ? "" : content.Hierarchy);
-
-            fileContent = fileContent.Replace(ApplicationConstants.XMLTokens.CONTENT_ID, content.Id.Value.ToString());
-
-            File.WriteAllText(xmlFilePath, fileContent);
+            return xmlContent;
         }
 
-        /// <summary>
-        /// Returns SHA256 Checksum
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        private static string GetChecksum(string file)
-        {
-            using (FileStream stream = File.OpenRead(file))
-            {
-                using (var sha = new SHA256Managed())
-                {
-                    byte[] checksum = sha.ComputeHash(stream);
-                    return BitConverter.ToString(checksum).Replace("-", String.Empty).ToLowerInvariant();
-                }
-            }
-        }
 
         /// <summary>
         /// Extracts the content id and command id from the topic string

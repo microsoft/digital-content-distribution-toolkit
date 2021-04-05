@@ -58,10 +58,6 @@
 			<filename>{VIDEO_TAR}</filename><!--concatenate the tar file id with -video-->
 			<filesize>{VIDEO_FILE_SIZE}</filesize><!-- size in bytes -->
 		</file>
-		<file>
-			<filename>{MPD_FILE}</filename><!--contentbroadcastcommandid_mpd-->
-			<filesize>{MPD_FILE_SIZE}</filesize><!-- size in bytes -->
-		</file>
 	</data>
 	<pushInfo>
 		<broadcastStartDate>{START_DATE}</broadcastStartDate><!--Broadcast Start Date and End Date from BlendNet CMS. UTC. Same as Validity Start Date-->

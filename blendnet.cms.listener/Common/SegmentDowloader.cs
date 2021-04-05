@@ -1,10 +1,12 @@
-﻿using blendnet.common.dto;
+﻿using Azure.Storage.Blobs;
+using blendnet.common.dto;
 using blendnet.common.dto.cms;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IIS.Media.DASH.MPDParser;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -40,15 +42,13 @@ namespace blendnet.cms.listener
 
             _httpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientNames.AMS);
         }
-        
-        /// <summary>
-        /// Download the segments to the given directory
-        /// </summary>
-        /// <param name="dashUrl"></param>
-        /// <param name="downloadDirectory"></param>
-        /// <param name="uniqueId"></param>
-        /// <returns></returns>
-        public async Task<MpdInfo> DownloadSegments(string dashUrl, string downloadDirectory, string uniqueId)
+
+
+
+        public async Task<MpdInfo> DownloadSegments(string dashUrl,
+                                                    string downloadDirectory, 
+                                                    string uniqueId,
+                                                    BlobContainerClient blobContainerClient)
         {
             MpdInfo mpdInfo = new MpdInfo() { AdaptiveSets = new List<AdaptiveSetInfo>() };
 
@@ -63,31 +63,42 @@ namespace blendnet.cms.listener
             //Download audio and video segments
             foreach (var adaptationSet in manifest.Periods[0].AdaptationSets)
             {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+
                 uint bandwidth = adaptationSet.Representations[0].Bandwidth;
 
-                string fullName = adaptationSet.SegmentTemplate.InitializationAttribute.Replace(ApplicationConstants.MPDTokens.Bandwidth, 
+                string fullName = adaptationSet.SegmentTemplate.InitializationAttribute.Replace(ApplicationConstants.MPDTokens.Bandwidth,
                                                                                                 bandwidth.ToString());
                 string directoryName = fullName.Split('/')[0];
 
                 string filename = fullName.Split('/')[1];
-                
+
                 adaptiveSetInfo = new AdaptiveSetInfo() { DirectoryName = directoryName, Type = adaptationSet.ContentType };
 
                 mpdInfo.AdaptiveSets.Add(adaptiveSetInfo);
 
-                string pathToDownload;
-
-                if (!Directory.Exists(Path.Combine(downloadDirectory, directoryName)))
-                {
-                    Directory.CreateDirectory(Path.Combine(downloadDirectory, directoryName));
-                }
-
-                pathToDownload = Path.Combine(downloadDirectory, directoryName, filename);
-
                 //download init file
                 Uri initSegmentUrl = FormatInitUrl(manifestUrl, adaptationSet.SegmentTemplate.InitializationAttribute, bandwidth);
 
-                await DownloadToFile(initSegmentUrl, pathToDownload);
+                string pathToDownload;
+
+                if (blobContainerClient == null)
+                {
+                    if (!Directory.Exists(Path.Combine(downloadDirectory, directoryName)))
+                    {
+                        Directory.CreateDirectory(Path.Combine(downloadDirectory, directoryName));
+                    }
+
+                    pathToDownload = Path.Combine(downloadDirectory, directoryName, filename);
+
+                    await DownloadToFile(initSegmentUrl, pathToDownload);
+                }
+                else
+                {
+                    pathToDownload = $"{downloadDirectory}/{directoryName}/{filename}";
+
+                    await DownloadToBlob(blobContainerClient, initSegmentUrl, pathToDownload);
+                }
 
                 uint timescale = adaptationSet.SegmentTemplate.Timescale;
 
@@ -100,7 +111,7 @@ namespace blendnet.cms.listener
 
                     do
                     {
-                        fullName = adaptationSet.SegmentTemplate.Media.Replace(ApplicationConstants.MPDTokens.Bandwidth, 
+                        fullName = adaptationSet.SegmentTemplate.Media.Replace(ApplicationConstants.MPDTokens.Bandwidth,
                                                                                bandwidth.ToString());
 
                         fullName = fullName.Replace(ApplicationConstants.MPDTokens.Timeline, currentTimeStamp.ToString());
@@ -109,11 +120,19 @@ namespace blendnet.cms.listener
 
                         filename = fullName.Split('/')[1];
 
-                        pathToDownload = Path.Combine(downloadDirectory, directoryName, filename);
-
                         Uri currentUri = FormatFragmentUrl(manifestUrl, adaptationSet.SegmentTemplate.Media, bandwidth, currentTimeStamp);
 
-                        await DownloadToFile(currentUri, pathToDownload);
+                        if (blobContainerClient == null)
+                        {
+                            pathToDownload = Path.Combine(downloadDirectory, directoryName, filename);
+
+                            await DownloadToFile(currentUri, pathToDownload);
+                        }else
+                        {
+                            pathToDownload = ($"{downloadDirectory}/{directoryName}/{filename}");
+
+                            await DownloadToBlob(blobContainerClient, currentUri, pathToDownload);
+                        }
 
                         currentTimeStamp += timelineEntry.D;
 
@@ -121,14 +140,41 @@ namespace blendnet.cms.listener
 
                     } while (downloadCount <= timelineEntry.R);
                 }
+
+                stopwatch.Stop();
+
+                _logger.LogInformation($"Dowloaded Segments for {adaptiveSetInfo.DirectoryName} Download Directory {downloadDirectory}. Duration Milisecond : {stopwatch.ElapsedMilliseconds}");
+
             }
 
-
             mpdInfo.MpdName = $"{uniqueId}.mpd";
-            
-            await DownloadToFile(manifestUrl, Path.Combine(downloadDirectory, mpdInfo.MpdName));
+
+            if (blobContainerClient == null)
+            {
+                await DownloadToFile(manifestUrl, Path.Combine(downloadDirectory, mpdInfo.MpdName));
+            }
+            else
+            {
+                await DownloadToBlob(blobContainerClient, manifestUrl, $"{downloadDirectory}/{mpdInfo.MpdName}");
+            }
 
             return mpdInfo;
+
+        }
+
+       
+        /// <summary>
+        /// Download the segments to the given directory
+        /// </summary>
+        /// <param name="dashUrl"></param>
+        /// <param name="downloadDirectory"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        public async Task<MpdInfo> DownloadSegments(string dashUrl, 
+                                                    string downloadDirectory, 
+                                                    string uniqueId)
+        {
+            return await DownloadSegments(dashUrl, downloadDirectory, uniqueId,null);
         }
 
         /// <summary>
@@ -180,6 +226,26 @@ namespace blendnet.cms.listener
                 }
             }
         }
+
+
+        /// <summary>
+        /// Download the segment directory to blob
+        /// </summary>
+        /// <param name="blobContainerClient"></param>
+        /// <param name="downloadUri"></param>
+        /// <param name="blobUploadPath"></param>
+        /// <returns></returns>
+        async Task DownloadToBlob(BlobContainerClient blobContainerClient,Uri downloadUri, string blobUploadPath)
+        {
+            BlobClient blobClient = blobContainerClient.GetBlobClient(blobUploadPath);
+           
+            using (Stream data = await _httpClient.GetStreamAsync(downloadUri))
+            {
+                await blobClient.UploadAsync(data, true);
+
+                data.Close();
+            }
+        }
     }
 
 
@@ -195,6 +261,10 @@ namespace blendnet.cms.listener
 
         public string FinalPath { get; set; }
 
+        public long Length { get; set; }
+
+        public string Checksum { get; set; }
+
     }
 
     /// <summary>
@@ -205,6 +275,10 @@ namespace blendnet.cms.listener
         public string FinalMpdPath { get; set; }
 
         public string MpdName { get; set; }
+
+        public long Length { get; set; }
+
+        public string Checksum { get; set; }
 
         public List<AdaptiveSetInfo> AdaptiveSets { get; set; }
     }
