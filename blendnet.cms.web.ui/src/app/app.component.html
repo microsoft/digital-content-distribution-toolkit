@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="cms-toolbar">
-	<span><div class="cms-app-name">
+	<span><div class="cms-app-name" *ngIf="loginDisplay">
 		Content Provider : {{selectedCPName}}
 	</div></span>
 	<span class="cms-menu-spacer"></span>

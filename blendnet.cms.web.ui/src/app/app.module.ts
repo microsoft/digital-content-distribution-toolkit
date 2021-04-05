@@ -22,7 +22,9 @@ import { IPublicClientApplication, PublicClientApplication, InteractionType, Bro
 import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalRedirectComponent, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { HomeComponent } from './home/home.component';
 import { ToastrModule } from 'ngx-toastr';
-import { HttpErrorInterceptor } from './services/http-error.interceptor';
+import { HttpErrorInterceptor } from './interceptor/http-error.interceptor';
+import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
+import { SpinnerInterceptor } from './interceptor/spinner.interceptor';
 
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
@@ -84,7 +86,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     ContentProviderComponent,
     SasKeyComponent,
     AddContentProviderComponent,
-    HomeComponent
+    HomeComponent,
+    SpinnerOverlayComponent
   ],
   imports: [
     HttpClientModule,
@@ -115,6 +118,11 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
       multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: SpinnerInterceptor,
+      multi: true,
     },
     {
       provide: MSAL_INSTANCE,

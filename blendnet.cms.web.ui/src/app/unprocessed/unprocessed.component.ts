@@ -49,7 +49,7 @@ export class UnprocessedComponent implements AfterViewInit {
   
 
   ngOnInit(): void {
-    this.polling = interval(5000)
+    this.polling = interval(50000)
     .pipe(
       startWith(0),
       switchMap(() => this.contentService.getContentByCpIdAndFilters())
