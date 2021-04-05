@@ -49,7 +49,7 @@ namespace blendnet.cms.repository.Interfaces
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        Task<List<Content>> GetContentByContentProviderId(Guid contentProviderId);
+        Task<List<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter);
 
 
         /// <summary>

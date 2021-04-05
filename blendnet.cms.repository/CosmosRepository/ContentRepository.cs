@@ -161,12 +161,44 @@ namespace blendnet.cms.repository.CosmosRepository
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        public async Task<List<Content>> GetContentByContentProviderId(Guid contentProviderId)
+        public async Task<List<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter)
         {
             List<Content> contentList = new List<Content>();
 
-            var queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId";
+            string queryString = string.Empty;
 
+            queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId";
+
+            if (contentStatusFilter != null)
+            {
+                string statuses = string.Empty;
+
+                if (contentStatusFilter.ContentUploadStatuses != null && 
+                    contentStatusFilter.ContentUploadStatuses.Length > 0)
+                {
+                    statuses = string.Join(",", contentStatusFilter.ContentUploadStatuses.Select(item => "'" + item + "'"));
+
+                    queryString = $" {queryString} AND c.contentUploadStatus IN ({statuses})";
+                }
+
+                if (contentStatusFilter.ContentTransformStatuses != null &&
+                    contentStatusFilter.ContentTransformStatuses.Length > 0)
+                {
+                    statuses = string.Join(",", contentStatusFilter.ContentTransformStatuses.Select(item => "'" + item + "'"));
+
+                    queryString = $" {queryString} AND c.contentTransformStatus IN ({statuses})";
+                }
+
+                if (contentStatusFilter.ContentBroadcastStatuses != null &&
+                    contentStatusFilter.ContentBroadcastStatuses.Length > 0)
+                {
+                    statuses = string.Join(",", contentStatusFilter.ContentBroadcastStatuses.Select(item => "'" + item + "'"));
+
+                    queryString = $" {queryString} AND c.contentBroadcastStatus IN ({statuses})";
+                }
+
+            }
+            
             var queryDef = new QueryDefinition(queryString);
 
             queryDef.WithParameter("@type", ContentContainerType.Content);

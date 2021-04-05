@@ -17,6 +17,7 @@ using System.Net;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Azure;
 using System.ComponentModel.DataAnnotations;
+using blendnet.cms.api.Common;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -33,10 +34,13 @@ namespace blendnet.cms.api.Controllers
 
         private IContentRepository _contentRepository;
 
+        private AmsHelper _amsHelper;
+
         public ContentController(IContentRepository contentRepository,
                                             ILogger<ContentController> logger,
                                             IEventBus eventBus,
-                                            IAzureClientFactory<BlobServiceClient> blobClientFactory)
+                                            IAzureClientFactory<BlobServiceClient> blobClientFactory,
+                                            AmsHelper amshelper)
         {
             _contentRepository = contentRepository;
 
@@ -45,10 +49,11 @@ namespace blendnet.cms.api.Controllers
             _logger = logger;
 
             _eventBus = eventBus;
+
+            _amsHelper = amshelper;
         }
 
         #region Content Management Methods
-
 
         /// <summary>
         /// Get Content 
@@ -69,30 +74,20 @@ namespace blendnet.cms.api.Controllers
             {
                 return NotFound();
             }
+
+            //ContentCommand contentCommand = new ContentCommand();
+
+            //contentCommand.ContentId = Guid.Parse("5d3fbb43-2746-4fe6-a41b-e85d3b81c85f");
+
+            //ContentTransformIntegrationEvent contentTransformIntegrationEvent = new ContentTransformIntegrationEvent()
+            //{
+            //    ContentTransformCommand = contentCommand,
+            //};
+
+            //await _eventBus.Publish(contentTransformIntegrationEvent);
+
+            //return Ok();
         }
-
-
-        /// <summary>
-        /// Get Content By ContentProvider
-        /// </summary>
-        /// <param name="contentProviderId"></param>
-        /// <returns></returns>
-        [HttpGet("{contentProviderId:guid}/getcontents", Name = nameof(GetContentByContentProviderId))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<Content>> GetContentByContentProviderId(Guid contentProviderId)
-        {
-            List<Content> contentlist = await _contentRepository.GetContentByContentProviderId(contentProviderId);
-
-            if (contentlist.Count()>0)
-            {
-                return Ok(contentlist);
-            }
-            else
-            {
-                return NoContent();
-            }
-        }
-
 
         /// <summary>
         /// Upload Contents
@@ -102,7 +97,6 @@ namespace blendnet.cms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> UploadContent(IFormFile file, Guid contentProviderId)
         {
-          
             // Check for Json Format
             if (! ValidateFileExtension(file))
             {
@@ -129,9 +123,9 @@ namespace blendnet.cms.api.Controllers
             }
 
             // Check for File Extensions on the raw container.
-            var extErrorList = await ValidateFileExtensions(contents,contentProviderId);
+            var extErrorList = ValidateFileExtensions(contents,contentProviderId);
 
-            if(extErrorList.Count>0)
+            if(extErrorList.Count > 0)
             {
                 return BadRequest(extErrorList);
             }     
@@ -165,7 +159,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpDelete("{contentId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-        public async Task<ActionResult> DeleteContentProvider(List<Guid> contentIds)
+        public async Task<ActionResult> DeleteContent(List<Guid> contentIds)
         {
             foreach(Guid contentId in contentIds)
             {
@@ -184,6 +178,52 @@ namespace blendnet.cms.api.Controllers
         }
 
         /// <summary>
+        /// Returns the Token to view the content
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpGet("{contentId:guid}/token", Name = nameof(GetContentToken))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<string>> GetContentToken(Guid contentId)
+        {
+            Content content = await _contentRepository.GetContentById(contentId);
+
+            if (content == null)
+            {
+                return BadRequest($"No valid details found for givent content id {contentId}");
+            }
+
+            if (content.ContentTransformStatus != ContentTransformStatus.TransformComplete)
+            {
+                return BadRequest($"The content tranform status should be complete. Current status is {content.ContentTransformStatus.ToString()}");
+            }
+
+            string token = await _amsHelper.GetContentToken(content.Id.Value, content.ContentTransformStatusUpdatedBy.Value);
+
+            return token;
+        }
+
+
+        [HttpPost("{contentProviderId:guid}/contentlist")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<Content>> GetContentByContentProviderId(Guid contentProviderId,ContentStatusFilter statusFilter)
+        {
+            List<Content> contentlist = await _contentRepository.GetContentByContentProviderId(contentProviderId,statusFilter);
+
+            if (contentlist.Count() > 0)
+            {
+                return Ok(contentlist);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+        /// <summary>
         /// Uploads the content and pushes a message to event bus
         /// </summary>
         /// <param name="contents"></param>
@@ -191,14 +231,14 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         private async Task UploadContent(List<Content> contents, Guid contentProviderId)
         {
-            foreach(Content content in contents)
+            foreach (Content content in contents)
             {
                 content.SetIdentifiers();
 
                 content.ContentProviderId = contentProviderId;
-                
+
                 // Update the ContentUpload Status to UploadInProgress
-                
+
                 content.ContentUploadStatus = ContentUploadStatus.UploadSubmitted;
 
                 Guid contentId = await _contentRepository.CreateContent(content);
@@ -206,14 +246,14 @@ namespace blendnet.cms.api.Controllers
                 ContentCommand contentCommand = new ContentCommand();
 
                 contentCommand.ContentId = contentId;
-                
+
                 //publish the event
                 ContentUploadedIntegrationEvent contentUploadedIntegrationEvent = new ContentUploadedIntegrationEvent()
                 {
                     ContentUploadCommand = contentCommand,
                 };
-                
-                await _eventBus.Publish(contentUploadedIntegrationEvent); 
+
+                await _eventBus.Publish(contentUploadedIntegrationEvent);
             }
         }
 
@@ -222,11 +262,12 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private static bool ValidateFileExtension(IFormFile file)
+        private bool ValidateFileExtension(IFormFile file)
         {
             string fileExt = System.IO.Path.GetExtension(file.FileName);
 
-            if(fileExt.Equals(".json")){
+            if (fileExt.Equals(".json"))
+            {
                 return true;
             }
             else
@@ -240,9 +281,10 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private List<Content> ValidateJsonSchema(IFormFile file, List<string> errorDetails){
+        private List<Content> ValidateJsonSchema(IFormFile file, List<string> errorDetails)
+        {
 
-            string error  = string.Empty;
+            string error = string.Empty;
 
             string text;
 
@@ -274,7 +316,6 @@ namespace blendnet.cms.api.Controllers
             }
         }
 
-
         /// <summary>
         /// Performs the data annotation check on each object.
         /// </summary>
@@ -283,7 +324,7 @@ namespace blendnet.cms.api.Controllers
         private List<string> ValidateDataAnnotationCheck(List<Content> contents)
         {
             List<string> errorList = new List<string>();
-            
+
             ValidationContext validationContext;
 
             List<ValidationResult> validationResults;
@@ -300,11 +341,11 @@ namespace blendnet.cms.api.Controllers
 
                 validationResult = Validator.TryValidateObject(content, validationContext, validationResults, true);
 
-                if(!validationResult)
+                if (!validationResult)
                 {
-                    foreach(ValidationResult result in validationResults)
+                    foreach (ValidationResult result in validationResults)
                     {
-                        errorList.Add($"Item {index} - {result.ErrorMessage}"); 
+                        errorList.Add($"Item {index} - {result.ErrorMessage}");
                     }
                 }
 
@@ -320,39 +361,38 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contents"></param>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-
         private async Task<List<string>> ValidateDuplicateIdCheck(List<Content> contents, Guid contentProviderId)
         {
             List<string> errorList = new List<string>();
 
             HashSet<string> contentIds = new HashSet<string>();
 
-            foreach(Content content in contents)
+            foreach (Content content in contents)
             {
                 // contentIds.Add(content.ContentProviderContentId);
-                if(!contentIds.Add(content.ContentProviderContentId))
+                if (!contentIds.Add(content.ContentProviderContentId))
                 {
                     // Duplicate ContentIds in the file
                     string info = $"Content with Id {content.ContentProviderContentId} and Title{content.Title} is found multiple times in the uploaded file.";
                     errorList.Add(info);
                 }
-                
+
             }
 
-            List<Content> dbcontents = await _contentRepository.GetContentByContentProviderId(contentProviderId);
+            List<Content> dbcontents = await _contentRepository.GetContentByContentProviderId(contentProviderId,null);
 
             HashSet<string> dbcontentIds = new HashSet<string>();
 
-            foreach(Content content in dbcontents)
+            foreach (Content content in dbcontents)
             {
                 dbcontentIds.Add(content.ContentProviderContentId);
             }
-            
-            HashSet<string> commonIds = new HashSet<string>(dbcontentIds) ;
+
+            HashSet<string> commonIds = new HashSet<string>(dbcontentIds);
 
             commonIds.IntersectWith(contentIds);
 
-            foreach(string Id in commonIds)
+            foreach (string Id in commonIds)
             {
                 string info = $"Content with Id {Id} and is already uploaded to the Database.";
                 errorList.Add(info);
@@ -361,56 +401,58 @@ namespace blendnet.cms.api.Controllers
             return errorList;
         }
 
-
         /// <summary>
         /// Validates files extensions
         /// </summary>
         /// <param name="contents"></param>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        private async Task<List<string>> ValidateFileExtensions(List<Content> contents,Guid contentProviderId)
+        private List<string> ValidateFileExtensions(List<Content> contents, Guid contentProviderId)
         {
             List<string> errorList = new List<string>();
 
             List<String> Mediatypes = ApplicationConstants.SupportedFileFormats.mediaFormats;
-                
+
             List<String> Thumbnailtypes = ApplicationConstants.SupportedFileFormats.ThumbnailFormats;
 
-            foreach(Content content in contents)
+            foreach (Content content in contents)
             {
                 string mediatype = FileFormat(content.MediaFileName);
 
-                if(! Mediatypes.Contains(mediatype)){
+                if (!Mediatypes.Contains(mediatype))
+                {
 
                     string info = $"File format of type Media for the Blob {content.MediaFileName} from the content {content.Title} is not supported.";
 
                     errorList.Add(info);
                 }
-                foreach(Attachment attachment in content.Attachments)
-                {         
-                    if(attachment.Type is AttachmentType.Thumbnail){
+                foreach (Attachment attachment in content.Attachments)
+                {
+                    if (attachment.Type is AttachmentType.Thumbnail)
+                    {
 
-                        string imagetype = FileFormat(attachment.Name); 
-                        
-                        if(! Thumbnailtypes.Contains(imagetype))
+                        string imagetype = FileFormat(attachment.Name);
+
+                        if (!Thumbnailtypes.Contains(imagetype))
                         {
                             string info = $"File format of type {attachment.Type} for the Blob {attachment.Name} from the content {content.Title} is not supported.";
                             errorList.Add(info);
-                        }   
+                        }
                     }
-                    else{
-                        
-                        string teasertype = FileFormat(attachment.Name); 
+                    else
+                    {
 
-                        if(! Mediatypes.Contains(teasertype))
+                        string teasertype = FileFormat(attachment.Name);
+
+                        if (!Mediatypes.Contains(teasertype))
                         {
-                            string info =$"File format of type {attachment.Type} for the Blob {attachment.Name} from the content {content.Title} is not supported.";
+                            string info = $"File format of type {attachment.Type} for the Blob {attachment.Name} from the content {content.Title} is not supported.";
                             errorList.Add(info);
-                        } 
+                        }
                     }
                 }
             }
-            return  errorList; 
+            return errorList;
         }
 
         /// <summary>
@@ -419,62 +461,64 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contents"></param>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-
-        private async Task<List<string>> ValidateBlobExistence(List<Content> contents,Guid contentProviderId)
+        private async Task<List<string>> ValidateBlobExistence(List<Content> contents, Guid contentProviderId)
         {
-            var rawcontainerName = $"{contentProviderId}{ApplicationConstants.StorageContainerSuffix.Raw}"; 
+            var rawcontainerName = $"{contentProviderId}{ApplicationConstants.StorageContainerSuffix.Raw}";
 
             BlobContainerClient rawClient = _cmsBlobServiceClient.GetBlobContainerClient(rawcontainerName);
 
             List<String> Mediatypes = ApplicationConstants.SupportedFileFormats.mediaFormats;
-                
+
             List<String> Thumbnailtypes = ApplicationConstants.SupportedFileFormats.ThumbnailFormats;
 
             List<string> errorList = new List<string>();
-            
-            foreach(Content content in contents)
-            {         
-                if(! await rawClient.GetBlobClient(content.MediaFileName).ExistsAsync())
+
+            foreach (Content content in contents)
+            {
+                if (!await rawClient.GetBlobClient(content.MediaFileName).ExistsAsync())
                 {
                     string info = $"Blob file of type Media with name {content.MediaFileName} from the content {content.Title} is not found.";
 
                     errorList.Add(info);
                 }
-                foreach(Attachment attachment in content.Attachments)
-                {         
-                    if(attachment.Type is AttachmentType.Thumbnail){
+                foreach (Attachment attachment in content.Attachments)
+                {
+                    if (attachment.Type is AttachmentType.Thumbnail)
+                    {
 
-                        if(! await rawClient.GetBlobClient(attachment.Name).ExistsAsync()){
-                    
+                        if (!await rawClient.GetBlobClient(attachment.Name).ExistsAsync())
+                        {
+
                             string info = $"Blob file of type {attachment.Type} with name {attachment.Name} from the content {content.Title} is not found";
-                            
+
                             errorList.Add(info);
                         }
                     }
-                    else{
-                        if(! await rawClient.GetBlobClient(attachment.Name).ExistsAsync()){
-                            
-                            string info =$"Blob file of type {attachment.Type} with name {attachment.Name} from the content {content.Title} is not found";
-                            
+                    else
+                    {
+                        if (!await rawClient.GetBlobClient(attachment.Name).ExistsAsync())
+                        {
+
+                            string info = $"Blob file of type {attachment.Type} with name {attachment.Name} from the content {content.Title} is not found";
+
                             errorList.Add(info);
-                        } 
+                        }
                     }
                 }
             }
             return errorList;
-        } 
+        }
 
         /// <summary>
         /// Returns the file extension
         /// </summary>
         /// <param name="Name"></param>
         /// <returns></returns>
-        private static string FileFormat(string Name){
-            string format = Name.Split('.')[1]; 
+        private static string FileFormat(string Name)
+        {
+            string format = Name.Split('.')[1];
             return format;
         }
-
-
         #endregion
     }
 }

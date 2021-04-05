@@ -95,3 +95,9 @@ az keyvault set-policy -n contosoKeyVault5 --key-permissions get --spn $clientId
 az keyvault set-policy -n blendnet-dev-kv --object-id 4878068a-f09e-4b1b-955c-b4d87026933d --secret-permissions get, list --key-permissions get, list --certificate-permissions get, list
 
 az keyvault set-policy --name blendnet-dev-kv --spn 3623196d-a1b6-4e75-933e-91e984f5cfb5 --secret-permissions get list
+
+
+Cosmos Commands
+
+SELECT * FROM c where c.contentId = '5d3fbb43-2746-4fe6-a41b-e85d3b81c85f' and c.type = 'Content'
+SELECT * FROM c where c.contentId = '5d3fbb43-2746-4fe6-a41b-e85d3b81c85f' and c.type='Command' and c.id = '6594f4e7-cb93-4112-968a-183179b7d53e'

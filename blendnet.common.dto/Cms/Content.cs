@@ -146,14 +146,29 @@ namespace blendnet.common.dto.Cms
         public ContentUploadStatus? ContentUploadStatus { get; set; }
 
         /// <summary>
+        /// Command Id
+        /// </summary>
+        public Guid? ContentUploadStatusUpdatedBy { get; set; }
+
+        /// <summary>
         /// Content Transform Status
         /// </summary>
         public ContentTransformStatus? ContentTransformStatus { get; set; } = Cms.ContentTransformStatus.TransformNotInitialized;
 
         /// <summary>
+        /// Command Id
+        /// </summary>
+        public Guid? ContentTransformStatusUpdatedBy { get; set; }
+
+        /// <summary>
         /// Content Broadcast Status
         /// </summary>
         public ContentBroadcastStatus? ContentBroadcastStatus { get; set; } = Cms.ContentBroadcastStatus.BroadcastNotInitialized;
+
+        /// <summary>
+        /// Command Id
+        /// </summary>
+        public Guid? ContentBroadcastStatusUpdatedBy { get; set; }
 
         public void SetIdentifiers()
         {

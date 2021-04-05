@@ -16,6 +16,7 @@ namespace blendnet.cms.listener
 {
     /// <summary>
     /// Responsible for Downloading Segments from MPD Url
+    /// Todo : check if adding the parallel dowload further decreases the download time
     /// </summary>
     public class SegmentDowloader
     {

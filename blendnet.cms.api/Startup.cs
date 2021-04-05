@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Azure.Messaging.ServiceBus.Administration;
-using Azure.Storage;
 using Azure.Storage.Blobs;
+using blendnet.cms.api.Common;
 using blendnet.cms.repository.CosmosRepository;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
@@ -133,6 +129,8 @@ namespace blendnet.cms.api
             services.AddTransient<IContentProviderRepository, ContentProviderRepository>();
 
             services.AddTransient<IContentRepository, ContentRepository>();
+
+            services.AddTransient<AmsHelper>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);

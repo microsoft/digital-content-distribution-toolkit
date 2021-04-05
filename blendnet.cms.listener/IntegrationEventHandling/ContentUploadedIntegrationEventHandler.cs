@@ -107,6 +107,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     content.ContentUploadStatus = ContentUploadStatus.UploadInProgress;
 
                     content.ModifiedDate = currentTime;
+
+                    content.ContentUploadStatusUpdatedBy = commandId;
                             
                     await _contentRepository.UpdateContent(content);
 
@@ -139,6 +141,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     uploadCommand.ModifiedDate = currentTime;
 
                     content.ModifiedDate = currentTime;
+
+                    content.ContentUploadStatusUpdatedBy = uploadCommand.Id;
 
                     await _contentRepository.UpdateContentCommand(uploadCommand);
 

@@ -6,6 +6,7 @@ using blendnet.common.dto.cms;
 using blendnet.common.dto.Cms;
 using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.Ams;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Azure.Management.Media;
@@ -110,6 +111,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                     content.ModifiedDate = currentTime;
 
+                    content.ContentTransformStatusUpdatedBy = commandId;
+
                     await _contentRepository.UpdateContent(content);
 
                     //Perform the content transformation
@@ -178,6 +181,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             content.ModifiedDate = currentTime;
 
+            content.ContentTransformStatusUpdatedBy = transformCommand.Id;
+
             transformCommand.ModifiedDate = currentTime;
 
             await _contentRepository.UpdateContent(content);
@@ -214,8 +219,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             {
                 string uniqueName = $"{content.Id.Value}|{transformCommand.Id.Value}";
 
-                IAzureMediaServicesClient amsclient = await EventHandlingUtilities.CreateMediaServicesClientAsync(_appSettings);
-
+                IAzureMediaServicesClient amsclient = await  AmsUtilities.CreateMediaServicesClientAsync(_appSettings.AmsArmEndPoint,
+                                                                                                         _appSettings.AmsClientId,
+                                                                                                         _appSettings.AmsClientSecret,
+                                                                                                         _appSettings.AmsTenantId,
+                                                                                                        _appSettings.AmsSubscriptionId);
                 await EnsureTransformExists(amsclient);
 
                 _logger.LogInformation($"Ensure Transform Exists executed for content id: {transformCommand.ContentId.ToString()}. Unique Name : {uniqueName}");
