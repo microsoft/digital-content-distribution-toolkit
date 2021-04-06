@@ -220,7 +220,7 @@ namespace blendnet.cms.repository.CosmosRepository
         {
             List<ContentCommand> contentList = new List<ContentCommand>();
 
-            var queryString = $"SELECT * FROM c WHERE c.contentContainerType = @type AND c.contentId = @contentId AND c.commandType = @commandType";
+            var queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentId = @contentId AND c.commandType = @commandType";
 
             var queryDef = new QueryDefinition(queryString);
 
@@ -231,6 +231,28 @@ namespace blendnet.cms.repository.CosmosRepository
             queryDef.WithParameter("@commandType", commandType);
 
             contentList = await ExtractDataFromQueryIterator<ContentCommand>(queryDef);
+
+            return contentList;
+        }
+
+        /// <summary>
+        /// Get Content By Ids
+        /// </summary>
+        /// <param name="contentIds"></param>
+        /// <returns></returns>
+        public async Task<List<Content>> GetContentByIds(List<Guid> contentIds)
+        {
+            List<Content> contentList = new List<Content>();
+
+            string contentIdsData = string.Join(",", contentIds.Select(item => "'" + item.ToString() + "'"));
+
+            var queryString = $"SELECT * FROM c WHERE c.contentId in ({contentIdsData}) AND c.type = @type";
+
+            var queryDef = new QueryDefinition(queryString);
+
+            queryDef.WithParameter("@type", ContentContainerType.Content);
+
+            contentList = await ExtractDataFromQueryIterator<Content>(queryDef);
 
             return contentList;
         }

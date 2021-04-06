@@ -37,6 +37,13 @@ namespace blendnet.cms.repository.Interfaces
         Task<Content> GetContentById(Guid contentId);
 
         /// <summary>
+        /// Returns the list of content by Ids
+        /// </summary>
+        /// <param name="contentIds"></param>
+        /// <returns></returns>
+        Task<List<Content>> GetContentByIds(List<Guid> contentIds);
+
+        /// <summary>
         /// Update Content
         /// </summary>
         /// <param name="updatedContent"></param>

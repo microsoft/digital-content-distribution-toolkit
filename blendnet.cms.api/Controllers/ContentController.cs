@@ -18,6 +18,7 @@ using Azure.Storage.Blobs;
 using Microsoft.Extensions.Azure;
 using System.ComponentModel.DataAnnotations;
 using blendnet.cms.api.Common;
+using blendnet.cms.api.Model;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -75,18 +76,6 @@ namespace blendnet.cms.api.Controllers
                 return NotFound();
             }
 
-            //ContentCommand contentCommand = new ContentCommand();
-
-            //contentCommand.ContentId = Guid.Parse("5d3fbb43-2746-4fe6-a41b-e85d3b81c85f");
-
-            //ContentTransformIntegrationEvent contentTransformIntegrationEvent = new ContentTransformIntegrationEvent()
-            //{
-            //    ContentTransformCommand = contentCommand,
-            //};
-
-            //await _eventBus.Publish(contentTransformIntegrationEvent);
-
-            //return Ok();
         }
 
         /// <summary>
@@ -163,17 +152,18 @@ namespace blendnet.cms.api.Controllers
         {
             foreach(Guid contentId in contentIds)
             {
-            int statusCode = await _contentRepository.DeleteContent(contentId);
+                int statusCode = await _contentRepository.DeleteContent(contentId);
 
-            if (statusCode == (int)System.Net.HttpStatusCode.NoContent)
-            {
-                continue;  
+                if (statusCode == (int)System.Net.HttpStatusCode.NoContent)
+                {
+                    continue;  
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
-            {
-                return NotFound();
-            }
-            }
+
             return NoContent();
         }
 
@@ -220,9 +210,93 @@ namespace blendnet.cms.api.Controllers
             }
         }
 
+        /// <summary>
+        /// Submits the Transformation Request
+        /// </summary>
+        /// <param name="transformContentRequest"></param>
+        /// <returns></returns>
+        [HttpPost("transform", Name = nameof(TransformContent))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult> TransformContent(TransformContentRequest transformContentRequest)
+        {
+            if (transformContentRequest == null || 
+                transformContentRequest.ContentIds == null || 
+                transformContentRequest.ContentIds.Count() <= 0)
+            {
+                return BadRequest($"No content id(s) found in the input request. Please provide valid content id(s)");
+            }
+
+            List<Content> contentlist = await _contentRepository.GetContentByIds(transformContentRequest.ContentIds);
+
+            List<string> errorList = new List<string>();
+
+            //adds the invalid id details to the error list
+            ValidateContentIds(transformContentRequest.ContentIds, contentlist, errorList);
+
+            if(contentlist != null && contentlist.Count > 0)
+            {
+                foreach (Content content in contentlist)
+                {
+                    if (content.ContentUploadStatus == ContentUploadStatus.UploadComplete &&
+                        (content.ContentTransformStatus == ContentTransformStatus.TransformNotInitialized ||
+                         content.ContentTransformStatus == ContentTransformStatus.TransformFailed ||
+                         content.ContentTransformStatus == ContentTransformStatus.TransformCancelled))
+                    {
+                        content.ContentTransformStatus = ContentTransformStatus.TransformSubmitted;
+                        
+                        content.ModifiedDate = DateTime.UtcNow;
+
+                        await _contentRepository.UpdateContent(content);
+
+                        ContentCommand contentTransformCommand = new ContentCommand()
+                        {
+                            CommandType = CommandType.TransformContent,
+                            ContentId = content.Id.Value
+                        };
+
+                        //publish the event
+                        ContentTransformIntegrationEvent contentTransIntegrationEvent = new ContentTransformIntegrationEvent()
+                        {
+                            ContentTransformCommand = contentTransformCommand
+                        };
+
+                        await _eventBus.Publish(contentTransIntegrationEvent);
+                    }
+                    else
+                    {
+                        errorList.Add($"{content.Id.Value} - Upload Status should be {ContentUploadStatus.UploadComplete} and Tranform Status should be in {ContentTransformStatus.TransformNotInitialized},{ContentTransformStatus.TransformFailed},{ContentTransformStatus.TransformCancelled}");
+                    }
+                }
+            }
+
+            return Ok(errorList);
+          
+        }
+
+
         #endregion
 
         #region Private Methods
+
+        /// <summary>
+        /// Validate Content Ids
+        /// </summary>
+        /// <param name="parentIds"></param>
+        /// <param name="retrievedContents"></param>
+        /// <param name="errorList"></param>
+        private void ValidateContentIds(List<Guid> parentIds, List<Content> retrievedContents,  List<string> errorList)
+        {
+            List<Guid> invalidIds = GetInvalidContentIds(parentIds, retrievedContents);
+
+            if (invalidIds != null && invalidIds.Count > 0)
+            {
+                foreach (Guid invalidId in invalidIds)
+                {
+                    errorList.Add($"For { invalidId} no valid details found in application database.");
+                }
+            }
+        }
+
         /// <summary>
         /// Uploads the content and pushes a message to event bus
         /// </summary>
@@ -519,6 +593,28 @@ namespace blendnet.cms.api.Controllers
             string format = Name.Split('.')[1];
             return format;
         }
+
+        /// <summary>
+        /// List of Invalid Content Ids
+        /// </summary>
+        /// <param name="parentList"></param>
+        /// <param name="retrievedContents"></param>
+        /// <returns></returns>
+        private List<Guid> GetInvalidContentIds(List<Guid> parentList, List<Content> retrievedContents)
+        {
+            List<Guid> invlidContentIds = new List<Guid>();
+
+            foreach (Guid contentId in parentList)
+            {
+                if (!retrievedContents.Exists(c=>c.Id.Value.ToString().Equals(contentId.ToString())))
+                {
+                    invlidContentIds.Add(contentId);
+                }
+            }
+
+            return invlidContentIds;
+        }
+
         #endregion
     }
 }
