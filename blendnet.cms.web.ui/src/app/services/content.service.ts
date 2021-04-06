@@ -23,10 +23,10 @@ export class ContentService {
   ) { }
 
 
-  getContentByCpIdAndFilters() {
-    let url = this.baseUrl + "/"+ localStorage.getItem("contentProviderId") + "/getcontents";
+  getContentByCpIdAndFilters(unprocessedContentFilters) {
+    let url = this.baseUrl + "/"+ localStorage.getItem("contentProviderId") + "/contentlist";
     this.logger.log(`Fetching content by contentprovider and filters`);
-    return this.http.get(url,  { observe: 'response'});
+    return this.http.post(url, unprocessedContentFilters, { observe: 'response'});
   //   this.unprocessedContent$ = timer(1, 3000).pipe(
   //     switchMap(() => this.http.get<Content[]>(url)),
   //     retry(),
@@ -47,6 +47,12 @@ export class ContentService {
     this.logger.log(`Fetching content by contentprovider and filters`);
     return this.http.post(url, formData, 
       {reportProgress: true, observe: 'events'});
+  }
+
+  processContent(contendIds) {
+    let url = this.baseUrl + "/"+ localStorage.getItem("contentProviderId") + "/contentlist";
+    this.logger.log(`Fetching content by contentprovider and filters`);
+    return this.http.get(url,  { observe: 'response'});
   }
 
 }

@@ -21,7 +21,8 @@ export class Content {
         public isHeaderContent: boolean,
         public isFreeContent: boolean,
         public artists: string[],
-        public attachments: Attachment[]
+        public attachments: Attachment[],
+        public isSelected: boolean = false
 
     ) {}
 }

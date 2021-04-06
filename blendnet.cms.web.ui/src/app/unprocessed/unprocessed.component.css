@@ -29,6 +29,7 @@ td.mat-footer-cell:last-of-type {
     overflow: auto;
   }
 
+  
   .btn-sec {
     margin-right: 3rem !important;
     text-align: right;
@@ -40,6 +41,18 @@ td.mat-footer-cell:last-of-type {
   .discard-btn {
     margin: 5px;
   }
+
+  @media (max-width: 800px) {
+    .btn-sec {
+      margin-right: 1rem !important;
+    }
+  }
+  @media (max-width: 600px) {
+    .btn-sec {
+      margin-right: 1rem !important;
+    }
+  }
+  
   .file-upload-error {
     color: red;
   }

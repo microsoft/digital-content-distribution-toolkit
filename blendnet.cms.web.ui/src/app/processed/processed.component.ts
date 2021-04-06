@@ -4,19 +4,13 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-
-export interface UserData {
-  id: string;
-  name: string;
-  status: string;
-  isBroadcastable: boolean;
-  isDeletable: boolean
-}
-
-
-const NAMES: string[] = [
-  'Dabangg', 'Bajrangi Bhaijaan', 'Don', 'RamLeela', 'Race 3', 'KingKong'
-];
+import { environment } from '../../environments/environment';
+import { Content } from '../models/content.model';
+import { ContentService } from '../services/content.service';
+import {interval, of, Subscription} from 'rxjs';
+import {catchError, map, startWith, switchMap} from 'rxjs/operators';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 export interface DialogData {
   message: string;
@@ -30,28 +24,92 @@ export interface DialogData {
   templateUrl: 'processed.component.html',
 })
 export class ProcessedComponent implements AfterViewInit {
-  displayedColumns: string[] = ['select', 'id', 'name', 'status', 'isBroadcastable', 'isDeletable'];
-  dataSource: MatTableDataSource<UserData>;
-  fileToUpload: File = null;
+  displayedColumns: string[] = ['select', 'title', 'status', 'token', 'isBroadcastable', 'isDeletable'];
+  dataSource: MatTableDataSource<Content>;
   showDialog: boolean = false;
-  animal: string;
-  message: string = "Please press OK to continue.";
+  deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";
+  processConfirmMessage: string = "Please press Continue to begin the transformation.";
   initialSelection = [];
   allowMultiSelect = true;
-  selection = new SelectionModel<UserData>(this.allowMultiSelect, this.initialSelection);
-
+  selection = new SelectionModel<Content>(this.allowMultiSelect, this.initialSelection);
+  selectedContents: number =0;
+  allowedMaxSelection: number = environment.allowedMaxSelection;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  polling: Subscription;
 
-  constructor(public dialog: MatDialog
+  constructor(public dialog: MatDialog,
+    public contentService: ContentService,
+    private toastr: ToastrService
     ) {
-    // Create 100 users
-    const users = Array.from({length: 100}, (_, k) => createNewUser(k + 1));
-
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(users);
   }
 
+  
+
+  ngOnInit(): void {
+    var unprocessedContentFilters = {
+      "contentUploadStatuses": [
+        // "UploadFailed", "UploadInProgress", "UploadComplete", "UploadSubmitted"
+      ],
+      "contentTransformStatuses": [
+        // "TransformNotInitialized"
+      ],
+      "contentBroadcastStatuses": [
+        // "BroadcastNotInitialized"
+      ]
+    }
+    this.polling = interval(50000)
+    .pipe(
+      startWith(0),
+      switchMap(() => 
+      this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters)
+      )
+    ).subscribe(
+      res => {
+        this.dataSource = this.createDataSource(res.body);
+        this.selectedContents=0;
+      },
+    err => console.log('HTTP Error', err));
+  }
+
+  toggleSelection(event, row) {
+    if(event.checked){
+        this.selectedContents++;
+        row.isSelected = true;
+      }else{
+        this.selectedContents--;
+        row.isSelected = false;
+      }
+  }
+
+  allowSelection(row) {
+    if(!row.isSelected && this.selectedContents >= this.allowedMaxSelection)
+      return true;
+    return false;
+  }
+  ngOnDestroy() {
+    if(this.polling){    
+    this.polling.unsubscribe();
+    }
+  }
+
+  createDataSource(rawData) {
+    var dataSource: Content[] =[];
+    rawData.forEach( data => {
+      data.isSelected = false;
+      dataSource.push(data);
+    });
+    return new MatTableDataSource(dataSource);
+  }
+
+  isContentBroadcastable(row) {
+    return row.contentTransformStatus !== "TransformComplete";
+  }
+
+  isContentDeletable(row) {
+    return row.contentTransformStatus !== "TransformComplete";
+
+  }
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -66,53 +124,66 @@ export class ProcessedComponent implements AfterViewInit {
     }
   }
 
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected == numRows;
-  }
 
-  masterToggle() {
-    this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
-  }
-
-
-
- openDeleteConfirmModal(): void {
+openBroadcastConfirmModal(): void {
   const dialogRef = this.dialog.open(ProcessConfirmDialog, {
-    data: {message: this.message},
-    width: '40%'
+    data: {
+      message: this.processConfirmMessage,
+      action: "BROADCAST"
+    },
+    width: '60%'
   });
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
   });
 }
-openBroadcastConfirmModal(): void {
+
+openDeleteConfirmModal(): void {
   const dialogRef = this.dialog.open(ProcessConfirmDialog, {
-    data: {message: this.message},
+    data: {
+      message: this.deleteConfirmMessage,
+      action: "DELETE"
+    },
     width: '40%'
   });
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
   });
+
+}
+
+viewToken(selectedContent) : void {
+  const dialogRef = this.dialog.open(ContentDetailsDialog, {
+    data: {content: selectedContent},
+    width: '50%',
+    height: '50%'
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+  });
+
 }
 
 }
 
 @Component({
-  selector: 'process-confirm-dialog',
-  templateUrl: 'process-confirm-dialog.html',
+  selector: 'content-token-dialog',
+  templateUrl: 'content-token-dialog.html',
+  styleUrls: ['processed.component.css']
 })
-export class ProcessConfirmDialog {
+export class ContentDetailsDialog {
 
   constructor(
-    public dialogRef: MatDialogRef<ProcessConfirmDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    public dialogRef: MatDialogRef<ContentDetailsDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    content: Content
 
+  ngOnInit(): void {
+    this.content = this.data.content;
+  }
   onCancelUpload(): void {
     this.dialogRef.close();
   }
@@ -124,21 +195,60 @@ export class ProcessConfirmDialog {
 }
 
 
-/** Builds and returns a new User. */
-function createNewUser(id: number): UserData {
-  const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))] ;
-  const status = id % 2 === 0 ? 'Processed': 'Broadcasting';
-  const isBroadcastableVal = status === 'Processed'? true: false;
-  const isDeletableVal = status === 'Processed'? true: false;
+@Component({
+  selector: 'process-confirm-dialog',
+  templateUrl: 'process-action-confirm-dialog.html',
+  styleUrls: ['processed.component.css']
+})
+export class ProcessConfirmDialog {
 
-  return {
-    id: id.toString(),
-    name: name,
-    status: status,
-    isBroadcastable: isBroadcastableVal,
-    isDeletable: isDeletableVal
-  };
+  constructor(
+    public dialogRef: MatDialogRef<ProcessConfirmDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public contentService: ContentService,
+    private toastr: ToastrService) {}
+
+  onCancel (action) {
+    if(action === "DELETE") {
+      this.onCancelDelete();
+    } else {
+      this.onCancelProcess();
+    }
+  }
+
+  onConfirm(action) {
+    if(action === "DELETE") {
+      this.onConfirmDelete();
+    } else {
+      this.onConfirmProcess();
+    }
+  }
+
+  onCancelProcess(): void {
+    this.dialogRef.close();
+  }
+
+  onConfirmProcess(): void {
+    this.contentService.processContent(null).subscribe(
+      res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
+      err => this.toastr.error(err));
+    this.dialogRef.close();
+  }
+
+  
+  onCancelDelete(): void {
+    this.dialogRef.close();
+  }
+
+  onConfirmDelete(): void {
+    this.contentService.processContent(null).subscribe(
+      res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
+      err => this.toastr.error(err));
+    this.dialogRef.close();
+  }
+
 }
+
 
 
 

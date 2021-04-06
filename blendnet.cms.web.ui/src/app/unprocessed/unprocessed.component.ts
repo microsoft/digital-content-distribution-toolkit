@@ -26,15 +26,16 @@ export interface DialogData {
 export class UnprocessedComponent implements AfterViewInit {
   displayedColumns: string[] = ['select', 'title', 'status', 'view', 'isProcessable', 'isDeletable'];
   dataSource: MatTableDataSource<Content>;
-  // fileToUpload: File = null;
   fileUploadError: string ="";
   showDialog: boolean = false;
-  animal: string;
-  message: string = "Please press OK to continue.";
+  deleteConfirmMessage: string = "Content once deleted can not be restored. Please press Continue to begin the deletion.";
+  processConfirmMessage: string = "Please press Continue to begin the transformation.";
   initialSelection = [];
   allowMultiSelect = true;
   selection = new SelectionModel<Content>(this.allowMultiSelect, this.initialSelection);
   file;
+  selectedContents: number =0;
+  allowedMaxSelection: number = environment.allowedMaxSelection;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('jsonFileInput') jsonFileInput;
@@ -49,12 +50,42 @@ export class UnprocessedComponent implements AfterViewInit {
   
 
   ngOnInit(): void {
+    var unprocessedContentFilters = {
+      "contentUploadStatuses": [
+        // "UploadFailed", "UploadInProgress", "UploadComplete", "UploadSubmitted"
+      ],
+      "contentTransformStatuses": [
+        // "TransformNotInitialized"
+      ],
+      "contentBroadcastStatuses": [
+        // "BroadcastNotInitialized"
+      ]
+    }
     this.polling = interval(50000)
     .pipe(
       startWith(0),
-      switchMap(() => this.contentService.getContentByCpIdAndFilters())
-    ).subscribe(res => this.dataSource = this.createDataSource(res.body),
+      switchMap(() => this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters))
+    ).subscribe(res => {
+      this.dataSource = this.createDataSource(res.body);
+      this.selectedContents=0;
+    },
     err => console.log('HTTP Error', err));
+  }
+
+  toggleSelection(event, row) {
+    if(event.checked){
+        this.selectedContents++;
+        row.isSelected = true;
+      }else{
+        this.selectedContents--;
+        row.isSelected = false;
+      }
+  }
+
+  allowSelection(row) {
+    if(!row.isSelected && this.selectedContents >= this.allowedMaxSelection)
+      return true;
+    return false;
   }
 
   ngOnDestroy() {
@@ -66,19 +97,20 @@ export class UnprocessedComponent implements AfterViewInit {
   createDataSource(rawData) {
     var dataSource: Content[] =[];
     rawData.forEach( data => {
+      data.isSelected = false;
       dataSource.push(data);
     });
     return new MatTableDataSource(dataSource);
   }
-  isContentProcessable(row) {
+
+  isContentNotProcessable(row) {
     return row.contentUploadStatus !== "UploadComplete";
   }
 
-  isContentDeletable(row) {
-    return (row.contentUploadStatus === "UploadInProgress" 
-      || row.contentUploadStatus === "UploadSubmitted");
-
+  isContentNotDeletable(row) {
+    return row.contentUploadStatus !== "UploadComplete";
   }
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -147,42 +179,44 @@ export class UnprocessedComponent implements AfterViewInit {
     return numSelected == numRows;
   }
 
-  masterToggle() {
-    this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
-  }
 
+//  openUploadConfirmModal(): void {
+//   const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
+//     data: {message: this.message},
+//     width: '40%'
+//   });
 
-
- openUploadConfirmModal(): void {
-  const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
-    data: {message: this.message},
-    width: '40%'
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    console.log('The dialog was closed');
-  });
-}
+//   dialogRef.afterClosed().subscribe(result => {
+//     console.log('The dialog was closed');
+//   });
+// }
 openProcessConfirmModal(): void {
   const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
-    data: {message: this.message}
+    data: {
+      message: this.processConfirmMessage,
+      action: "PROCESS"
+    },
+    width: '60%'
   });
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
   });
 }
+
 openDeleteConfirmModal(): void {
   const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
-    data: {message: this.message},
+    data: {
+      message: this.deleteConfirmMessage,
+      action: "DELETE"
+    },
     width: '40%'
   });
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
   });
+
 }
 
 viewContent(selectedContent) : void {
@@ -227,21 +261,54 @@ export class ContentDetailsDialog {
 
 
 @Component({
-  selector: 'upload-confirm-dialog',
-  templateUrl: 'upload-confirm-dialog.html',
+  selector: 'process-confirm-dialog',
+  templateUrl: 'unprocess-action-confirm-dialog.html',
   styleUrls: ['unprocessed.component.css']
 })
 export class UnprocessConfirmDialog {
 
   constructor(
     public dialogRef: MatDialogRef<UnprocessConfirmDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public contentService: ContentService,
+    private toastr: ToastrService) {}
 
-  onCancelUpload(): void {
+  onCancel (action) {
+    if(action === "DELETE") {
+      this.onCancelDelete();
+    } else {
+      this.onCancelProcess();
+    }
+  }
+
+  onConfirm(action) {
+    if(action === "DELETE") {
+      this.onConfirmDelete();
+    } else {
+      this.onConfirmProcess();
+    }
+  }
+
+  onCancelProcess(): void {
     this.dialogRef.close();
   }
 
-  onConfirmUpload(): void {
+  onConfirmProcess(): void {
+    this.contentService.processContent(null).subscribe(
+      res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
+      err => this.toastr.error(err));
+    this.dialogRef.close();
+  }
+
+  
+  onCancelDelete(): void {
+    this.dialogRef.close();
+  }
+
+  onConfirmDelete(): void {
+    this.contentService.processContent(null).subscribe(
+      res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
+      err => this.toastr.error(err));
     this.dialogRef.close();
   }
 
