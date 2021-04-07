@@ -101,12 +101,16 @@ namespace blendnet.cms.listener
 
                     string amsStreamingBaseUrl = hostContext.Configuration.GetValue<string>("AmsStreamingBaseUrl");
 
+                    int httpHandlerLifeTimeInMts = hostContext.Configuration.GetValue<int>("HttpHandlerLifeTimeInMts");
+                    int httpClientRetryCount = hostContext.Configuration.GetValue<int>("HttpClientRetryCount");
+
+
                     services.AddHttpClient(ApplicationConstants.HttpClientNames.AMS, c =>
                     {
                         c.BaseAddress = new Uri($"{amsStreamingBaseUrl}");
                         c.DefaultRequestHeaders.Add("Accept", "application/json");
-                    }).SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
-                      .AddPolicyHandler(GetRetryPolicy());
+                    }).SetHandlerLifetime(TimeSpan.FromMinutes(httpHandlerLifeTimeInMts))  //Set lifetime to five minutes
+                      .AddPolicyHandler(GetRetryPolicy(httpClientRetryCount));
 
                     string cmsStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSStorageConnectionString");
 
@@ -155,12 +159,12 @@ namespace blendnet.cms.listener
         /// Http Client Failures
         /// </summary>
         /// <returns></returns>
-        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(int httpClientRetryCount)
         {
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-                .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,retryAttempt)));
+                .WaitAndRetryAsync(httpClientRetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,retryAttempt)));
         }
 
         /// <summary>

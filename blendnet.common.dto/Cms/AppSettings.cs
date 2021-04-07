@@ -95,5 +95,9 @@ namespace blendnet.common.dto.cms
 
         public string IngestFileName { get; set; }
 
+        public int HttpHandlerLifeTimeInMts { get; set; }
+
+        public int HttpClientRetryCount { get; set; }
+
     }
 }
