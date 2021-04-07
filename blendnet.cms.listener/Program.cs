@@ -31,6 +31,9 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
 using blendnet.common.dto.cms;
 using blendnet.cms.listener.Common;
+using Polly;
+using Polly.Extensions.Http;
+using System.Net.Http;
 
 namespace blendnet.cms.listener
 {
@@ -102,7 +105,8 @@ namespace blendnet.cms.listener
                     {
                         c.BaseAddress = new Uri($"{amsStreamingBaseUrl}");
                         c.DefaultRequestHeaders.Add("Accept", "application/json");
-                    });
+                    }).SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Set lifetime to five minutes
+                      .AddPolicyHandler(GetRetryPolicy());
 
                     string cmsStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSStorageConnectionString");
 
@@ -146,6 +150,18 @@ namespace blendnet.cms.listener
 
                 });
 
+
+        /// <summary>
+        /// Http Client Failures
+        /// </summary>
+        /// <returns></returns>
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,retryAttempt)));
+        }
 
         /// <summary>
         /// Configure Microsoft Graph Client
