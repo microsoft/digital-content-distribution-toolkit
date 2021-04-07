@@ -1,3 +1,13 @@
-<div>
-    Hello
-</div>
+<h1>Dash URL</h1>
+<mat-form-field appearance="fill" class="dash-url-text-area">
+    <mat-label>Paste the below url in Google Chrome to play the content 
+    </mat-label>
+    <textarea matInput [(ngModel)]="dashUrl" 
+    cdkTextareaAutosize cdkAutosizeMinRows="5"></textarea>
+</mat-form-field>
+<button [cdkCopyToClipboard]="dashUrl" mat-icon-button>
+    <mat-icon  matTooltip="Copy to Clipboard">content_copy</mat-icon>
+</button>
+<br>
+URL Expires at: 
+<br>

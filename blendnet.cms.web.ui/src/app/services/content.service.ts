@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LogService } from './log.service';
 import { environment } from '../../environments/environment';
@@ -44,15 +44,21 @@ export class ContentService {
 
   uploadContent(formData){
     let url = this.baseUrl + "/"+ localStorage.getItem("contentProviderId") ;
-    this.logger.log(`Fetching content by contentprovider and filters`);
+    this.logger.log(`Uploading Content JSON`);
     return this.http.post(url, formData, 
       {reportProgress: true, observe: 'events'});
   }
 
   processContent(contendIds) {
-    let url = this.baseUrl + "/"+ localStorage.getItem("contentProviderId") + "/contentlist";
-    this.logger.log(`Fetching content by contentprovider and filters`);
-    return this.http.get(url,  { observe: 'response'});
+    let url = this.baseUrl + "/transform";
+    this.logger.log(`Processing`);
+    return this.http.post(url, contendIds, { observe: 'response'});
+  }
+
+  getContentToken(id) {
+    let url = this.baseUrl + "/" + id + "/token";
+    this.logger.log(`Fetching content token`);
+    return this.http.get(url, {responseType: 'text'});
   }
 
 }

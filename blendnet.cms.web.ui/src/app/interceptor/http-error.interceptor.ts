@@ -29,7 +29,7 @@ import {
               } else {
                 errMsg = error.error.title ?  error.error.title : "Something went wrong. Please try again!";
               }
-              errorMessage = `Error Code: ${error.status}\nMessage: ${errMsg}`;
+              errorMessage = errMsg;
             }
             
             console.log(errorMessage);

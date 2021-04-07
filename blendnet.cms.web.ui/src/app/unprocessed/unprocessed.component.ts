@@ -7,14 +7,12 @@ import {MatTableDataSource} from '@angular/material/table';
 import { environment } from '../../environments/environment';
 import { Content } from '../models/content.model';
 import { ContentService } from '../services/content.service';
-import {interval, of, Subscription} from 'rxjs';
-import {catchError, map, startWith, switchMap} from 'rxjs/operators';
-import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { of} from 'rxjs';
+import {catchError, map, } from 'rxjs/operators';
+import {  HttpEventType } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { ContentStatus } from '../models/content-status.enum';
 
-export interface DialogData {
-  message: string;
-}
 /**
  * @title Data table with sorting, pagination, and filtering.
  */
@@ -39,7 +37,7 @@ export class UnprocessedComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('jsonFileInput') jsonFileInput;
-  polling: Subscription;
+  // polling: Subscription;
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
@@ -50,28 +48,48 @@ export class UnprocessedComponent implements AfterViewInit {
   
 
   ngOnInit(): void {
-    var unprocessedContentFilters = {
-      "contentUploadStatuses": [
-        // "UploadFailed", "UploadInProgress", "UploadComplete", "UploadSubmitted"
-      ],
-      "contentTransformStatuses": [
-        // "TransformNotInitialized"
-      ],
-      "contentBroadcastStatuses": [
-        // "BroadcastNotInitialized"
-      ]
-    }
-    this.polling = interval(50000)
-    .pipe(
-      startWith(0),
-      switchMap(() => this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters))
-    ).subscribe(res => {
-      this.dataSource = this.createDataSource(res.body);
-      this.selectedContents=0;
-    },
-    err => console.log('HTTP Error', err));
+    this.getUnprocessedContent();
+    // this.polling = interval(50000)
+    // .pipe(
+    //   startWith(0),
+    //   switchMap(() => this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters))
+    // ).subscribe(res => {
+    //   this.dataSource = this.createDataSource(res.body);
+    //   this.selectedContents=0;
+    // },
+    // err => console.log('HTTP Error', err));
+    
   }
 
+  getUnprocessedContent() {
+    var unprocessedContentFilters = {
+      "contentUploadStatuses": [
+         ContentStatus.UPLOAD_SUBMITTED, 
+         ContentStatus.UPLOAD_INPROGRESS, 
+         ContentStatus.UPLOAD_FAILED,
+         ContentStatus.UPLOAD_COMPLETE
+      ],
+      "contentTransformStatuses": [
+        ContentStatus.TRANSFORM_NOT_INITIALIZED,
+        ContentStatus.TRANSFORM_AMS_JOB_INPROGRESS,
+        ContentStatus.TRANSFORM_DOWNLOAD_INPROGRESS,
+        ContentStatus.TRANSFORM_DOWNLOAD_COMPLETE
+      ],
+      "contentBroadcastStatuses": [
+         ContentStatus.BROADCAST_NOT_INITIALIZED
+      ]
+    }
+    this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters).subscribe(
+      res => {
+        this.dataSource = this.createDataSource(res.body);
+        this.selectedContents = 0;
+      },
+      err => {
+        this.toastr.error(err);
+        console.log('HTTP Error', err)
+      }
+    );
+  }
   toggleSelection(event, row) {
     if(event.checked){
         this.selectedContents++;
@@ -88,11 +106,11 @@ export class UnprocessedComponent implements AfterViewInit {
     return false;
   }
 
-  ngOnDestroy() {
-    if(this.polling){    
-    this.polling.unsubscribe();
-    }
-  }
+  // ngOnDestroy() {
+  //   if(this.polling){    
+  //   this.polling.unsubscribe();
+  //   }
+  // }
 
   createDataSource(rawData) {
     var dataSource: Content[] =[];
@@ -104,13 +122,21 @@ export class UnprocessedComponent implements AfterViewInit {
   }
 
   isContentNotProcessable(row) {
-    return row.contentUploadStatus !== "UploadComplete";
+    return row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
+    || row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED;
   }
 
   isContentNotDeletable(row) {
-    return row.contentUploadStatus !== "UploadComplete";
+    return row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
+    || row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED;  
   }
 
+  isMultiDeleteNotAllowed() {
+    return this.dataSource.data.length === 0;
+  }
+  isMultiProcessNotAllowed() {
+    return this.dataSource.data.length === 0;
+  }
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -167,17 +193,14 @@ export class UnprocessedComponent implements AfterViewInit {
       })).subscribe((event: any) => {
         if (typeof (event) === 'object') {
           console.log(event.body);
+          this.getUnprocessedContent();
         }  
       });  
 
       this.jsonFileInput.nativeElement.value = '';
   }
 
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected == numRows;
-  }
+
 
 
 //  openUploadConfirmModal(): void {
@@ -190,10 +213,11 @@ export class UnprocessedComponent implements AfterViewInit {
 //     console.log('The dialog was closed');
 //   });
 // }
-openProcessConfirmModal(): void {
+openProcessConfirmModal(row): void {
   const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
     data: {
       message: this.processConfirmMessage,
+      content: row,
       action: "PROCESS"
     },
     width: '60%'
@@ -273,39 +297,34 @@ export class UnprocessConfirmDialog {
     public contentService: ContentService,
     private toastr: ToastrService) {}
 
-  onCancel (action) {
-    if(action === "DELETE") {
-      this.onCancelDelete();
+
+  onConfirm() {
+    if(this.data.action === "DELETE") {
+      this.onConfirmDelete(this.data.content.id);
     } else {
-      this.onCancelProcess();
+      this.onConfirmProcess(this.data.content.id);
     }
   }
 
-  onConfirm(action) {
-    if(action === "DELETE") {
-      this.onConfirmDelete();
-    } else {
-      this.onConfirmProcess();
-    }
-  }
-
-  onCancelProcess(): void {
+  onCancel(): void {
     this.dialogRef.close();
   }
 
-  onConfirmProcess(): void {
-    this.contentService.processContent(null).subscribe(
+  onConfirmProcess(contentId): void {
+    var contentIds ={
+      "contentIds": [
+        contentId
+      ]
+    }
+    this.contentService.processContent(contentIds).subscribe(
       res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
       err => this.toastr.error(err));
     this.dialogRef.close();
   }
 
-  
-  onCancelDelete(): void {
-    this.dialogRef.close();
-  }
 
-  onConfirmDelete(): void {
+
+  onConfirmDelete(contentId): void {
     this.contentService.processContent(null).subscribe(
       res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
       err => this.toastr.error(err));

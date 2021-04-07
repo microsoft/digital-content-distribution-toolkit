@@ -22,7 +22,7 @@ export class Content {
         public isFreeContent: boolean,
         public artists: string[],
         public attachments: Attachment[],
-        public isSelected: boolean = false
-
+        public isSelected: boolean,
+        public dashUrl: string
     ) {}
 }

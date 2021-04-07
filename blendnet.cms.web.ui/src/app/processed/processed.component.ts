@@ -1,16 +1,16 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import {AfterViewInit, Component, Inject, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, Inject, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { environment } from '../../environments/environment';
 import { Content } from '../models/content.model';
 import { ContentService } from '../services/content.service';
 import {interval, of, Subscription} from 'rxjs';
-import {catchError, map, startWith, switchMap} from 'rxjs/operators';
-import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import {startWith, switchMap} from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { ContentStatus } from '../models/content-status.enum';
 
 export interface DialogData {
   message: string;
@@ -24,7 +24,7 @@ export interface DialogData {
   templateUrl: 'processed.component.html',
 })
 export class ProcessedComponent implements AfterViewInit {
-  displayedColumns: string[] = ['select', 'title', 'status', 'token', 'isBroadcastable', 'isDeletable'];
+  displayedColumns: string[] = ['select', 'title', 'status', 'url', 'isBroadcastable', 'isDeletable'];
   dataSource: MatTableDataSource<Content>;
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";
@@ -36,7 +36,7 @@ export class ProcessedComponent implements AfterViewInit {
   allowedMaxSelection: number = environment.allowedMaxSelection;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  polling: Subscription;
+  //polling: Subscription;
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
@@ -47,29 +47,45 @@ export class ProcessedComponent implements AfterViewInit {
   
 
   ngOnInit(): void {
-    var unprocessedContentFilters = {
+    this.getProcessedContent();
+    // this.polling = interval(50000)
+    // .pipe(
+    //   startWith(0),
+    //   switchMap(() => 
+    //   this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters)
+    //   )
+    // ).subscribe(
+    //   res => {
+    //     this.dataSource = this.createDataSource(res.body);
+    //     this.selectedContents=0;
+    //   },
+    // err => console.log('HTTP Error', err));
+    
+  };
+  getProcessedContent() {
+    var processedContentFilters = {
       "contentUploadStatuses": [
-        // "UploadFailed", "UploadInProgress", "UploadComplete", "UploadSubmitted"
+        ContentStatus.UPLOAD_COMPLETE
       ],
       "contentTransformStatuses": [
-        // "TransformNotInitialized"
+        ContentStatus.TRANSFORM_COMPLETE
       ],
       "contentBroadcastStatuses": [
-        // "BroadcastNotInitialized"
+        ContentStatus.BROADCAST_NOT_INITIALIZED, 
+        ContentStatus.BROADCAST_INPROGRESS,
+        ContentStatus.BROADCAST_FAILED
       ]
     }
-    this.polling = interval(50000)
-    .pipe(
-      startWith(0),
-      switchMap(() => 
-      this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters)
-      )
-    ).subscribe(
-      res => {
-        this.dataSource = this.createDataSource(res.body);
-        this.selectedContents=0;
-      },
-    err => console.log('HTTP Error', err));
+    this.contentService.getContentByCpIdAndFilters(processedContentFilters).subscribe(
+    res => {
+      this.dataSource = this.createDataSource(res.body);
+      this.selectedContents=0;
+    },
+    err => {
+      this.toastr.error(err);
+      console.log('HTTP Error', err)
+    }
+    );
   }
 
   toggleSelection(event, row) {
@@ -87,11 +103,11 @@ export class ProcessedComponent implements AfterViewInit {
       return true;
     return false;
   }
-  ngOnDestroy() {
-    if(this.polling){    
-    this.polling.unsubscribe();
-    }
-  }
+  // ngOnDestroy() {
+  //   if(this.polling){    
+  //   this.polling.unsubscribe();
+  //   }
+  // }
 
   createDataSource(rawData) {
     var dataSource: Content[] =[];
@@ -102,14 +118,16 @@ export class ProcessedComponent implements AfterViewInit {
     return new MatTableDataSource(dataSource);
   }
 
-  isContentBroadcastable(row) {
-    return row.contentTransformStatus !== "TransformComplete";
+  isContentNotBroadcastable(row) {
+    return row.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
+    || row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED;
   }
 
-  isContentDeletable(row) {
-    return row.contentTransformStatus !== "TransformComplete";
-
+  isContentNotDeletable(row) {
+    return row.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
+    || row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED;
   }
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -154,19 +172,17 @@ openDeleteConfirmModal(): void {
 
 }
 
-viewToken(selectedContent) : void {
-  const dialogRef = this.dialog.open(ContentDetailsDialog, {
+viewURL(selectedContent) : void {
+  const dialogRef = this.dialog.open(ContentTokenDialog, {
     data: {content: selectedContent},
-    width: '50%',
+    width: '60%',
     height: '50%'
   });
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
   });
-
 }
-
 }
 
 @Component({
@@ -174,15 +190,28 @@ viewToken(selectedContent) : void {
   templateUrl: 'content-token-dialog.html',
   styleUrls: ['processed.component.css']
 })
-export class ContentDetailsDialog {
+export class ContentTokenDialog {
 
   constructor(
-    public dialogRef: MatDialogRef<ContentDetailsDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
-    content: Content
+    public dialogRef: MatDialogRef<ContentTokenDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public contentService: ContentService,
+    private toastr: ToastrService) {}
+    contentToken;
+    dashUrl: string;
 
   ngOnInit(): void {
-    this.content = this.data.content;
+    this.contentService.getContentToken(this.data.content.id).subscribe(
+      res => {
+        this.contentToken = res;
+        this.dashUrl = "https://ampdemo.azureedge.net/?url=" +
+        this.data.content.dashUrl +
+        "&widevine=true&token=Bearer%3D" +
+        this.contentToken;
+        
+      },
+      err => this.toastr.error(err));
+    //this.data.content;
   }
   onCancelUpload(): void {
     this.dialogRef.close();

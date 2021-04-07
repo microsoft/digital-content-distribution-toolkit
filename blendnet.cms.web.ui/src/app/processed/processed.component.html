@@ -1,5 +1,11 @@
 <div class="cms-container">
-    <h1>Processed Content</h1>
+    <h1>
+        Processed Content
+        <button mat-raised-button color="primary" (click)="getProcessedContent()" style="float: right;">
+            Refresh data
+        </button>
+
+    </h1>
 
 
 <mat-form-field>
@@ -46,16 +52,16 @@
             </ng-container>
 
             <!-- View Action Column -->
-            <ng-container matColumnDef="token">
+            <ng-container matColumnDef="url">
                 <th mat-header-cell *matHeaderCellDef> 
                     <button mat-icon-button disabled>
-                        <mat-icon mat-list-icon >vpn_key</mat-icon> 
+                        <mat-icon mat-list-icon >link</mat-icon> 
                     </button>
                 </th>
                 <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button  (click)="viewToken(row)">
+                    <button mat-icon-button  (click)="viewURL(row)">
                         <mat-icon mat-list-icon 
-                        matTooltip="View token">vpn_key</mat-icon> 
+                        matTooltip="View URL">link</mat-icon> 
                     </button>
                 </td>
             </ng-container>
@@ -68,7 +74,9 @@
                     </button> 
                 </th>
                 <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button [disabled]="!row.isBroadcastable" (click)="openBroadcastConfirmModal()">
+                    <button mat-icon-button 
+                    [disabled]="isContentNotBroadcastable(row)"
+                    (click)="openBroadcastConfirmModal()">
                         <mat-icon mat-list-icon 
                         matTooltip="Start broadcast">podcasts</mat-icon> 
                     </button>
@@ -83,7 +91,9 @@
                     </button>
                 </th>
                 <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button [disabled]="!row.isDeletable" (click)="openDeleteConfirmModal()">
+                    <button mat-icon-button 
+                    [disabled]="isContentNotDeletable(row)"
+                    (click)="openDeleteConfirmModal()">
                         <mat-icon mat-list-icon 
                         matTooltip="Archive Content">delete</mat-icon> 
                     </button>

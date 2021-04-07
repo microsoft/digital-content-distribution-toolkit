@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UnprocessedComponent } from './unprocessed/unprocessed.component';
-import { ProcessedComponent } from './processed/processed.component';
+import { ContentTokenDialog, ProcessedComponent } from './processed/processed.component';
 import { BroadcastedComponent } from './broadcasted/broadcasted.component';
 import { DevicesComponent } from './devices/devices.component';
 import { ManageContentComponent } from './manage-content/manage-content.component';
@@ -87,7 +87,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     SasKeyComponent,
     AddContentProviderComponent,
     HomeComponent,
-    SpinnerOverlayComponent
+    SpinnerOverlayComponent,
+    ContentTokenDialog
   ],
   imports: [
     HttpClientModule,
