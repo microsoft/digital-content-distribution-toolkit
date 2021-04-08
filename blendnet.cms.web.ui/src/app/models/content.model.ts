@@ -23,6 +23,11 @@ export class Content {
         public artists: string[],
         public attachments: Attachment[],
         public isSelected: boolean,
-        public dashUrl: string
+        public dashUrl: string,
+        public contentBroadcastStatus: string,
+        public contentTransformStatus: string,
+        public contentTransformStatusUpdatedBy: string,
+        public contentUploadStatus: string,
+        public contentUploadStatusUpdatedBy: string
     ) {}
 }

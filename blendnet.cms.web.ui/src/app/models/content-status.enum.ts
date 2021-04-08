@@ -4,10 +4,12 @@ export enum ContentStatus {
     UPLOAD_FAILED ="UploadFailed",
     UPLOAD_COMPLETE ="UploadComplete",
 
-    TRANSFORM_NOT_INITIALIZED = 'TransformNotInitialized',
-    TRANSFORM_AMS_JOB_INPROGRESS = 'TransformAMSJobInProgress',
+    TRANSFORM_NOT_INITIALIZED = "TransformNotInitialized",
+    TRANSFORM_SUBMITTED = "TransformSubmitted",
+    TRANSFORM_INPROGRESS = "TransformInProgress",
+    TRANSFORM_AMS_JOB_INPROGRESS = "TransformAMSJobInProgress",
     TRANSFORM_DOWNLOAD_INPROGRESS = "TransformDownloadInProgress",
-    TRANSFORM_DOWNLOAD_COMPLETE = "TransformDownloadComplete",
+    // TRANSFORM_DOWNLOAD_COMPLETE = "TransformDownloadComplete",
     TRANSFORM_COMPLETE = "TransformComplete",
     TRANSFORM_FAILED = "TransformFailed",
 

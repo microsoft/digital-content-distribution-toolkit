@@ -120,12 +120,14 @@ export class ProcessedComponent implements AfterViewInit {
 
   isContentNotBroadcastable(row) {
     return row.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
-    || row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED;
+    || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_FAILED);
   }
 
   isContentNotDeletable(row) {
     return row.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
-    || row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED;
+    || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED 
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_FAILED);
   }
 
   ngAfterViewInit() {

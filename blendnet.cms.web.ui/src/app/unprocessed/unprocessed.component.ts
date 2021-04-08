@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import {AfterViewInit, Component, Inject, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Inject, Output, ViewChild, EventEmitter} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -49,16 +49,6 @@ export class UnprocessedComponent implements AfterViewInit {
 
   ngOnInit(): void {
     this.getUnprocessedContent();
-    // this.polling = interval(50000)
-    // .pipe(
-    //   startWith(0),
-    //   switchMap(() => this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters))
-    // ).subscribe(res => {
-    //   this.dataSource = this.createDataSource(res.body);
-    //   this.selectedContents=0;
-    // },
-    // err => console.log('HTTP Error', err));
-    
   }
 
   getUnprocessedContent() {
@@ -71,9 +61,11 @@ export class UnprocessedComponent implements AfterViewInit {
       ],
       "contentTransformStatuses": [
         ContentStatus.TRANSFORM_NOT_INITIALIZED,
+        ContentStatus.TRANSFORM_SUBMITTED,
+        ContentStatus.TRANSFORM_INPROGRESS,
         ContentStatus.TRANSFORM_AMS_JOB_INPROGRESS,
-        ContentStatus.TRANSFORM_DOWNLOAD_INPROGRESS,
-        ContentStatus.TRANSFORM_DOWNLOAD_COMPLETE
+        ContentStatus.TRANSFORM_DOWNLOAD_INPROGRESS
+        // ContentStatus.TRANSFORM_DOWNLOAD_COMPLETE
       ],
       "contentBroadcastStatuses": [
          ContentStatus.BROADCAST_NOT_INITIALIZED
@@ -106,12 +98,6 @@ export class UnprocessedComponent implements AfterViewInit {
     return false;
   }
 
-  // ngOnDestroy() {
-  //   if(this.polling){    
-  //   this.polling.unsubscribe();
-  //   }
-  // }
-
   createDataSource(rawData) {
     var dataSource: Content[] =[];
     rawData.forEach( data => {
@@ -123,20 +109,17 @@ export class UnprocessedComponent implements AfterViewInit {
 
   isContentNotProcessable(row) {
     return row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
-    || row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED;
+    || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED
+    && row.contentTransformStatus !== ContentStatus.TRANSFORM_FAILED);
   }
 
   isContentNotDeletable(row) {
     return row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
-    || row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED;  
+    || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED
+    && row.contentTransformStatus !== ContentStatus.TRANSFORM_FAILED);  
   }
 
-  isMultiDeleteNotAllowed() {
-    return this.dataSource.data.length === 0;
-  }
-  isMultiProcessNotAllowed() {
-    return this.dataSource.data.length === 0;
-  }
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -203,25 +186,46 @@ export class UnprocessedComponent implements AfterViewInit {
 
 
 
-//  openUploadConfirmModal(): void {
-//   const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
-//     data: {message: this.message},
-//     width: '40%'
-//   });
-
-//   dialogRef.afterClosed().subscribe(result => {
-//     console.log('The dialog was closed');
-//   });
-// }
 openProcessConfirmModal(row): void {
+  var rows = [];
+  if(row) {
+    rows.push(row);
+    this.openProcessDialog(rows);
+  } else {
+    rows = this.dataSource ? this.dataSource.data.filter(d => d.isSelected) : [];
+    if(rows.length <1) {
+      this.toastr.warning("Please select one or more content/s for processing");
+    } else {
+      var notEligibleForTransform = rows.filter(d => 
+        (d.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE 
+        || (d.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED
+        && d.contentTransformStatus!== ContentStatus.TRANSFORM_FAILED)));
+        if(notEligibleForTransform.length > 0) {
+          this.toastr.warning("One or more selected content/s cannot be processed");
+        } else {
+            this.openProcessDialog(rows);          
+        }
+    }    
+  }
+}
+openProcessDialog(rows) {
   const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
     data: {
       message: this.processConfirmMessage,
-      content: row,
+      contents: rows,
       action: "PROCESS"
     },
     width: '60%'
   });
+  dialogRef.componentInstance.onSuccessfulSubmission.subscribe(res => {
+    if(res.body.length == 0) {
+      this.toastr.success("Content/s submitted successfully for transformation");
+    } else {
+      this.toastr.warning(res.body[0]);
+    }
+    this.getUnprocessedContent();
+    dialogRef.close();
+  })
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
@@ -290,6 +294,8 @@ export class ContentDetailsDialog {
   styleUrls: ['unprocessed.component.css']
 })
 export class UnprocessConfirmDialog {
+  
+  @Output() onSuccessfulSubmission= new EventEmitter<any>();
 
   constructor(
     public dialogRef: MatDialogRef<UnprocessConfirmDialog>,
@@ -300,9 +306,9 @@ export class UnprocessConfirmDialog {
 
   onConfirm() {
     if(this.data.action === "DELETE") {
-      this.onConfirmDelete(this.data.content.id);
+      this.onConfirmDelete(this.data.contents);
     } else {
-      this.onConfirmProcess(this.data.content.id);
+      this.onConfirmProcess(this.data.contents);
     }
   }
 
@@ -310,14 +316,15 @@ export class UnprocessConfirmDialog {
     this.dialogRef.close();
   }
 
-  onConfirmProcess(contentId): void {
+  onConfirmProcess(contents): void {
+    var selectedIds = contents.map(content => 
+      {return content.id});
     var contentIds ={
-      "contentIds": [
-        contentId
-      ]
+      "contentIds": selectedIds
     }
     this.contentService.processContent(contentIds).subscribe(
-      res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
+      res => //this.toastr.success("Content/s submitted for transformation sucessfully!!"),
+      this.onSuccessfulSubmission.emit(res),
       err => this.toastr.error(err));
     this.dialogRef.close();
   }

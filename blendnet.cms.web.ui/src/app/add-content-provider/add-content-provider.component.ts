@@ -6,9 +6,7 @@ import { Contentprovider } from '../models/contentprovider.model';
 import { ContentProviderService } from '../services/content-provider.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../services/user.service';
-import { catchError,  map,  switchMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
-import { User } from '../models/user.model';
+
 
 @Component({
   selector: 'app-add-content-provider',
