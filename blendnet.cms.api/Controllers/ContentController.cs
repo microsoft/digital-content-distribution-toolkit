@@ -309,6 +309,8 @@ namespace blendnet.cms.api.Controllers
             {
                 content.SetIdentifiers();
 
+                content.CreatedDate = DateTime.UtcNow;
+
                 content.ContentProviderId = contentProviderId;
 
                 // Update the ContentUpload Status to UploadInProgress
