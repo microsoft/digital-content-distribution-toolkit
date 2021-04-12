@@ -1,0 +1,36 @@
+variables:
+  RunNumber: '0.0.1-$(Build.BuildNumber)'
+
+trigger:
+- t-nag/pipelines
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: Docker@2
+  displayName: Login to ACR
+  inputs:
+    command: login
+    containerRegistry: $(acr-service-connection)
+
+- task: CmdLine@2
+  displayName: "Building docker image"
+  inputs:
+    script: "cd ./blendnet.crm.user.api; docker build -t $(image_name):$(RunNumber) -f ./Dockerfile ."
+
+- task: CmdLine@2
+  displayName: "Tagging docker image"
+  inputs:
+    script: "docker tag $(image_name):$(RunNumber) $(image_name):latest"
+
+- task: CmdLine@2
+  displayName: "Pushing image to ACR"
+  inputs:
+    script: "docker push --all-tags $(image_name)"
+
+- task: Docker@2
+  displayName: Logout of ACR
+  inputs:
+    command: logout
+    containerRegistry: $(acr-service-connection)
