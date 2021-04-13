@@ -62,6 +62,33 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         }
 
         /// <summary>
+        /// Returns the file content from BLOB
+        /// </summary>
+        /// <param name="containerClient"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static async Task<string> GetBlobContent(BlobContainerClient containerClient, string fileName)
+        {
+            // Get a reference to a blob
+            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+
+            BlobDownloadInfo downloadInfo = await blobClient.DownloadAsync();
+
+            var content = downloadInfo.Content;
+
+            string fileContent = string.Empty;
+
+            using (var streamReader = new StreamReader(content))
+            {
+
+                fileContent = streamReader.ReadToEnd();
+            }
+
+            return fileContent;
+
+        }
+
+        /// <summary>
         /// Returns the check sum
         /// </summary>
         /// <param name="fileName"></param>

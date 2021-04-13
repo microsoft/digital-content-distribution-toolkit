@@ -55,6 +55,8 @@ namespace blendnet.cms.listener
 
             _eventBus.Subscribe<ContentTransformIntegrationEvent, ContentTransformIntegrationEventHandler>();
 
+            _eventBus.Subscribe<ContentBroadcastIntegrationEvent, ContentBroadcastIntegrationEventHandler>();
+
             CustomPropertyCorrelationRule correlationRule = new CustomPropertyCorrelationRule()
             {
                 PropertyName = _appSettings.AmsEventGridPropertyName,
