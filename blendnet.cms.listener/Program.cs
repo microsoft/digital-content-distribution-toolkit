@@ -116,6 +116,9 @@ namespace blendnet.cms.listener
 
                     string cmsCDNStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSCDNStorageConnectionString");
 
+                    string broadcastStorageConnectionString = hostContext.Configuration.GetValue<string>("BroadcastStorageConnectionString");
+
+
                     string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
 
                     services.AddAzureClients(builder => 
@@ -127,6 +130,10 @@ namespace blendnet.cms.listener
 
                         builder.AddBlobServiceClient(cmsCDNStorageConnectionString)
                                 .WithName(ApplicationConstants.StorageInstanceNames.CMSCDNStorage)
+                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
+
+                        builder.AddBlobServiceClient(broadcastStorageConnectionString)
+                                .WithName(ApplicationConstants.StorageInstanceNames.BroadcastStorage)
                                 .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
 
                         //Add Service Bus Client

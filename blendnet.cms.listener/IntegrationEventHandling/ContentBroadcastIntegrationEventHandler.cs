@@ -35,6 +35,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
         BlobServiceClient _cmsBlobServiceClient;
 
+        BlobServiceClient _broadcastServiceClient;
+
         IContentRepository _contentRepository;
 
         SegmentDowloader _segmentDowloader;
@@ -64,6 +66,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             _cmsBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSStorage);
 
+            _broadcastServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.BroadcastStorage);
+
             _appSettings = optionsMonitor.CurrentValue;
 
             _contentRepository = contentRepository;
@@ -85,7 +89,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 using (_telemetryClient.StartOperation<RequestTelemetry>("ContentBroadcastIntegrationEventHandler.Handle"))
                 {
                     if (integrationEvent.ContentBroadcastCommand == null ||
-                        integrationEvent.ContentBroadcastCommand.ContentId == null ||
+                        integrationEvent.ContentBroadcastCommand.ContentId == Guid.Empty ||
                         integrationEvent.ContentBroadcastCommand.BroadcastRequest == null)
                     {
                         _logger.LogInformation($"No content details or Broadcast details found in integration event. Pass correct data to integation event");
@@ -197,6 +201,17 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 Tuple<long,string> infoData = await _tarGenerator.CreateTar(processedContainer, tarfilePath, tarfileName, finalDirectory, false);
 
                 _logger.LogInformation($"Broadcast TAR file generated at {tarfilePath} - {infoData.Item1} for content id: {content.Id.Value} command id {broadcastCommand.Id.Value}");
+                
+                if(_appSettings.PerformCopyToBroadcastStorage)
+                {
+                    await CopyTarToBroadcastStorage(processedContainer, tarfilePath, tarfileName);
+
+                    _logger.LogInformation($"Broadcast TAR file Copied to broadcast storage for content id: {content.Id.Value} command id {broadcastCommand.Id.Value}");
+                }
+                else
+                {
+                    _logger.LogInformation($"Not copying on Broadcast storage as it is configured to false.");
+                }
 
             }
             catch (Exception ex)
@@ -207,6 +222,27 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 _logger.LogError(ex, $"{errorMessage}");
             }
+        }
+
+        /// <summary>
+        /// Copies the final TAR file to broadcast partner's storage
+        /// </summary>
+        /// <param name="processedContainer"></param>
+        /// <param name="tarfilePath"></param>
+        /// <returns></returns>
+        private async Task CopyTarToBroadcastStorage(BlobContainerClient processedContainer, string tarfilePath, string tarFileName)
+        {
+            BlobContainerClient broadcastContainer = this._broadcastServiceClient.GetBlobContainerClient(_appSettings.BroadcastStorageContainerName);
+
+            BlockBlobClient sourceBlob = processedContainer.GetBlockBlobClient(tarfilePath);
+
+            BlockBlobClient targetBlob = broadcastContainer.GetBlockBlobClient(tarFileName);
+
+            string blobSasUrl = EventHandlingUtilities.GetServiceSasUriForBlob(processedContainer.GetBlobClient(tarfilePath),
+                                                             ApplicationConstants.StorageContainerPolicyNames.ProcessedReadOnly,
+                                                             _appSettings.SASTokenExpiryToCopyContentInMts);
+
+            await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob, blobSasUrl);
         }
 
         /// <summary>
@@ -328,7 +364,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.END_DATE, broadcastCommand.BroadcastRequest.EndDate.ToString(ApplicationConstants.BroadcastDateFormat));
 
-            string filters = string.Join(string.Empty, broadcastCommand.BroadcastRequest.Filters.Select(item => "<filter>" + item + "</filter"));
+            string filters = string.Join(string.Empty, broadcastCommand.BroadcastRequest.Filters.Select(item => "<filter>" + item + "</filter>"));
 
             xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.FILTERS, filters);
 

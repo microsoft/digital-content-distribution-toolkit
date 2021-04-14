@@ -39,6 +39,7 @@ namespace blendnet.common.dto
         {
             public const string CMSStorage = "CMSStorage";
             public const string CMSCDNStorage = "CMSCDNStorage";
+            public const string BroadcastStorage = "BroadcastStorage";
         }
 
         public struct SupportedFileFormats 
