@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  allowedMaxSelection: 3,
   maxFileUploadSize: 1000000,
   fileAllowedType: 'application/json',
   contentProviderApiUrl: 'https://localhost:44338/api/v1/ContentProvider',
