@@ -136,22 +136,33 @@ namespace blendnet.crm.user.api
 
             string graphClientSecret = Configuration.GetValue<string>("GraphClientSecret");
 
+
+            IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
+                                                                           .Create(graphClientId)
+                                                                           .WithTenantId(graphClientTenant)
+                                                                           .WithClientSecret(graphClientSecret)
+                                                                           .Build();
+
+            IAuthenticationProvider authProvider = new ClientCredentialProvider(confidentialClientApplication);
+            
+            services.AddTransient<GraphServiceClient>((sp) => { return new GraphServiceClient(authProvider); });
+
             //Register graph authentication provider
-            services.AddTransient<IAuthenticationProvider>(iap => {
+            //services.AddTransient<IAuthenticationProvider>(iap => {
 
-                IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
-               .Create(graphClientId)
-               .WithTenantId(graphClientTenant)
-               .WithClientSecret(graphClientSecret)
-               .Build();
+            //    IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
+            //   .Create(graphClientId)
+            //   .WithTenantId(graphClientTenant)
+            //   .WithClientSecret(graphClientSecret)
+            //   .Build();
 
-                ClientCredentialProvider authProvider = new ClientCredentialProvider(confidentialClientApplication);
+            //    ClientCredentialProvider authProvider = new ClientCredentialProvider(confidentialClientApplication);
 
-                return authProvider;
-            });
+            //    return authProvider;
+            //});
 
-            //register graph
-            services.AddTransient<GraphServiceClient>();
+            ////register graph
+            //services.AddTransient<GraphServiceClient>();
         }
 
         /// <summary>
