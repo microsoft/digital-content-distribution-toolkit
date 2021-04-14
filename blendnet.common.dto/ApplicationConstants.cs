@@ -39,6 +39,7 @@ namespace blendnet.common.dto
         {
             public const string CMSStorage = "CMSStorage";
             public const string CMSCDNStorage = "CMSCDNStorage";
+            public const string BroadcastStorage = "BroadcastStorage";
         }
 
         public struct SupportedFileFormats 
@@ -82,6 +83,8 @@ namespace blendnet.common.dto
 
         public const string IngestTemplateFileName = "ingest_template.xml";
 
+        public const string BroadcastDateFormat = "yyyy-MM-ddTHH:mm:ss";
+
         public struct AdaptiveSetTypes
         {
             public const string Audio = "audio";
@@ -107,8 +110,9 @@ namespace blendnet.common.dto
             public const string MPD_FILE_SIZE = "{MPD_FILE_SIZE}";
             public const string MPD_FILE_CHECKSUM = "{MPD_FILE_CHECKSUM}";
             public const string CONTENT_ID = "{CONTENT_ID}";
+            public const string COMMAND_ID = "{COMMAND_ID}";
             public const string CONTENT_HIERARCHY = "{CONTENT_HIERARCHY}";
-	    }
-
+            public const string FILTERS = "{FILTERS}";
+        }
     }
 }

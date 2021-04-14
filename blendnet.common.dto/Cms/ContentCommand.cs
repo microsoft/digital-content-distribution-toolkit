@@ -56,6 +56,11 @@ namespace blendnet.common.dto.Cms
         /// Command Status
         /// </summary>
         public CommandStatus CommandStatus { get; set; }
+
+        /// <summary>
+        /// Details about broadcast data
+        /// </summary>
+        public BroadcastRequest BroadcastRequest { get; set; }
     }
 
     /// <summary>

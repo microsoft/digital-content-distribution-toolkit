@@ -78,7 +78,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 using (_telemetryClient.StartOperation<RequestTelemetry>("ContentTransformIntegrationEventHandler.Handle"))
                 {
                     if (integrationEvent.ContentTransformCommand == null || 
-                        integrationEvent.ContentTransformCommand.ContentId == null)
+                        integrationEvent.ContentTransformCommand.ContentId == Guid.Empty)
                     {
                         _logger.LogInformation($"No content details found in integration event. Pass correct data to integation event");
 

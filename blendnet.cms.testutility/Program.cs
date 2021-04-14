@@ -74,45 +74,59 @@ namespace blendnet.cms.testutility
 
                 Console.WriteLine($"Starting transcoding process for {_assestIngestUrl}! - {_uniqueness_raw.ToString()}");
 
+                Console.WriteLine($"Dowloading to Blob - {config.DownloadToBlob}");
+
                 #region Direct Test
-                //********************************
-                //try
-                //{
-                //    BlobServiceClient blobServiceClient = new BlobServiceClient(config.StorageConnection);
+                if (args.Length > 1)
+                {
+                    Console.WriteLine("Inside Download");
 
-                //    BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient("sourcecontainer");
+                    await DownloadAsync(config);
+                }
+                else
+                {
+                    Console.WriteLine("Inside Run Async");
 
-                //    Console.WriteLine($"****Starting downloading Segments to blob****** {DateTime.Now.ToString()}");
-
-                //    MpdInfo segmentInfo = await SegmentDownloader.DownloadSegments(_assestIngestUrl,
-                //                                                           _blobworkingDirectory,
-                //                                                           _uniqueness_raw.ToString(),
-                //                                                           blobContainerClient);
-
-                //    Console.WriteLine($"****Completed downloading Segments to blob****** {DateTime.Now.ToString()}");
-
-                //    Console.WriteLine($"****Moving content to Tar Files to blob****** {DateTime.Now.ToString()}");
-
-                //    await MoveContentToFinalBlob(config, blobContainerClient, segmentInfo);
-
-                //    Console.WriteLine($"****Moving content ended to Tar Files to blob****** {DateTime.Now.ToString()}");
-
-                //}
-                //catch (Exception ex)
-                //{
-                //    string exs = ex.ToString();
-
-                //    Console.WriteLine(exs);
-                //}
-
-                //*****************
+                    await RunAsync(config);
+                }
                 #endregion
-
-                await RunAsync(config);
             }
 
             Console.WriteLine("Process Complete!");
         }
+
+        private static async Task DownloadAsync(AppSettings config)
+        {
+            try
+            {
+                BlobServiceClient blobServiceClient = new BlobServiceClient(config.StorageConnection);
+
+                BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient("sourcecontainer");
+
+                Console.WriteLine($"****Starting downloading Segments to blob****** {DateTime.Now.ToString()}");
+
+                MpdInfo segmentInfo = await SegmentDownloader.DownloadSegments(_assestIngestUrl,
+                                                                       _blobworkingDirectory,
+                                                                       _uniqueness_raw.ToString(),
+                                                                       blobContainerClient);
+
+                Console.WriteLine($"****Completed downloading Segments to blob****** {DateTime.Now.ToString()}");
+
+                Console.WriteLine($"****Moving content to Tar Files to blob****** {DateTime.Now.ToString()}");
+
+                await MoveContentToFinalBlob(config, blobContainerClient, segmentInfo);
+
+                Console.WriteLine($"****Moving content ended to Tar Files to blob****** {DateTime.Now.ToString()}");
+
+            }
+            catch (Exception ex)
+            {
+                string exs = ex.ToString();
+
+                Console.WriteLine(exs);
+            }
+        }
+
 
         private static async Task RunAsync(AppSettings config)
         {

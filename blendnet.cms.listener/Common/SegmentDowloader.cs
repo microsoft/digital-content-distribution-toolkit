@@ -45,7 +45,14 @@ namespace blendnet.cms.listener
         }
 
 
-
+        /// <summary>
+        /// Responsible for downloading segments
+        /// </summary>
+        /// <param name="dashUrl"></param>
+        /// <param name="downloadDirectory"></param>
+        /// <param name="uniqueId"></param>
+        /// <param name="blobContainerClient"></param>
+        /// <returns></returns>
         public async Task<MpdInfo> DownloadSegments(string dashUrl,
                                                     string downloadDirectory, 
                                                     string uniqueId,
@@ -177,6 +184,45 @@ namespace blendnet.cms.listener
         {
             return await DownloadSegments(dashUrl, downloadDirectory, uniqueId,null);
         }
+
+
+        /// <summary>
+        /// Returns only the segment metadata
+        /// </summary>
+        /// <param name="dashUrl"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        public MpdInfo GetSegmentsMetadata(string dashUrl,string uniqueId)
+        {
+            MpdInfo mpdInfo = new MpdInfo() { AdaptiveSets = new List<AdaptiveSetInfo>() };
+
+            MPDParser parser = new MPDParser();
+
+            MPD manifest = parser.parse(dashUrl);
+
+            Uri manifestUrl = new Uri(dashUrl);
+
+            AdaptiveSetInfo adaptiveSetInfo;
+
+            //Download audio and video segments
+            foreach (var adaptationSet in manifest.Periods[0].AdaptationSets)
+            {
+                uint bandwidth = adaptationSet.Representations[0].Bandwidth;
+
+                string fullName = adaptationSet.SegmentTemplate.InitializationAttribute.Replace(ApplicationConstants.MPDTokens.Bandwidth,
+                                                                                                bandwidth.ToString());
+                string directoryName = fullName.Split('/')[0];
+
+                adaptiveSetInfo = new AdaptiveSetInfo() { DirectoryName = directoryName, Type = adaptationSet.ContentType };
+
+                mpdInfo.AdaptiveSets.Add(adaptiveSetInfo);
+            }
+
+            mpdInfo.MpdName = $"{uniqueId}.mpd";
+
+            return mpdInfo;
+        }
+
 
         /// <summary>
         /// Returns the Init Url

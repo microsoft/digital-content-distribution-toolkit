@@ -238,8 +238,9 @@ namespace blendnet.common.dto.Cms
         BroadcastNotInitialized = 0,
         BroadcastSubmitted = 1,
         BroadcastInProgress = 2,
-        BroadcastComplete = 3,
-        BroadcastFailed = 4
+        BroadcastTarPushed = 3,
+        BroadcastComplete = 4,
+        BroadcastFailed = 5
     }
 
     

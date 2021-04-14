@@ -79,7 +79,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     _logger.LogInformation($"Message Recieved for content id: {integrationEvent.ContentUploadCommand.ContentId.ToString()}");
 
                     if (integrationEvent.ContentUploadCommand == null || 
-                        integrationEvent.ContentUploadCommand.ContentId == null)
+                        integrationEvent.ContentUploadCommand.ContentId == Guid.Empty)
                     {
                         _logger.LogInformation($"No content details found in integration event. Pass correct data to integation event");
 

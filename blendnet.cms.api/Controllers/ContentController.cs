@@ -273,6 +273,85 @@ namespace blendnet.cms.api.Controllers
           
         }
 
+        /// <summary>
+        /// Submits the Broadcast Request
+        /// </summary>
+        /// <param name="broadcastContentRequest"></param>
+        /// <returns></returns>
+        [HttpPost("broadcast", Name = nameof(BroadcastContent))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult> BroadcastContent(BroadcastContentRequest broadcastContentRequest)
+        {
+            if (broadcastContentRequest == null ||
+                broadcastContentRequest.ContentIds == null ||
+                broadcastContentRequest.ContentIds.Count() <= 0 ||
+                broadcastContentRequest.Filters == null ||
+                broadcastContentRequest.Filters.Count() <= 0 ||
+                broadcastContentRequest.StartDate.Equals(DateTime.MinValue) ||
+                broadcastContentRequest.EndDate.Equals(DateTime.MinValue))
+            {
+                return BadRequest($"Content Id(s), Filter(s) , Start Date and End Date, all are mandatory!");
+            }
+
+            if (broadcastContentRequest.EndDate <= broadcastContentRequest.StartDate)
+            {
+                return BadRequest($"End Date should be a future date and should be greater than start date!");
+            }
+
+            List<Content> contentlist = await _contentRepository.GetContentByIds(broadcastContentRequest.ContentIds);
+
+            List<string> errorList = new List<string>();
+
+            //adds the invalid id details to the error list
+            ValidateContentIds(broadcastContentRequest.ContentIds, contentlist, errorList);
+
+            if (contentlist != null && contentlist.Count > 0)
+            {
+                foreach (Content content in contentlist)
+                {
+                    if (content.ContentUploadStatus == ContentUploadStatus.UploadComplete &&
+                        content.ContentTransformStatus == ContentTransformStatus.TransformComplete && 
+                         (content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastNotInitialized ||
+                         content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastFailed))
+                    {
+                        content.ContentBroadcastStatus = ContentBroadcastStatus.BroadcastSubmitted;
+
+                        content.ModifiedDate = DateTime.UtcNow;
+
+                        await _contentRepository.UpdateContent(content);
+
+                        ContentCommand contentBroadCommand = new ContentCommand()
+                        {
+                            CommandType = CommandType.BroadcastContent,
+                            ContentId = content.Id.Value,
+                            BroadcastRequest = new BroadcastRequest() 
+                            { 
+                                Filters = broadcastContentRequest.Filters,
+                                StartDate = broadcastContentRequest.StartDate,
+                                EndDate = broadcastContentRequest.EndDate
+                            }
+                        };
+
+                        //publish the event
+                        ContentBroadcastIntegrationEvent contentBroadcastIntegrationEvent = new ContentBroadcastIntegrationEvent()
+                        {
+                            ContentBroadcastCommand = contentBroadCommand
+                        };
+
+                        await _eventBus.Publish(contentBroadcastIntegrationEvent);
+                    }
+                    else
+                    {
+                        errorList.Add($"{content.Id.Value} - Upload Status should be {ContentUploadStatus.UploadComplete},  Tranform Status should be {ContentTransformStatus.TransformComplete} and Broadcast Status should be in {ContentBroadcastStatus.BroadcastNotInitialized},{ContentBroadcastStatus.BroadcastFailed}");
+                    }
+                }
+            }
+
+            return Ok(errorList);
+
+        }
+
+
 
         #endregion
 
@@ -308,6 +387,8 @@ namespace blendnet.cms.api.Controllers
             foreach (Content content in contents)
             {
                 content.SetIdentifiers();
+
+                content.CreatedDate = DateTime.UtcNow;
 
                 content.ContentProviderId = contentProviderId;
 

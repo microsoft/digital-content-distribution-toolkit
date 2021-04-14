@@ -22,10 +22,16 @@ namespace blendnet.common.dto.cms
         public string CMSStorageConnectionString { get; set; }
 
         public string CMSCDNStorageConnectionString { get; set; }
-        
-        public int SasTokenExpiryForContentProviderInMts { get; set; }
+
+        public bool PerformCopyToBroadcastStorage { get; set; }
+
+        public string BroadcastStorageConnectionString { get; set; }
+
+        public string BroadcastStorageContainerName { get; set; }
 
         public string ContentAdministratorGroupId { get; set; }
+
+        public int SasTokenExpiryForContentProviderInMts { get; set; }
 
         public int SASTokenExpiryToCopyContentInMts { get; set; }
 
