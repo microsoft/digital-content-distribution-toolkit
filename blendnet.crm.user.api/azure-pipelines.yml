@@ -2,7 +2,7 @@ variables:
   RunNumber: '0.0.1-$(Build.BuildNumber)'
 
 trigger:
-- t-nag/pipelines
+- manual
 
 pool:
   vmImage: ubuntu-latest
