@@ -23,7 +23,6 @@ using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.common.dto.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.Extensions.Azure;
 
 namespace blendnet.crm.user.api
