@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using blendnet.common.infrastructure.KeyVault;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -53,16 +55,11 @@ namespace blendnet.cms.api
                  {
                      var builtConfig = config.Build();
 
-                     var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                     var secretClient = new SecretClient(
+                     new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
+                     new DefaultAzureCredential());
 
-                     var keyVaultClient = new KeyVaultClient(
-                         new KeyVaultClient.AuthenticationCallback(
-                             azureServiceTokenProvider.KeyVaultTokenCallback));
-                     config.AddAzureKeyVault(
-                         $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                         keyVaultClient,
-                         new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
-
+                     config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
                  }
              })
             .ConfigureWebHostDefaults(webBuilder =>
