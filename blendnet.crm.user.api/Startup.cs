@@ -24,6 +24,7 @@ using blendnet.common.infrastructure.ServiceBus;
 using blendnet.common.dto.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Azure;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace blendnet.crm.user.api
 {
@@ -69,6 +70,12 @@ namespace blendnet.crm.user.api
 
             services.AddControllers();
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+
             //Configure Swagger
             services.AddSwaggerGen(c =>
             {
@@ -107,6 +114,9 @@ namespace blendnet.crm.user.api
 
             //Configure Application Insights
             services.AddApplicationInsightsTelemetry();
+
+            //Configure health check
+            services.AddHealthChecks();
 
             //Configure Application Settings
             services.Configure<AppSettings>(Configuration);
@@ -212,10 +222,12 @@ namespace blendnet.crm.user.api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseForwardedHeaders();
             }
             else
             {
                app.UseExceptionHandler("/error");
+               app.UseForwardedHeaders();
             }
 
             app.UseHttpsRedirection();
@@ -242,6 +254,7 @@ namespace blendnet.crm.user.api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }
