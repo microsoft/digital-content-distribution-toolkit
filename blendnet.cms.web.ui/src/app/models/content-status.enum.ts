@@ -15,12 +15,16 @@ export enum ContentStatus {
 
     BROADCAST_NOT_INITIALIZED = "BroadcastNotInitialized",
     BROADCAST_INPROGRESS = "BroadcastInProgress",
+    BROADCAST_SUBMITTED = "BroadcastSubmitted",
+    BROADCAST_TAR_PUSHED = "BroadcastTarPushed",
     BROADCAST_FAILED = "BroadcastFailed",
     BROADCAST_COMPLETE = "BroadcastComplete",
+    BROADCAST_CANCEL_INPROGRESS = "BroadcastCancelInProgress",
+
 
     ARCHIVED = 'ARCHIVED',
     ARCHIVING = 'ARCHIVING',
     DELETING = 'DELETING',
-    BROADCASTED = 'BROADCASTED',
+    BROADCAST = 'BROADCAST',
     REVOKE = 'REVOKE'
 }

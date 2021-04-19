@@ -1,12 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UnprocessedComponent } from './unprocessed/unprocessed.component';
-import { ContentTokenDialog, ProcessedComponent } from './processed/processed.component';
-import { BroadcastedComponent } from './broadcasted/broadcasted.component';
+import { ContentTokenDialog, ProcessConfirmDialog, ProcessedComponent } from './processed/processed.component';
 import { DevicesComponent } from './devices/devices.component';
 import { ManageContentComponent } from './manage-content/manage-content.component';
 import { CMSMaterialModule } from './material-module';
@@ -25,6 +24,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpErrorInterceptor } from './interceptor/http-error.interceptor';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
 import { SpinnerInterceptor } from './interceptor/spinner.interceptor';
+import { BroadcastComponent } from './broadcast/broadcast.component';
 
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
@@ -80,7 +80,6 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     AppComponent,
     UnprocessedComponent,
     ProcessedComponent,
-    BroadcastedComponent,
     DevicesComponent,
     ManageContentComponent,
     ContentProviderComponent,
@@ -88,7 +87,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     AddContentProviderComponent,
     HomeComponent,
     SpinnerOverlayComponent,
-    ContentTokenDialog
+    ContentTokenDialog,
+    ProcessConfirmDialog,
+    BroadcastComponent
   ],
   imports: [
     HttpClientModule,

@@ -55,6 +55,12 @@ export class ContentService {
     return this.http.post(url, contendIds, { observe: 'response'});
   }
 
+  boradcastContent(broadcastContentRequest) {
+    let url = this.baseUrl + "/broadcast";
+    this.logger.log(`Broadcasting`);
+    return this.http.post(url, broadcastContentRequest, { observe: 'response'});
+  }
+
   getContentToken(id) {
     let url = this.baseUrl + "/" + id + "/token";
     this.logger.log(`Fetching content token`);

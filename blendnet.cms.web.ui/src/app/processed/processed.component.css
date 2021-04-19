@@ -41,3 +41,7 @@ td.mat-footer-cell:last-of-type {
   .dash-url-text-area {
     width: 85%;
   }
+
+  .filter-separator {
+    border-top: 1px dotted grey;
+  }

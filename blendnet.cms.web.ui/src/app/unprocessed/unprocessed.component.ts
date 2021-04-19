@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import {AfterViewInit, Component, Inject, Output, ViewChild, EventEmitter} from '@angular/core';
+import {AfterViewInit, Component, Inject, Output, ViewChild, EventEmitter, SimpleChange} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -13,15 +13,13 @@ import {  HttpEventType } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 
-/**
- * @title Data table with sorting, pagination, and filtering.
- */
+
 @Component({
   selector: 'app-unprocessed',
   styleUrls: ['unprocessed.component.css'],
   templateUrl: 'unprocessed.component.html',
 })
-export class UnprocessedComponent implements AfterViewInit {
+export class UnprocessedComponent {
   displayedColumns: string[] = ['select', 'title', 'status', 'view', 'isProcessable', 'isDeletable'];
   dataSource: MatTableDataSource<Content>;
   fileUploadError: string ="";
@@ -74,7 +72,10 @@ export class UnprocessedComponent implements AfterViewInit {
     this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters).subscribe(
       res => {
         this.dataSource = this.createDataSource(res.body);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
         this.selectedContents = 0;
+
       },
       err => {
         this.toastr.error(err);
@@ -82,6 +83,7 @@ export class UnprocessedComponent implements AfterViewInit {
       }
     );
   }
+
   toggleSelection(event, row) {
     if(event.checked){
         this.selectedContents++;
@@ -120,10 +122,11 @@ export class UnprocessedComponent implements AfterViewInit {
   }
 
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
+  // ngAfterViewInit() {
+  //   this.dataSource.paginator = this.paginator;
+  //   this.dataSource.sort = this.sort;
+  // }
+ 
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -208,6 +211,7 @@ openProcessConfirmModal(row): void {
     }    
   }
 }
+
 openProcessDialog(rows) {
   const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
     data: {

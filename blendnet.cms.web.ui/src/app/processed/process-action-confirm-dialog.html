@@ -1,8 +1,38 @@
-<h2 mat-dialog-title>Confirm</h2>
+<h1 mat-dialog-title>Broadcast</h1>
 <div mat-dialog-content>
-  <p>{{data.message}}</p>
+  <div>
+    <form >
+      <mat-form-field appearance="standard">
+        <mat-label>Enter a broadcast date range</mat-label>
+        <mat-date-range-input  [formGroup]="range"  [rangePicker]="picker">
+          <input matStartDate placeholder="Start date"  formControlName="start" >
+          <input matEndDate placeholder="End date"  formControlName="end" >
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+
+      <label><h3><b>Filters</b></h3></label>
+      <hr class="filter-separator">
+      <div *ngFor="let filter of filters">
+        <label><b>{{filter.filterName}}</b> </label>
+        <br>
+        <mat-checkbox (change)="toggleSelection($event, f)"
+         [checked]="selection.isSelected(f)" *ngFor="let f of filter.filterValues">
+          {{f}}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </mat-checkbox>
+        <hr class="filter-separator">
+
+      </div>
+      
+    </form>
+  </div>
+  
+
+
 </div>
 <div mat-dialog-actions class="btn-sec">
-  <button mat-raised-button (click)="onCancel(data.action)" mat-dialog-close class="discard-btn">Cancel</button>
-  <button mat-raised-button (click)="onConfirm(data.action)" color="primary" class="update-btn">OK</button>
+  <button mat-raised-button (click)="onCancel()" mat-dialog-close class="discard-btn">Cancel</button>
+  <button mat-raised-button (click)="onConfirm()" color="primary" class="update-btn">OK</button>
 </div>

@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, Inject, ViewChild} from '@angular/core';
+import { Component, Inject, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -7,23 +7,20 @@ import { MatTableDataSource } from '@angular/material/table';
 import { environment } from '../../environments/environment';
 import { Content } from '../models/content.model';
 import { ContentService } from '../services/content.service';
-import {interval, of, Subscription} from 'rxjs';
-import {startWith, switchMap} from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export interface DialogData {
   message: string;
 }
-/**
- * @title Data table with sorting, pagination, and filtering.
- */
+
 @Component({
   selector: 'app-processed',
   styleUrls: ['processed.component.css'],
   templateUrl: 'processed.component.html',
 })
-export class ProcessedComponent implements AfterViewInit {
+export class ProcessedComponent {
   displayedColumns: string[] = ['select', 'title', 'status', 'url', 'isBroadcastable', 'isDeletable'];
   dataSource: MatTableDataSource<Content>;
   showDialog: boolean = false;
@@ -36,7 +33,6 @@ export class ProcessedComponent implements AfterViewInit {
   allowedMaxSelection: number = environment.allowedMaxSelection;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  //polling: Subscription;
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
@@ -44,24 +40,10 @@ export class ProcessedComponent implements AfterViewInit {
     ) {
   }
 
-  
-
   ngOnInit(): void {
     this.getProcessedContent();
-    // this.polling = interval(50000)
-    // .pipe(
-    //   startWith(0),
-    //   switchMap(() => 
-    //   this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters)
-    //   )
-    // ).subscribe(
-    //   res => {
-    //     this.dataSource = this.createDataSource(res.body);
-    //     this.selectedContents=0;
-    //   },
-    // err => console.log('HTTP Error', err));
-    
   };
+
   getProcessedContent() {
     var processedContentFilters = {
       "contentUploadStatuses": [
@@ -79,6 +61,8 @@ export class ProcessedComponent implements AfterViewInit {
     this.contentService.getContentByCpIdAndFilters(processedContentFilters).subscribe(
     res => {
       this.dataSource = this.createDataSource(res.body);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
       this.selectedContents=0;
     },
     err => {
@@ -103,11 +87,7 @@ export class ProcessedComponent implements AfterViewInit {
       return true;
     return false;
   }
-  // ngOnDestroy() {
-  //   if(this.polling){    
-  //   this.polling.unsubscribe();
-  //   }
-  // }
+
 
   createDataSource(rawData) {
     var dataSource: Content[] =[];
@@ -118,6 +98,7 @@ export class ProcessedComponent implements AfterViewInit {
     return new MatTableDataSource(dataSource);
   }
 
+  
   isContentNotBroadcastable(row) {
     return row.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
     || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED
@@ -130,10 +111,6 @@ export class ProcessedComponent implements AfterViewInit {
     && row.contentBroadcastStatus !== ContentStatus.BROADCAST_FAILED);
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -144,12 +121,35 @@ export class ProcessedComponent implements AfterViewInit {
     }
   }
 
+  openBroadcastConfirmModal(row): void {
+    var rows = [];
+    if(row) {
+      rows.push(row);
+      this.openBroadcastConfirmDialog(rows);
+    } else {
+      rows = this.dataSource ? this.dataSource.data.filter(d => d.isSelected) : [];
+      if(rows.length <1) {
+        this.toastr.warning("Please select one or more content/s for broadcasting");
+      } else {
+        var notEligibleForBroadcast= rows.filter(d => 
+          (d.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
+            || d.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
+          || (d.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED
+          && d.contentBroadcastStatus!== ContentStatus.BROADCAST_FAILED)));
+          if(notEligibleForBroadcast.length > 0) {
+            this.toastr.warning("One or more selected content/s cannot be broadcast");
+          } else {
+              this.openBroadcastConfirmDialog(rows);          
+          }
+      }    
+    }
+  }
 
-openBroadcastConfirmModal(): void {
+openBroadcastConfirmDialog(content): void {
   const dialogRef = this.dialog.open(ProcessConfirmDialog, {
     data: {
       message: this.processConfirmMessage,
-      action: "BROADCAST"
+      contents : content
     },
     width: '60%'
   });
@@ -162,8 +162,7 @@ openBroadcastConfirmModal(): void {
 openDeleteConfirmModal(): void {
   const dialogRef = this.dialog.open(ProcessConfirmDialog, {
     data: {
-      message: this.deleteConfirmMessage,
-      action: "DELETE"
+      message: this.deleteConfirmMessage
     },
     width: '40%'
   });
@@ -177,8 +176,7 @@ openDeleteConfirmModal(): void {
 viewURL(selectedContent) : void {
   const dialogRef = this.dialog.open(ContentTokenDialog, {
     data: {content: selectedContent},
-    width: '60%',
-    height: '50%'
+    width: '60%'
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -206,11 +204,8 @@ export class ContentTokenDialog {
     this.contentService.getContentToken(this.data.content.id).subscribe(
       res => {
         this.contentToken = res;
-        this.dashUrl = "https://ampdemo.azureedge.net/?url=" +
-        this.data.content.dashUrl +
-        "&widevine=true&token=Bearer%3D" +
-        this.contentToken;
-        
+        this.dashUrl =  environment.dashUrlPrefix + this.data.content.dashUrl +
+         + environment.widewineTokenPrefix + this.contentToken;
       },
       err => this.toastr.error(err));
     //this.data.content;
@@ -233,50 +228,62 @@ export class ContentTokenDialog {
 })
 export class ProcessConfirmDialog {
 
+  filters;
+  initialSelection = [];
+  allowMultiSelect = true;
+  selection = new SelectionModel<Content>(this.allowMultiSelect, this.initialSelection);
+  appliedFilters =[];
+  range = new FormGroup({
+    start: new FormControl(null, [Validators.required]),
+    end: new FormControl(null, [Validators.required])
+  });
+
   constructor(
     public dialogRef: MatDialogRef<ProcessConfirmDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public contentService: ContentService,
-    private toastr: ToastrService) {}
+    private toastr: ToastrService) {
+      this.filters = environment.filters;
+    }
 
-  onCancel (action) {
-    if(action === "DELETE") {
-      this.onCancelDelete();
-    } else {
-      this.onCancelProcess();
+  onCancel(): void {
+    this.dialogRef.close();
+  }
+
+  onConfirm(): void {
+    if(this.appliedFilters.length < 1) {
+      this.toastr.warning("Please select one or more filter/s");
+    } else if (!this.range.controls.start.value || !this.range.controls.end.value){
+      this.toastr.warning("Please broadcast date range");
+    }else {
+      var selectedIds = this.data.contents.map(content => {
+        return content.id
+      });
+      var broadcastRequest = {
+        "contentIds": selectedIds,
+        "filters": this.appliedFilters,
+        "startDate": this.range.controls.start.value,
+        "endDate": this.range.controls.end.value
+      }
+      this.contentService.boradcastContent(broadcastRequest).subscribe(
+        res => this.toastr.success("Content/s submitted for broadcast sucessfully!!"),
+        err => this.toastr.error(err));
+      this.dialogRef.close();
+    }
+    
+  }
+
+  toggleSelection(event, f) {
+    if(event.checked){
+      this.appliedFilters.push(f)
+    }else{
+      this.appliedFilters =  this.appliedFilters.filter(filter => {
+        return filter !== f;
+      });
     }
   }
 
-  onConfirm(action) {
-    if(action === "DELETE") {
-      this.onConfirmDelete();
-    } else {
-      this.onConfirmProcess();
-    }
-  }
 
-  onCancelProcess(): void {
-    this.dialogRef.close();
-  }
-
-  onConfirmProcess(): void {
-    this.contentService.processContent(null).subscribe(
-      res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
-      err => this.toastr.error(err));
-    this.dialogRef.close();
-  }
-
-  
-  onCancelDelete(): void {
-    this.dialogRef.close();
-  }
-
-  onConfirmDelete(): void {
-    this.contentService.processContent(null).subscribe(
-      res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
-      err => this.toastr.error(err));
-    this.dialogRef.close();
-  }
 
 }
 

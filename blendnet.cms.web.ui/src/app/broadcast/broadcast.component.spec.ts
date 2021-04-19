@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { BroadcastedComponent } from './broadcasted.component';
+import { BroadcastComponent } from './broadcast.component';
 
-describe('BroadcastedComponent', () => {
-  let component: BroadcastedComponent;
-  let fixture: ComponentFixture<BroadcastedComponent>;
+describe('BroadcastComponent', () => {
+  let component: BroadcastComponent;
+  let fixture: ComponentFixture<BroadcastComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ BroadcastedComponent ]
+      declarations: [ BroadcastComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BroadcastedComponent);
+    fixture = TestBed.createComponent(BroadcastComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

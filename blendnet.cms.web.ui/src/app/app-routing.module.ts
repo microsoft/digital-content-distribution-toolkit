@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
-import { BroadcastedComponent } from './broadcasted/broadcasted.component';
+import { BroadcastComponent } from './broadcast/broadcast.component';
 import { ContentProviderComponent } from './content-provider/content-provider.component';
 import { DevicesComponent } from './devices/devices.component';
 import { HomeComponent } from './home/home.component';
@@ -38,8 +38,8 @@ const appRoutes: Routes = [
     },
   {
     
-    path: 'broadcasted-content',
-   component: BroadcastedComponent,
+    path: 'broadcast-content',
+   component: BroadcastComponent,
    canActivate: [
     MsalGuard,
     RoleGuardService
