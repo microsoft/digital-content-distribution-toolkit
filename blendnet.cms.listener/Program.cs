@@ -34,6 +34,8 @@ using blendnet.cms.listener.Common;
 using Polly;
 using Polly.Extensions.Http;
 using System.Net.Http;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 namespace blendnet.cms.listener
 {
@@ -76,16 +78,11 @@ namespace blendnet.cms.listener
                     {
                         var builtConfig = config.Build();
 
-                        var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                        var secretClient = new SecretClient(
+                        new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
+                        new DefaultAzureCredential());
 
-                        var keyVaultClient = new KeyVaultClient(
-                            new KeyVaultClient.AuthenticationCallback(
-                                azureServiceTokenProvider.KeyVaultTokenCallback));
-
-                        config.AddAzureKeyVault(
-                            $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                            keyVaultClient,
-                            new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
+                        config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
                     }
                 })
                 .ConfigureServices((hostContext, services) =>

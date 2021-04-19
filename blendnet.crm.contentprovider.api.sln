@@ -29,12 +29,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.cms.listener", "bl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ingress", "Ingress", "{B01355AF-7514-496E-A541-96BDAB8615C5}"
 	ProjectSection(SolutionItems) = preProject
+		appgateway.yaml = appgateway.yaml
+		Cluster.txt = Cluster.txt
+		createSecrets.ps1 = createSecrets.ps1
+		deploymenttest.yaml = deploymenttest.yaml
+		full.yaml = full.yaml
 		ingress.yaml = ingress.yaml
+		sample.yaml = sample.yaml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MPDParser", "MPDParser\MPDParser.csproj", "{AEF52853-B4DE-4974-87F7-DCB04D22FBAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.cms.testutility", "blendnet.cms.testutility\blendnet.cms.testutility.csproj", "{710B1F03-A033-47C2-8E80-4F60408CBE61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.cms.testutility", "blendnet.cms.testutility\blendnet.cms.testutility.csproj", "{710B1F03-A033-47C2-8E80-4F60408CBE61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

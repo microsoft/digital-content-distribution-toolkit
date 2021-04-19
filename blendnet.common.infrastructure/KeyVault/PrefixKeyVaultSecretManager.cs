@@ -1,13 +1,13 @@
-﻿using Microsoft.Azure.KeyVault.Models;
+﻿using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace blendnet.common.infrastructure.KeyVault
 {
-    public class PrefixKeyVaultSecretManager: IKeyVaultSecretManager
+    public class PrefixKeyVaultSecretManager : KeyVaultSecretManager
     {
         private readonly string _prefix;
 
@@ -16,14 +16,14 @@ namespace blendnet.common.infrastructure.KeyVault
             _prefix = $"{prefix}-";
         }
 
-        public bool Load(SecretItem secret)
+        public override bool Load(SecretProperties secret)
         {
-            return secret.Identifier.Name.StartsWith(_prefix);
+            return secret.Name.StartsWith(_prefix);
         }
 
-        public string GetKey(SecretBundle secret)
+        public override string GetKey(KeyVaultSecret secret)
         {
-            return secret.SecretIdentifier.Name
+            return secret.Name
                 .Substring(_prefix.Length)
                 .Replace("--", ConfigurationPath.KeyDelimiter);
         }

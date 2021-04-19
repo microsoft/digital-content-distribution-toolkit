@@ -11,6 +11,7 @@ using blendnet.common.infrastructure.ServiceBus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
@@ -72,6 +73,12 @@ namespace blendnet.cms.api
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+
             //Configure Swagger
             services.AddSwaggerGen(c =>
             {
@@ -114,6 +121,9 @@ namespace blendnet.cms.api
             //Configure Application Insights
             services.AddApplicationInsightsTelemetry();
 
+            //Configure health check
+            services.AddHealthChecks();
+
             string cmsStorageConnectionString = Configuration.GetValue<string>("CMSStorageConnectionString");
 
             services.AddAzureClients(builder => 
@@ -148,10 +158,12 @@ namespace blendnet.cms.api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseForwardedHeaders();
             }
             else
             {
                 app.UseExceptionHandler("/error");
+                app.UseForwardedHeaders();
             }
 
             app.UseHttpsRedirection();
@@ -177,6 +189,7 @@ namespace blendnet.cms.api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
 

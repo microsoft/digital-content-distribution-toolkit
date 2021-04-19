@@ -1,0 +1,88 @@
+az aks create --resource-group blendnet-dev --location centralindia --name aks-blendnet-dev --node-vm-size Standard_D8s_v4 --node-count 3 --network-plugin azure --enable-managed-identity --enable-pod-identity -a ingress-appgw --appgw-name agw-blendnet-dev --vnet-subnet-id "/subscriptions/79b6781b-bc04-4e86-95d0-0e81a597feb5/resourceGroups/blendnet-dev/providers/Microsoft.Network/virtualNetworks/vnet-blendnet-dev/subnets/snet-aks-blendnet" --appgw-subnet-id "/subscriptions/79b6781b-bc04-4e86-95d0-0e81a597feb5/resourceGroups/blendnet-dev/providers/Microsoft.Network/virtualNetworks/vnet-blendnet-dev/subnets/snet-agw-blendnet-dev" --generate-ssh-keys
+az aks delete --name aks-blendnet-dev --resource-group blendnet-dev
+
+******POD IDENTITY*************
+az identity create --resource-group "blendnet-dev" --name "blendnet-dev-pod-identity"
+az identity show -g "blendnet-dev" -n "blendnet-dev-pod-identity" --query clientId -otsv
+az identity show -g "blendnet-dev" -n "blendnet-dev-pod-identity" --query id -otsv
+az aks show -g "blendnet-dev" -n aks-blendnet-dev --query nodeResourceGroup -o tsv
+az group show -n "MC_blendnet-dev_aks-blendnet-dev_centralindia" -o tsv --query "id"
+az aks get-credentials --resource-group "blendnet-dev" --name "aks-blendnet-dev""
+
+az role assignment create --role "Reader" --assignee "cae00d29-e053-45fb-bfc8-b1c732358b5c" --scope "/subscriptions/79b6781b-bc04-4e86-95d0-0e81a597feb5/resourceGroups/MC_blendnet-dev_aks-blendnet-dev_centralindia"
+
+az aks pod-identity add --resource-group blendnet-dev --cluster-name aks-blendnet-dev --namespace blendnet  --name "blendnet-dev-pod-identity" --identity-resource-id "/subscriptions/79b6781b-bc04-4e86-95d0-0e81a597feb5/resourcegroups/blendnet-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/blendnet-dev-pod-identity"
+
+az aks pod-identity add --resource-group blendnet-dev --cluster-name aks-blendnet-dev --namespace default  --name "blendnet-dev-pod-identity" --identity-resource-id "/subscriptions/79b6781b-bc04-4e86-95d0-0e81a597feb5/resourcegroups/blendnet-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/blendnet-dev-pod-identity"
+
+# Get Azure Application Gateway
+$appgw = Get-AzApplicationGateway -Name agw-blendnet-dev -ResourceGroupName MC_blendnet-dev_aks-blendnet-dev_centralindia
+Stop-AzApplicationGateway -ApplicationGateway $appgw
+Start-AzApplicationGateway -ApplicationGateway $appgw
+
+
+*********Key Vault Secret Creation*******
+.\createSecrets.ps1 -secretPrefix "blendnetcmsapi" -keyvaultName "kv-blendnet-dev"  -displayOnly $false -secretPath "C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\e85b0778-3e20-4a8a-bf6b-c8bacd84c8f4\secrets.json"
+.\createSecrets.ps1 -secretPrefix "blendnetcmslistener" -keyvaultName "kv-blendnet-dev"  -displayOnly $false -secretPath "C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\dotnet-blendnet.cms.listener-9ADA3621-3E4D-43B0-8FD1-8E6BDA430110\secrets.json"
+.\createSecrets.ps1 -secretPrefix "blendnetcrmuserapi" -keyvaultName "kv-blendnet-dev"  -displayOnly $false -secretPath "C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\ef28dda3-a6f6-4907-8d96-40cc01738981\secrets.json"
+
+az keyvault set-policy -n kv-blendnet-dev --secret-permissions get list --spn cae00d29-e053-45fb-bfc8-b1c732358b5c
+
+***********Attach ACR
+
+az aks update -n aks-blendnet-dev -g blendnet-dev --attach-acr acrblendnetdev
+
+**********Deploy CMS API
+
+kubectl apply -f blendnet.cms.api.yaml --namespace blendnet
+
+kubectl apply -f appgateway.yaml --namespace blendnet
+
+---------Shell
+kubectl --namespace blendnet exec --stdin --tty blendnet-cms-api-5456c5f785-blktb -- /bin/bash
+apt-get update && apt-get install curl
+
+kubectl --namespace kube-system exec --stdin --tty ingress-appgw-deployment-64ff84b8d9-jnwf9 -- /bin/bash
+
+
+
+---------Test URL
+api/v1/Content/76d2917b-7d2f-4ee1-9e9f-e4fb02602411
+http://13.71.0.226/api/v1/Content/76d2917b-7d2f-4ee1-9e9f-e4fb02602411
+
+http://blendnet-cms-api/api/v1/Content/76d2917b-7d2f-4ee1-9e9f-e4fb02602411
+
+http://172.18.8.37:80/api/v1/Content/76d2917b-7d2f-4ee1-9e9f-e4fb02602411
+
+--sample pod
+curl http://172.18.8.41/
+curl http://aspnetapp/
+
+
+
+
+kubectl create blendnet
+
+az network vnet subnet list -g blendnet-dev --vnet-name vnet-blendnet-dev
+
+az account set --subscription 79b6781b-bc04-4e86-95d0-0e81a597feb5
+
+{
+  "clientId": "cae00d29-e053-45fb-bfc8-b1c732358b5c",
+  "clientSecretUrl": "https://control-centralindia.identity.azure.net/subscriptions/79b6781b-bc04-4e86-95d0-0e81a597feb5/resourcegroups/blendnet-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/blendnet-dev-pod-identity/credentials?tid=72f988bf-86f1-41af-91ab-2d7cd011db47&oid=0a287a94-0e13-4f77-8a7a-9aa92449945f&aid=cae00d29-e053-45fb-bfc8-b1c732358b5c",
+  "id": "/subscriptions/79b6781b-bc04-4e86-95d0-0e81a597feb5/resourcegroups/blendnet-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/blendnet-dev-pod-identity",
+  "location": "centralindia",
+  "name": "blendnet-dev-pod-identity",
+  "principalId": "0a287a94-0e13-4f77-8a7a-9aa92449945f",
+  "resourceGroup": "blendnet-dev",
+  "tags": {},
+  "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+  "type": "Microsoft.ManagedIdentity/userAssignedIdentities"
+}
+
+az aks pod-identity add --resource-group blendnet-dev --cluster-name aks-blendnet-dev --namespace "blendnet"  --name "blendnet-dev-pod-identity" --identity-resource-id "/subscriptions/79b6781b-bc04-4e86-95d0-0e81a597feb5/resourcegroups/blendnet-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/blendnet-dev-pod-identity"
+
+snet-aks-blendnet
+snet-agw-blendnet-dev
+
+It is highly recommended to use USER assigned identity (option --assign-identity) when you want to bring your ownsubnet, which will have no latency for the role assignment to take effect. When using SYSTEM assigned identity, azure-cli will grant Network Contributor role to the system assigned identity after the cluster is created, and the role assignment will take some time to take effect, see https://docs.microsoft.com/en-us/azure/aks/use-managed-identity, proceed to create cluster with system assigned identity?
