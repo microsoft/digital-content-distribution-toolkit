@@ -1,0 +1,22 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blendnet-cms-listener
+  labels:
+    app: blendnet-cms-listener
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blendnet-cms-listener
+  template:
+    metadata:
+      labels:
+        app: blendnet-cms-listener
+        aadpodidbinding: blendnet-dev-pod-identity
+    spec:
+      containers:
+      - name: blendnet-cms-listener
+        image: acrblendnetdev.azurecr.io/blendnet.cms.listener:0.0.1-20210419.1
+        ports:
+        - containerPort: 80

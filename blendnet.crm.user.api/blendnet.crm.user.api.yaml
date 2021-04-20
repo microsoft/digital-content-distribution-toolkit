@@ -1,38 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blendnet-crm-user-webapi
+  name: blendnet-crm-user-api
   labels:
-    app: blendnet-crm-user-webapi
+    app: blendnet-crm-user-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: blendnet-crm-user-webapi
+      app: blendnet-crm-user-api
   template:
     metadata:
       labels:
-        app: blendnet-crm-user-webapi
-        aadpodidbinding: aksblendnetpodidentity
+        app: blendnet-crm-user-api
+        aadpodidbinding: blendnet-dev-pod-identity
     spec:
       containers:
-      - name: blendnet-crm-user-webapi
-        image: bineiot.azurecr.io/blendnet.crm.user.api:v1
-        args:
-          - --subscriptionid=79b6781b-bc04-4e86-95d0-0e81a597feb5
-          - --clientid=a9484ce5-9733-4008-863a-97b04e6e10a5
-          - --resourcegroup=fieldtrial_dev2_rg
+      - name: blendnet-crm-user-api
+        image: acrblendnetdev.azurecr.io/blendnet.crm.user.api:0.0.1-20210419.2
         ports:
         - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          periodSeconds: 3
+          timeoutSeconds: 1
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: blendnet-crm-user-webapi
+  name: blendnet-crm-user-api
 spec:
-  type: ClusterIP
   ports:
   - port: 80
     targetPort : 80
   selector:
-    app: blendnet-crm-user-webapi
+    app: blendnet-crm-user-api
