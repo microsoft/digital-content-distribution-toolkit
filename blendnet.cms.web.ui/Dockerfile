@@ -8,9 +8,10 @@ WORKDIR /usr/src/app
 # RUN npm install --production --silent && mv node_modules ../
 
 COPY blendnet.cms.web.ui .
-RUN npm install -g @angular/cli && \
-    npm install && \
-    ng build --prod
+
+RUN npm install -g @angular/cli
+RUN npm install
+RUN ng build --prod
 
 # EXPOSE 4200
 
