@@ -157,7 +157,7 @@ namespace blendnet.cms.api.Controllers
                 return NotFound();
             }
 
-            if ((  contentToDelete.ContentUploadStatus == ContentUploadStatus.UploadFailed || 
+            if (!(  contentToDelete.ContentUploadStatus == ContentUploadStatus.UploadFailed || 
                     contentToDelete.ContentUploadStatus == ContentUploadStatus.UploadComplete) &&
                     contentToDelete.ContentTransformStatus == ContentTransformStatus.TransformNotInitialized &&
                     contentToDelete.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastNotInitialized)
