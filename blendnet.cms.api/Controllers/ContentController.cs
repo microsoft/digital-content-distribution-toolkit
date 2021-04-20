@@ -148,23 +148,47 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpDelete("{contentId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-        public async Task<ActionResult> DeleteContent(List<Guid> contentIds)
+        public async Task<ActionResult> DeleteContent(Guid contentId)
         {
-            foreach(Guid contentId in contentIds)
-            {
-                int statusCode = await _contentRepository.DeleteContent(contentId);
+            Content contentToDelete = await _contentRepository.GetContentById(contentId);
 
-                if (statusCode == (int)System.Net.HttpStatusCode.NoContent)
-                {
-                    continue;  
-                }
-                else
-                {
-                    return NotFound();
-                }
+            if (contentToDelete == null)
+            {
+                return NotFound();
             }
 
-            return NoContent();
+            if ((  contentToDelete.ContentUploadStatus == ContentUploadStatus.UploadFailed || 
+                    contentToDelete.ContentUploadStatus == ContentUploadStatus.UploadComplete) &&
+                    contentToDelete.ContentTransformStatus == ContentTransformStatus.TransformNotInitialized &&
+                    contentToDelete.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastNotInitialized)
+            {
+                return BadRequest($"{contentToDelete.Id.Value} - Upload Status should be in {ContentUploadStatus.UploadComplete} , {ContentUploadStatus.UploadFailed} and Tranform Status should be {ContentTransformStatus.TransformNotInitialized} and Broadcast Status should be {ContentBroadcastStatus.BroadcastNotInitialized}");
+            }
+
+            int statusCode = await _contentRepository.DeleteContent(contentId);
+
+            if (statusCode == (int)System.Net.HttpStatusCode.NoContent)
+            {
+                ContentCommand contentDeleteCommand = new ContentCommand()
+                {
+                    CommandType = CommandType.DeleteContent,
+                    Content = contentToDelete
+                };
+
+                //publish the event
+                ContentDeletedIntegrationEvent contentDeletedIntegrationEvent = new ContentDeletedIntegrationEvent()
+                {
+                    ContentDeleteCommand = contentDeleteCommand
+                };
+
+                await _eventBus.Publish(contentDeletedIntegrationEvent);
+
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>

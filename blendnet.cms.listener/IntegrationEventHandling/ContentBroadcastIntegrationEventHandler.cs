@@ -194,7 +194,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 _logger.LogInformation($"Geneated Ingest Xml for content id: {content.Id.Value} command id {broadcastCommand.Id.Value}");
 
-                string tarfileName = $"{content.Id.Value}.{broadcastCommand.Id.Value}.tar";
+                string tarfileName = $"{broadcastCommand.Id.Value}.tar";
 
                 string tarfilePath = $"{content.Id.Value}/{broadcastCommand.Id.Value}/{tarfileName}";
 
@@ -368,7 +368,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.FILTERS, filters);
 
-            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.UNIQUE_ID, $"{content.Id.Value}.{broadcastCommand.Id.Value}");
+            xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.UNIQUE_ID, $"{broadcastCommand.Id.Value}");
 
             return xmlContent;
         }
