@@ -73,7 +73,7 @@ kubectl delete azureidentity fieldtrial-dev-pod-user-identity -n blendnet
 kubectl delete azureidentitybinding fieldtrial-dev-pod-user-identity-binding -n blendnet
 helm delete pod-identity --purge
 
-
+ 
 az aks show --resource-group fieldtrial_dev_rg --name blendnetdev --query servicePrincipalProfile.clientId -o tsv
 e25f246a-3f6c-48a5-bed0-c358309b54ff
 az ad sp credential reset --name e25f246a-3f6c-48a5-bed0-c358309b54ff --query password -o tsv

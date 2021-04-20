@@ -86,3 +86,15 @@ snet-aks-blendnet
 snet-agw-blendnet-dev
 
 It is highly recommended to use USER assigned identity (option --assign-identity) when you want to bring your ownsubnet, which will have no latency for the role assignment to take effect. When using SYSTEM assigned identity, azure-cli will grant Network Contributor role to the system assigned identity after the cluster is created, and the role assignment will take some time to take effect, see https://docs.microsoft.com/en-us/azure/aks/use-managed-identity, proceed to create cluster with system assigned identity?
+
+
+*****SES
+https://docs.microsoft.com/en-us/azure/storage/common/storage-private-endpoints
+
+172.18.0.4 stacloudpointp01.blob.core.windows.net
+
+
+stacloudpointp01.blob.core.windows.net	CNAME	stacloudpointp01.privatelink.blob.core.windows.net
+stacloudpointp01.privatelink.blob.core.windows.net	A	172.18.0.4
+
+nslookup stacloudpointp01.blob.core.windows.net
