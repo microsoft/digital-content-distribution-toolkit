@@ -83,7 +83,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                         DateTime currentTime = DateTime.UtcNow;
 
-                        PopulateContentCommand(deleteCommand, currentTime);
+                        PopulateContentCommand(deleteCommand.Content.ContentId.Value, deleteCommand, currentTime);
 
                         //Create a command record with in progress status. It will use the command id as ID and Content Id and partition key
                         Guid commandId = await _contentRepository.CreateContentCommand(deleteCommand);
@@ -210,9 +210,10 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// Populate command object with required attributes
         /// </summary>
         /// <param name="contentCommand"></param>
-        private void PopulateContentCommand(ContentCommand contentCommand, DateTime currentDateTime)
+        private void PopulateContentCommand(Guid contentId, ContentCommand contentCommand, DateTime currentDateTime)
         {
             contentCommand.Id = Guid.NewGuid();
+            contentCommand.ContentId = contentId;
             contentCommand.CommandType = CommandType.DeleteContent;
             contentCommand.Type = ContentContainerType.Command;
             contentCommand.CommandStatus = CommandStatus.InProgress;
