@@ -14,6 +14,8 @@ using blendnet.common.infrastructure.KeyVault;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.common.infrastructure;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 namespace blendnet.crm.contentprovider.api
 {
@@ -60,13 +62,11 @@ namespace blendnet.crm.contentprovider.api
 
                         var azureServiceTokenProvider = new AzureServiceTokenProvider();
 
-                        var keyVaultClient = new KeyVaultClient(
-                            new KeyVaultClient.AuthenticationCallback(
-                                azureServiceTokenProvider.KeyVaultTokenCallback));
-                        config.AddAzureKeyVault(
-                            $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                            keyVaultClient,
-                            new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
+                        var secretClient = new SecretClient(
+                          new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
+                          new DefaultAzureCredential());
+
+                        config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
 
                     }
                 })

@@ -186,7 +186,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 {
                     BlockBlobClient targetBlob = destinationContainer.GetBlockBlobClient($"{content.ContentId.Value.ToString()}/{content.MediaFileName}");
 
-                    await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob);
+                    await EventHandlingUtilities.CopyBlob(_logger,sourceBlob, targetBlob, content.Id.Value,uploadCommand.Id.Value);
                 }
                 else
                 {
@@ -199,7 +199,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             }
             catch (Exception ex)
             {
-                errorMessage = $"Failed to copy media for content {content.ContentId.Value.ToString()} Media File {content.MediaFileName}";
+                errorMessage = $"Failed to copy media for content {content.ContentId.Value.ToString()} Media File {content.MediaFileName} Message {ex.Message}";
 
                 uploadCommand.FailureDetails.Add(errorMessage);
 
@@ -243,7 +243,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                         {
                             BlockBlobClient targetBlob = destinationContainer.GetBlockBlobClient($"{content.ContentId.Value.ToString()}/{attachment.Name}");
 
-                            await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob, blobSasUrl);
+                            await EventHandlingUtilities.CopyBlob(_logger, sourceBlob, targetBlob,content.Id.Value, uploadCommand.Id.Value ,blobSasUrl);
                         }
                         else
                         {

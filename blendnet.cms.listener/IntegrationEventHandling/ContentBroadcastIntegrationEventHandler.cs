@@ -14,6 +14,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -204,9 +206,9 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                 
                 if(_appSettings.PerformCopyToBroadcastStorage)
                 {
-                    await CopyTarToBroadcastStorage(processedContainer, tarfilePath, tarfileName);
+                    long timeElapsed = await CopyTarToBroadcastStorage(content.Id.Value, broadcastCommand.Id.Value,processedContainer, tarfilePath, tarfileName);
 
-                    _logger.LogInformation($"Broadcast TAR file Copied to broadcast storage for content id: {content.Id.Value} command id {broadcastCommand.Id.Value}");
+                    _logger.LogInformation($"Broadcast TAR file Copied to broadcast storage for content id: {content.Id.Value} command id {broadcastCommand.Id.Value}. Time elapsed {timeElapsed}");
                 }
                 else
                 {
@@ -230,8 +232,10 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <param name="processedContainer"></param>
         /// <param name="tarfilePath"></param>
         /// <returns></returns>
-        private async Task CopyTarToBroadcastStorage(BlobContainerClient processedContainer, string tarfilePath, string tarFileName)
+        private async Task<long> CopyTarToBroadcastStorage(Guid contentId, Guid commandId, BlobContainerClient processedContainer, string tarfilePath, string tarFileName)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             BlobContainerClient broadcastContainer = this._broadcastServiceClient.GetBlobContainerClient(_appSettings.BroadcastStorageContainerName);
 
             BlockBlobClient sourceBlob = processedContainer.GetBlockBlobClient(tarfilePath);
@@ -242,7 +246,12 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                                                              ApplicationConstants.StorageContainerPolicyNames.ProcessedReadOnly,
                                                              _appSettings.SASTokenExpiryToCopyContentInMts);
 
-            await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob, blobSasUrl);
+            await EventHandlingUtilities.CopyBlob(_logger, sourceBlob, targetBlob,contentId,commandId, blobSasUrl);
+
+            stopwatch.Stop();
+
+            return stopwatch.ElapsedMilliseconds;
+
         }
 
         /// <summary>
@@ -311,7 +320,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 targetBlob = processedContainer.GetBlockBlobClient(adaptiveSet.FinalPath);
 
-                await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob);
+                await EventHandlingUtilities.CopyBlob(_logger, sourceBlob, targetBlob,content.Id.Value,broadcastCommand.Id.Value);
 
                 _logger.LogInformation($"Moved file from {sourceTar} to {adaptiveSet.FinalPath} for content id: {content.Id.Value} command id {broadcastCommand.Id.Value}");
             }
@@ -324,7 +333,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             targetBlob = processedContainer.GetBlockBlobClient(mpdInfo.FinalMpdPath);
 
-            await EventHandlingUtilities.CopyBlob(sourceBlob, targetBlob);
+            await EventHandlingUtilities.CopyBlob(_logger, sourceBlob, targetBlob,content.Id.Value,broadcastCommand.Id.Value);
 
             _logger.LogInformation($"Copied file from {mpdPath} to {mpdInfo.FinalMpdPath} for content id: {content.Id.Value} command id {broadcastCommand.Id.Value}");
 
