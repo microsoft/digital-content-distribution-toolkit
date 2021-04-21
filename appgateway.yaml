@@ -9,9 +9,13 @@ spec:
   rules:
   - http:
       paths:
-      - path: /cms/*
+      - path: /cmsapi/*
         backend:
           serviceName: blendnet-cms-api
+          servicePort: 80
+      - path: /cmsui/*
+        backend:
+          serviceName: blendnet-cms-web-ui
           servicePort: 80
       - path: /user/*
         backend:
