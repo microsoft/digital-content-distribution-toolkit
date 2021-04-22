@@ -100,11 +100,12 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns></returns>
         public async Task<List<ContentProviderDto>> GetContentProviders()
         {
-            var query = this._container
-                            .GetItemLinqQueryable<ContentProviderDto>(allowSynchronousQueryExecution: true)
-                            .ToList<ContentProviderDto>();
+            var query = from o in this._container.GetItemLinqQueryable<ContentProviderDto>(allowSynchronousQueryExecution: true)
+                        where o.Type == ContentProviderContainerType.ContentProvider
+                        select o;
 
-            return query;
+
+            return query.ToList();
         }
 
         /// <summary>
@@ -146,6 +147,31 @@ namespace blendnet.cms.repository.CosmosRepository
             return sasUri;
         }
 
+        /// <summary>
+        /// Creates Subscription
+        /// </summary>
+        /// <param name="subscriptionMetadata">subscription data</param>
+        /// <returns>ID of the created subscription</returns>
+        public async Task<Guid> CreateSubscription(ContentProviderSubscriptionMetadataDto subscriptionMetadata)
+        {
+            await this._container.CreateItemAsync<ContentProviderSubscriptionMetadataDto>(subscriptionMetadata, new PartitionKey(subscriptionMetadata.ContentProviderId.ToString()));
+            return subscriptionMetadata.Id.Value;
+        }
+
+        /// <summary>
+        /// Gets all subscriptions for a give content provider
+        /// </summary>
+        /// <param name="contentProviderId">ID of the content provider</param>
+        /// <returns>subscriptions as a list</returns>
+        public async Task<List<ContentProviderSubscriptionMetadataDto>> GetSubscriptions(Guid contentProviderId)
+        {
+            var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionMetadataDto>(allowSynchronousQueryExecution: true)
+                          where o.Type == ContentProviderContainerType.SubscriptionMetadata
+                          where o.ContentProviderId == contentProviderId
+                          select o;
+
+            return results.ToList();
+        }
 
         /// <summary>
         /// Get the SAS token based on the policy which was created while creating the container

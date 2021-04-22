@@ -10,6 +10,13 @@ namespace blendnet.common.dto
         [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
 
+        /// <summary>
+        /// Same as Id
+        /// </summary>
+        public Guid? ContentProviderId { get; set; }
+
+        public ContentProviderContainerType Type { get; set; } = ContentProviderContainerType.ContentProvider;
+
         [Required]
         public string Name { get; set; }
 
@@ -28,7 +35,7 @@ namespace blendnet.common.dto
         /// </summary>
         public void SetIdentifiers()
         {
-            this.Id = Guid.NewGuid();
+            this.Id = this.ContentProviderId = Guid.NewGuid();
 
             if (this.ContentAdministrators != null && this.ContentAdministrators.Count > 0)
             {

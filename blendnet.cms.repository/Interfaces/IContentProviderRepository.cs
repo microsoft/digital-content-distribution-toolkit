@@ -48,5 +48,19 @@ namespace blendnet.cms.repository.Interfaces
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
         Task<SasTokenDto> GenerateSaSToken(Guid contentProviderId);
+
+        /// <summary>
+        /// Creates Subscription
+        /// </summary>
+        /// <param name="subscriptionMetadata">subscription data</param>
+        /// <returns>ID of the created subscription</returns>
+        Task<Guid> CreateSubscription(ContentProviderSubscriptionMetadataDto subscriptionMetadata);
+
+        /// <summary>
+        /// Gets all subscriptions for a give content provider
+        /// </summary>
+        /// <param name="contentProviderId">ID of the content provider</param>
+        /// <returns>subscriptions as a list</returns>
+        Task<List<ContentProviderSubscriptionMetadataDto>> GetSubscriptions(Guid contentProviderId);
     }
 }
