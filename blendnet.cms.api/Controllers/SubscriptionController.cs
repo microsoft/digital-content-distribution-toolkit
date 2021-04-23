@@ -47,17 +47,17 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="subscriptionMetadata">subscription data</param>
         /// <returns>ID of the created subscription</returns>
-        [HttpPost]
-        public async Task<ActionResult<String>> CreateSubscription(ContentProviderSubscriptionDto subscriptionMetadata)
+        [HttpPost("{contentProviderId:guid}")]
+        public async Task<ActionResult<String>> CreateSubscription( Guid contentProviderId,
+                                                                    ContentProviderSubscriptionDto subscriptionMetadata)
         {
-            var contentProviderId = subscriptionMetadata.ContentProviderId;
-
             if (!await ValidContentProvider(contentProviderId))
             {
                 return NotFound();
             }
 
             subscriptionMetadata.SetIdentifiers();
+            subscriptionMetadata.ContentProviderId = contentProviderId;
             subscriptionMetadata.Type = ContentProviderContainerType.SubscriptionMetadata;
 
             var subscriptionId = await _contentProviderRepository.CreateSubscription(subscriptionMetadata);
