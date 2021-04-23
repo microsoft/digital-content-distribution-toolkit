@@ -7,43 +7,58 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-# - task: NodeTool@0
-#   inputs:
-#     versionSpec: '10.x'
-#   displayName: 'Install Node.js'
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    steps:
+    - task: Docker@2
+      displayName: Login to ACR
+      inputs:
+        command: login
+        containerRegistry: $(acr-service-connection)
 
-# - script: |
-#     cd blendnet.cms.web.ui
-#     npm install -g @angular/cli
-#     npm install
-#     ng build --prod
-#   displayName: 'npm install and build'
+    - task: CmdLine@2
+      displayName: "Building docker image"
+      inputs:
+        script: "docker build -t $(image_name):$(RunNumber) -f ./blendnet.cms.web.ui/Dockerfile ."
 
-- task: Docker@2
-  displayName: Login to ACR
-  inputs:
-    command: login
-    containerRegistry: $(acr-service-connection)
+    - task: CmdLine@2
+      displayName: "Tagging docker image"
+      inputs:
+        script: "docker tag $(image_name):$(RunNumber) $(image_name):latest"
 
-- task: CmdLine@2
-  displayName: "Building docker image"
-  inputs:
-    script: "docker build -t $(image_name):$(RunNumber) -f ./blendnet.cms.web.ui/Dockerfile ."
+    - task: CmdLine@2
+      displayName: "Pushing image to ACR"
+      inputs:
+        script: "docker push --all-tags $(image_name)"
 
-- task: CmdLine@2
-  displayName: "Tagging docker image"
-  inputs:
-    script: "docker tag $(image_name):$(RunNumber) $(image_name):latest"
+    - task: Docker@2
+      displayName: Logout of ACR
+      inputs:
+        command: logout
+        containerRegistry: $(acr-service-connection)
 
-- task: CmdLine@2
-  displayName: "Pushing image to ACR"
-  inputs:
-    script: "docker push --all-tags $(image_name)"
+- stage: Deploy
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - job: Deploy
+    steps:
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aks-blendnet-dev-default'
+        manifests: 'blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
 
-- task: Docker@2
-  displayName: Logout of ACR
-  inputs:
-    command: logout
-    containerRegistry: $(acr-service-connection)
-
+- stage: AppGateway
+  dependsOn: Deploy
+  condition: succeeded()
+  jobs:
+  - job: AppGateway
+    steps:
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aks-blendnet-dev-default'
+        manifests: 'appgateway.yaml'
