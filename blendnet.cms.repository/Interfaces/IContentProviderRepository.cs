@@ -62,5 +62,29 @@ namespace blendnet.cms.repository.Interfaces
         /// <param name="contentProviderId">ID of the content provider</param>
         /// <returns>subscriptions as a list</returns>
         Task<List<ContentProviderSubscriptionDto>> GetSubscriptions(Guid contentProviderId);
+
+        /// <summary>
+        /// Gets subscription for given ID and contentProvider ID
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
+        Task<ContentProviderSubscriptionDto> GetSubscription(Guid contentProviderId, Guid subscriptionId);
+        
+        /// <summary>
+        /// Update a subscription's data
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscriptionMetadata"></param>
+        /// <returns></returns>
+        Task<int> UpdateSubscription(Guid contentProviderId, ContentProviderSubscriptionDto subscriptionMetadata);
+        
+        /// <summary>
+        /// Delete a subscription
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
+        Task<int> DeleteSubscription(Guid contentProviderId, Guid subscriptionId);
     }
 }

@@ -150,12 +150,12 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <summary>
         /// Creates Subscription
         /// </summary>
-        /// <param name="subscriptionMetadata">subscription data</param>
+        /// <param name="subscription">subscription data</param>
         /// <returns>ID of the created subscription</returns>
-        public async Task<Guid> CreateSubscription(ContentProviderSubscriptionDto subscriptionMetadata)
+        public async Task<Guid> CreateSubscription(ContentProviderSubscriptionDto subscription)
         {
-            await this._container.CreateItemAsync<ContentProviderSubscriptionDto>(subscriptionMetadata, new PartitionKey(subscriptionMetadata.ContentProviderId.ToString()));
-            return subscriptionMetadata.Id.Value;
+            await this._container.CreateItemAsync<ContentProviderSubscriptionDto>(subscription, new PartitionKey(subscription.ContentProviderId.ToString()));
+            return subscription.Id.Value;
         }
 
         /// <summary>
@@ -171,6 +171,64 @@ namespace blendnet.cms.repository.CosmosRepository
                           select o;
 
             return results.ToList();
+        }
+
+        /// <summary>
+        /// Gets the subscription for given ID and content Provider ID
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
+        public async Task<ContentProviderSubscriptionDto> GetSubscription(Guid contentProviderId, Guid subscriptionId)
+        {
+            var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionDto>(allowSynchronousQueryExecution: true)
+                          where o.Type == ContentProviderContainerType.SubscriptionMetadata
+                          where o.Id == subscriptionId && o.ContentProviderId == contentProviderId
+                          select o;
+
+            return results.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Updates a subscriptions's data
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateSubscription(Guid contentProviderId, ContentProviderSubscriptionDto subscription)
+        {
+            try
+            {
+                var response = await this._container.ReplaceItemAsync<ContentProviderSubscriptionDto>(  subscription, 
+                                                                                                        subscription.Id.Value.ToString(), 
+                                                                                                        new PartitionKey(contentProviderId.ToString()));
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
+        }
+
+        /// <summary>
+        /// Delete a subscription
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
+        public async Task<int> DeleteSubscription(Guid contentProviderId, Guid subscriptionId)
+        {
+            try
+            {
+                var response = await this._container.DeleteItemAsync<ContentProviderDto>(   subscriptionId.ToString(), 
+                                                                                            new PartitionKey(contentProviderId.ToString()));
+
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
         }
 
         /// <summary>
