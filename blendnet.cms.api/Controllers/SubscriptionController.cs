@@ -198,6 +198,8 @@ namespace blendnet.cms.api.Controllers
 
         private Task<bool> OrdersExistForSubscription(Guid subscriptionId)
         {
+            // TODO: implement this once Orders subsystem is available
+            // For now, returning false always
             return Task.FromResult(false);
         }
 
