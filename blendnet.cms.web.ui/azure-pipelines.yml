@@ -7,6 +7,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+stages:
 - stage: Build
   jobs:
   - job: Build
