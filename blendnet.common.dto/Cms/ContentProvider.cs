@@ -13,7 +13,17 @@ namespace blendnet.common.dto
         /// <summary>
         /// Same as Id
         /// </summary>
-        public Guid? ContentProviderId { get; set; }
+        public Guid? ContentProviderId
+        {
+            get
+            {
+                return this.Id;
+            }
+            set
+            {
+                // no op
+            }
+        }
 
         public ContentProviderContainerType Type { get; set; } = ContentProviderContainerType.ContentProvider;
 
@@ -35,7 +45,7 @@ namespace blendnet.common.dto
         /// </summary>
         public void SetIdentifiers()
         {
-            this.Id = this.ContentProviderId = Guid.NewGuid();
+            this.Id = Guid.NewGuid();
 
             if (this.ContentAdministrators != null && this.ContentAdministrators.Count > 0)
             {

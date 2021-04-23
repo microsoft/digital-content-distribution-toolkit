@@ -108,7 +108,7 @@ namespace blendnet.cms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> UpdateContentProvider(Guid contentProviderId, ContentProviderDto contentProvider)
         {
-            contentProvider.Id = contentProvider.ContentProviderId = contentProviderId;
+            contentProvider.Id = contentProviderId;
             contentProvider.Type = ContentProviderContainerType.ContentProvider;
 
             int statusCode = await _contentProviderRepository.UpdateContentProvider(contentProvider);
