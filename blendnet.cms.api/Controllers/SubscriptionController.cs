@@ -42,6 +42,12 @@ namespace blendnet.cms.api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Gets subscription for the given ID and content provider ID
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetSubscription(Guid contentProviderId, Guid subscriptionId)
         {
