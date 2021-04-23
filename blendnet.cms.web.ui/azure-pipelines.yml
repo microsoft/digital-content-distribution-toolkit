@@ -7,7 +7,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-- stage: "Build and Push to ACR"
+- stage: Build
   jobs:
   - job: Build
     steps:
@@ -38,7 +38,8 @@ pool:
         command: logout
         containerRegistry: $(acr-service-connection)
 
-- stage: "Deploy to Kubernetes"
+- stage: Deploy
+  dependsOn: Build
   condition: succeeded()
   jobs:
   - job: B1
