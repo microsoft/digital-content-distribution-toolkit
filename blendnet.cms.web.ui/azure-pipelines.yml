@@ -43,10 +43,22 @@ stages:
   dependsOn: Build
   condition: succeeded()
   jobs:
-  - job: B1
+  - job: Deploy
     steps:
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
         kubernetesServiceConnection: 'aks-blendnet-dev-default'
         manifests: 'blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
+
+- stage: AppGateway
+  dependsOn: Deploy
+  condition: succeeded()
+  jobs:
+  - job: AppGateway
+    steps:
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aks-blendnet-dev-default'
+        manifests: 'appgateway.yaml'
