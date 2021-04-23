@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace blendnet.common.dto
 {
-    public class ContentProviderSubscriptionMetadataDto
+    public class ContentProviderSubscriptionDto
     {
         /// <summary>
         /// Subscription Id

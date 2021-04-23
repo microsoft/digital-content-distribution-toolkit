@@ -16,13 +16,13 @@ namespace blendnet.cms.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class SubscriptionMetadataController : Controller
+    public class SubscriptionController : Controller
     {
         private readonly ILogger _logger;
 
         private IContentProviderRepository _contentProviderRepository;
 
-        public SubscriptionMetadataController(ILogger<SubscriptionMetadataController> logger, IContentProviderRepository contentProviderRepository)
+        public SubscriptionController(ILogger<SubscriptionController> logger, IContentProviderRepository contentProviderRepository)
         {
             this._logger = logger;
             this._contentProviderRepository = contentProviderRepository;
@@ -36,13 +36,8 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contentProviderId">Content Provider ID</param>
         /// <returns></returns>
         [HttpGet("{contentProviderId:guid}")]
-        public async Task<ActionResult<List<ContentProviderSubscriptionMetadataDto>>> GetSubscriptions(Guid contentProviderId)
+        public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetSubscriptions(Guid contentProviderId)
         {
-            if (!await ValidContentProvider(contentProviderId))
-            {
-                return NotFound();
-            }
-
             var result = await this._contentProviderRepository.GetSubscriptions(contentProviderId);
             return Ok(result);
         }
@@ -53,7 +48,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="subscriptionMetadata">subscription data</param>
         /// <returns>ID of the created subscription</returns>
         [HttpPost]
-        public async Task<ActionResult<String>> CreateSubscription(ContentProviderSubscriptionMetadataDto subscriptionMetadata)
+        public async Task<ActionResult<String>> CreateSubscription(ContentProviderSubscriptionDto subscriptionMetadata)
         {
             var contentProviderId = subscriptionMetadata.ContentProviderId;
 

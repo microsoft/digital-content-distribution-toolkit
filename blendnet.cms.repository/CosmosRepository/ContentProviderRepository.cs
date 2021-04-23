@@ -152,9 +152,9 @@ namespace blendnet.cms.repository.CosmosRepository
         /// </summary>
         /// <param name="subscriptionMetadata">subscription data</param>
         /// <returns>ID of the created subscription</returns>
-        public async Task<Guid> CreateSubscription(ContentProviderSubscriptionMetadataDto subscriptionMetadata)
+        public async Task<Guid> CreateSubscription(ContentProviderSubscriptionDto subscriptionMetadata)
         {
-            await this._container.CreateItemAsync<ContentProviderSubscriptionMetadataDto>(subscriptionMetadata, new PartitionKey(subscriptionMetadata.ContentProviderId.ToString()));
+            await this._container.CreateItemAsync<ContentProviderSubscriptionDto>(subscriptionMetadata, new PartitionKey(subscriptionMetadata.ContentProviderId.ToString()));
             return subscriptionMetadata.Id.Value;
         }
 
@@ -163,9 +163,9 @@ namespace blendnet.cms.repository.CosmosRepository
         /// </summary>
         /// <param name="contentProviderId">ID of the content provider</param>
         /// <returns>subscriptions as a list</returns>
-        public async Task<List<ContentProviderSubscriptionMetadataDto>> GetSubscriptions(Guid contentProviderId)
+        public async Task<List<ContentProviderSubscriptionDto>> GetSubscriptions(Guid contentProviderId)
         {
-            var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionMetadataDto>(allowSynchronousQueryExecution: true)
+            var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionDto>(allowSynchronousQueryExecution: true)
                           where o.Type == ContentProviderContainerType.SubscriptionMetadata
                           where o.ContentProviderId == contentProviderId
                           select o;

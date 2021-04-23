@@ -54,13 +54,13 @@ namespace blendnet.cms.repository.Interfaces
         /// </summary>
         /// <param name="subscriptionMetadata">subscription data</param>
         /// <returns>ID of the created subscription</returns>
-        Task<Guid> CreateSubscription(ContentProviderSubscriptionMetadataDto subscriptionMetadata);
+        Task<Guid> CreateSubscription(ContentProviderSubscriptionDto subscriptionMetadata);
 
         /// <summary>
         /// Gets all subscriptions for a give content provider
         /// </summary>
         /// <param name="contentProviderId">ID of the content provider</param>
         /// <returns>subscriptions as a list</returns>
-        Task<List<ContentProviderSubscriptionMetadataDto>> GetSubscriptions(Guid contentProviderId);
+        Task<List<ContentProviderSubscriptionDto>> GetSubscriptions(Guid contentProviderId);
     }
 }
