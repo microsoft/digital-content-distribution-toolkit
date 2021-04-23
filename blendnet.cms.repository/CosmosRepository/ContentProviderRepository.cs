@@ -186,7 +186,7 @@ namespace blendnet.cms.repository.CosmosRepository
                           where o.Id == subscriptionId && o.ContentProviderId == contentProviderId
                           select o;
 
-            return results.FirstOrDefault();
+            return results.Take(1).AsEnumerable().FirstOrDefault();
         }
 
         /// <summary>

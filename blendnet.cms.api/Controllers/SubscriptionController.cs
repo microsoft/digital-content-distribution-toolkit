@@ -1,4 +1,4 @@
-﻿using blendnet.cms.repository.Interfaces;
+using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +48,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contentProviderId"></param>
         /// <param name="subscriptionId"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("{subscriptionId:guid}")]
         public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetSubscription(Guid contentProviderId, Guid subscriptionId)
         {
             var result = await this._contentProviderRepository.GetSubscription(contentProviderId, subscriptionId);
