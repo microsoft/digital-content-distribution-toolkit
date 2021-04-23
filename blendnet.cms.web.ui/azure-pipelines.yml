@@ -45,7 +45,8 @@ stages:
   jobs:
   - job: B1
     steps:
-    - task: CmdLine@2
-      displayName: Show variables 2
+    - task: KubernetesManifest@0
       inputs:
-        script: 'printenv'
+        action: 'deploy'
+        kubernetesServiceConnection: 'aks-blendnet-dev-default'
+        manifests: 'blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
