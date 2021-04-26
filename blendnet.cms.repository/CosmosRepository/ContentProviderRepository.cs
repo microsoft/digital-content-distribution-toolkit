@@ -100,11 +100,12 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns></returns>
         public async Task<List<ContentProviderDto>> GetContentProviders()
         {
-            var query = this._container
-                            .GetItemLinqQueryable<ContentProviderDto>(allowSynchronousQueryExecution: true)
-                            .ToList<ContentProviderDto>();
+            var query = from o in this._container.GetItemLinqQueryable<ContentProviderDto>(allowSynchronousQueryExecution: true)
+                        where o.Type == ContentProviderContainerType.ContentProvider
+                        select o;
 
-            return query;
+
+            return query.ToList();
         }
 
         /// <summary>
@@ -146,6 +147,89 @@ namespace blendnet.cms.repository.CosmosRepository
             return sasUri;
         }
 
+        /// <summary>
+        /// Creates Subscription
+        /// </summary>
+        /// <param name="subscription">subscription data</param>
+        /// <returns>ID of the created subscription</returns>
+        public async Task<Guid> CreateSubscription(ContentProviderSubscriptionDto subscription)
+        {
+            await this._container.CreateItemAsync<ContentProviderSubscriptionDto>(subscription, new PartitionKey(subscription.ContentProviderId.ToString()));
+            return subscription.Id.Value;
+        }
+
+        /// <summary>
+        /// Gets all subscriptions for a give content provider
+        /// </summary>
+        /// <param name="contentProviderId">ID of the content provider</param>
+        /// <returns>subscriptions as a list</returns>
+        public async Task<List<ContentProviderSubscriptionDto>> GetSubscriptions(Guid contentProviderId)
+        {
+            var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionDto>(allowSynchronousQueryExecution: true)
+                          where o.Type == ContentProviderContainerType.SubscriptionMetadata
+                          where o.ContentProviderId == contentProviderId
+                          select o;
+
+            return results.ToList();
+        }
+
+        /// <summary>
+        /// Gets the subscription for given ID and content Provider ID
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
+        public async Task<ContentProviderSubscriptionDto> GetSubscription(Guid contentProviderId, Guid subscriptionId)
+        {
+            var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionDto>(allowSynchronousQueryExecution: true)
+                          where o.Type == ContentProviderContainerType.SubscriptionMetadata
+                          where o.Id == subscriptionId && o.ContentProviderId == contentProviderId
+                          select o;
+
+            return results.Take(1).AsEnumerable().FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Updates a subscriptions's data
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateSubscription(Guid contentProviderId, ContentProviderSubscriptionDto subscription)
+        {
+            try
+            {
+                var response = await this._container.ReplaceItemAsync<ContentProviderSubscriptionDto>(  subscription, 
+                                                                                                        subscription.Id.Value.ToString(), 
+                                                                                                        new PartitionKey(contentProviderId.ToString()));
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
+        }
+
+        /// <summary>
+        /// Delete a subscription
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
+        public async Task<int> DeleteSubscription(Guid contentProviderId, Guid subscriptionId)
+        {
+            try
+            {
+                var response = await this._container.DeleteItemAsync<ContentProviderDto>(   subscriptionId.ToString(), 
+                                                                                            new PartitionKey(contentProviderId.ToString()));
+
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
+        }
 
         /// <summary>
         /// Get the SAS token based on the policy which was created while creating the container

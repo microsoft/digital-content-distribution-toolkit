@@ -1,0 +1,15 @@
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace blendnet.common.dto
+{
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum ContentProviderContainerType
+    {
+        ContentProvider = 0,
+        SubscriptionMetadata = 1,
+    }
+}
