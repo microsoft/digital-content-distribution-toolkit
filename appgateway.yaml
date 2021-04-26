@@ -17,6 +17,10 @@ spec:
         backend:
           serviceName: blendnet-cms-web-ui
           servicePort: 80
+      - path: /*
+        backend:
+          serviceName: blendnet-cms-web-ui
+          servicePort: 80
       - path: /user/*
         backend:
           serviceName: blendnet-crm-user-api
