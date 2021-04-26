@@ -306,7 +306,7 @@ namespace blendnet.cms.repository.CosmosRepository
             ContentApiResult<T> contentResult = null;
             List<T> returnList = new List<T>();
 
-            QueryRequestOptions options = new QueryRequestOptions { MaxItemCount = 1000}; // should make it configurable in future
+            QueryRequestOptions options = new QueryRequestOptions { MaxItemCount = 2}; // should make it configurable in future
 
             var query = this._container.GetItemQueryIterator<T>(queryDef, continuationToken:continuationToken, requestOptions: options);
 

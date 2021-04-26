@@ -1,9 +1,11 @@
-﻿using blendnet.cms.repository.CosmosRepository;
+﻿using AutoMapper;
+using blendnet.cms.repository.CosmosRepository;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto.Cms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace blendnet.cms.api.Controllers
@@ -13,15 +15,19 @@ namespace blendnet.cms.api.Controllers
     [ApiController]
     public class BrowseContentController : ControllerBase
     {
+        private readonly IMapper _mapper;
+
         private readonly ILogger _logger;
 
         private IContentRepository _contentRepository;
 
-        public BrowseContentController(ILogger<BrowseContentController> logger, IContentRepository contentRepository)
+        public BrowseContentController(ILogger<BrowseContentController> logger, IContentRepository contentRepository, IMapper mapper)
         {
             _logger = logger;
 
             _contentRepository = contentRepository;
+
+            _mapper = mapper;
         }
 
         #region Browse content methods
@@ -34,14 +40,16 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/processed")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<ContentApiResult<Content>>> GetProcessedAssets(Guid contentProviderId, string continuationToken)
+        public async Task<ActionResult<ContentApiResult<ContentDto>>> GetProcessedAssets(Guid contentProviderId, string continuationToken)
         {
             ContentStatusFilter contentStatusFilter = new ContentStatusFilter();
             contentStatusFilter.ContentTransformStatuses = new string[] { ContentTransformStatus.TransformComplete.ToString() };
 
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
 
-            return Ok(contentApiResult);
+            ContentApiResult<ContentDto> result = new ContentApiResult<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult._data), contentApiResult._continuationToken);
+                
+            return Ok(result);
         }
 
         /// <summary>
@@ -60,7 +68,9 @@ namespace blendnet.cms.api.Controllers
 
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
 
-            return Ok(contentApiResult);
+            ContentApiResult<ContentDto> result = new ContentApiResult<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult._data), contentApiResult._continuationToken);
+
+            return Ok(result);
         }
 
         #endregion
