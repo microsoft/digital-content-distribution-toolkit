@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" class="cms-toolbar">
 	<span><div class="cms-app-name" *ngIf="loginDisplay">
-		Content Provider : {{selectedCPName}}
+		<h1>Content Provider : {{selectedCPName}}</h1>
 	</div></span>
 	<span class="cms-menu-spacer"></span>
 	<span><h1>BlendNet CMS</h1></span>
@@ -19,8 +19,9 @@
 				<mat-icon mat-list-icon>home</mat-icon>
 			</mat-list-item>
 			<div class="submenu" [ngClass]="{'expanded' : showHomeSubmenu}" *ngIf="isExpanded">
-        <a mat-list-item [routerLink]="['content-providers']">Content Providers</a>
+        		<a mat-list-item [routerLink]="['content-providers']">Content Providers</a>
 				<a mat-list-item [routerLink]="['sas-key']">SAS Key</a>
+				<a mat-list-item [routerLink]="['subscriptions']">Subscriptions</a>
       </div>
       <mat-list-item  class="parent">
 				<span class="full-width" *ngIf="isExpanded">Content</span>

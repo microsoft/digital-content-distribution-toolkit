@@ -67,4 +67,10 @@ export class ContentService {
     return this.http.get(url, {responseType: 'text'});
   }
 
+  deleteContent(id) {
+    let url = this.baseUrl + "/" + id ;
+    this.logger.log(`Deleting the Content`);
+    return this.http.delete(url);
+  }
+
 }

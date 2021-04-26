@@ -236,14 +236,20 @@ openProcessDialog(rows) {
   });
 }
 
-openDeleteConfirmModal(): void {
+openDeleteConfirmModal(row): void {
   const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
     data: {
       message: this.deleteConfirmMessage,
-      action: "DELETE"
+      action: "DELETE",
+      contents: row
     },
     width: '40%'
   });
+  dialogRef.componentInstance.onSuccessfulSubmission.subscribe(res => {
+    this.toastr.success("Content submitted for deletion for successfully");
+    this.getUnprocessedContent();
+    dialogRef.close();
+  })
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
@@ -310,7 +316,7 @@ export class UnprocessConfirmDialog {
 
   onConfirm() {
     if(this.data.action === "DELETE") {
-      this.onConfirmDelete(this.data.contents);
+      this.onConfirmDelete(this.data.contents.id);
     } else {
       this.onConfirmProcess(this.data.contents);
     }
@@ -336,8 +342,8 @@ export class UnprocessConfirmDialog {
 
 
   onConfirmDelete(contentId): void {
-    this.contentService.processContent(null).subscribe(
-      res => this.toastr.success("Content/s submitted for transformation sucessfully!!"),
+    this.contentService.deleteContent(contentId).subscribe(
+      res => this.onSuccessfulSubmission.emit(res),
       err => this.toastr.error(err));
     this.dialogRef.close();
   }

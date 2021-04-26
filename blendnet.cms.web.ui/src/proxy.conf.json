@@ -1,13 +1,30 @@
 {
-    "/api/v1/ContentProvider/*": {
-        "target": "https://localhost:44338",
+    "/ContentProvider/*": {
+        "target": "http://13.71.0.226/cmsapi/api/v1/ContentProvider/",
         "secure": false,
-        "logLevel": "debug"
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/ContentProvider": ""
+          }
+    },
+    "/Content/*": {
+        "target": "http://13.71.0.226/cmsapi/api/v1/Content/",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/Content": ""
+          }
     },
 
-    "/api/v1/Identity/*": {
-        "target": "https://localhost:44397",
+    "/Identity/*": {
+        "target": "http://13.71.0.226/user/api/v1/Identity/",
         "secure": false,
-        "logLevel": "debug"
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/Identity": ""
+          }
     }
 }

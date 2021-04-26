@@ -25,6 +25,7 @@ import { HttpErrorInterceptor } from './interceptor/http-error.interceptor';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
 import { SpinnerInterceptor } from './interceptor/spinner.interceptor';
 import { BroadcastComponent } from './broadcast/broadcast.component';
+import { SubscriptionComponent } from './subscription/subscription.component';
 
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
@@ -89,7 +90,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     SpinnerOverlayComponent,
     ContentTokenDialog,
     ProcessConfirmDialog,
-    BroadcastComponent
+    BroadcastComponent,
+    SubscriptionComponent
   ],
   imports: [
     HttpClientModule,

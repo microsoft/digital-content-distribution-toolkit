@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Inject, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Inject, Output, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -10,6 +10,7 @@ import { ContentService } from '../services/content.service';
 import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+
 
 export interface DialogData {
   message: string;
@@ -153,19 +154,31 @@ openBroadcastConfirmDialog(content): void {
     },
     width: '60%'
   });
+  dialogRef.componentInstance.onSuccessfulSubmission.subscribe(res => {
+    this.toastr.success("Content/s submitted for broadcast for successfully");
+    this.getProcessedContent();
+    dialogRef.close();
+  })
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
   });
 }
 
-openDeleteConfirmModal(): void {
-  const dialogRef = this.dialog.open(ProcessConfirmDialog, {
+openDeleteConfirmModal(row): void {
+  const dialogRef = this.dialog.open(ProcessConfirmDeleteDialog, {
     data: {
-      message: this.deleteConfirmMessage
+      message: this.deleteConfirmMessage,
+      contents: row
     },
     width: '40%'
   });
+
+  dialogRef.componentInstance.onSuccessfulSubmission.subscribe(res => {
+    this.toastr.success("Content submitted for deletion for successfully");
+    this.getProcessedContent();
+    dialogRef.close();
+  })
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
@@ -204,8 +217,9 @@ export class ContentTokenDialog {
     this.contentService.getContentToken(this.data.content.id).subscribe(
       res => {
         this.contentToken = res;
-        this.dashUrl =  environment.dashUrlPrefix + this.data.content.dashUrl +
-         + environment.widewineTokenPrefix + this.contentToken;
+        this.dashUrl =  environment.dashUrlPrefix.concat(this.data.content.dashUrl).concat(
+          environment.widewineTokenPrefix).concat(this.contentToken);
+         console.log(this.dashUrl);
       },
       err => this.toastr.error(err));
     //this.data.content;
@@ -238,6 +252,8 @@ export class ProcessConfirmDialog {
     end: new FormControl(null, [Validators.required])
   });
 
+  @Output() onSuccessfulSubmission= new EventEmitter<any>();
+
   constructor(
     public dialogRef: MatDialogRef<ProcessConfirmDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -266,7 +282,8 @@ export class ProcessConfirmDialog {
         "endDate": this.range.controls.end.value
       }
       this.contentService.boradcastContent(broadcastRequest).subscribe(
-        res => this.toastr.success("Content/s submitted for broadcast sucessfully!!"),
+        res => //this.toastr.success("Content/s submitted for broadcast sucessfully!!"),
+        this.onSuccessfulSubmission.emit(res),
         err => this.toastr.error(err));
       this.dialogRef.close();
     }
@@ -286,6 +303,43 @@ export class ProcessConfirmDialog {
 
 
 }
+
+
+@Component({
+  selector: 'process-confirm-dialog',
+  templateUrl: 'process-delete-confirm-dialog.html',
+  styleUrls: ['processed.component.css']
+})
+export class ProcessConfirmDeleteDialog {
+  @Output() onSuccessfulSubmission= new EventEmitter<any>();
+  constructor(
+    public dialogRef: MatDialogRef<ProcessConfirmDeleteDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public contentService: ContentService,
+    private toastr: ToastrService) {}
+
+
+ 
+
+  onCancel(): void {
+    this.dialogRef.close();
+  }
+
+
+  onConfirm(): void {
+    this.contentService.deleteContent(this.data.contents.id).subscribe(
+      res => //this.toastr.success("Content submitted for deletion sucessfully!!"),
+      this.onSuccessfulSubmission.emit(res),
+      err => this.toastr.error(err));
+    this.dialogRef.close();
+  }
+
+}
+
+
+
+
+
 
 
 

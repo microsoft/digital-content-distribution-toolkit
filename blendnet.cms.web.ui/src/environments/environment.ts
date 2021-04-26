@@ -3,11 +3,14 @@ export const environment = {
   allowedMaxSelection: 3,
   maxFileUploadSize: 1000000,
   fileAllowedType: 'application/json',
-  contentProviderApiUrl: 'https://localhost:44338/api/v1/ContentProvider',
-  contentApiUrl: 'https://localhost:44338/api/v1/Content',
-  userApiUrl: 'https://localhost:44397/api/v1/Identity',
-  dashUrlPrefix: 'https://ampdemo.azureedge.net/?url=',
-  widewineTokenPrefix: '&widevine=true&token=Bearer%3D',
+  // contentProviderApiUrl: 'https://localhost:44338/api/v1/ContentProvider',
+  // contentApiUrl: 'https://localhost:44338/api/v1/Content',
+  // userApiUrl: 'https://localhost:44397/api/v1/Identity',
+  contentProviderApiUrl: 'http://13.71.0.226/cmsapi/api/v1/ContentProvider',
+  contentApiUrl: 'http://13.71.0.226/cmsapi/api/v1/Content',
+  userApiUrl: 'http://13.71.0.226/user/api/v1/Identity',
+  dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
+  widewineTokenPrefix: "&widevine=true&token=Bearer%3D",
     filters : [
     {
       "filterName" : "Language",
@@ -19,10 +22,15 @@ export const environment = {
       "filterValues" : [
         "Central India", "West India", "North India", "South India"]
     },
+    // {
+    //   "filterName" : "Device Types",
+    //   "filterValues" : [
+    //     "MAP 100", "MAP 500", "MAP 200"]
+    // },
     {
-      "filterName" : "Device Types",
+      "filterName" : "Content Types",
       "filterValues" : [
-        "MAP 100", "MAP 500", "MAP 200"]
+        "Test"]
     },
   ]
  };

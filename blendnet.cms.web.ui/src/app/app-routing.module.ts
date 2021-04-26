@@ -11,6 +11,7 @@ import { SasKeyComponent } from './sas-key/sas-key.component';
 import { UnprocessedComponent } from './unprocessed/unprocessed.component';
 import { roles } from './b2c-config';
 import { RoleGuardService } from './services/role-guard.service';
+import { SubscriptionComponent } from './subscription/subscription.component';
 
 
 const appRoutes: Routes = [
@@ -85,6 +86,17 @@ const appRoutes: Routes = [
   {
     path: 'sas-key', 
     component: SasKeyComponent,
+    canActivate: [
+      MsalGuard,
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: roles.SuperUser
+    } 
+  },
+  {
+    path: 'subscriptions', 
+    component: SubscriptionComponent,
     canActivate: [
       MsalGuard,
       RoleGuardService
