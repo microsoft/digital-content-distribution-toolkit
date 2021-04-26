@@ -183,12 +183,12 @@ namespace blendnet.cms.api.Controllers
             {
                 if (activate)
                 {
-                    contentProvider.ActivationDate = DateTime.Now;
+                    contentProvider.ActivationDate = DateTime.UtcNow;
                     contentProvider.IsActive = true;
                 }
                 else
                 {
-                    contentProvider.DeactivationDate = DateTime.Now;
+                    contentProvider.DeactivationDate = DateTime.UtcNow;
                     contentProvider.IsActive = false;
                 }
 
