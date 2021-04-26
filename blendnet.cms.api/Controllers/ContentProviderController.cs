@@ -81,6 +81,7 @@ namespace blendnet.cms.api.Controllers
         {
             //generate ids for content provider and administrator
             contentProvider.SetIdentifiers();
+            contentProvider.Type = ContentProviderContainerType.ContentProvider;
 
             var contentProviderId = await _contentProviderRepository.CreateContentProvider(contentProvider);
 
@@ -108,6 +109,7 @@ namespace blendnet.cms.api.Controllers
         public async Task<ActionResult> UpdateContentProvider(Guid contentProviderId, ContentProviderDto contentProvider)
         {
             contentProvider.Id = contentProviderId;
+            contentProvider.Type = ContentProviderContainerType.ContentProvider;
 
             int statusCode = await _contentProviderRepository.UpdateContentProvider(contentProvider);
 

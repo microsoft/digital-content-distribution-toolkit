@@ -12,6 +12,8 @@ using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using blendnet.common.infrastructure.KeyVault;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 
 namespace blendnet.crm.retailer.api
 {
@@ -57,14 +59,11 @@ namespace blendnet.crm.retailer.api
 
                         var azureServiceTokenProvider = new AzureServiceTokenProvider();
 
-                        var keyVaultClient = new KeyVaultClient(
-                            new KeyVaultClient.AuthenticationCallback(
-                                azureServiceTokenProvider.KeyVaultTokenCallback));
+                        var secretClient = new SecretClient(
+                         new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
+                         new DefaultAzureCredential());
 
-                        config.AddAzureKeyVault(
-                            $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-                            keyVaultClient,
-                            new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
+                        config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
                     }
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

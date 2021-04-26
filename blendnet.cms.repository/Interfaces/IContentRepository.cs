@@ -1,3 +1,4 @@
+using blendnet.cms.repository.CosmosRepository;
 using blendnet.common.dto;
 using blendnet.common.dto.Cms;
 using System;
@@ -57,6 +58,15 @@ namespace blendnet.cms.repository.Interfaces
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
         Task<List<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter);
+
+        /// <summary>
+        /// Get content by provider id, status filter and continuation token
+        /// </summary>
+        /// <param name="contentProviderId"> Provider id</param>
+        /// <param name="contentStatusFilter">Lists of Upload status, Transform status and broadcast status</param>
+        /// <param name="continuationToken">continuation token to query</param>
+        /// <returns>Content result which holds list of results and continuation token</returns>
+        Task<ContentApiResult<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter, string continuationToken);
 
 
         /// <summary>

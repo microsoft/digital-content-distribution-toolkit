@@ -1,0 +1,39 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blendnet-cms-web-ui
+  labels:
+    app: blendnet-cms-web-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blendnet-cms-web-ui
+  template:
+    metadata:
+      labels:
+        app: blendnet-cms-web-ui
+        aadpodidbinding: blendnet-dev-pod-identity
+    spec:
+      containers:
+      - name: blendnet-cms-web-ui
+        image: acrblendnetdev.azurecr.io/blendnet.cms.web.ui:latest
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 3
+          timeoutSeconds: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blendnet-cms-web-ui
+spec:
+  ports:
+  - port: 80
+    targetPort : 80
+  selector:
+    app: blendnet-cms-web-ui

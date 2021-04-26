@@ -163,8 +163,33 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns></returns>
         public async Task<List<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter)
         {
-            List<Content> contentList = new List<Content>();
+            QueryDefinition queryDef = GetQueryDefinitionWithStatusFilter(contentProviderId, contentStatusFilter);
 
+            List<Content> contentList = await ExtractDataFromQueryIterator<Content>(queryDef);
+
+            return contentList;
+        }
+
+        /// <summary>
+        /// Get content by provider id, status filter and continuation token
+        /// </summary>
+        /// <param name="contentProviderId"> Provider id</param>
+        /// <param name="contentStatusFilter">Lists of Upload status, Transform status and broadcast status</param>
+        /// <param name="continuationToken">continuation token to query</param>
+        /// <returns>Content result which holds list of results and continuation token</returns>
+        public async Task<ContentApiResult<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter, string continuationToken)
+        {
+            ContentApiResult<Content> contentResult;
+            
+            QueryDefinition queryDef = GetQueryDefinitionWithStatusFilter(contentProviderId, contentStatusFilter);
+
+            contentResult = await ExtractDataFromQueryIteratorWithToken<Content>(queryDef, continuationToken);
+
+            return contentResult;
+        }
+
+        private QueryDefinition GetQueryDefinitionWithStatusFilter(Guid contentProviderId, ContentStatusFilter contentStatusFilter)
+        {
             string queryString = string.Empty;
 
             queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId";
@@ -173,7 +198,7 @@ namespace blendnet.cms.repository.CosmosRepository
             {
                 string statuses = string.Empty;
 
-                if (contentStatusFilter.ContentUploadStatuses != null && 
+                if (contentStatusFilter.ContentUploadStatuses != null &&
                     contentStatusFilter.ContentUploadStatuses.Length > 0)
                 {
                     statuses = string.Join(",", contentStatusFilter.ContentUploadStatuses.Select(item => "'" + item + "'"));
@@ -198,19 +223,16 @@ namespace blendnet.cms.repository.CosmosRepository
                 }
 
             }
-            
+
             var queryDef = new QueryDefinition(queryString);
 
             queryDef.WithParameter("@type", ContentContainerType.Content);
 
             queryDef.WithParameter("@contentProviderId", contentProviderId);
-
-            contentList = await ExtractDataFromQueryIterator<Content>(queryDef);
-
-            return contentList;
+            return queryDef;
         }
 
-                /// <summary>
+        /// <summary>
         /// Get Command by Content Id
         /// </summary>
         /// <param name="contentId"></param>
@@ -279,6 +301,31 @@ namespace blendnet.cms.repository.CosmosRepository
             return returnList;
         }
 
+        private async Task<ContentApiResult<T>> ExtractDataFromQueryIteratorWithToken<T>(QueryDefinition queryDef, string continuationToken)
+        {
+            ContentApiResult<T> contentResult = null;
+            List<T> returnList = new List<T>();
+
+            QueryRequestOptions options = new QueryRequestOptions { MaxItemCount = 1000}; // should make it configurable in future
+
+            var query = this._container.GetItemQueryIterator<T>(queryDef, continuationToken:continuationToken, requestOptions: options);
+
+            if (query.HasMoreResults)
+            {
+                var response = await query.ReadNextAsync();
+
+                returnList.AddRange(response.ToList());
+
+                contentResult = new ContentApiResult<T>(returnList, response.ContinuationToken);
+            }
+            else
+            {
+                contentResult = new ContentApiResult<T>(returnList, null);
+            }
+
+            return contentResult;
+        }
+
         /// <summary>
         /// Create Content
         /// </summary>
@@ -292,6 +339,5 @@ namespace blendnet.cms.repository.CosmosRepository
 
             return content.Id.Value;
         }
-
     }
 }

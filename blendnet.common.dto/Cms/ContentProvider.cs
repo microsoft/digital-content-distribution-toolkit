@@ -10,6 +10,23 @@ namespace blendnet.common.dto
         [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
 
+        /// <summary>
+        /// Same as Id
+        /// </summary>
+        public Guid? ContentProviderId
+        {
+            get
+            {
+                return this.Id;
+            }
+            set
+            {
+                // no op
+            }
+        }
+
+        public ContentProviderContainerType Type { get; set; } = ContentProviderContainerType.ContentProvider;
+
         [Required]
         public string Name { get; set; }
 

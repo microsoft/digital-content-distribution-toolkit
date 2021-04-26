@@ -120,12 +120,19 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <param name="sourceBlob"></param>
         /// <param name="targetBlob"></param>
         /// <returns></returns>
-        public static async Task CopyBlob(BlockBlobClient sourceBlob, BlockBlobClient targetBlob, string sourceBlobUrl = "")
+        public static async Task CopyBlob(  ILogger logger,
+                                            BlockBlobClient sourceBlob, 
+                                            BlockBlobClient targetBlob,
+                                            Guid contentId,
+                                            Guid commandId,
+                                            string sourceBlobUrl = "")
         {
             BlobLeaseClient lease = null;
 
             try
             {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+
                 // Lease the source blob for the copy operation to prevent another client from modifying it.
                 lease = sourceBlob.GetBlobLeaseClient();
 
@@ -134,18 +141,28 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                 CopyFromUriOperation copyFromUriOperation;
 
+                Uri copyUri;
+
                 if (string.IsNullOrEmpty(sourceBlobUrl))
                 {
+                    copyUri = sourceBlob.Uri;
+
                     // Start the copy operation.
-                    copyFromUriOperation = await targetBlob.StartCopyFromUriAsync(sourceBlob.Uri);
+                    copyFromUriOperation = await targetBlob.StartCopyFromUriAsync(copyUri);
                 }
                 else
                 {
-                    copyFromUriOperation = await targetBlob.StartCopyFromUriAsync(new Uri(sourceBlobUrl));
+                    copyUri = new Uri(sourceBlobUrl);
+
+                    copyFromUriOperation = await targetBlob.StartCopyFromUriAsync(copyUri);
                 }
 
                 //wait for the operation to complete
                 await copyFromUriOperation.WaitForCompletionAsync();
+
+                stopwatch.Stop();
+
+                logger.LogInformation($"Copied file {copyUri} to {targetBlob.Uri}. Content Id : {contentId} Command Id {commandId} Duration Milisecond : {stopwatch.ElapsedMilliseconds}");
 
             }
             finally
