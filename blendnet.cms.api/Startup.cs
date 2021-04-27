@@ -1,11 +1,13 @@
 using System;
 using System.Text.Json.Serialization;
+using AutoMapper;
 using Azure.Storage.Blobs;
 using blendnet.cms.api.Common;
 using blendnet.cms.repository.CosmosRepository;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.cms;
+using blendnet.common.dto.Cms;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.ServiceBus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -149,6 +151,9 @@ namespace blendnet.cms.api
             string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
 
             ConfigureEventBus(services);
+
+            // Configure mapper
+             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         }
 
