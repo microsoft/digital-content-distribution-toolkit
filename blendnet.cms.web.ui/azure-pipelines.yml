@@ -62,7 +62,7 @@ stages:
     - task: CmdLine@2
       condition: eq('${{ parameters.onlyDeploy }}', true)
       inputs:
-        script: 'sed -i ''s/blendnet.cms.web.ui:latest/blendnet.cms.web.ui:${{ parameters.onlyDeploy }}/g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
+        script: 'sed -i ''s/blendnet.cms.web.ui:latest/blendnet.cms.web.ui:${{ parameters.deployBuildNumber }}/g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
