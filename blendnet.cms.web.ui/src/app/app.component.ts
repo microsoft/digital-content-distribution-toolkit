@@ -104,7 +104,6 @@ export class AppComponent {
             }
           }
         });
-
         this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
           this.selectedCPName= selectedCP?.name;
         });
