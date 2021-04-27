@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
 
   setLoginDisplay() {
     this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
-    // if(this.loginDisplay) {
+    if(this.loginDisplay) {
       this.token = this.authService.instance.getAllAccounts()[0].idTokenClaims;
       this.token.groups.forEach(group => {
         this.role.push(group);
@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit {
       this.username = this.token.givenName;
       console.log(this.username);
       console.log(this.role);
-    // }
+    }
     
     
   }

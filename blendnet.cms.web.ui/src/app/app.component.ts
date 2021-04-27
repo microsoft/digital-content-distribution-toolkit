@@ -104,13 +104,13 @@ export class AppComponent {
           }
         });
         this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
-          this.selectedCPName= selectedCP.name;
+          this.selectedCPName= selectedCP?.name;
         });
     }
 
     ngDoCheck() {
       this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
-        this.selectedCPName= selectedCP.name;
+        this.selectedCPName= selectedCP?.name;
       });
     }
     
