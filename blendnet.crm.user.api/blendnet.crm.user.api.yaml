@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: blendnet-crm-user-api
-        image: acrblendnetdev.azurecr.io/blendnet.crm.user.api:0.0.1-20210419.2
+        image: acrblendnetdev.azurecr.io/blendnet.crm.user.api:latest
         ports:
         - containerPort: 80
         readinessProbe:
