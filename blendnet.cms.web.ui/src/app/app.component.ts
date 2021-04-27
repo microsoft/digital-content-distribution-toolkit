@@ -99,7 +99,6 @@ export class AppComponent {
                 scopes: ["openid"],
                 authority: b2cPolicies.authorities.forgotPassword.authority,
               };
-  
               this.login(resetPasswordFlowRequest);
             }
           }
