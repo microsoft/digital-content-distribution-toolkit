@@ -1,6 +1,15 @@
 variables:
   RunNumber: '0.0.1-$(Build.BuildNumber)'
 
+parameters:
+  - name: onlyDeploy
+    default: false
+    type: boolean
+
+  - name: deployBuildNumber
+    default: latest
+    type: string
+
 trigger:
 - manual
 
@@ -9,6 +18,7 @@ pool:
 
 stages:
 - stage: Build
+  condition: eq('${{ parameters.onlyDeploy }}', false)
   jobs:
   - job: Build
     steps:
@@ -45,6 +55,14 @@ stages:
   jobs:
   - job: Deploy
     steps:
+    - task: CmdLine@2
+      condition: eq('${{ parameters.onlyDeploy }}', false)
+      inputs:
+        script: 'sed -i ''s/blendnet.cms.web.ui:latest/blendnet.cms.web.ui:$(RunNumber)/g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
+    - task: CmdLine@2
+      condition: eq('${{ parameters.onlyDeploy }}', true)
+      inputs:
+        script: 'sed -i ''s/blendnet.cms.web.ui:latest/blendnet.cms.web.ui:${{ parameters.onlyDeploy }}/g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
