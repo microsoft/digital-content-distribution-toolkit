@@ -1,5 +1,14 @@
 variables:
-  RunNumber: '0.0.1-$(Build.BuildNumber)'
+  RunNumber: '$(Build.BuildNumber)'
+
+parameters:
+  - name: onlyDeploy
+    default: false
+    type: boolean
+
+  - name: deployBuildNumber
+    default: latest
+    type: string
 
 trigger:
 - manual
@@ -7,30 +16,55 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: Docker@2
-  displayName: Login to ACR
-  inputs:
-    command: login
-    containerRegistry: $(acr-service-connection)
+stages:
+- stage: Build
+  condition: eq('${{ parameters.onlyDeploy }}', false)
+  jobs:
+  - job: Build
+    steps:
+    - task: Docker@2
+      displayName: Login to ACR
+      inputs:
+        command: login
+        containerRegistry: $(acr-service-connection)
 
-- task: CmdLine@2
-  displayName: "Building docker image"
-  inputs:
-    script: "docker build -t $(image_name):$(RunNumber) -f ./blendnet.cms.api/Dockerfile ."
+    - task: CmdLine@2
+      displayName: "Building docker image"
+      inputs:
+        script: "docker build -t $(image_name):$(RunNumber) -f ./blendnet.cms.api/Dockerfile ."
 
-- task: CmdLine@2
-  displayName: "Tagging docker image"
-  inputs:
-    script: "docker tag $(image_name):$(RunNumber) $(image_name):latest"
+    - task: CmdLine@2
+      displayName: "Pushing image to ACR"
+      inputs:
+        script: "docker push $(image_name):$(RunNumber)"
 
-- task: CmdLine@2
-  displayName: "Pushing image to ACR"
-  inputs:
-    script: "docker push --all-tags $(image_name)"
+    - task: Docker@2
+      displayName: Logout of ACR
+      inputs:
+        command: logout
+        containerRegistry: $(acr-service-connection)
 
-- task: Docker@2
-  displayName: Logout of ACR
-  inputs:
-    command: logout
-    containerRegistry: $(acr-service-connection)
+- stage: Deploy
+  dependsOn: Build
+  condition: or(succeeded(), eq('${{ parameters.onlyDeploy }}', true))
+  jobs:
+  - job: Deploy
+    steps:
+    - task: CmdLine@2
+      condition: eq('${{ parameters.onlyDeploy }}', false)
+      inputs:
+        script: 'sed -i ''s/blendnet.cms.api:latest/blendnet.cms.api:$(RunNumber)/g'' blendnet.cms.api/blendnet.cms.api.yaml'
+    - task: CmdLine@2
+      condition: eq('${{ parameters.onlyDeploy }}', true)
+      inputs:
+        script: 'sed -i ''s/blendnet.cms.api:latest/blendnet.cms.api:${{ parameters.deployBuildNumber }}/g'' blendnet.cms.api/blendnet.cms.api.yaml'
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aks-blendnet-dev-default'
+        manifests: 'blendnet.cms.api/blendnet.cms.api.yaml'
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aks-blendnet-dev-default'
+        manifests: 'appgateway.yaml'
