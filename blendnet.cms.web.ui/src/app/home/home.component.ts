@@ -44,6 +44,7 @@ export class HomeComponent implements OnInit {
 
   setLoginDisplay() {
     this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
+    
     if(this.loginDisplay) {
       this.token = this.authService.instance.getAllAccounts()[0].idTokenClaims;
       this.token.groups.forEach(group => {
