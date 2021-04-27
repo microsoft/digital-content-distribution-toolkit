@@ -1,5 +1,5 @@
 variables:
-  RunNumber: '0.0.1-$(Build.BuildNumber)'
+  RunNumber: '$(Build.BuildNumber)'
 
 parameters:
   - name: onlyDeploy
