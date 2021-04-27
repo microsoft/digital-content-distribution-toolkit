@@ -51,7 +51,7 @@ stages:
 
 - stage: Deploy
   dependsOn: Build
-  condition: succeeded()
+  condition: or(succeeded(), eq('${{ parameters.onlyDeploy }}', true))
   jobs:
   - job: Deploy
     steps:
