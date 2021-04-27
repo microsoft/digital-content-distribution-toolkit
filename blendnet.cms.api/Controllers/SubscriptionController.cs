@@ -1,4 +1,4 @@
-﻿using blendnet.cms.repository.Interfaces;
+using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -73,11 +73,17 @@ namespace blendnet.cms.api.Controllers
         {
             if (!await ValidContentProvider(contentProviderId))
             {
-                return NotFound();
+                return BadRequest();
+            }
+
+            if (!await ValidSubscriptionData(subscription))
+            {
+                return BadRequest();
             }
 
             subscription.SetIdentifiers();
             subscription.ContentProviderId = contentProviderId;
+            subscription.DateCreated = subscription.DateModified = DateTime.UtcNow;
             subscription.Type = ContentProviderContainerType.SubscriptionMetadata;
 
             var subscriptionId = await this._contentProviderRepository.CreateSubscription(subscription);
@@ -98,17 +104,17 @@ namespace blendnet.cms.api.Controllers
         {
             if (!await ValidContentProvider(contentProviderId))
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            // Update is allowed only if there are no orders against this subscription
-            if (await OrdersExistForSubscription(subscriptionId))
+            if (!await ValidSubscriptionData(subscription))
             {
-                return Conflict();
+                return BadRequest();
             }
 
             subscription.Id = subscriptionId;
             subscription.ContentProviderId = contentProviderId;
+            subscription.DateModified = DateTime.UtcNow;
             subscription.Type = ContentProviderContainerType.SubscriptionMetadata;
 
             int response = await this._contentProviderRepository.UpdateSubscription(contentProviderId, subscription);
@@ -149,38 +155,6 @@ namespace blendnet.cms.api.Controllers
             }
         }
 
-        /// <summary>
-        /// Deactivate a subscription
-        /// </summary>
-        /// <param name="contentProviderId"></param>
-        /// <param name="subscriptionId"></param>
-        /// <returns></returns>
-        [HttpPost("{subscriptionId:guid}/deactivate")]
-        public async Task<ActionResult<string>> DeactivateSubscription( Guid contentProviderId,
-                                                                        Guid subscriptionId)
-        {
-            return await UpdateSubscriptionEndDate(contentProviderId, subscriptionId, DateTime.Now);
-        }
-
-        /// <summary>
-        /// Activate a subscription
-        /// </summary>
-        /// <param name="contentProviderId"></param>
-        /// <param name="subscriptionId"></param>
-        /// <returns></returns>
-        [HttpPost("{subscriptionId:guid}/activate")]
-        public async Task<ActionResult<string>> ActivateSubscription(   Guid contentProviderId,
-                                                                        Guid subscriptionId,
-                                                                        DateTime endDate)
-        {
-            if (endDate < DateTime.Now) // end date is in past
-            {
-                return BadRequest();
-            }
-
-            return await UpdateSubscriptionEndDate(contentProviderId, subscriptionId, endDate);
-        }
-
         #endregion
 
         #region helper methods
@@ -203,16 +177,14 @@ namespace blendnet.cms.api.Controllers
             return Task.FromResult(false);
         }
 
-        private async Task<ActionResult<string>> UpdateSubscriptionEndDate(Guid contentProviderId, Guid subscriptionId, DateTime newEndDate)
+        private Task<bool> ValidSubscriptionData(ContentProviderSubscriptionDto subscription)
         {
-            var subscription = await this._contentProviderRepository.GetSubscription(contentProviderId, subscriptionId);
-            if (subscription == null)
+            if (subscription.StartDate >= subscription.EndDate)
             {
-                return NotFound();
+                return Task.FromResult(false);
             }
 
-            subscription.EndDate = newEndDate;
-            return await this.UpdateSubscription(contentProviderId, subscriptionId, subscription);
+            return Task.FromResult(true);
         }
 
         #endregion

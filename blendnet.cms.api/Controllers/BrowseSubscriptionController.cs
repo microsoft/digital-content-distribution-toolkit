@@ -38,7 +38,7 @@ namespace blendnet.cms.api.Controllers
         public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetActiveSubscriptions(Guid contentProviderId)
         {
             var allSubscriptions = await this._contentProviderRepository.GetSubscriptions(contentProviderId);
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var activeSubscriptions = ( from o in allSubscriptions
                                         where o.StartDate <= now
                                         where o.EndDate >= now

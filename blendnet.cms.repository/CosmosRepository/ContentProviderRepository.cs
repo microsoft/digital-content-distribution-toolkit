@@ -51,7 +51,7 @@ namespace blendnet.cms.repository.CosmosRepository
         public async Task<Guid> CreateContentProvider(ContentProviderDto contentProvider)
         {
             await this._container.CreateItemAsync<ContentProviderDto>(  contentProvider, 
-                                                                        new PartitionKey(contentProvider.Id.Value.ToString()));
+                                                                        new PartitionKey(contentProvider.ContentProviderId.Value.ToString()));
 
             return contentProvider.Id.Value;
         }
@@ -119,7 +119,7 @@ namespace blendnet.cms.repository.CosmosRepository
             {
                 var response = await this._container.ReplaceItemAsync<ContentProviderDto>(updatedContentProvider,
                                                                                         updatedContentProvider.Id.Value.ToString(),
-                                                                                        new PartitionKey(updatedContentProvider.Id.Value.ToString()));
+                                                                                        new PartitionKey(updatedContentProvider.ContentProviderId.Value.ToString()));
 
                 return (int)response.StatusCode;
             }

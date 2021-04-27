@@ -32,6 +32,10 @@ namespace blendnet.common.dto
 
         public DateTime EndDate { get; set; }
 
+        public DateTime DateCreated { get; set; }
+
+        public DateTime DateModified { get; set; }
+
         public void SetIdentifiers()
         {
             this.Id = Guid.NewGuid();
