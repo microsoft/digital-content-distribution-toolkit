@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="User\" />
+    <Folder Include="Oms\" />
+    <Folder Include="Retailer\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\blendnet.common.dto\blendnet.common.dto.csproj" />
+  </ItemGroup>
+
+</Project>
