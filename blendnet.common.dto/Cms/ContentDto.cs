@@ -112,7 +112,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Artist list
         /// </summary>
-        public List<String> Artists { get; set; }
+        public List<People> People { get; set; }
 
         /// <summary>
         /// List of Attachments

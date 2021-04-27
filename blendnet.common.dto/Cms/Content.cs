@@ -123,7 +123,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Artist list
         /// </summary>
-        public List<String> Artists { get; set; }
+        public List<People> People { get; set; }
 
         /// <summary>
         /// List of Attachments
@@ -177,12 +177,12 @@ namespace blendnet.common.dto.Cms
 
     }
 
-
-
-    // public class Artist
-    // {
-    //     public string Name { get; set; }
-    // }
+    public class People
+    {
+        public string Name { get; set; }
+        
+        public Role Role { get; set; }
+    }
 
     public class Attachment
     {
@@ -199,6 +199,18 @@ namespace blendnet.common.dto.Cms
     {
         Thumbnail = 0,
         Teaser = 1,
+    }
+
+    /// <summary>
+    /// Role of artists present
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum Role
+    {
+        Director = 0,
+        Actor = 1,
+        Singer = 2,
+        MusicDirector = 3
     }
 
     /// <summary>
