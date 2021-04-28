@@ -2,19 +2,16 @@
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
-using blendnet.common.dto.cms;
-using Microsoft.Azure.Management.Media;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Rest;
-using Microsoft.Rest.Azure.Authentication;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using Azure;
 
 namespace blendnet.cms.listener.IntegrationEventHandling
 {
@@ -176,6 +173,103 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     await lease.BreakAsync();
                 }
             }
+        }
+
+        /// <summary>
+        /// For large blob, uploading blocks on different threads is more efficient.
+        /// Regular copy for 1.2 GB across private link is taking more than 20 mts.
+        /// Using the block copy it comes down to 4 mts.
+        /// The same is followed by AzCopy/Azure Storage Explorer internally
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="sourceBlob"></param>
+        /// <param name="targetBlob"></param>
+        /// <param name="contentId"></param>
+        /// <param name="commandId"></param>
+        /// <param name="sourceBlobUrl"></param>
+        /// <returns></returns>
+        public static async Task CopyLargeBlob(ILogger logger,
+                                          BlockBlobClient sourceBlob,
+                                          BlockBlobClient targetBlob,
+                                          Guid contentId,
+                                          Guid commandId,
+                                          string sourceBlobUrl)
+        {
+
+            BlockList blockListResponse = await sourceBlob.GetBlockListAsync(BlockListTypes.Committed);
+
+            if (blockListResponse.CommittedBlocks == null ||
+                blockListResponse.CommittedBlocks.Count() <= 0)
+            {
+                logger.LogInformation($"No Committed blobs found for Content Id : {contentId} Command Id {commandId}. Hence, TAR to be copied by regular copy.");
+
+                await CopyBlob(logger, sourceBlob, targetBlob, contentId, commandId, sourceBlobUrl);
+
+            }
+            else
+            {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+
+                // A list of tasks that are currently executing
+                List<Task> runningTasks = new List<Task>();
+
+                List<string> committedBlocks = new List<string>();
+
+                long offset = 0;
+
+                int maxWorkers = 10;
+
+                foreach (BlobBlock block in blockListResponse.CommittedBlocks)
+                {
+                    string newBlockName = $"block-{Guid.NewGuid()}";
+
+                    var bytes = Encoding.UTF8.GetBytes(newBlockName);
+
+                    string blockId = Convert.ToBase64String(bytes);
+
+                    committedBlocks.Add(blockId);
+
+                    Task task = targetBlob.StageBlockFromUriAsync(new Uri(sourceBlobUrl), blockId, new HttpRange(offset, block.Size));
+
+                    offset += block.Size;
+
+                    runningTasks.Add(task);
+
+                    // Check if any of our tasks are still busy
+                    if (runningTasks.Count >= maxWorkers)
+                    {
+                        await Task.WhenAny(runningTasks).ConfigureAwait(false);
+
+                        // Clear any completed blocks from the task list
+                        for (int i = 0; i < runningTasks.Count; i++)
+                        {
+                            Task runningTask = runningTasks[i];
+
+                            if (!runningTask.IsCompleted)
+                            {
+                                continue;
+                            }
+
+                            await runningTask.ConfigureAwait(false);
+
+                            runningTasks.RemoveAt(i);
+
+                            i--;
+                        }
+                    }
+                }
+
+                // Wait for all our tasks
+                await Task.WhenAll(runningTasks).ConfigureAwait(false);
+
+                // Commit block list
+                await targetBlob.CommitBlockListAsync(committedBlocks);
+
+                stopwatch.Stop();
+
+                logger.LogInformation($"Copied Large file {sourceBlob.Uri} to {targetBlob.Uri}. Content Id : {contentId} Command Id {commandId} Duration Milisecond : {stopwatch.ElapsedMilliseconds}");
+            }
+            
         }
 
         /// <summary>

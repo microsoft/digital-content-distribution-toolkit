@@ -246,7 +246,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                                                              ApplicationConstants.StorageContainerPolicyNames.ProcessedReadOnly,
                                                              _appSettings.SASTokenExpiryToCopyContentInMts);
 
-            await EventHandlingUtilities.CopyBlob(_logger, sourceBlob, targetBlob,contentId,commandId, blobSasUrl);
+            await EventHandlingUtilities.CopyLargeBlob(_logger, sourceBlob, targetBlob,contentId,commandId, blobSasUrl);
 
             stopwatch.Stop();
 
