@@ -8,5 +8,6 @@ namespace blendnet.api.proxy.Cms
 {
     public class ContentProxy
     {
+
     }
 }

@@ -1,3 +1,4 @@
+using blendnet.common.dto;
 using blendnet.common.dto.Oms;
 using blendnet.oms.repository.CosmosRepository;
 using blendnet.oms.repository.Interfaces;
@@ -177,9 +178,7 @@ namespace blendnet.oms.api
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
-                //ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.ContentProvider, "/contentProviderId").Result;
-
-                //containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Content, "/contentId").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Order, "/phoneNumber").Result;
 
                 return client;
             });

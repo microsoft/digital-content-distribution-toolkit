@@ -30,6 +30,11 @@ namespace blendnet.common.dto.Oms
         public Guid UserId { get; set; }
 
         /// <summary>
+        /// Content Provider ID
+        /// </summary>
+        public Guid ContentProviderId { get; set; }
+
+        /// <summary>
         /// User Name
         /// </summary>
         public string UserName { get; set; }
@@ -101,6 +106,18 @@ namespace blendnet.common.dto.Oms
         /// Order Cancelled Date
         /// </summary>
         public DateTime? OrderCancelledDate { get; set; }
+
+        public void SetIdentifier()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
+        public Order()
+        {
+            SetIdentifier();
+            OrderStatus = OrderStatus.Created;
+            OrderCreatedDate = DateTime.UtcNow;
+        }
     }
 
     /// <summary>
@@ -113,4 +130,6 @@ namespace blendnet.common.dto.Oms
         Completed = 1,
         Cancelled = 2
     }
+
+    
 }
