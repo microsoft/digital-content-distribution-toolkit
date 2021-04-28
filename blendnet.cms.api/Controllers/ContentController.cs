@@ -230,7 +230,7 @@ namespace blendnet.cms.api.Controllers
             }
             else
             {
-                return NoContent();
+                return NotFound();
             }
         }
 
