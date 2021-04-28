@@ -10,6 +10,6 @@ namespace blendnet.common.dto
     public enum ContentProviderContainerType
     {
         ContentProvider = 0,
-        SubscriptionMetadata = 1,
+        Subscription = 1,
     }
 }

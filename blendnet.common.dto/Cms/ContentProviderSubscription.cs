@@ -20,7 +20,7 @@ namespace blendnet.common.dto
         /// </summary>
         public Guid ContentProviderId { get; set; }
 
-        public ContentProviderContainerType Type { get; set; } = ContentProviderContainerType.SubscriptionMetadata;
+        public ContentProviderContainerType Type { get; set; } = ContentProviderContainerType.Subscription;
 
         public string Title { get; set; }
 

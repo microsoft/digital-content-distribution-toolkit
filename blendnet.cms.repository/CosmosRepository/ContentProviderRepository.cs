@@ -166,7 +166,7 @@ namespace blendnet.cms.repository.CosmosRepository
         public async Task<List<ContentProviderSubscriptionDto>> GetSubscriptions(Guid contentProviderId)
         {
             var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionDto>(allowSynchronousQueryExecution: true)
-                          where o.Type == ContentProviderContainerType.SubscriptionMetadata
+                          where o.Type == ContentProviderContainerType.Subscription
                           where o.ContentProviderId == contentProviderId
                           select o;
 
@@ -182,7 +182,7 @@ namespace blendnet.cms.repository.CosmosRepository
         public async Task<ContentProviderSubscriptionDto> GetSubscription(Guid contentProviderId, Guid subscriptionId)
         {
             var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionDto>(allowSynchronousQueryExecution: true)
-                          where o.Type == ContentProviderContainerType.SubscriptionMetadata
+                          where o.Type == ContentProviderContainerType.Subscription
                           where o.Id == subscriptionId && o.ContentProviderId == contentProviderId
                           select o;
 

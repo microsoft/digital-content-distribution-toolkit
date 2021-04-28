@@ -20,6 +20,16 @@ namespace blendnet.common.dto
             public const string ReadWriteAllPolicyPermissions = "rwlcda";
         }
 
+        /// <summary>
+        /// Http Client Name
+        /// </summary>
+        public struct HttpClientKeys
+        {
+            public const string CMS_HTTP_CLIENT = "cms";
+            public const string ORDER_HTTP_CLIENT = "order";
+            public const string RETAILER_HTTP_CLIENT = "retailer";
+        }
+
         public struct StorageContainerPolicyNames
         {
             public const string RawReadOnly = "rawreadonly";
