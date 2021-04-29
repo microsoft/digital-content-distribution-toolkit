@@ -214,7 +214,7 @@ namespace blendnet.cms.api.Controllers
 
             string token = await _amsHelper.GetContentToken(content.Id.Value, content.ContentTransformStatusUpdatedBy.Value);
 
-            return token;
+            return Ok(token);
         }
 
 
