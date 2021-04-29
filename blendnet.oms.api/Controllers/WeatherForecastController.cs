@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using blendnet.api.proxy;
+using blendnet.api.proxy.Cms;
+using blendnet.common.dto.Oms;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +21,17 @@ namespace blendnet.oms.api.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private ContentProxy _contentProxy;
+        private SubscriptionProxy _subscriptionProxy;
+        private IOptionsMonitor<OmsAppSettings> _optionsMonitor;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,
+            ContentProxy contentProxy, SubscriptionProxy subscriptionProxy, IOptionsMonitor<OmsAppSettings> optionsMonitor)
         {
             _logger = logger;
+            _contentProxy = contentProxy;
+            _subscriptionProxy = subscriptionProxy;
+            _optionsMonitor = optionsMonitor;
         }
 
         [HttpGet]

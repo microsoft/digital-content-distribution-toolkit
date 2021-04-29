@@ -78,6 +78,19 @@ namespace blendnet.common.dto.Oms
         /// Order Cancelled Date
         /// </summary>
         public DateTime? OrderCancelledDate { get; set; }
+
+        public void SetIdentifier()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
+        public Order()
+        {
+            SetIdentifier();
+            OrderStatus = OrderStatus.Created;
+            OrderCreatedDate = DateTime.UtcNow;
+            OrderItems = new List<OrderItem>();
+        }
     }
 
     /// <summary>
@@ -112,9 +125,9 @@ namespace blendnet.common.dto.Oms
         public string PartnerReferenceNumber { get; set; }
 
         /// <summary>
-        /// Time When Partner Collected the Payment
+        /// Time When Partner Collected the Payment -- stores date in format yyyymmdd
         /// </summary>
-        public DateTime? PaymentDepositDate { get; set; }
+        public int PaymentDepositDate { get; set; }
     }
 
     /// <summary>
@@ -127,4 +140,6 @@ namespace blendnet.common.dto.Oms
         Completed = 1,
         Cancelled = 2
     }
+
+    
 }

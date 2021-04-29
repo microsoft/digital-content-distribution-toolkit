@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blendnet.api.proxy.Cms
+namespace blendnet.api.proxy
 {
     /// <summary>
     /// Makes the call to Subscription API.

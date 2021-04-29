@@ -1,4 +1,6 @@
+using blendnet.api.proxy;
 using blendnet.api.proxy.Cms;
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Oms;
 using blendnet.oms.repository.CosmosRepository;
@@ -113,6 +115,7 @@ namespace blendnet.oms.api
             services.AddTransient<IOMSRepository, OMSRepository>();
             services.AddTransient<ContentProxy>();
             services.AddTransient<SubscriptionProxy>();
+            services.AddTransient<RetailerProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -202,9 +205,7 @@ namespace blendnet.oms.api
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
-                //ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.ContentProvider, "/contentProviderId").Result;
-
-                //containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Content, "/contentId").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Order, "/phoneNumber").Result;
 
                 return client;
             });

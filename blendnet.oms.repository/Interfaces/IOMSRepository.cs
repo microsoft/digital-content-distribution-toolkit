@@ -21,7 +21,16 @@ namespace blendnet.oms.repository.Interfaces
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        Task<Order> GetOrderByOrderId(Guid orderId);
+        Task<Order> GetOrderByOrderId(Guid orderId, string phoneNumber);
+
+
+        /// <summary>
+        /// Returns orders by content provider id and user id. By default returns only active orders. 
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="contentProviderId"></param>
+        /// <returns></returns>
+        Task<List<Order>> GetOrder(Guid UserId, Guid contentProviderId, bool returnAll = false);
 
         /// <summary>
         /// Update Order
@@ -38,11 +47,11 @@ namespace blendnet.oms.repository.Interfaces
         Task<List<Order>> GetOrdersByUserId(Guid userId);
 
         /// <summary>
-        /// Get orders by phone number
+        /// Get orders by phone number. By default returns only orders in created state
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber);
+        Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, bool returnAll = false);
 
 
     }

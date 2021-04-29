@@ -1,5 +1,10 @@
-﻿using blendnet.common.dto.Oms;
+﻿using blendnet.common.dto;
+using blendnet.common.dto.cms;
+using blendnet.common.dto.Oms;
 using blendnet.oms.repository.Interfaces;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +15,35 @@ namespace blendnet.oms.repository.CosmosRepository
 {
     public class OMSRepository : IOMSRepository
     {
-        public Task<Guid> CreateOrder(Order order)
+        private Container _container;
+        private readonly ILogger _logger;
+        OmsAppSettings _appSettings;
+
+
+        public OMSRepository(CosmosClient dbClient,
+                                IOptionsMonitor<OmsAppSettings> optionsMonitor,
+                                ILogger<OMSRepository> logger)
+        {
+            _appSettings = optionsMonitor.CurrentValue;
+
+            _logger = logger;
+
+            this._container = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.Order);
+        }
+
+        public async Task<Guid> CreateOrder(Order order)
+        {
+            await this._container.CreateItemAsync<Order>(order, new PartitionKey(order.PhoneNumber));
+
+            return order.Id.Value;
+        }
+
+        public Task<Order> GetOrderByOrderId(Guid orderId, string phoneNumber)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Order> GetOrderByOrderId(Guid orderId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber)
+        public Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, bool returnAll = false)
         {
             throw new NotImplementedException();
         }
@@ -31,6 +54,11 @@ namespace blendnet.oms.repository.CosmosRepository
         }
 
         public Task<int> UpdateOrder(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Order>> GetOrder(Guid UserId, Guid contentProviderId, bool returnAll = false)
         {
             throw new NotImplementedException();
         }
