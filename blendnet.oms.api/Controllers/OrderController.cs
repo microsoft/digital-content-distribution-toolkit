@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using blendnet.api.proxy;
+using blendnet.api.proxy.Cms;
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Oms;
 using blendnet.common.dto.User;
@@ -9,9 +11,11 @@ using blendnet.oms.repository.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace blendnet.oms.api.Controllers
@@ -23,19 +27,21 @@ namespace blendnet.oms.api.Controllers
     {
         private readonly ILogger _logger;
 
-        private IEventBus _eventBus;
-
         private IOMSRepository _omsRepository;
 
-        public OrderController(IOMSRepository omsRepository,
-                                           ILogger<OrderController> logger,
-                                           IEventBus eventBus)
+        private SubscriptionProxy _subscriptionProxy;
+
+        public OrderController(ILogger<WeatherForecastController> logger,
+            ContentProxy contentProxy, 
+            RetailerProxy retailerProxy,
+            SubscriptionProxy subscriptionProxy, 
+            IOMSRepository omsRepository)
         {
             _omsRepository = omsRepository;
 
             _logger = logger;
 
-            _eventBus = eventBus;
+            _subscriptionProxy = subscriptionProxy;
         }
 
         #region Order management methods
@@ -48,8 +54,7 @@ namespace blendnet.oms.api.Controllers
         public async Task<ActionResult> CreateOrder(OrderRequest orderRequest)
         {
             // Get Subscription
-            ContentProviderSubscriptionDto subscription = SubscriptionProxy.Instance
-                .GetSubscription(orderRequest.ContentProviderId, orderRequest.SubscriptionId);
+            ContentProviderSubscriptionDto subscription = await _subscriptionProxy.GetSubscription(orderRequest.ContentProviderId, orderRequest.SubscriptionId);
 
             // Get User
             User user = UserProxy.Instance.GetUser(orderRequest.UserId);
@@ -64,8 +69,12 @@ namespace blendnet.oms.api.Controllers
 
             if(!ValidateUser(user, orderRequest.PhoneNumber))
             {
-                errorInfo = "Invalid user id or phone number";
-                return BadRequest(errorInfo);
+                user.UserName = "Unknown";
+                user.Id = orderRequest.UserId;
+                user.PhoneNumber = orderRequest.PhoneNumber;
+
+                //errorInfo = "Invalid user id or phone number"; -- change back this once user is created
+                //return BadRequest(errorInfo);
             }
 
             errorInfo = ValidateSubscription(subscription);
@@ -94,11 +103,37 @@ namespace blendnet.oms.api.Controllers
             return Ok(orderId);
         }
 
+
+        [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        public async Task<ActionResult> AssignRetailer(AssignRetailerRequest assignRequest)
+        {
+            // Get Retailer
+
+
+
+            //Validate retailer
+
+            //Get Order by order id
+
+            //Validate order
+
+            //validate amount collected
+
+            // Update order object
+
+            // Update order
+
+
+            return Ok(assignRequest.PartnerReferenceNumber);
+        }
+
+
         #endregion
 
-        #region private methods
+            #region private methods
 
-        private bool ValidateUser(User user, string phoneNumber)
+            private bool ValidateUser(User user, string phoneNumber)
         {
             return user.PhoneNumber != null && user.PhoneNumber.Equals(phoneNumber);
         }
@@ -108,7 +143,7 @@ namespace blendnet.oms.api.Controllers
             // Validate Subscription
             // Subscription exists
             // Validate subscription is active
-            if(subscription.Type != ContentProviderContainerType.SubscriptionMetadata)
+            if(subscription.Type != ContentProviderContainerType.Subscription)
             {
                 return "Invalid subscription type";
             }
@@ -138,10 +173,14 @@ namespace blendnet.oms.api.Controllers
         private Order CreateOrder(User user, ContentProviderSubscriptionDto subscription)
         {
             Order order = new Order();
-            order.Subscription = subscription;
+            
+            OrderItem orderItem = new OrderItem();
+            orderItem.Subscription = subscription;
+            
             order.UserId = (Guid)user.Id;
             order.PhoneNumber = user.PhoneNumber;
             order.UserName = user.UserName;
+            order.OrderItems.Add(orderItem);
 
             return order;
         }

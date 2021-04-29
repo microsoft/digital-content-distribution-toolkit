@@ -1,3 +1,6 @@
+using blendnet.api.proxy;
+using blendnet.api.proxy.Cms;
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Oms;
 using blendnet.oms.repository.CosmosRepository;
@@ -108,10 +111,17 @@ namespace blendnet.oms.api
             //Configure health check
             services.AddHealthChecks();
 
+            //Configure Services
             services.AddTransient<IOMSRepository, OMSRepository>();
+            services.AddTransient<ContentProxy>();
+            services.AddTransient<SubscriptionProxy>();
+            services.AddTransient<RetailerProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
+
+            //Configure Http Clients
+            ConfigureHttpClients(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -152,6 +162,23 @@ namespace blendnet.oms.api
             {
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health");
+            });
+        }
+
+
+        /// <summary>
+        /// Configure Required Http Clients
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureHttpClients(IServiceCollection services)
+        {
+            string cmsBaseUrl = Configuration.GetValue<string>("CmsBaseUrl");
+
+            //Configure Http Clients
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(cmsBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }
 

@@ -1,39 +1,54 @@
-﻿using blendnet.common.dto;
+﻿using blendnet.api.proxy.Common;
+using blendnet.common.dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace blendnet.api.proxy
 {
+    /// <summary>
+    /// Makes the call to Subscription API.
+    /// In future, if caching is required, it will be added here.
+    /// </summary>
     public class SubscriptionProxy
     {
-        private static SubscriptionProxy instance = null;
+        private readonly HttpClient _cmsHttpClient;
 
-        private SubscriptionProxy()
+        public SubscriptionProxy(IHttpClientFactory clientFactory)
         {
-
+            _cmsHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT);
         }
 
-        public static SubscriptionProxy Instance
+        /// <summary>
+        /// Get Subscriptions for the given content provider Id
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <returns></returns>
+        public async Task<List<ContentProviderSubscriptionDto>> GetSubscriptions(Guid contentProviderId)
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new SubscriptionProxy();
-                }
+            string url = $"ContentProvider/{contentProviderId}/Subscription";
 
-                return instance;
-            }
+            var successResponse = await _cmsHttpClient.Get<List<ContentProviderSubscriptionDto>>(url);
+
+            return successResponse;
         }
 
-
-        public ContentProviderSubscriptionDto GetSubscription(Guid contentProviderId, Guid subscriptionId)
+        /// <summary>
+        /// Get the Subcription Details
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
+        public async Task<ContentProviderSubscriptionDto> GetSubscription(Guid contentProviderId, Guid subscriptionId)
         {
-            // correct this later
-            return new ContentProviderSubscriptionDto();
+            string url = $"ContentProvider/{contentProviderId}/Subscription/{subscriptionId}";
+
+            var successResponse = await _cmsHttpClient.Get<ContentProviderSubscriptionDto>(url);
+
+            return successResponse;
         }
     }
 }

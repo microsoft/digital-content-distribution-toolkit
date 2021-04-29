@@ -30,22 +30,10 @@ namespace blendnet.common.dto.Oms
         public Guid UserId { get; set; }
 
         /// <summary>
-        /// Content Provider ID
-        /// </summary>
-        public Guid ContentProviderId { get; set; }
-
-        /// <summary>
         /// User Name
         /// </summary>
         public string UserName { get; set; }
 
-        /// <summary>
-        /// Subscription Details
-        /// </summary>
-        public ContentProviderSubscriptionDto Subscription { get; set; }
-
-        //On Payment
-        
         /// <summary>
         /// Retailer Phone Number
         /// </summary>
@@ -62,30 +50,14 @@ namespace blendnet.common.dto.Oms
         public string RetailerName { get; set; }
 
         /// <summary>
-        /// Amount Collected
+        /// Order Items
         /// </summary>
-        public float? AmountCollected { get; set; }
+        public List<OrderItem> OrderItems { get; set; }
 
         /// <summary>
-        /// Purchased Plan Date.
+        /// Total Amount
         /// </summary>
-        public DateTime? PlanStartDate { get; set; }
-
-        /// <summary>
-        /// Purchased Plan End Date.
-        /// To Be calculated based on the configured subscription days 
-        /// </summary>
-        public DateTime? PlanEndDate { get; set; }
-
-        /// <summary>
-        /// Partner Payment Reference Number
-        /// </summary>
-        public string PartnerReferenceNumber { get; set; }
-
-        /// <summary>
-        /// Time When Partner Collected the Payment
-        /// </summary>
-        public DateTime? PaymentDepositDate { get; set; }
+        public float? TotalAmountCollected { get; set; }
 
         /// <summary>
         /// Order Status
@@ -117,7 +89,45 @@ namespace blendnet.common.dto.Oms
             SetIdentifier();
             OrderStatus = OrderStatus.Created;
             OrderCreatedDate = DateTime.UtcNow;
+            OrderItems = new List<OrderItem>();
         }
+    }
+
+    /// <summary>
+    /// Order Item
+    /// </summary>
+    public class OrderItem
+    {
+        /// <summary>
+        /// Subscription Details
+        /// </summary>
+        public ContentProviderSubscriptionDto Subscription { get; set; }
+
+        /// <summary>
+        /// Amount Collected
+        /// </summary>
+        public float? AmountCollected { get; set; }
+
+        /// <summary>
+        /// Purchased Plan Date.
+        /// </summary>
+        public DateTime? PlanStartDate { get; set; }
+
+        /// <summary>
+        /// Purchased Plan End Date.
+        /// To Be calculated based on the configured subscription days 
+        /// </summary>
+        public DateTime? PlanEndDate { get; set; }
+
+        /// <summary>
+        /// Partner Payment Reference Number
+        /// </summary>
+        public string PartnerReferenceNumber { get; set; }
+
+        /// <summary>
+        /// Time When Partner Collected the Payment -- stores date in format yyyymmdd
+        /// </summary>
+        public int PaymentDepositDate { get; set; }
     }
 
     /// <summary>

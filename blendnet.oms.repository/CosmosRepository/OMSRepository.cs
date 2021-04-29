@@ -17,11 +17,11 @@ namespace blendnet.oms.repository.CosmosRepository
     {
         private Container _container;
         private readonly ILogger _logger;
-        AppSettings _appSettings;
+        OmsAppSettings _appSettings;
 
 
         public OMSRepository(CosmosClient dbClient,
-                                IOptionsMonitor<AppSettings> optionsMonitor,
+                                IOptionsMonitor<OmsAppSettings> optionsMonitor,
                                 ILogger<OMSRepository> logger)
         {
             _appSettings = optionsMonitor.CurrentValue;

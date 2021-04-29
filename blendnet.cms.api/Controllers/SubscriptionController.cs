@@ -84,7 +84,7 @@ namespace blendnet.cms.api.Controllers
             subscription.SetIdentifiers();
             subscription.ContentProviderId = contentProviderId;
             subscription.DateCreated = subscription.DateModified = DateTime.UtcNow;
-            subscription.Type = ContentProviderContainerType.SubscriptionMetadata;
+            subscription.Type = ContentProviderContainerType.Subscription;
 
             var subscriptionId = await this._contentProviderRepository.CreateSubscription(subscription);
             return Ok(subscriptionId);
@@ -115,7 +115,7 @@ namespace blendnet.cms.api.Controllers
             subscription.Id = subscriptionId;
             subscription.ContentProviderId = contentProviderId;
             subscription.DateModified = DateTime.UtcNow;
-            subscription.Type = ContentProviderContainerType.SubscriptionMetadata;
+            subscription.Type = ContentProviderContainerType.Subscription;
 
             int response = await this._contentProviderRepository.UpdateSubscription(contentProviderId, subscription);
             if (response == (int)System.Net.HttpStatusCode.OK)
