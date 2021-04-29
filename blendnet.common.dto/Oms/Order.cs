@@ -35,13 +35,6 @@ namespace blendnet.common.dto.Oms
         public string UserName { get; set; }
 
         /// <summary>
-        /// Subscription Details
-        /// </summary>
-        public ContentProviderSubscriptionDto Subscription { get; set; }
-
-        //On Payment
-        
-        /// <summary>
         /// Retailer Phone Number
         /// </summary>
         public string RetailerPhoneNumber { get; set; }
@@ -55,6 +48,47 @@ namespace blendnet.common.dto.Oms
         /// Retailer Name
         /// </summary>
         public string RetailerName { get; set; }
+
+        /// <summary>
+        /// Order Items
+        /// </summary>
+        public List<OrderItem> OrderItems { get; set; }
+
+        /// <summary>
+        /// Total Amount
+        /// </summary>
+        public float? TotalAmountCollected { get; set; }
+
+        /// <summary>
+        /// Order Status
+        /// </summary>
+        public OrderStatus OrderStatus { get; set; }
+
+        /// <summary>
+        /// Order Created Date
+        /// </summary>
+        public DateTime OrderCreatedDate { get; set; }
+
+        /// <summary>
+        /// Order Completion Date
+        /// </summary>
+        public DateTime? OrderCompletedDate { get; set; }
+
+        /// <summary>
+        /// Order Cancelled Date
+        /// </summary>
+        public DateTime? OrderCancelledDate { get; set; }
+    }
+
+    /// <summary>
+    /// Order Item
+    /// </summary>
+    public class OrderItem
+    {
+        /// <summary>
+        /// Subscription Details
+        /// </summary>
+        public ContentProviderSubscriptionDto Subscription { get; set; }
 
         /// <summary>
         /// Amount Collected
@@ -81,26 +115,6 @@ namespace blendnet.common.dto.Oms
         /// Time When Partner Collected the Payment
         /// </summary>
         public DateTime? PaymentDepositDate { get; set; }
-
-        /// <summary>
-        /// Order Status
-        /// </summary>
-        public OrderStatus OrderStatus { get; set; }
-
-        /// <summary>
-        /// Order Created Date
-        /// </summary>
-        public DateTime OrderCreatedDate { get; set; }
-
-        /// <summary>
-        /// Order Completion Date
-        /// </summary>
-        public DateTime? OrderCompletedDate { get; set; }
-
-        /// <summary>
-        /// Order Cancelled Date
-        /// </summary>
-        public DateTime? OrderCancelledDate { get; set; }
     }
 
     /// <summary>
