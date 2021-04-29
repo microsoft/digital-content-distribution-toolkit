@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using blendnet.api.proxy.Cms;
+using blendnet.common.dto.Cms;
+using blendnet.oms.repository.Interfaces;
+using AutoMapper;
 using blendnet.api.proxy;
 using blendnet.api.proxy.Cms;
 using blendnet.api.proxy.Retailer;
@@ -30,18 +33,23 @@ namespace blendnet.oms.api.Controllers
         private IOMSRepository _omsRepository;
 
         private SubscriptionProxy _subscriptionProxy;
+        
+        private ContentProxy _contentProxy;
 
-        public OrderController(ILogger<WeatherForecastController> logger,
-            ContentProxy contentProxy, 
+
+        public OrderController( IOMSRepository omsRepository,
+                                ILogger<OrderController> logger,
+                                ContentProxy contentProxy, 
             RetailerProxy retailerProxy,
-            SubscriptionProxy subscriptionProxy, 
-            IOMSRepository omsRepository)
+            SubscriptionProxy subscriptionProxy)
         {
             _omsRepository = omsRepository;
 
             _logger = logger;
 
             _subscriptionProxy = subscriptionProxy;
+            
+            _contentProxy = contentProxy;
         }
 
         #region Order management methods
@@ -126,6 +134,30 @@ namespace blendnet.oms.api.Controllers
 
 
             return Ok(assignRequest.PartnerReferenceNumber);
+        }
+        
+        /// <summary>
+        /// Returns the Token to view the content
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpGet("{phoneNumber}/token/{contentId:guid}", Name = nameof(GetContentToken))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<string>> GetContentToken(string phoneNumber, Guid contentId)
+        {
+            Content content = await _contentProxy.GetContentById(contentId);
+
+            if (content == null)
+            {
+                return BadRequest($"No valid details found for givent content id {contentId}");
+            }
+
+            if (content.ContentTransformStatus != ContentTransformStatus.TransformComplete)
+            {
+                return BadRequest($"The content tranform status should be complete. Current status is {content.ContentTransformStatus}");
+            }
+            
+            return "";
         }
 
 
