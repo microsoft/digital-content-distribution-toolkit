@@ -21,7 +21,7 @@ namespace blendnet.common.infrastructure.Ams
         /// </summary>
         /// <param name="config">The param is of type ConfigWrapper. This class reads values from local configuration file.</param>
         /// <returns></returns>
-        private static async Task<IAzureMediaServicesClient> CreateMediaServicesClientAsync( string amsArmEndPoint, 
+        public static async Task<IAzureMediaServicesClient> CreateMediaServicesClientAsync( string amsArmEndPoint, 
                                                                                             string amsClientId,
                                                                                             string amsClientSecret,
                                                                                             string amsTenantId,
