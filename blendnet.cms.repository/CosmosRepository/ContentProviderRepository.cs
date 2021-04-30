@@ -100,12 +100,12 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns></returns>
         public async Task<List<ContentProviderDto>> GetContentProviders()
         {
-            var query = from o in this._container.GetItemLinqQueryable<ContentProviderDto>(allowSynchronousQueryExecution: true)
-                        where o.Type == ContentProviderContainerType.ContentProvider
-                        select o;
+            var queryString = $"select * from c where c.type = @type";
+            var queryDef = new QueryDefinition(queryString)
+                                .WithParameter("@type", ContentProviderContainerType.ContentProvider);
 
-
-            return query.ToList();
+            var contentProviders = await this._container.ExtractDataFromQueryIterator<ContentProviderDto>(queryDef);
+            return contentProviders;
         }
 
         /// <summary>
@@ -165,12 +165,13 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns>subscriptions as a list</returns>
         public async Task<List<ContentProviderSubscriptionDto>> GetSubscriptions(Guid contentProviderId)
         {
-            var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionDto>(allowSynchronousQueryExecution: true)
-                          where o.Type == ContentProviderContainerType.Subscription
-                          where o.ContentProviderId == contentProviderId
-                          select o;
+            var queryString = "select * from c where c.type = @type and c.contentProviderId = @contentProviderId";
+            var queryDef = new QueryDefinition(queryString)
+                                .WithParameter("@type", ContentProviderContainerType.Subscription)
+                                .WithParameter("@contentProviderId", contentProviderId);
 
-            return results.ToList();
+            var subscriptions = await this._container.ExtractDataFromQueryIterator<ContentProviderSubscriptionDto>(queryDef);
+            return subscriptions;            
         }
 
         /// <summary>
@@ -181,12 +182,15 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns></returns>
         public async Task<ContentProviderSubscriptionDto> GetSubscription(Guid contentProviderId, Guid subscriptionId)
         {
-            var results = from o in this._container.GetItemLinqQueryable<ContentProviderSubscriptionDto>(allowSynchronousQueryExecution: true)
-                          where o.Type == ContentProviderContainerType.Subscription
-                          where o.Id == subscriptionId && o.ContentProviderId == contentProviderId
-                          select o;
+            var queryString = "select * from c where c.type = @type and c.id = @id and c.contentProviderId = @contentProviderId";
+            var queryDef = new QueryDefinition(queryString)
+                                .WithParameter("@type", ContentProviderContainerType.Subscription)
+                                .WithParameter("@id", subscriptionId)
+                                .WithParameter("@contentProviderId", contentProviderId);
 
-            return results.Take(1).AsEnumerable().FirstOrDefault();
+            var subscriptions = await this._container.ExtractDataFromQueryIterator<ContentProviderSubscriptionDto>(queryDef);
+            var subscription = subscriptions.FirstOrDefault();
+            return subscription;
         }
 
         /// <summary>

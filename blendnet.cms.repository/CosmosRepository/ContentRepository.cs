@@ -165,7 +165,7 @@ namespace blendnet.cms.repository.CosmosRepository
         {
             QueryDefinition queryDef = GetQueryDefinitionWithStatusFilter(contentProviderId, contentStatusFilter);
 
-            List<Content> contentList = await ExtractDataFromQueryIterator<Content>(queryDef);
+            List<Content> contentList = await this._container.ExtractDataFromQueryIterator<Content>(queryDef);
 
             return contentList;
         }
@@ -183,7 +183,7 @@ namespace blendnet.cms.repository.CosmosRepository
             
             QueryDefinition queryDef = GetQueryDefinitionWithStatusFilter(contentProviderId, contentStatusFilter);
 
-            contentResult = await ExtractDataFromQueryIteratorWithToken<Content>(queryDef, continuationToken);
+            contentResult = await this._container.ExtractDataFromQueryIteratorWithToken<Content>(queryDef, continuationToken);
 
             return contentResult;
         }
@@ -252,7 +252,7 @@ namespace blendnet.cms.repository.CosmosRepository
 
             queryDef.WithParameter("@commandType", commandType);
 
-            contentList = await ExtractDataFromQueryIterator<ContentCommand>(queryDef);
+            contentList = await this._container.ExtractDataFromQueryIterator<ContentCommand>(queryDef);
 
             return contentList;
         }
@@ -274,56 +274,9 @@ namespace blendnet.cms.repository.CosmosRepository
 
             queryDef.WithParameter("@type", ContentContainerType.Content);
 
-            contentList = await ExtractDataFromQueryIterator<Content>(queryDef);
+            contentList = await this._container.ExtractDataFromQueryIterator<Content>(queryDef);
 
             return contentList;
-        }
-
-        /// <summary>
-        /// Extract Data from Query Iterator
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="queryDef"></param>
-        /// <returns></returns>
-        private async Task<List<T>> ExtractDataFromQueryIterator<T>(QueryDefinition queryDef)
-        {
-            List<T> returnList = new List<T>();
-
-            var query = this._container.GetItemQueryIterator<T>(queryDef);
-
-            while (query.HasMoreResults)
-            {
-                var response = await query.ReadNextAsync();
-
-                returnList.AddRange(response.ToList());
-            }
-
-            return returnList;
-        }
-
-        private async Task<ContentApiResult<T>> ExtractDataFromQueryIteratorWithToken<T>(QueryDefinition queryDef, string continuationToken)
-        {
-            ContentApiResult<T> contentResult = null;
-            List<T> returnList = new List<T>();
-
-            QueryRequestOptions options = new QueryRequestOptions { MaxItemCount = 1000}; // should make it configurable in future
-
-            var query = this._container.GetItemQueryIterator<T>(queryDef, continuationToken:continuationToken, requestOptions: options);
-
-            if (query.HasMoreResults)
-            {
-                var response = await query.ReadNextAsync();
-
-                returnList.AddRange(response.ToList());
-
-                contentResult = new ContentApiResult<T>(returnList, response.ContinuationToken);
-            }
-            else
-            {
-                contentResult = new ContentApiResult<T>(returnList, null);
-            }
-
-            return contentResult;
         }
 
         /// <summary>
