@@ -38,9 +38,18 @@ namespace blendnet.oms.repository.CosmosRepository
             return order.Id.Value;
         }
 
-        public Task<Order> GetOrderByOrderId(Guid orderId, string phoneNumber)
+        public async Task<Order> GetOrderByOrderId(Guid orderId, string phoneNumber)
         {
-            throw new NotImplementedException();
+            try
+            {
+                ItemResponse<Order> response = await this._container.ReadItemAsync<Order>(orderId.ToString(), new PartitionKey(phoneNumber.ToString()));
+
+                return response.Resource;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
 
         public Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, bool returnAll = false)
@@ -53,9 +62,20 @@ namespace blendnet.oms.repository.CosmosRepository
             throw new NotImplementedException();
         }
 
-        public Task<int> UpdateOrder(Order order)
+        public async Task<int> UpdateOrder(Order order)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = await this._container.ReplaceItemAsync<Order>(order,
+                                                                                        order.Id.Value.ToString(),
+                                                                                        new PartitionKey(order.PhoneNumber.ToString()));
+
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
         }
 
         public Task<List<Order>> GetOrder(Guid UserId, Guid contentProviderId, bool returnAll = false)

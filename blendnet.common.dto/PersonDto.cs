@@ -25,8 +25,25 @@ namespace blendnet.common.dto
 
         public string Email { get; set; }
 
-        public long Mobile { get; set; }
+        public string Mobile { get; set; }
 
         public string IdentityProviderId { get; set; }
+
+        public string GetName()
+        {
+            string name = FirstName;
+
+            if(MiddleName != null)
+            {
+                name = name + " " + MiddleName;
+            }
+
+            if(LastName != null)
+            {
+                name = name + " " + LastName;
+            }
+
+            return name;
+        }
     }
 }

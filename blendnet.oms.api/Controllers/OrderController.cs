@@ -152,15 +152,13 @@ namespace blendnet.oms.api.Controllers
             }
 
             // Update order object
-            //order.
+            UpdateOrder(order, retailer, completeOrderRequest);
 
             // Update order
-
+            await _omsRepository.UpdateOrder(order);
 
             return Ok(completeOrderRequest.PartnerReferenceNumber);
         }
-
-        
 
         /// <summary>
         /// Returns the Token to view the content
@@ -278,6 +276,29 @@ namespace blendnet.oms.api.Controllers
             }
 
             return true;
+        }
+
+        private void UpdateOrder(Order order, RetailerDto retailer, CompleteOrderRequest completeOrderRequest)
+        {
+            order.RetailerId = retailer.Id;
+            order.RetailerName = retailer.GetName();
+            order.RetailerPhoneNumber = retailer.Mobile;
+
+            //assuming single item in order
+
+            order.TotalAmountCollected = completeOrderRequest.AmountCollected;
+
+            var orderItem = order.OrderItems.First();
+            var currentDate = DateTime.UtcNow;
+
+            orderItem.AmountCollected = completeOrderRequest.AmountCollected;
+            orderItem.PlanStartDate = currentDate.Date;
+            orderItem.PlanEndDate = currentDate.Date.AddDays(orderItem.Subscription.DurationDays);
+            orderItem.PartnerReferenceNumber = completeOrderRequest.PartnerReferenceNumber;
+            orderItem.PaymentDepositDate = currentDate.Year * 10000 + currentDate.Month * 100 + currentDate.Day;
+
+            order.OrderCompletedDate = currentDate;
+            order.OrderStatus = OrderStatus.Completed;
         }
 
         #endregion
