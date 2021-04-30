@@ -30,7 +30,7 @@ namespace blendnet.oms.repository.Interfaces
         /// <param name="UserId"></param>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        Task<List<Order>> GetOrder(Guid UserId, Guid contentProviderId, bool returnAll = false);
+        Task<List<Order>> GetOrder(Guid userId, Guid contentProviderId, bool returnAll = false);
 
         /// <summary>
         /// Update Order

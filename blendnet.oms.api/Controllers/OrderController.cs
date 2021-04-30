@@ -218,7 +218,7 @@ namespace blendnet.oms.api.Controllers
 
         private async Task<bool> ActiveOrderExists(Guid userId, Guid contentProviderId)
         {
-            List<Order> activeOrders = await _omsRepository.GetOrder(userId, contentProviderId);
+            List<Order> activeOrders = await _omsRepository.GetOrder(userId, contentProviderId, returnAll:true);
 
             if (activeOrders != null && activeOrders.Count > 0)
             {
