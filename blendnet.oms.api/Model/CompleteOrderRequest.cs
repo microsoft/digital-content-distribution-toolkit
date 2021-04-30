@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace blendnet.oms.api.Model
 {
-    public class AssignRetailerRequest
+    public class CompleteOrderRequest
     {
         [Required]
         public Guid OrderId { get; set; }
+
+        [Required]
+        public string PhoneNumber { get; set; }
 
         [Required]
         public Guid RetailerId { get; set; }

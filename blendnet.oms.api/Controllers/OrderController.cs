@@ -33,13 +33,15 @@ namespace blendnet.oms.api.Controllers
         private IOMSRepository _omsRepository;
 
         private SubscriptionProxy _subscriptionProxy;
-        
+
         private ContentProxy _contentProxy;
 
+        private RetailerProxy _retailerProxy;
 
-        public OrderController( IOMSRepository omsRepository,
+
+        public OrderController(IOMSRepository omsRepository,
                                 ILogger<OrderController> logger,
-                                ContentProxy contentProxy, 
+                                ContentProxy contentProxy,
             RetailerProxy retailerProxy,
             SubscriptionProxy subscriptionProxy)
         {
@@ -48,8 +50,10 @@ namespace blendnet.oms.api.Controllers
             _logger = logger;
 
             _subscriptionProxy = subscriptionProxy;
-            
+
             _contentProxy = contentProxy;
+
+            _retailerProxy = retailerProxy;
         }
 
         #region Order management methods
@@ -57,7 +61,7 @@ namespace blendnet.oms.api.Controllers
         /// Upload Contents
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("createorder", Name = nameof(CreateOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> CreateOrder(OrderRequest orderRequest)
         {
@@ -75,7 +79,7 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            if(!ValidateUser(user, orderRequest.PhoneNumber))
+            if (!ValidateUser(user, orderRequest.PhoneNumber))
             {
                 user.UserName = "Unknown";
                 user.Id = orderRequest.UserId;
@@ -86,13 +90,13 @@ namespace blendnet.oms.api.Controllers
             }
 
             errorInfo = ValidateSubscription(subscription);
-            if(errorInfo != null)
+            if (errorInfo != null)
             {
                 return BadRequest(errorInfo);
             }
 
             // Check if user do not hold active order for same content provider
-            if(await ActiveOrderExists(orderRequest.UserId, orderRequest.ContentProviderId))
+            if (await ActiveOrderExists(orderRequest.UserId, orderRequest.ContentProviderId))
             {
                 errorInfo = "User already holds order for same content provider";
                 return BadRequest(errorInfo);
@@ -112,30 +116,52 @@ namespace blendnet.oms.api.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("completeorder", Name = nameof(CompleteOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
-        public async Task<ActionResult> AssignRetailer(AssignRetailerRequest assignRequest)
+        public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
             // Get Retailer
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(completeOrderRequest.RetailerId);
 
-
+            string errorInfo = null;
 
             //Validate retailer
 
+            if (!ValidateRetailer(retailer))
+            {
+                errorInfo = "Invalid retailer";
+                return BadRequest(errorInfo);
+            }
+
             //Get Order by order id
-
+            Order order = await _omsRepository.GetOrderByOrderId(completeOrderRequest.OrderId, completeOrderRequest.PhoneNumber);
+            
             //Validate order
-
+            errorInfo = ValidateOrder(order);
+            if (errorInfo != null)
+            {
+                return BadRequest(errorInfo);
+            }
+            
+            
             //validate amount collected
+            if(!ValidateAmount(completeOrderRequest))
+            {
+                errorInfo = "Invalid amount collected";
+                return BadRequest(errorInfo);
+            }
 
             // Update order object
+            //order.
 
             // Update order
 
 
-            return Ok(assignRequest.PartnerReferenceNumber);
+            return Ok(completeOrderRequest.PartnerReferenceNumber);
         }
+
         
+
         /// <summary>
         /// Returns the Token to view the content
         /// </summary>
@@ -156,16 +182,16 @@ namespace blendnet.oms.api.Controllers
             {
                 return BadRequest($"The content tranform status should be complete. Current status is {content.ContentTransformStatus}");
             }
-            
+
             return "";
         }
 
 
         #endregion
 
-            #region private methods
+        #region private methods
 
-            private bool ValidateUser(User user, string phoneNumber)
+        private bool ValidateUser(User user, string phoneNumber)
         {
             return user.PhoneNumber != null && user.PhoneNumber.Equals(phoneNumber);
         }
@@ -175,14 +201,14 @@ namespace blendnet.oms.api.Controllers
             // Validate Subscription
             // Subscription exists
             // Validate subscription is active
-            if(subscription.Type != ContentProviderContainerType.Subscription)
+            if (subscription.Type != ContentProviderContainerType.Subscription)
             {
                 return "Invalid subscription type";
             }
 
             DateTime subscriptionEndDate = subscription.EndDate;
 
-            if(subscriptionEndDate < DateTime.UtcNow)
+            if (subscriptionEndDate < DateTime.UtcNow)
             {
                 return "Subscription is not active";
             }
@@ -194,7 +220,7 @@ namespace blendnet.oms.api.Controllers
         {
             List<Order> activeOrders = await _omsRepository.GetOrder(userId, contentProviderId);
 
-            if(activeOrders != null && activeOrders.Count > 0)
+            if (activeOrders != null && activeOrders.Count > 0)
             {
                 return true;
             }
@@ -205,16 +231,53 @@ namespace blendnet.oms.api.Controllers
         private Order CreateOrder(User user, ContentProviderSubscriptionDto subscription)
         {
             Order order = new Order();
-            
+
             OrderItem orderItem = new OrderItem();
             orderItem.Subscription = subscription;
-            
+
             order.UserId = (Guid)user.Id;
             order.PhoneNumber = user.PhoneNumber;
             order.UserName = user.UserName;
             order.OrderItems.Add(orderItem);
 
             return order;
+        }
+
+        private bool ValidateRetailer(RetailerDto retailer)
+        {
+            if (retailer == null)
+            {
+                return false;
+            }
+
+            return retailer.IsActive;
+        }
+
+        private string ValidateOrder(Order order)
+        {
+            string errorInfo = null;
+
+            if(order == null)
+            {
+                errorInfo = "Order does not exist";
+            }
+
+            if(order.OrderStatus != OrderStatus.Created)
+            {
+                errorInfo = "Order is not active";
+            }
+
+            return errorInfo;
+        }
+
+        private bool ValidateAmount(CompleteOrderRequest completeOrderRequest)
+        {
+            if(completeOrderRequest.AmountCollected < 0)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         #endregion
