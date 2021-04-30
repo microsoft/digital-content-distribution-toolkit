@@ -48,7 +48,12 @@ namespace blendnet.cms.api.Controllers
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
 
             ContentApiResult<ContentDto> result = new ContentApiResult<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult._data), contentApiResult._continuationToken);
-                
+
+            if (result._data == null || result._data.Count == 0)
+            {
+                return BadRequest("No data found");
+            }
+
             return Ok(result);
         }
 
@@ -69,6 +74,11 @@ namespace blendnet.cms.api.Controllers
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
 
             ContentApiResult<ContentDto> result = new ContentApiResult<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult._data), contentApiResult._continuationToken);
+
+            if(result._data == null || result._data.Count == 0)
+            {
+                return BadRequest("No data found");
+            }
 
             return Ok(result);
         }
