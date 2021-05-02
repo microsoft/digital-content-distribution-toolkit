@@ -2,6 +2,7 @@ using System;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Azure.Storage.Blobs;
+using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.cms.api.Common;
 using blendnet.cms.repository.CosmosRepository;
 using blendnet.cms.repository.Interfaces;
@@ -9,6 +10,7 @@ using blendnet.common.dto;
 using blendnet.common.dto.cms;
 using blendnet.common.dto.Cms;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.ServiceBus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -56,17 +58,13 @@ namespace blendnet.cms.api
                                   });
             });
 
-            // configure Azure AD B2C Authentication
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddMicrosoftIdentityWebApi(options =>
+            //Kaizala Auth Setup
+            services.AddAuthentication(options =>
             {
-                Configuration.Bind("AzureAdB2C", options);
-
-                options.TokenValidationParameters.NameClaimType = "name";
-            },
-            options => {
-                Configuration.Bind("AzureAdB2C", options);
-            });
+                options.DefaultAuthenticateScheme = KaizalaIdentityAuthOptions.DefaultScheme;
+                options.DefaultChallengeScheme = KaizalaIdentityAuthOptions.DefaultScheme;
+            })
+            .AddKaizalaIdentityAuth();
 
             services.AddControllers()
             .AddJsonOptions(options =>
@@ -144,6 +142,8 @@ namespace blendnet.cms.api
 
             services.AddTransient<AmsHelper>();
 
+            services.AddTransient<KaizalaIdentityProxy>();
+
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
 
@@ -152,8 +152,11 @@ namespace blendnet.cms.api
 
             ConfigureEventBus(services);
 
+            //Configure Http Clients
+            ConfigureHttpClients(services);
+
             // Configure mapper
-             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         }
 
@@ -255,6 +258,19 @@ namespace blendnet.cms.api
                 containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Content, "/contentId").Result;
 
                 return client;
+            });
+        }
+
+        /// <summary>
+        /// Configure Required Http Clients
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureHttpClients(IServiceCollection services)
+        {
+            //Configure Http Clients
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT, c =>
+            {
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }
     }

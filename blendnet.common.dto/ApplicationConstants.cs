@@ -20,6 +20,29 @@ namespace blendnet.common.dto
             public const string ReadWriteAllPolicyPermissions = "rwlcda";
         }
 
+
+        public struct KaizalaIdentityClaims
+        {
+            public const string AccessToken = "AccessToken";
+
+            public const string PhoneNumber = "PhoneNumber";
+
+            public const string CId = "CId";
+
+            public const string TestSender = "TestSender";
+
+            public const string AppName = "AppName";
+
+            public const string Permissions = "Permissions";
+
+            public const string ApplicationType = "ApplicationType";
+
+            public const string TokenValidFrom = "TokenValidFrom";
+
+            public const string UId = "UId";
+
+        }
+
         /// <summary>
         /// Http Client Name
         /// </summary>
@@ -28,6 +51,7 @@ namespace blendnet.common.dto
             public const string CMS_HTTP_CLIENT = "cms";
             public const string ORDER_HTTP_CLIENT = "order";
             public const string RETAILER_HTTP_CLIENT = "retailer";
+            public const string KAIZALAIDENTITY_HTTP_CLIENT = "kaizala";
         }
 
         public struct StorageContainerPolicyNames

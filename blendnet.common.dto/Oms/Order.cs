@@ -127,7 +127,7 @@ namespace blendnet.common.dto.Oms
         /// <summary>
         /// Time When Partner Collected the Payment -- stores date in format yyyymmdd
         /// </summary>
-        public int PaymentDepositDate { get; set; }
+        public int? PaymentDepositDate { get; set; }
     }
 
     /// <summary>

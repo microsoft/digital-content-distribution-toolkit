@@ -25,6 +25,7 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\blendnet.api.proxy\blendnet.api.proxy.csproj" />
     <ProjectReference Include="..\blendnet.cms.repository\blendnet.cms.repository.csproj" />
     <ProjectReference Include="..\blendnet.common.infrastructure\blendnet.common.infrastructure.csproj" />
     <ProjectReference Include="..\blendnet.common.dto\blendnet.common.dto.csproj" />

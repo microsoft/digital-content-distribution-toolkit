@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\blendnet.api.proxy\blendnet.api.proxy.csproj" />
     <ProjectReference Include="..\blendnet.common.dto\blendnet.common.dto.csproj" />
   </ItemGroup>
 

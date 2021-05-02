@@ -14,15 +14,8 @@ namespace blendnet.api.proxy.Common
     /// </summary>
     public static class HttpHelper
     {
-        public static JsonSerializerOptions _jsonSerializerOptions;
+        public static JsonSerializerOptions _jsonSerializerOptions = Utilties.GetJsonSerializerOptions();
 
-        static HttpHelper()
-        {
-            _jsonSerializerOptions = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-
-            _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        }
-        
         /// <summary>
         /// Performs the get operation via HttpClient
         /// </summary>
