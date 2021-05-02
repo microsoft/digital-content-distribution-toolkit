@@ -220,7 +220,17 @@ namespace blendnet.oms.api.Controllers
 
             if (activeOrders != null && activeOrders.Count > 0)
             {
-                return true;
+                foreach(Order activeOrder in activeOrders)
+                {
+                    if(activeOrder.OrderStatus == OrderStatus.Created)
+                    {
+                        return true;
+                    }
+                    if(activeOrder.OrderStatus == OrderStatus.Completed && activeOrder.OrderItems[0].PlanEndDate > DateTime.UtcNow)
+                    {
+                        return true;
+                    }
+                }
             }
 
             return false;

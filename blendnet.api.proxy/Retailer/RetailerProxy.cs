@@ -19,13 +19,11 @@ namespace blendnet.api.proxy.Retailer
 
         public async Task<RetailerDto> GetRetailerById(Guid retailerId)
         {
-            RetailerDto retailer = new RetailerDto();
-
+            RetailerDto retailer =  new RetailerDto(); //stub
             retailer.Id = retailerId;
-            retailer.IsActive = true;
             retailer.FirstName = "Unknown";
-            retailer.Mobile = "9738355379";
-
+            retailer.IsActive = true;
+            retailer.Mobile = "9738353779";
             return retailer;
         }
     }
