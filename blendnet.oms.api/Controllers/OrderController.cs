@@ -116,7 +116,7 @@ namespace blendnet.oms.api.Controllers
         }
 
 
-        [HttpPost("completeorder", Name = nameof(CompleteOrder))]
+        [HttpPut("completeorder", Name = nameof(CompleteOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
@@ -158,6 +158,37 @@ namespace blendnet.oms.api.Controllers
             await _omsRepository.UpdateOrder(order);
 
             return Ok(completeOrderRequest.PartnerReferenceNumber);
+        }
+
+        /// <summary>
+        /// Returns the Token to view the content
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpDelete("{phoneNumber}/cancelOrder/{orderId:guid}", Name = nameof(CancelOrder))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult> CancelOrder(string phoneNumber, Guid orderId)
+        {
+            //Get Order by order id
+            Order order = await _omsRepository.GetOrderByOrderId(orderId, phoneNumber);
+            if(order == null)
+            {
+                return BadRequest("Order does not exist");
+            }
+
+            if(order.OrderStatus != OrderStatus.Created)
+            {
+                return BadRequest("Order is already processed");
+            }
+
+            order.OrderStatus = OrderStatus.Cancelled;
+            order.OrderCancelledDate = DateTime.UtcNow;
+
+            // Update order
+            await _omsRepository.UpdateOrder(order);
+
+            return Ok(orderId);
+
         }
 
         /// <summary>
@@ -269,8 +300,7 @@ namespace blendnet.oms.api.Controllers
             {
                 errorInfo = "Order does not exist";
             }
-
-            if(order.OrderStatus != OrderStatus.Created)
+            else if(order.OrderStatus != OrderStatus.Created)
             {
                 errorInfo = "Order is not active";
             }
