@@ -106,6 +106,8 @@ namespace blendnet.common.dto.cms
         public int HttpClientRetryCount { get; set; }
 
         public Dictionary<string,string> KaizalaIdentity { get; set; }
+        
+        public string CloudApiServiceAccountCertName { get; set; }
 
     }
 }
