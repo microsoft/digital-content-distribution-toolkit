@@ -53,6 +53,15 @@ namespace blendnet.oms.repository.Interfaces
         /// <returns></returns>
         Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, bool returnAll = false);
 
+        /// <summary>
+        /// Get purchase data based on retailer phone number and given date range
+        /// </summary>
+        /// <param name="retailerPhoneNumber"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        Task<List<OrderSummary>> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate);
+
 
     }
 }

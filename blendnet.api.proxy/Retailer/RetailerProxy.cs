@@ -26,5 +26,15 @@ namespace blendnet.api.proxy.Retailer
             retailer.Mobile = "9738353779";
             return retailer;
         }
+
+        public async Task<RetailerDto> GetRetailerByPhoneNumber(string retailerPhoneNumber)
+        {
+            RetailerDto retailer = new RetailerDto(); //stub
+            retailer.Id = new Guid("9e6469bc-8881-416a-b031-1c07a856f038"); //dummy id
+            retailer.FirstName = "Unknown";
+            retailer.IsActive = true;
+            retailer.Mobile = retailerPhoneNumber;
+            return retailer;
+        }
     }
 }

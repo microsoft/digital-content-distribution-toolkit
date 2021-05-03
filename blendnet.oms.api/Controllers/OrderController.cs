@@ -229,6 +229,50 @@ namespace blendnet.oms.api.Controllers
             return "";
         }
 
+        /// <summary>
+        /// API to get purchase data of the retailer
+        /// </summary>
+        /// <param name="retailerPhoneNumber">Phone number of retailer</param>
+        /// <param name="startDate">Start date in numeric format yyyymmdd</param>
+        /// <param name="endDate">End date in numeric format yyyymmdd</param>
+        /// <returns></returns>
+        [HttpGet("orderSummary/{retailerPhoneNumber}", Name = nameof(GetOrderSummary))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
+        {
+            // Get Retailer
+            RetailerDto retailer = await _retailerProxy.GetRetailerByPhoneNumber(retailerPhoneNumber);
+
+            List<string> errorDetails = new List<string>();
+
+            if(retailer == null)
+            {
+                errorDetails.Add("Retailer not found");
+                return BadRequest(errorDetails);
+            }
+
+            if(startDate == 0 || endDate == 0)
+            {
+                errorDetails.Add("Invalid start or end date");
+                return BadRequest(errorDetails);
+            }
+
+            if(startDate > endDate)
+            {
+                errorDetails.Add("Invalid date range");
+                return BadRequest(errorDetails);
+            }
+
+            List<OrderSummary> purchaseData = await _omsRepository.GetOrderSummary(retailerPhoneNumber, startDate, endDate);
+            
+            if(purchaseData == null || purchaseData.Count == 0)
+            {
+                errorDetails.Add("No data found");
+                return NotFound(errorDetails);
+            }
+
+            return Ok(purchaseData);
+        }
 
         #endregion
 
