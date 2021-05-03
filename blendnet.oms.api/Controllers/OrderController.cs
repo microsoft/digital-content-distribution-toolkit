@@ -196,20 +196,34 @@ namespace blendnet.oms.api.Controllers
         /// </summary>
         /// <param name="contentId"></param>
         /// <returns></returns>
-        [HttpGet("{phoneNumber}/token/{contentId:guid}", Name = nameof(GetContentToken))]
+        [HttpGet("token/{contentId:guid}", Name = nameof(GetContentToken))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<string>> GetContentToken(string phoneNumber, Guid contentId)
+        public async Task<ActionResult<string>> GetContentToken(Guid contentId)
         {
+            List<string> errorDetails = new List<string>();
+
             Content content = await _contentProxy.GetContentById(contentId);
 
+            //Check if content is valid
             if (content == null)
             {
-                return BadRequest($"No valid details found for givent content id {contentId}");
+                errorDetails.Add($"No valid details found for givent content id {contentId}");
+
+                return BadRequest(errorDetails);
             }
 
+            //Check the the content transformation status
             if (content.ContentTransformStatus != ContentTransformStatus.TransformComplete)
             {
-                return BadRequest($"The content tranform status should be complete. Current status is {content.ContentTransformStatus}");
+                errorDetails.Add($"The content tranform status should be complete. Current status is {content.ContentTransformStatus}");
+
+                return BadRequest(errorDetails);
+            }
+
+            //Check if Valid Subcription Exists
+            if (! await IsValidSubcriptionExists(content,errorDetails))
+            {
+                return BadRequest(errorDetails);
             }
 
             return "";
@@ -219,6 +233,64 @@ namespace blendnet.oms.api.Controllers
         #endregion
 
         #region private methods
+
+        /// <summary>
+        /// Checks if valid subscription exists
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="errorDetails"></param>
+        /// <returns></returns>
+        private async Task<bool> IsValidSubcriptionExists(Content content, List<string> errorDetails)
+        {
+            Guid contentProviderId = content.ContentProviderId;
+
+            bool validSubscriptionExists = false;
+
+            if (content.IsFreeContent)
+            {
+                _logger.LogInformation($"Returing the token for Content {content.ContentId.Value} for User {this.User.Identity.Name} as it is marked as free");
+
+                validSubscriptionExists = true;
+
+            }
+            else
+            {
+                //Get Order by order id
+                List<Order> orders = await _omsRepository.GetOrdersByPhoneNumber(this.User.Identity.Name,true);
+
+                if (orders == null || orders.Count <= 0)
+                {
+                    errorDetails.Add($"Not Active Subscription for {this.User.Identity.Name}");
+
+                    return false;
+                }
+
+                DateTime currentDateTime = DateTime.UtcNow;
+
+                foreach (Order order in orders)
+                {
+                    OrderItem orderItem = order.OrderItems.Where(oi => oi.Subscription.ContentProviderId == content.ContentProviderId).FirstOrDefault();
+
+                    if (order.OrderStatus == OrderStatus.Completed &&
+                        orderItem != null &&
+                        (currentDateTime >= orderItem.PlanStartDate && currentDateTime <= orderItem.PlanEndDate))
+                    {
+                        validSubscriptionExists = true;
+
+                        break;
+                    }
+                }
+
+                if (!validSubscriptionExists)
+                {
+                    errorDetails.Add($"Not Valid Subscription for {this.User.Identity.Name} and {content.ContentProviderId}");
+                }
+
+            }
+
+            return validSubscriptionExists;
+        }
+
 
         private bool ValidateUser(User user, string phoneNumber)
         {

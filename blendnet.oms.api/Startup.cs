@@ -1,8 +1,10 @@
 using blendnet.api.proxy;
 using blendnet.api.proxy.Cms;
+using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Oms;
+using blendnet.common.infrastructure.Authentication;
 using blendnet.oms.repository.CosmosRepository;
 using blendnet.oms.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -52,6 +54,14 @@ namespace blendnet.oms.api
                                       builder.AllowAnyOrigin();
                                   });
             });
+
+            //Kaizala Auth Setup
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = KaizalaIdentityAuthOptions.DefaultScheme;
+                options.DefaultChallengeScheme = KaizalaIdentityAuthOptions.DefaultScheme;
+            })
+            .AddKaizalaIdentityAuth();
 
             services.AddControllers()
             .AddJsonOptions(options =>
@@ -116,6 +126,8 @@ namespace blendnet.oms.api
             services.AddTransient<ContentProxy>();
             services.AddTransient<SubscriptionProxy>();
             services.AddTransient<RetailerProxy>();
+            services.AddTransient<KaizalaIdentityProxy>();
+
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -178,6 +190,12 @@ namespace blendnet.oms.api
             services.AddHttpClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT, c =>
             {
                 c.BaseAddress = new Uri(cmsBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+            //Configure Http Clients
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT, c =>
+            {
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }
