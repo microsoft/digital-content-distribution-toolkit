@@ -60,11 +60,11 @@ namespace blendnet.api.proxy.Common
 
             int tokenExpiry = _configuration.GetValue<int>("CloudApiAccessTokenExpiryInHrs");
 
-            string requestData = $"?serviceId={serviceId}&serviceName={kaizalaIdentityAppName}&tls={tokenExpiry}";
+            string requestData = $"?serviceId={serviceId}&appName={kaizalaIdentityAppName}&tls={tokenExpiry}";
 
             string signedData = await CertificateHelper.GetSignedDataFromCertificate(keyVaultUrl, certificateName, requestData);
 
-            string url = $"{kaizalaIdentityBaseUrl}v1/GetAccessTokenForPartnerService?serviceId={serviceId}&appName={kaizalaIdentityAppName}";
+            string url = $"{kaizalaIdentityBaseUrl}v1/GetAccessTokenForPartnerService{requestData}";
 
             _kaizalaIdentityHttpClient.DefaultRequestHeaders.Remove("Authorization");
 

@@ -39,9 +39,16 @@ namespace blendnet.api.proxy.Cms
 
             string accessToken = await base.GetServiceAccessToken();
 
-            var successResponse = await _cmsHttpClient.Get<Content>(url, accessToken);
+            Content content = null;
 
-            return successResponse;
+            try
+            {
+                content = await _cmsHttpClient.Get<Content>(url, accessToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {}
+
+            return content;
         }
     }
 }

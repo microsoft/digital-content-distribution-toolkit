@@ -140,6 +140,4 @@ namespace blendnet.common.dto.Oms
         Completed = 1,
         Cancelled = 2
     }
-
-    
 }

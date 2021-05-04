@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using blendnet.common.infrastructure.Ams;
+using Microsoft.Extensions.Options;
 
 namespace blendnet.oms.api.Controllers
 {
@@ -34,12 +36,15 @@ namespace blendnet.oms.api.Controllers
 
         private RetailerProxy _retailerProxy;
 
+        OmsAppSettings _omsAppSettings;
+
 
         public OrderController(IOMSRepository omsRepository,
                                 ILogger<OrderController> logger,
                                 ContentProxy contentProxy,
-            RetailerProxy retailerProxy,
-            SubscriptionProxy subscriptionProxy)
+                                RetailerProxy retailerProxy,
+                                SubscriptionProxy subscriptionProxy,
+                                IOptionsMonitor<OmsAppSettings> optionsMonitor)
         {
             _omsRepository = omsRepository;
 
@@ -50,6 +55,8 @@ namespace blendnet.oms.api.Controllers
             _contentProxy = contentProxy;
 
             _retailerProxy = retailerProxy;
+
+            _omsAppSettings = optionsMonitor.CurrentValue;
         }
 
         #region Order management methods
@@ -201,6 +208,7 @@ namespace blendnet.oms.api.Controllers
 
         /// <summary>
         /// Returns the Token to view the content
+        /// Todo: Change the get order call in Validate subscription
         /// </summary>
         /// <param name="contentId"></param>
         /// <returns></returns>
@@ -234,7 +242,9 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest(errorDetails);
             }
 
-            return "";
+            string token = await GetContentTokenFromAms(content.ContentId.Value, content.ContentTransformStatusUpdatedBy.Value);
+            
+            return token;
         }
 
         /// <summary>
@@ -354,9 +364,10 @@ namespace blendnet.oms.api.Controllers
             {
                 //Get Orders by phone number
                 var orderStatusFilter = new OrderStatusFilter();
-                orderStatusFilter.OrderStatuses.Add(OrderStatus.Created);
+
+                orderStatusFilter.OrderStatuses = new List<OrderStatus>();
+
                 orderStatusFilter.OrderStatuses.Add(OrderStatus.Completed);
-                orderStatusFilter.OrderStatuses.Add(OrderStatus.Cancelled);
 
                 List<Order> orders = await _omsRepository.GetOrdersByPhoneNumber(this.User.Identity.Name, orderStatusFilter);
 
@@ -520,6 +531,33 @@ namespace blendnet.oms.api.Controllers
 
             order.OrderCompletedDate = currentDate;
             order.OrderStatus = OrderStatus.Completed;
+        }
+
+        /// <summary>
+        /// Generates the token for the Content and Command Id
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <param name="commandId"></param>
+        /// <returns></returns>
+        private async Task<string> GetContentTokenFromAms(Guid contentId, Guid commandId)
+        {
+            AmsData amsData = new AmsData();
+
+            amsData.AmsAccountName = _omsAppSettings.AmsAccountName;
+            amsData.AmsArmEndPoint = _omsAppSettings.AmsArmEndPoint;
+            amsData.AmsClientId = _omsAppSettings.AmsClientId;
+            amsData.AmsClientSecret = _omsAppSettings.AmsClientSecret;
+            amsData.AmsResourceGroupName = _omsAppSettings.AmsResourceGroupName;
+            amsData.AmsSubscriptionId = _omsAppSettings.AmsSubscriptionId;
+            amsData.AmsTenantId = _omsAppSettings.AmsTenantId;
+            amsData.AmsTokenAudience = _omsAppSettings.AmsTokenAudience;
+            amsData.AmsTokenExpiryInMts = _omsAppSettings.AmsTokenExpiryInMts;
+            amsData.AmsTokenIssuer = _omsAppSettings.AmsTokenIssuer;
+            amsData.AmsTokenSigningKey = _omsAppSettings.AmsTokenSigningKey;
+
+            string token = await AmsUtilities.GetContentToken(amsData, contentId, commandId);
+
+            return token;
         }
 
         #endregion
