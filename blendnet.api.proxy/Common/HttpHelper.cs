@@ -23,8 +23,13 @@ namespace blendnet.api.proxy.Common
         /// <param name="httpClient"></param>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static async Task<O> Get<O>(this HttpClient httpClient, string url)
+        public static async Task<O> Get<O>(this HttpClient httpClient, string url, string accessToken="")
         {
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
+            }
+            
             var httpResponse = await httpClient.GetAsync(url);
 
             httpResponse.EnsureSuccessStatusCode();

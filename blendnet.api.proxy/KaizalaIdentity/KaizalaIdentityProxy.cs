@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 
 namespace blendnet.api.proxy.KaizalaIdentity
 {

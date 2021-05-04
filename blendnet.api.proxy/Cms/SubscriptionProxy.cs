@@ -1,5 +1,7 @@
 ﻿using blendnet.api.proxy.Common;
 using blendnet.common.dto;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +15,15 @@ namespace blendnet.api.proxy
     /// Makes the call to Subscription API.
     /// In future, if caching is required, it will be added here.
     /// </summary>
-    public class SubscriptionProxy
+    public class SubscriptionProxy : BaseProxy
+
     {
         private readonly HttpClient _cmsHttpClient;
 
-        public SubscriptionProxy(IHttpClientFactory clientFactory)
+        public SubscriptionProxy(   IHttpClientFactory clientFactory,
+                                    IConfiguration configuration,
+                                    ILogger<SubscriptionProxy> logger)
+        : base(configuration, clientFactory, logger)
         {
             _cmsHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT);
         }
@@ -31,7 +37,9 @@ namespace blendnet.api.proxy
         {
             string url = $"ContentProvider/{contentProviderId}/Subscription";
 
-            var successResponse = await _cmsHttpClient.Get<List<ContentProviderSubscriptionDto>>(url);
+            string accessToken = await base.GetServiceAccessToken();
+
+            var successResponse = await _cmsHttpClient.Get<List<ContentProviderSubscriptionDto>>(url,accessToken);
 
             return successResponse;
         }
@@ -46,7 +54,9 @@ namespace blendnet.api.proxy
         {
             string url = $"ContentProvider/{contentProviderId}/Subscription/{subscriptionId}";
 
-            var successResponse = await _cmsHttpClient.Get<ContentProviderSubscriptionDto>(url);
+            string accessToken = await base.GetServiceAccessToken();
+
+            var successResponse = await _cmsHttpClient.Get<ContentProviderSubscriptionDto>(url, accessToken);
 
             return successResponse;
         }

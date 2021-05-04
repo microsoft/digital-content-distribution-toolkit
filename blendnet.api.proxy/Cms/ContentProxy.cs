@@ -1,6 +1,8 @@
 ﻿using blendnet.api.proxy.Common;
 using blendnet.common.dto;
 using blendnet.common.dto.Cms;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +16,14 @@ namespace blendnet.api.proxy.Cms
     /// Makes the call to Content API.
     /// In future, if caching is required, it will be added here.
     /// </summary>
-    public class ContentProxy
+    public class ContentProxy:BaseProxy
     {
         private readonly HttpClient _cmsHttpClient;
 
-        public ContentProxy(IHttpClientFactory clientFactory)
+        public ContentProxy(IHttpClientFactory clientFactory,
+                            IConfiguration configuration,
+                            ILogger<ContentProxy> logger)
+               : base(configuration,clientFactory,logger)
         {
             _cmsHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT);
         }
@@ -31,8 +36,10 @@ namespace blendnet.api.proxy.Cms
         public async Task<Content> GetContentById(Guid contentId)
         {
             string url = $"Content/{contentId}";
-            
-            var successResponse = await _cmsHttpClient.Get<Content>(url);
+
+            string accessToken = await base.GetServiceAccessToken();
+
+            var successResponse = await _cmsHttpClient.Get<Content>(url, accessToken);
 
             return successResponse;
         }

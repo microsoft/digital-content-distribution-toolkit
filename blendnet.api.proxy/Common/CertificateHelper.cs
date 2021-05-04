@@ -32,5 +32,22 @@ namespace blendnet.api.proxy.Common
                                                                                                 RSASignaturePadding.Pkcs1));
             return signature;
         }
+
+
+        private async static Task<bool> VerifyRequestSignature(Uri keyVaultUrl, string certificateName, string signature, string requestData)
+        {
+            CertificateClient client = new CertificateClient(keyVaultUrl, new DefaultAzureCredential());
+
+            var result = await client.GetCertificateAsync(certificateName);
+
+            X509Certificate2 cert = await client.DownloadCertificateAsync(certificateName);
+
+            RSA publicKey = cert.GetRSAPublicKey();
+            
+            Byte[] dataBytes = Encoding.UTF8.GetBytes(requestData);
+
+            return publicKey.VerifyData(dataBytes, Convert.FromBase64String(signature), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        }
+
     }
 }
