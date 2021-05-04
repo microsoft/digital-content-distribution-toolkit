@@ -1,28 +1,24 @@
 ﻿using blendnet.api.proxy.Cms;
 using blendnet.common.dto.Cms;
 using blendnet.oms.repository.Interfaces;
-using AutoMapper;
 using blendnet.api.proxy;
-using blendnet.api.proxy.Cms;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Oms;
 using blendnet.common.dto.User;
-using blendnet.common.infrastructure;
 using blendnet.oms.api.Model;
-using blendnet.oms.repository.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace blendnet.oms.api.Controllers
 {
+    /// <summary>
+    /// Controller to manage order related apis
+    /// </summary>
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
@@ -58,8 +54,9 @@ namespace blendnet.oms.api.Controllers
 
         #region Order management methods
         /// <summary>
-        /// Upload Contents
+        /// Create order 
         /// </summary>
+        /// <param name="orderRequest"></param>
         /// <returns></returns>
         [HttpPost("createorder", Name = nameof(CreateOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
@@ -71,11 +68,11 @@ namespace blendnet.oms.api.Controllers
             // Get User
             User user = UserProxy.Instance.GetUser(orderRequest.UserId);
 
-            string errorInfo = null;
+            List<string> errorInfo = new List<string>();
 
             if (user == null || subscription == null)
             {
-                errorInfo = "User or subscription not found";
+                errorInfo .Add("User or subscription not found");
                 return BadRequest(errorInfo);
             }
 
@@ -89,16 +86,17 @@ namespace blendnet.oms.api.Controllers
                 //return BadRequest(errorInfo);
             }
 
-            errorInfo = ValidateSubscription(subscription);
-            if (errorInfo != null)
+            var error = ValidateSubscription(subscription);
+            if (error != null)
             {
+                errorInfo.Add(error);
                 return BadRequest(errorInfo);
             }
 
             // Check if user do not hold active order for same content provider
             if (await ActiveOrderExists(orderRequest.UserId, orderRequest.ContentProviderId))
             {
-                errorInfo = "User already holds order for same content provider";
+                errorInfo.Add("User already holds order for same content provider");
                 return BadRequest(errorInfo);
             }
 
@@ -115,7 +113,11 @@ namespace blendnet.oms.api.Controllers
             return Ok(orderId);
         }
 
-
+        /// <summary>
+        /// Complete order
+        /// </summary>
+        /// <param name="completeOrderRequest"></param>
+        /// <returns></returns>
         [HttpPut("completeorder", Name = nameof(CompleteOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
@@ -123,13 +125,13 @@ namespace blendnet.oms.api.Controllers
             // Get Retailer
             RetailerDto retailer = await _retailerProxy.GetRetailerById(completeOrderRequest.RetailerId);
 
-            string errorInfo = null;
+            List<string> errorInfo = new List<string>();
 
             //Validate retailer
 
             if (!ValidateRetailer(retailer))
             {
-                errorInfo = "Invalid retailer";
+                errorInfo .Add("Invalid retailer");
                 return BadRequest(errorInfo);
             }
 
@@ -137,9 +139,10 @@ namespace blendnet.oms.api.Controllers
             Order order = await _omsRepository.GetOrderByOrderId(completeOrderRequest.OrderId, completeOrderRequest.PhoneNumber);
             
             //Validate order
-            errorInfo = ValidateOrder(order);
-            if (errorInfo != null)
+            var error  = ValidateOrder(order);
+            if (error != null)
             {
+                errorInfo.Add(error);
                 return BadRequest(errorInfo);
             }
             
@@ -147,7 +150,7 @@ namespace blendnet.oms.api.Controllers
             //validate amount collected
             if(!ValidateAmount(completeOrderRequest))
             {
-                errorInfo = "Invalid amount collected";
+                errorInfo.Add("Invalid amount collected");
                 return BadRequest(errorInfo);
             }
 
@@ -161,9 +164,10 @@ namespace blendnet.oms.api.Controllers
         }
 
         /// <summary>
-        /// Returns the Token to view the content
+        /// Cancel order 
         /// </summary>
-        /// <param name="contentId"></param>
+        /// <param name="phoneNumber"></param>
+        /// <param name="orderId"></param>
         /// <returns></returns>
         [HttpDelete("{phoneNumber}/cancelOrder/{orderId:guid}", Name = nameof(CancelOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -171,14 +175,19 @@ namespace blendnet.oms.api.Controllers
         {
             //Get Order by order id
             Order order = await _omsRepository.GetOrderByOrderId(orderId, phoneNumber);
+
+            List<string> errorInfo = new List<string>();
+
             if(order == null)
             {
-                return BadRequest("Order does not exist");
+                errorInfo.Add("Order does not exist");
+                return BadRequest(errorInfo);
             }
 
             if(order.OrderStatus != OrderStatus.Created)
             {
-                return BadRequest("Order is already processed");
+                errorInfo.Add("Order is already processed");
+                return BadRequest(errorInfo);
             }
 
             order.OrderStatus = OrderStatus.Cancelled;
@@ -230,7 +239,7 @@ namespace blendnet.oms.api.Controllers
         }
 
         /// <summary>
-        /// API to get purchase data of the retailer
+        /// API to get order summary of the retailer
         /// </summary>
         /// <param name="retailerPhoneNumber">Phone number of retailer</param>
         /// <param name="startDate">Start date in numeric format yyyymmdd</param>
@@ -335,17 +344,24 @@ namespace blendnet.oms.api.Controllers
             return validSubscriptionExists;
         }
 
-
+        /// <summary>
+        /// Validates user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
         private bool ValidateUser(User user, string phoneNumber)
         {
-            return user.PhoneNumber != null && user.PhoneNumber.Equals(phoneNumber);
+            return user != null && user.PhoneNumber != null && user.PhoneNumber.Equals(phoneNumber);
         }
 
+        /// <summary>
+        /// Validates subscription
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
         private string ValidateSubscription(ContentProviderSubscriptionDto subscription)
         {
-            // Validate Subscription
-            // Subscription exists
-            // Validate subscription is active
             if (subscription.Type != ContentProviderContainerType.Subscription)
             {
                 return "Invalid subscription type";
