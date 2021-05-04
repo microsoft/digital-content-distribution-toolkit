@@ -13,6 +13,7 @@ namespace blendnet.common.dto.Oms
     {
         /// <summary>
         /// Total purchase count
+        /// Rename Count
         /// </summary>
         public int PurchaseCount { get; set; }
 
@@ -23,6 +24,7 @@ namespace blendnet.common.dto.Oms
 
         /// <summary>
         /// Payment deposit date in format yyyymmdd stored as integer
+        /// Rename to Date
         /// </summary>
         public int PaymentDepositDate { get; set; }
 

@@ -31,6 +31,11 @@ namespace blendnet.oms.repository.CosmosRepository
             this._container = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.Order);
         }
 
+        /// <summary>
+        /// Creates the order
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         public async Task<Guid> CreateOrder(Order order)
         {
             await this._container.CreateItemAsync<Order>(order, new PartitionKey(order.PhoneNumber));
@@ -38,24 +43,11 @@ namespace blendnet.oms.repository.CosmosRepository
             return order.Id.Value;
         }
 
-        public async Task<Order> GetOrderByOrderId(Guid orderId)
-        {
-            try
-            {
-                string queryString = "SELECT * FROM c where c.id = @orderId";
-
-                var queryDef = new QueryDefinition(queryString).WithParameter("@orderId", orderId);
-                
-                List<Order> results = await ExtractDataFromQueryIterator<Order>(queryDef);
-                
-                return results.FirstOrDefault();
-            }
-            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                return null;
-            }
-        }
-
+        /// <summary>
+        /// Update the order
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         public async Task<int> UpdateOrder(Order order)
         {
             try
@@ -71,6 +63,39 @@ namespace blendnet.oms.repository.CosmosRepository
                 return (int)ex.StatusCode;
             }
         }
+
+        /// <summary>
+        /// *****Phone Number should be as a input parameter.
+        /// So the query should be by Phone Number and Order ID
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        public async Task<Order> GetOrderByOrderId(Guid orderId)
+        {
+            try
+            {
+                string queryString = "SELECT * FROM c where c.id = @orderId";
+
+                var queryDef = new QueryDefinition(queryString).WithParameter("@orderId", orderId);
+
+                List<Order> results = await ExtractDataFromQueryIterator<Order>(queryDef);
+
+                return results.FirstOrDefault();
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// *****Remove User Id as input and change it to phone number
+        /// *****Get Order by content provider id 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="contentProviderId"></param>
+        /// <param name="returnAll"></param>
+        /// <returns></returns>
 
         public async Task<List<Order>> GetOrder(Guid userId, Guid contentProviderId, bool returnAll = false)
         {
