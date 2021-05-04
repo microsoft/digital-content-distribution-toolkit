@@ -244,7 +244,7 @@ namespace blendnet.oms.api.Controllers
         /// <param name="startDate">Start date in numeric format yyyymmdd</param>
         /// <param name="endDate">End date in numeric format yyyymmdd</param>
         /// <returns></returns>
-        [HttpGet("orderSummary/{retailerPhoneNumber}", Name = nameof(GetOrderSummary))]
+        [HttpGet("summary/{retailerPhoneNumber}", Name = nameof(GetOrderSummary))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
         {
