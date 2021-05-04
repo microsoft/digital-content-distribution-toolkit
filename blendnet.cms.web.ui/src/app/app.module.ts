@@ -19,13 +19,14 @@ import { AddContentProviderComponent } from './add-content-provider/add-content-
 import { b2cPolicies, apiConfig } from './b2c-config';
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
 import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalRedirectComponent, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
-import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
 import { ToastrModule } from 'ngx-toastr';
 import { HttpErrorInterceptor } from './interceptor/http-error.interceptor';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
 import { SpinnerInterceptor } from './interceptor/spinner.interceptor';
 import { BroadcastComponent } from './broadcast/broadcast.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
+import { HomeComponent } from './home/home.component';
 
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
@@ -86,12 +87,13 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     ContentProviderComponent,
     SasKeyComponent,
     AddContentProviderComponent,
-    HomeComponent,
+    LoginComponent,
     SpinnerOverlayComponent,
     ContentTokenDialog,
     ProcessConfirmDialog,
     BroadcastComponent,
-    SubscriptionComponent
+    SubscriptionComponent,
+    HomeComponent
   ],
   imports: [
     HttpClientModule,

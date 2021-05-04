@@ -95,10 +95,12 @@ export class BroadcastComponent {
 
   createDataSource(rawData) {
     var dataSource: Content[] =[];
-    rawData.forEach( data => {
-      data.isSelected = false;
-      dataSource.push(data);
-    });
+    if(rawData) {
+      rawData.forEach( data => {
+        data.isSelected = false;
+        dataSource.push(data);
+      });
+    }
     return new MatTableDataSource(dataSource);
   }
 

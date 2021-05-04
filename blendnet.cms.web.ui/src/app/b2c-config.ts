@@ -35,5 +35,6 @@ export const apiConfig: {scopes: string[]; uri: string} = {
 
 export const roles = {
     "SuperUser" : "Super User",
-    "ContentAdmin": "Content Admin"
+    "ContentAdmin": "Content Admin",
+    "NormalUser" : "NormalUser"
 }

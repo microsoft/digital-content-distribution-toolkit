@@ -26,5 +26,34 @@
         "pathRewrite": {
             "^/Identity": ""
           }
+    },
+    "/Kaizala0/*": {
+        "target": "https://api-alpha.kaiza.la",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/Kaizala0": ""
+          }
+    },
+    "/Kaizala1/*": {
+        "target": "https://api-alpha1.kaiza.la",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/Kaizala1": ""
+          }
+    },
+    "/Kaizala2/*": {
+        "target": "https://api-alpha2.kaiza.la",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/Kaizala2": ""
+          }
     }
+
+
 }

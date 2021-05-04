@@ -1,10 +1,7 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LogService } from './log.service';
 import { environment } from '../../environments/environment';
-import { Observable, Subject, timer } from 'rxjs';
-import { Content } from '../models/content.model';
-import { switchMap, tap, share, retry, takeUntil } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

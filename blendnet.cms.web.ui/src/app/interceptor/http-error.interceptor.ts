@@ -27,7 +27,8 @@ import {
                   errMsg = errMsg +  "\n" + err
                   );
               } else {
-                errMsg = error.error.title ?  error.error.title : "Something went wrong. Please try again!";
+                errMsg = error.error.title ?  error.error.title : 
+                (error.error.message ? error.error.message :"Something went wrong. Please try again!");
               }
               errorMessage = errMsg;
             }

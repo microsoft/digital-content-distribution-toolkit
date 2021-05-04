@@ -1,21 +1,24 @@
 <mat-toolbar color="primary" class="cms-toolbar">
-	<span><div class="cms-app-name" *ngIf="loginDisplay">
+	<span>
+		<!-- <div class="cms-app-name" *ngIf="!showLoginDisplay"> -->
+		<div class="cms-app-name" *ngIf="currentUser">
 		<h1>Content Provider : {{selectedCPName}}</h1>
 	</div></span>
 	<span class="cms-menu-spacer"></span>
 	<span><h1>BlendNet CMS</h1></span>
   <span class="cms-menu-spacer"></span>
   
-  <button matTooltip="Login" *ngIf="!loginDisplay" (click)="login()">Login</button>
-  <button mat-icon-button  matTooltip="Logout" *ngIf="loginDisplay" (click)="logout()"><mat-icon>logout</mat-icon></button>
-
+  <!-- <button matTooltip="Login" *ngIf="!loginDisplay" (click)="login()">Login</button> -->
+  <!-- <button mat-icon-button  matTooltip="Logout" *ngIf="!showLoginDisplay" (click)="logout()"><mat-icon>logout</mat-icon></button> -->
+  <button mat-icon-button  matTooltip="Logout" *ngIf="currentUser" (click)="logout()"><mat-icon>logout</mat-icon></button>
 
 </mat-toolbar>
 <mat-sidenav-container class="cms-container" autosize >
-	<mat-sidenav  *ngIf="loginDisplay" #sidenav class="cms-sidenav" mode="side" opened="true" >	
+	<!-- <mat-sidenav  *ngIf="!showLoginDisplay" #sidenav class="cms-sidenav" mode="side" opened="true" >	 -->
+	<mat-sidenav  *ngIf="currentUser" #sidenav class="cms-sidenav" mode="side" opened="true" >	
 		<mat-nav-list>
 			<mat-list-item class="parent">
-				<span class="full-width" *ngIf="isExpanded">Home</span>
+				<span class="full-width" *ngIf="isExpanded"  [routerLink]="['/']">Home</span>
 				<mat-icon mat-list-icon>home</mat-icon>
 			</mat-list-item>
 			<div class="submenu" [ngClass]="{'expanded' : showHomeSubmenu}" *ngIf="isExpanded">
@@ -46,7 +49,8 @@
 </mat-sidenav>
 
 	<div class="cms-sidenav-content">
-		<router-outlet *ngIf="!isIframe"></router-outlet>
+		<!-- <router-outlet *ngIf="!isIframe"></router-outlet> -->
+		<router-outlet></router-outlet>
 	</div>
 
 </mat-sidenav-container>
