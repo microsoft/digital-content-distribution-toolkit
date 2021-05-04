@@ -12,10 +12,7 @@ namespace blendnet.oms.api.Model
         public Guid OrderId { get; set; }
 
         [Required]
-        public string PhoneNumber { get; set; }
-
-        [Required]
-        public Guid RetailerId { get; set; }
+        public string RetailerPhoneNumber { get; set; }
 
         [Required]
         public float AmountCollected { get; set; }
@@ -23,6 +20,5 @@ namespace blendnet.oms.api.Model
         [Required]
         public string PartnerReferenceNumber { get; set;}
 
-        public DateTime PaymentDate { get; set; }
     }
 }

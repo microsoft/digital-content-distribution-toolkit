@@ -105,10 +105,10 @@ namespace blendnet.oms.repository.CosmosRepository
 
         public async Task<List<OrderSummary>> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
         {
-            var queryString = "SELECT count(o) as purchaseCount, o.retailerPhoneNumber, oi.paymentDepositDate, oi.contentProviderId, oi.subscription.id as subscriptionId, oi.subscription.title, sum(oi.subscription.price) as totalAmount" +
+            var queryString = "SELECT count(o) as purchaseCount, o.retailerPhoneNumber, oi.paymentDepositDate, oi.subscription.contentProviderId, oi.subscription.id as subscriptionId, oi.subscription.title, sum(oi.subscription.price) as totalAmount" +
                             " FROM o join oi in o.orderItems" +
                             " WHERE o.retailerPhoneNumber = @retailerPhoneNumber and o.orderStatus = \"Completed\" and oi.paymentDepositDate >= @startDate and oi.paymentDepositDate <= @endDate" +
-                            " GROUP BY o.retailerPhoneNumber, oi.paymentDepositDate, oi.contentProviderId, oi.subscription.id, oi.subscription.title";
+                            " GROUP BY o.retailerPhoneNumber, oi.paymentDepositDate, oi.subscription.contentProviderId, oi.subscription.id, oi.subscription.title";
 
             var queryDef = new QueryDefinition(queryString)
                                 .WithParameter("@retailerPhoneNumber", retailerPhoneNumber)

@@ -123,7 +123,7 @@ namespace blendnet.oms.api.Controllers
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
             // Get Retailer
-            RetailerDto retailer = await _retailerProxy.GetRetailerById(completeOrderRequest.RetailerId);
+            RetailerDto retailer = await _retailerProxy.GetRetailerByPhoneNumber(completeOrderRequest.RetailerPhoneNumber);
 
             List<string> errorInfo = new List<string>();
 
@@ -169,9 +169,9 @@ namespace blendnet.oms.api.Controllers
         /// <param name="phoneNumber"></param>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        [HttpDelete("{phoneNumber}/cancelOrder/{orderId:guid}", Name = nameof(CancelOrder))]
+        [HttpDelete("cancel/{orderId:guid}", Name = nameof(CancelOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult> CancelOrder(string phoneNumber, Guid orderId)
+        public async Task<ActionResult> CancelOrder(Guid orderId)
         {
             //Get Order by order id
             Order order = await _omsRepository.GetOrderByOrderId(orderId);
