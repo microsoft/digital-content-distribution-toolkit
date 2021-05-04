@@ -38,28 +38,22 @@ namespace blendnet.oms.repository.CosmosRepository
             return order.Id.Value;
         }
 
-        public async Task<Order> GetOrderByOrderId(Guid orderId, string phoneNumber)
+        public async Task<Order> GetOrderByOrderId(Guid orderId)
         {
             try
             {
-                ItemResponse<Order> response = await this._container.ReadItemAsync<Order>(orderId.ToString(), new PartitionKey(phoneNumber.ToString()));
+                string queryString = "SELECT * FROM c where c.id = @orderId";
 
-                return response.Resource;
+                var queryDef = new QueryDefinition(queryString).WithParameter("@orderId", orderId);
+                
+                List<Order> results = await ExtractDataFromQueryIterator<Order>(queryDef);
+                
+                return results.FirstOrDefault();
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return null;
             }
-        }
-
-        public Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, bool returnAll = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Order>> GetOrdersByUserId(Guid userId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<int> UpdateOrder(Order order)
@@ -124,6 +118,30 @@ namespace blendnet.oms.repository.CosmosRepository
             var purchaseData = await ExtractDataFromQueryIterator<OrderSummary>(queryDef);
 
             return purchaseData;
+        }
+
+        public async Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, OrderStatusFilter orderFilter)
+        {
+            try
+            {
+                //if Filter object is null return all orders by customer phone number
+                var queryString = "SELECT * FROM c where c.phoneNumber = @phoneNumber ";
+                
+                if (orderFilter != null && orderFilter.OrderStatuses != null && orderFilter.OrderStatuses.Count() > 0)
+                {
+                    queryString = queryString + " and c.orderStatus in ({0})";
+                    var orderString = "\"" + string.Join("\",\"", orderFilter.OrderStatuses) + "\"";
+                    queryString = string.Format(queryString, orderString);
+                }
+
+                var queryDef = new QueryDefinition(queryString).WithParameter("@phoneNumber", phoneNumber);
+                var orders = await ExtractDataFromQueryIterator<Order>(queryDef);
+                return orders;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
 
 

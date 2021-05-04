@@ -136,7 +136,7 @@ namespace blendnet.oms.api.Controllers
             }
 
             //Get Order by order id
-            Order order = await _omsRepository.GetOrderByOrderId(completeOrderRequest.OrderId, completeOrderRequest.PhoneNumber);
+            Order order = await _omsRepository.GetOrderByOrderId(completeOrderRequest.OrderId);
             
             //Validate order
             var error  = ValidateOrder(order);
@@ -174,10 +174,9 @@ namespace blendnet.oms.api.Controllers
         public async Task<ActionResult> CancelOrder(string phoneNumber, Guid orderId)
         {
             //Get Order by order id
-            Order order = await _omsRepository.GetOrderByOrderId(orderId, phoneNumber);
+            Order order = await _omsRepository.GetOrderByOrderId(orderId);
 
             List<string> errorInfo = new List<string>();
-
             if(order == null)
             {
                 errorInfo.Add("Order does not exist");
@@ -283,6 +282,51 @@ namespace blendnet.oms.api.Controllers
             return Ok(purchaseData);
         }
 
+        /// <summary>
+        ///  API to get order details by orderId
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpGet("{orderId:guid}", Name = nameof(GetOrderByOrderId))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<Order>> GetOrderByOrderId(Guid orderId)
+        {
+            Order order = await _omsRepository.GetOrderByOrderId(orderId);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(order);
+            }
+        }
+
+        /// <summary>
+        /// API to get Orders by customer phoneNumber and OrderStatus
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <param name="orderFilter"></param>
+        /// <returns></returns>
+        [HttpPost("{phoneNumber}/orderlist")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<List<Order>>> GetOrder(string phoneNumber, OrderStatusFilter orderFilter)
+        {
+
+            List<Order> orderlist = await _omsRepository.GetOrdersByPhoneNumber(phoneNumber, orderFilter);
+
+            if (orderlist.Count() > 0)
+            {
+                return Ok(orderlist);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
         #endregion
 
         #region private methods
@@ -308,8 +352,13 @@ namespace blendnet.oms.api.Controllers
             }
             else
             {
-                //Get Order by order id
-                List<Order> orders = await _omsRepository.GetOrdersByPhoneNumber(this.User.Identity.Name,true);
+                //Get Orders by phone number
+                var orderStatusFilter = new OrderStatusFilter();
+                orderStatusFilter.OrderStatuses.Add(OrderStatus.Created);
+                orderStatusFilter.OrderStatuses.Add(OrderStatus.Completed);
+                orderStatusFilter.OrderStatuses.Add(OrderStatus.Cancelled);
+
+                List<Order> orders = await _omsRepository.GetOrdersByPhoneNumber(this.User.Identity.Name, orderStatusFilter);
 
                 if (orders == null || orders.Count <= 0)
                 {

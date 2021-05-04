@@ -17,12 +17,11 @@ namespace blendnet.oms.repository.Interfaces
         Task<Guid> CreateOrder(Order order);
 
         /// <summary>
-        /// Get order by order id
+        /// Get Order by OrderId
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        Task<Order> GetOrderByOrderId(Guid orderId, string phoneNumber);
-
+        Task<Order> GetOrderByOrderId(Guid orderId);
 
         /// <summary>
         /// Returns orders by content provider id and user id. By default returns only active orders. 
@@ -40,20 +39,6 @@ namespace blendnet.oms.repository.Interfaces
         Task<int> UpdateOrder(Order order);
 
         /// <summary>
-        /// Get Orders by userId
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        Task<List<Order>> GetOrdersByUserId(Guid userId);
-
-        /// <summary>
-        /// Get orders by phone number. By default returns only orders in created state
-        /// </summary>
-        /// <param name="phoneNumber"></param>
-        /// <returns></returns>
-        Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, bool returnAll = false);
-
-        /// <summary>
         /// Get purchase data based on retailer phone number and given date range
         /// </summary>
         /// <param name="retailerPhoneNumber"></param>
@@ -62,6 +47,13 @@ namespace blendnet.oms.repository.Interfaces
         /// <returns></returns>
         Task<List<OrderSummary>> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate);
 
+        /// <summary>
+        /// Get Orders based on customer phone number and order statuses
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <param name="orderFilter"></param>
+        /// <returns></returns>
+        Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, OrderStatusFilter orderFilter);
 
     }
 }
