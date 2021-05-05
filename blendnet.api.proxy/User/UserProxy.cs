@@ -1,42 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using blendnet.common.dto;
 using blendnet.common.dto.User;
 
 namespace blendnet.api.proxy
 {
     public class UserProxy
     {
-        private static UserProxy instance = null;
+        private readonly HttpClient _rmsHttpClient;
 
-        private UserProxy()
+        public UserProxy(IHttpClientFactory clientFactory)
         {
-
-        }
-
-        public static UserProxy Instance
-        {
-            get
-            {
-                if(instance == null)
-                {
-                    instance = new UserProxy();
-                }
-
-                return instance;
-            }
+            _rmsHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.USER_HTTP_CLIENT);
         }
 
 
-        public User GetUser(Guid userId)
+        public User GetUserById(Guid userId)
         {
             // correct this later
             return new User();
         }
 
-        public User GetUser(string phoneNumber)
+        public User GetUserByPhoneNumber(string phoneNumber)
         {
             //correct this later
             return new User();
