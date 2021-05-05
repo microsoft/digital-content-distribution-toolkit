@@ -1,0 +1,39 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blendnet-user-api
+  labels:
+    app: blendnet-user-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blendnet-user-api
+  template:
+    metadata:
+      labels:
+        app: blendnet-user-api
+        aadpodidbinding: blendnet-dev-pod-identity
+    spec:
+      containers:
+      - name: blendnet-user-api
+        image: acrblendnetdev.azurecr.io/blendnet.user.api:latest
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          periodSeconds: 3
+          timeoutSeconds: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blendnet-user-api
+spec:
+  ports:
+  - port: 80
+    targetPort : 80
+  selector:
+    app: blendnet-user-api
