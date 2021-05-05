@@ -14,5 +14,10 @@ namespace blendnet.common.dto.Oms
         /// Order status string
         /// </summary>
         public List<OrderStatus> OrderStatuses { get; set; }
+
+        public OrderStatusFilter()
+        {
+            OrderStatuses = new List<OrderStatus>();
+        }
     }
 }

@@ -52,6 +52,7 @@ namespace blendnet.common.dto
             public const string ORDER_HTTP_CLIENT = "order";
             public const string RETAILER_HTTP_CLIENT = "retailer";
             public const string KAIZALAIDENTITY_HTTP_CLIENT = "kaizala";
+            public const string USER_HTTP_CLIENT = "user";
         }
 
         public struct StorageContainerPolicyNames
