@@ -38,5 +38,48 @@ namespace blendnet.api.proxy.Common
 
             return JsonSerializer.Deserialize<O>(successResponse, _jsonSerializerOptions);
         }
+
+
+        /// <summary>
+        /// Performs Post
+        /// </summary>
+        /// <typeparam name="I"></typeparam>
+        /// <typeparam name="O"></typeparam>
+        /// <param name="httpClient"></param>
+        /// <param name="url"></param>
+        /// <param name="inputrequest"></param>
+        /// <param name="parseOutput"></param>
+        /// <returns></returns>
+        public static async Task<O> Post<I, O>(this HttpClient httpClient, string url, I inputrequest, bool parseOutput = true)
+        {
+            HttpResponseMessage httpResponseMessage = null;
+
+            if (inputrequest != null)
+            {
+                var postRequest = new StringContent(
+                                           JsonSerializer.Serialize(inputrequest),
+                                           Encoding.UTF8,
+                                           "application/json");
+
+                httpResponseMessage = await httpClient.PostAsync(url, postRequest);
+            }
+            else
+            {
+                httpResponseMessage = await httpClient.PostAsync(url, null);
+            }
+
+            httpResponseMessage.EnsureSuccessStatusCode();
+
+            var successResponse = await httpResponseMessage.Content.ReadAsStringAsync();
+
+            if (parseOutput)
+            {
+                return JsonSerializer.Deserialize<O>(successResponse);
+            }
+            else
+            {
+                return default(O);
+            }
+        }
     }
 }
