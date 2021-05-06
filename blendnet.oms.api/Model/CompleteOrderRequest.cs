@@ -9,7 +9,7 @@ namespace blendnet.oms.api.Model
         public Guid OrderId { get; set; }
 
         [Required]
-        public string userPhoneNumber { get; set; }
+        public string UserPhoneNumber { get; set; }
 
         [Required]
         public string RetailerPhoneNumber { get; set; }

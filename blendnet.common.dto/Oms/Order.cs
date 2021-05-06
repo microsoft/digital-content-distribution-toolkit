@@ -30,11 +30,6 @@ namespace blendnet.common.dto.Oms
         public Guid UserId { get; set; }
 
         /// <summary>
-        /// User Name
-        /// </summary>
-        public string UserName { get; set; }
-
-        /// <summary>
         /// Retailer Phone Number
         /// </summary>
         public string RetailerPhoneNumber { get; set; }

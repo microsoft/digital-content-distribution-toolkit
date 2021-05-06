@@ -19,7 +19,7 @@ namespace blendnet.common.dto.User
         {
             var userClaim = claims.Where(x => x.Type.Equals(ApplicationConstants.KaizalaIdentityClaims.UId));
 
-            string userIdStr = userClaim.First().Value.Split('@')[0];
+            string userIdStr = userClaim.First().Value;
 
             Guid userId = new Guid(userIdStr);
 

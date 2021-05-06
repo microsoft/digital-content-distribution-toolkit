@@ -72,7 +72,7 @@ namespace blendnet.oms.api.Controllers
             List<string> errorInfo = new List<string>();
 
             Guid userId = UserClaimData.GetUserId(User.Claims);
-            string userPhoneNumber = UserClaimData.GetUserPhoneNumber(User.Claims);
+            string userPhoneNumber = User.Identity.Name;
 
             // Get Subscription
             ContentProviderSubscriptionDto subscription = await _subscriptionProxy.GetSubscription(orderRequest.ContentProviderId, orderRequest.SubscriptionId);
@@ -138,7 +138,7 @@ namespace blendnet.oms.api.Controllers
             }
 
             //Get Order by order id
-            Order order = await _omsRepository.GetOrderByOrderId(completeOrderRequest.OrderId, completeOrderRequest.userPhoneNumber);
+            Order order = await _omsRepository.GetOrderByOrderId(completeOrderRequest.OrderId, completeOrderRequest.UserPhoneNumber);
             
             //Validate order
             var error  = ValidateOrder(order);
@@ -175,7 +175,7 @@ namespace blendnet.oms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> CancelOrder(Guid orderId)
         {
-            var userPhoneNumber = UserClaimData.GetUserPhoneNumber(User.Claims);
+            var userPhoneNumber = User.Identity.Name;
 
             //Get Order by order id
             Order order = await _omsRepository.GetOrderByOrderId(orderId, userPhoneNumber);
@@ -255,16 +255,7 @@ namespace blendnet.oms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
         {
-            // Get Retailer
-            RetailerDto retailer = await _retailerProxy.GetRetailerByPhoneNumber(retailerPhoneNumber);
-
             List<string> errorDetails = new List<string>();
-
-            if(retailer == null)
-            {
-                errorDetails.Add("Retailer not found");
-                return BadRequest(errorDetails);
-            }
 
             if(startDate == 0 || endDate == 0)
             {
@@ -278,12 +269,20 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest(errorDetails);
             }
 
+            // Get Retailer
+            RetailerDto retailer = await _retailerProxy.GetRetailerByPhoneNumber(retailerPhoneNumber);
+            
+            if (retailer == null)
+            {
+                errorDetails.Add("Retailer not found");
+                return BadRequest(errorDetails);
+            }
+
             List<OrderSummary> purchaseData = await _omsRepository.GetOrderSummary(retailerPhoneNumber, startDate, endDate);
             
             if(purchaseData == null || purchaseData.Count == 0)
             {
-                errorDetails.Add("No data found");
-                return NotFound(errorDetails);
+                return NotFound();
             }
 
             return Ok(purchaseData);
@@ -298,7 +297,7 @@ namespace blendnet.oms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<Order>> GetOrderByOrderId(Guid orderId)
         {
-            var userPhoneNumber = UserClaimData.GetUserPhoneNumber(User.Claims);
+            var userPhoneNumber = User.Identity.Name;
 
             Order order = await _omsRepository.GetOrderByOrderId(orderId, userPhoneNumber);
 
@@ -397,11 +396,6 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         private string ValidateSubscription(ContentProviderSubscriptionDto subscription)
         {
-            if (subscription.Type != ContentProviderContainerType.Subscription)
-            {
-                return "Invalid subscription type";
-            }
-
             DateTime subscriptionEndDate = subscription.EndDate;
 
             if (subscriptionEndDate < DateTime.UtcNow)
@@ -444,7 +438,6 @@ namespace blendnet.oms.api.Controllers
 
             order.UserId = userId;
             order.PhoneNumber = userPhoneNumber;
-            order.UserName = "Unknown"; //change this later
             order.OrderItems.Add(orderItem);
 
             return order;
