@@ -1,17 +1,17 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.cms.listener.Model;
 using blendnet.common.dto;
 using blendnet.common.dto.cms;
 using blendnet.common.dto.Events;
+using blendnet.common.dto.Identity;
 using blendnet.common.infrastructure;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Graph;
-using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,12 +37,12 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
         BlobServiceClient _cmsCdnBlobServiceClient;
 
-        GraphServiceClient _graphServiceClient;
+        KaizalaIdentityProxy _kaizalaIdentityProxy;
 
         public ContentProviderCreatedIntegrationEventHandler(ILogger<ContentProviderCreatedIntegrationEventHandler> logger,
                                                              TelemetryClient tc,
                                                              IAzureClientFactory<BlobServiceClient> blobClientFactory,
-                                                             GraphServiceClient graphServiceClient,
+                                                             KaizalaIdentityProxy kaizalaIdentityProxy,
                                                              IOptionsMonitor<AppSettings> optionsMonitor)
         {
             _logger = logger;
@@ -53,7 +53,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             _cmsCdnBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSCDNStorage);
 
-            _graphServiceClient = graphServiceClient;
+            _kaizalaIdentityProxy = kaizalaIdentityProxy;
 
             _appSettings = optionsMonitor.CurrentValue;
         }
@@ -90,7 +90,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, $"ContentProviderCreatedIntegrationEventHandler.Handle failed for {integrationEvent.ContentProvider.Id.Value}");
             }
         }
 
@@ -167,7 +167,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, $"CreateStorageContainers failed for {integrationEvent.ContentProvider.Id.Value}");
             }
         }
 
@@ -202,7 +202,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, $"CreateCDNStorageContainers failed for {integrationEvent.ContentProvider.Id.Value}");
             }
         }
 
@@ -264,42 +264,31 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <returns></returns>
         public async Task AddUserToAzureAD(ContentProviderCreatedIntegrationEvent integrationEvent)
         {
-            string[] groups = new string[] { _appSettings.ContentAdministratorGroupId };
+            AddPartnerUsersRoleRequest addPartnerUsersRoleRequest = new AddPartnerUsersRoleRequest();
 
-            foreach (ContentAdministratorDto contentAdministrator in  integrationEvent.ContentProvider.ContentAdministrators)
+            addPartnerUsersRoleRequest.ApplicationName = _appSettings.KaizalaIdentityAppName;
+
+            addPartnerUsersRoleRequest.PhoneRoleList = new List<PhoneRole>();
+
+            foreach (ContentAdministratorDto contentAdministrator in integrationEvent.ContentProvider.ContentAdministrators)
             {
-                try
-                {
-                    //check if user has the membership
-                    var result = await _graphServiceClient.Users[contentAdministrator.IdentityProviderId].CheckMemberGroups(groups).Request().PostAsync();
-
-                    if (!result.ToList<string>().Contains(_appSettings.ContentAdministratorGroupId))
-                    {
-                        var directoryObject = new DirectoryObject
-                        {
-                            Id = contentAdministrator.IdentityProviderId
-                        };
-
-                        //add the user to group
-                        await _graphServiceClient.Groups[groups[0]].Members.References.Request().AddAsync(directoryObject);
-                    }
-                    else
-                    {
-                        _logger.LogInformation($"User {contentAdministrator.IdentityProviderId} already exists in content administrator group");
-                    }
-                }
-                catch(Microsoft.Graph.ServiceException serviceException)
-                {
-                    if (serviceException.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        _logger.LogInformation($"User {contentAdministrator.IdentityProviderId} does not exist in Azure AD B2C. - Exception details - {serviceException.ToString()}");
-                    }
-                }
-                catch(Exception ex)
-                {
-                    _logger.LogError(ex, ex.Message);
-                }
+                PhoneRole phoneRole = new PhoneRole();
+                phoneRole.PhoneNo = $"{ApplicationConstants.CountryCodes.India}{contentAdministrator.Mobile}";
+                phoneRole.Role = ApplicationConstants.KaizalaIdentityRoles.ContentAdmin;
+                addPartnerUsersRoleRequest.PhoneRoleList.Add(phoneRole);
             }
+          
+            try
+            {
+                await _kaizalaIdentityProxy.AddPartnerUsersRole(addPartnerUsersRoleRequest);
+
+                _logger.LogInformation($"Assigned Content Administrator roles for content provider {integrationEvent.ContentProvider.Id}. Content Admin Count {integrationEvent.ContentProvider.ContentAdministrators.Count}");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to assign Content Administrator roles for content provider {integrationEvent.ContentProvider.Id}");
+            }
+            
         }
     }
 }

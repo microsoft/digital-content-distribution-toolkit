@@ -86,7 +86,7 @@ namespace blendnet.api.proxy.KaizalaIdentity
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                _logger.LogInformation($"401 from ValidatePartnerAccessToken - {accessToken}");
+                _logger.LogInformation($"401 from ValidatePartnerAccessToken - {accessToken}.  Exception {ex} ");
 
                 validationPassed = false;
             }
@@ -127,7 +127,7 @@ namespace blendnet.api.proxy.KaizalaIdentity
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
-                _logger.LogInformation($"Bad Request from AddPartnerUsersRole - {accessToken}");
+                _logger.LogInformation($"Bad Request from AddPartnerUsersRole for {accessToken}. Exception {ex}");
             }
 
             stopwatch.Stop();

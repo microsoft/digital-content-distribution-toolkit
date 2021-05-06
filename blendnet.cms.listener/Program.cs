@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using blendnet.cms.listener.IntegrationEventHandling;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.ServiceBus;
@@ -13,16 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using blendnet.cms.listener.Model;
 using Azure.Storage.Blobs;
-using Serilog.Sinks.File;
-using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 using blendnet.common.infrastructure.KeyVault;
-using Microsoft.Graph;
 using Microsoft.Identity.Client;
-using Microsoft.Graph.Auth;
 using Microsoft.Extensions.Azure;
 using blendnet.common.dto;
 using blendnet.cms.repository.Interfaces;
@@ -36,6 +24,7 @@ using Polly.Extensions.Http;
 using System.Net.Http;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using blendnet.api.proxy.KaizalaIdentity;
 
 namespace blendnet.cms.listener
 {
@@ -115,7 +104,6 @@ namespace blendnet.cms.listener
 
                     string broadcastStorageConnectionString = hostContext.Configuration.GetValue<string>("BroadcastStorageConnectionString");
 
-
                     string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
 
                     services.AddAzureClients(builder => 
@@ -141,11 +129,11 @@ namespace blendnet.cms.listener
                     //Configure Event 
                     ConfigureEventBus(hostContext, services);
 
-                    //Configure Microsoft Graph Client
-                    ConfigureGraphClient(hostContext, services);
-
                     //Configure the Cosmos DB
                     ConfigureCosmosDB(hostContext, services);
+
+                    //Configure Http Clients
+                    ConfigureHttpClients(services);
 
                     //Configure Repository
                     services.AddTransient<IContentRepository, ContentRepository>();
@@ -155,6 +143,9 @@ namespace blendnet.cms.listener
 
                     //Configure Tar Generator
                     services.AddTransient<TarGenerator>();
+
+                    //Configure Kaizala Identity Proxy
+                    services.AddTransient<KaizalaIdentityProxy>();
 
                 });
 
@@ -169,48 +160,6 @@ namespace blendnet.cms.listener
                 .HandleTransientHttpError()
                 .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(httpClientRetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,retryAttempt)));
-        }
-
-        /// <summary>
-        /// Configure Microsoft Graph Client
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="services"></param>
-        private static void ConfigureGraphClient (HostBuilderContext context,IServiceCollection services)
-        {
-            string graphClientId = context.Configuration.GetValue<string>("GraphClientId");
-
-            string graphClientTenant = context.Configuration.GetValue<string>("GraphClientTenant");
-
-            string graphClientSecret = context.Configuration.GetValue<string>("GraphClientSecret");
-
-            //Register graph authentication provider
-            //services.AddTransient<IAuthenticationProvider>(iap => {
-            //    IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
-            //   .Create(graphClientId)
-            //   .WithTenantId(graphClientTenant)
-            //   .WithClientSecret(graphClientSecret)
-            //   .Build();
-
-            //    ClientCredentialProvider authProvider = new ClientCredentialProvider(confidentialClientApplication);
-
-            //    return authProvider;
-            //});
-
-            IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
-           .Create(graphClientId)
-           .WithTenantId(graphClientTenant)
-           .WithClientSecret(graphClientSecret)
-           .Build();
-
-            IAuthenticationProvider authenticationProvider = new ClientCredentialProvider(confidentialClientApplication);
-
-            //register graph
-            services.AddTransient<GraphServiceClient>((sp) => 
-                                                      { 
-                                                            return new GraphServiceClient(authenticationProvider); 
-                                                      });
-                    
         }
 
         /// <summary>
@@ -285,6 +234,19 @@ namespace blendnet.cms.listener
                            .Build();
 
                 return client;
+            });
+        }
+
+        /// <summary>
+        /// Configure Required Http Clients
+        /// </summary>
+        /// <param name="services"></param>
+        private static void ConfigureHttpClients(IServiceCollection services)
+        {
+            //Configure Http Clients
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT, c =>
+            {
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }
     }

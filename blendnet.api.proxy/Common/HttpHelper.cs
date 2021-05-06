@@ -32,7 +32,7 @@ namespace blendnet.api.proxy.Common
             
             var httpResponse = await httpClient.GetAsync(url);
 
-            httpResponse.EnsureSuccessStatusCode();
+            await EnsureSuccessStatusCodeAsync(httpResponse);
 
             var successResponse = await httpResponse.Content.ReadAsStringAsync();
 
@@ -57,7 +57,7 @@ namespace blendnet.api.proxy.Common
             if (inputrequest != null)
             {
                 var postRequest = new StringContent(
-                                           JsonSerializer.Serialize(inputrequest),
+                                           JsonSerializer.Serialize(inputrequest, _jsonSerializerOptions),
                                            Encoding.UTF8,
                                            "application/json");
 
@@ -68,7 +68,7 @@ namespace blendnet.api.proxy.Common
                 httpResponseMessage = await httpClient.PostAsync(url, null);
             }
 
-            httpResponseMessage.EnsureSuccessStatusCode();
+            await EnsureSuccessStatusCodeAsync(httpResponseMessage);
 
             var successResponse = await httpResponseMessage.Content.ReadAsStringAsync();
 
@@ -79,6 +79,26 @@ namespace blendnet.api.proxy.Common
             else
             {
                 return default(O);
+            }
+        }
+
+
+        /// <summary>
+        /// Default ensure looses the actual message
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        private static async Task EnsureSuccessStatusCodeAsync(HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseContent = response.Content == null
+                    ? ""
+                    : await response.Content.ReadAsStringAsync();
+
+                throw new HttpRequestException($"{response.StatusCode} (ReasonPhrase: {response.ReasonPhrase}, Content: {responseContent})",
+                                                            null, response.StatusCode);
+
             }
         }
     }

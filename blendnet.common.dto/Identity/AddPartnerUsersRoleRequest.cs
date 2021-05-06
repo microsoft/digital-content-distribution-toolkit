@@ -19,14 +19,14 @@ namespace blendnet.common.dto.Identity
         /// <summary>
         /// Phone Role List
         /// </summary>
-        public List<PhoneRoleList> PhoneRoleList { get; set; }
+        public List<PhoneRole> PhoneRoleList { get; set; }
 
     }
 
     /// <summary>
     /// Phone Role List
     /// </summary>
-    public class PhoneRoleList
+    public class PhoneRole
     {
         /// <summary>
         /// Phone Number
