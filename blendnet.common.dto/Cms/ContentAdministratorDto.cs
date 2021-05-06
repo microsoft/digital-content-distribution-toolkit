@@ -11,7 +11,7 @@ namespace blendnet.common.dto
         public string PhoneNumber { get; set; }
 
         [Required]
-        public string IdentityProviderId { get; set; }
-        
+        public Guid UserId { get; set; }
+
     }
 }
