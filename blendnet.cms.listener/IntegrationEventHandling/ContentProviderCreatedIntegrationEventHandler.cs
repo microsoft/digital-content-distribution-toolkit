@@ -273,7 +273,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             foreach (ContentAdministratorDto contentAdministrator in integrationEvent.ContentProvider.ContentAdministrators)
             {
                 PhoneRole phoneRole = new PhoneRole();
-                phoneRole.PhoneNo = $"{ApplicationConstants.CountryCodes.India}{contentAdministrator.Mobile}";
+                phoneRole.PhoneNo = $"{ApplicationConstants.CountryCodes.India}{contentAdministrator.PhoneNumber}";
                 phoneRole.Role = ApplicationConstants.KaizalaIdentityRoles.ContentAdmin;
                 addPartnerUsersRoleRequest.PhoneRoleList.Add(phoneRole);
             }
