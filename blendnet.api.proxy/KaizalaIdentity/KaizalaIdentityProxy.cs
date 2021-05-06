@@ -81,6 +81,9 @@ namespace blendnet.api.proxy.KaizalaIdentity
                 successResponse.KiazalaCredentials = credentials;
 
                 successResponse.UID = userIdClaim.Value.Split(":")[1];
+                
+                //remove scale unit from kaizala
+                successResponse.UID = successResponse.UID.Split('@')[0];
 
                 validationPassed = true;
             }
