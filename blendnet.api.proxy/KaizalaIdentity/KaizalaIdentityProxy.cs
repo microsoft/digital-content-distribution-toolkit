@@ -1,7 +1,6 @@
 ﻿using blendnet.common.dto;
 using blendnet.common.dto.Identity;
 using System;
-using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -14,7 +13,8 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Diagnostics;
-using System.Net.Http.Headers;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace blendnet.api.proxy.KaizalaIdentity
 {
@@ -126,11 +126,19 @@ namespace blendnet.api.proxy.KaizalaIdentity
 
             try
             {
-                await _kaizalaIdentityHttpClient.Post<AddPartnerUsersRoleRequest,object>(url,request,false);
+
+                JsonSerializerOptions jsonSerializerOptions =  Utilties.GetJsonSerializerOptions();
+
+                jsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+
+                await _kaizalaIdentityHttpClient.Post<AddPartnerUsersRoleRequest,object>(url,request,false,jsonSerializerOptions);
+
             }
-            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            catch (Exception ex) 
             {
                 _logger.LogInformation($"Bad Request from AddPartnerUsersRole for {accessToken}. Exception {ex}");
+
+                throw;
             }
 
             stopwatch.Stop();

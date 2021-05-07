@@ -50,14 +50,29 @@ namespace blendnet.api.proxy.Common
         /// <param name="inputrequest"></param>
         /// <param name="parseOutput"></param>
         /// <returns></returns>
-        public static async Task<O> Post<I, O>(this HttpClient httpClient, string url, I inputrequest, bool parseOutput = true)
+        public static async Task<O> Post<I, O>( this HttpClient httpClient, 
+                                                string url, 
+                                                I inputrequest, 
+                                                bool parseOutput = true, 
+                                                JsonSerializerOptions jsonSerializerOptions = null)
         {
             HttpResponseMessage httpResponseMessage = null;
 
             if (inputrequest != null)
             {
+                JsonSerializerOptions serializerOptions = null;
+
+                if(jsonSerializerOptions == null )
+                {
+                    serializerOptions = _jsonSerializerOptions;
+                }
+                else
+                {
+                    serializerOptions = jsonSerializerOptions;
+                }
+
                 var postRequest = new StringContent(
-                                           JsonSerializer.Serialize(inputrequest, _jsonSerializerOptions),
+                                           JsonSerializer.Serialize(inputrequest, serializerOptions),
                                            Encoding.UTF8,
                                            "application/json");
 
