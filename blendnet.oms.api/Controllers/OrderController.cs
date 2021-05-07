@@ -121,7 +121,7 @@ namespace blendnet.oms.api.Controllers
         /// <param name="completeOrderRequest"></param>
         /// <returns></returns>
         [HttpPut("completeorder", Name = nameof(CompleteOrder))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
             // Get Retailer
@@ -160,9 +160,16 @@ namespace blendnet.oms.api.Controllers
             UpdateOrder(order, retailer, completeOrderRequest);
 
             // Update order
-            await _omsRepository.UpdateOrder(order);
+            var statusCode = await _omsRepository.UpdateOrder(order);
 
-            return Ok(completeOrderRequest.PartnerReferenceNumber);
+            if (statusCode == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>
@@ -171,8 +178,8 @@ namespace blendnet.oms.api.Controllers
         /// <param name="phoneNumber"></param>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        [HttpDelete("cancel/{orderId:guid}", Name = nameof(CancelOrder))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [HttpPut("cancel/{orderId:guid}", Name = nameof(CancelOrder))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> CancelOrder(Guid orderId)
         {
             var userPhoneNumber = User.Identity.Name;
@@ -197,10 +204,16 @@ namespace blendnet.oms.api.Controllers
             order.OrderCancelledDate = DateTime.UtcNow;
 
             // Update order
-            await _omsRepository.UpdateOrder(order);
+            var statusCode = await _omsRepository.UpdateOrder(order);
 
-            return Ok(orderId);
-
+            if (statusCode == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>
@@ -318,10 +331,33 @@ namespace blendnet.oms.api.Controllers
         /// <param name="orderFilter"></param>
         /// <returns></returns>
         [HttpPost("{phoneNumber}/orderlist")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<List<Order>>> GetOrder(string phoneNumber, OrderStatusFilter orderFilter)
         {
 
+            List<Order> orderlist = await _omsRepository.GetOrdersByPhoneNumber(phoneNumber, orderFilter);
+
+            if (orderlist.Count() > 0)
+            {
+                return Ok(orderlist);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// API to get Orders by customer phoneNumber and OrderStatus
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <param name="orderFilter"></param>
+        /// <returns></returns>
+        [HttpPost("/orderlist")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<List<Order>>> GetOrder(OrderStatusFilter orderFilter)
+        {
+            string phoneNumber = User.Identity.Name;
             List<Order> orderlist = await _omsRepository.GetOrdersByPhoneNumber(phoneNumber, orderFilter);
 
             if (orderlist.Count() > 0)
