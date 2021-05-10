@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ingress", "Ingress", "{B013
 		deploymenttest.yaml = deploymenttest.yaml
 		full.yaml = full.yaml
 		ingress.yaml = ingress.yaml
+		KeyVaultDeployment.txt = KeyVaultDeployment.txt
 		sample.yaml = sample.yaml
 	EndProjectSection
 EndProject
