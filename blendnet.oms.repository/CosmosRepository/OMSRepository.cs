@@ -115,7 +115,7 @@ namespace blendnet.oms.repository.CosmosRepository
             var queryString = "SELECT count(o) as count, o.retailerPhoneNumber, o.paymentDepositDate as date, oi.subscription.contentProviderId, oi.subscription.id as subscriptionId, oi.subscription.title, sum(oi.subscription.price) as totalAmount" +
                             " FROM o join oi in o.orderItems" +
                             " WHERE o.retailerPhoneNumber = @retailerPhoneNumber and o.orderStatus = \"Completed\" and o.paymentDepositDate >= @startDate and o.paymentDepositDate <= @endDate" +
-                            " GROUP BY o.retailerPhoneNumber, oi.paymentDepositDate, oi.subscription.contentProviderId, oi.subscription.id, oi.subscription.title";
+                            " GROUP BY o.retailerPhoneNumber, o.paymentDepositDate, oi.subscription.contentProviderId, oi.subscription.id, oi.subscription.title";
 
             var queryDef = new QueryDefinition(queryString)
                                 .WithParameter("@retailerPhoneNumber", retailerPhoneNumber)

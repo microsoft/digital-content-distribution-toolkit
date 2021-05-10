@@ -54,7 +54,7 @@ namespace blendnet.common.dto.Oms
         /// <summary>
         /// Payment deposit date obtained from partner
         /// </summary>
-        public DateTime DepositDate { get; set; }
+        public DateTime? DepositDate { get; set; }
 
         /// <summary>
         /// Date when complete order request was placed -- stores date in format yyyymmdd
