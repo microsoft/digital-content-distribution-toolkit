@@ -2,9 +2,6 @@
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace blendnet.common.dto.Oms
 {
@@ -40,11 +37,6 @@ namespace blendnet.common.dto.Oms
         public Guid? RetailerId { get; set; }
 
         /// <summary>
-        /// Retailer Name
-        /// </summary>
-        public string RetailerName { get; set; }
-
-        /// <summary>
         /// Order Items
         /// </summary>
         public List<OrderItem> OrderItems { get; set; }
@@ -60,6 +52,16 @@ namespace blendnet.common.dto.Oms
         public OrderStatus OrderStatus { get; set; }
 
         /// <summary>
+        /// Payment deposit date obtained from partner
+        /// </summary>
+        public DateTime DepositDate { get; set; }
+
+        /// <summary>
+        /// Date when complete order request was placed -- stores date in format yyyymmdd
+        /// </summary>
+        public int? PaymentDepositDate { get; set; }
+
+        /// <summary>
         /// Order Created Date
         /// </summary>
         public DateTime OrderCreatedDate { get; set; }
@@ -73,6 +75,16 @@ namespace blendnet.common.dto.Oms
         /// Order Cancelled Date
         /// </summary>
         public DateTime? OrderCancelledDate { get; set; }
+
+        /// <summary>
+        /// Adds created by information
+        /// </summary>
+        public Guid CreatedBy { get; set; }
+
+        /// <summary>
+        /// Adds modified by information
+        /// </summary>
+        public Guid ModifiedBy { get; set; }
 
         public void SetIdentifier()
         {
@@ -119,10 +131,6 @@ namespace blendnet.common.dto.Oms
         /// </summary>
         public string PartnerReferenceNumber { get; set; }
 
-        /// <summary>
-        /// Time When Partner Collected the Payment -- stores date in format yyyymmdd
-        /// </summary>
-        public int? PaymentDepositDate { get; set; }
     }
 
     /// <summary>

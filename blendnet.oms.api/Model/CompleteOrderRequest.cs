@@ -20,5 +20,8 @@ namespace blendnet.oms.api.Model
         [Required]
         public string PartnerReferenceNumber { get; set;}
 
+        [Required]
+        public DateTime DepositDate { get; set; }
+
     }
 }

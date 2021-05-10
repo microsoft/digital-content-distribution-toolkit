@@ -15,6 +15,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using blendnet.common.infrastructure.Ams;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
+using static blendnet.common.dto.ApplicationConstants;
 
 namespace blendnet.oms.api.Controllers
 {
@@ -24,6 +26,7 @@ namespace blendnet.oms.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -122,6 +125,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPut("completeorder", Name = nameof(CompleteOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [Authorize(Roles = KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
             // Get Retailer
@@ -202,7 +206,8 @@ namespace blendnet.oms.api.Controllers
 
             order.OrderStatus = OrderStatus.Cancelled;
             order.OrderCancelledDate = DateTime.UtcNow;
-
+            order.ModifiedBy = UserClaimData.GetUserId(User.Claims);
+                
             // Update order
             var statusCode = await _omsRepository.UpdateOrder(order);
 
@@ -266,6 +271,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("summary/{retailerPhoneNumber}", Name = nameof(GetOrderSummary))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [Authorize(Roles = KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
         {
             List<string> errorDetails = new List<string>();
@@ -332,6 +338,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPost("{phoneNumber}/orderlist")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [Authorize(Roles = KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<List<Order>>> GetOrder(string phoneNumber, OrderStatusFilter orderFilter)
         {
 
@@ -474,6 +481,8 @@ namespace blendnet.oms.api.Controllers
 
             order.UserId = userId;
             order.PhoneNumber = userPhoneNumber;
+            order.CreatedBy = userId;
+            order.ModifiedBy = userId;
             order.OrderItems.Add(orderItem);
 
             return order;
@@ -517,22 +526,24 @@ namespace blendnet.oms.api.Controllers
 
         private void UpdateOrder(Order order, RetailerDto retailer, CompleteOrderRequest completeOrderRequest)
         {
+            var currentDate = DateTime.UtcNow;
+
             order.RetailerId = retailer.Id;
-            order.RetailerName = retailer.GetName();
             order.RetailerPhoneNumber = retailer.Mobile;
+            order.PaymentDepositDate = currentDate.Year * 10000 + currentDate.Month * 100 + currentDate.Day;
+            order.DepositDate = completeOrderRequest.DepositDate;
+            order.ModifiedBy = UserClaimData.GetUserId(User.Claims);
 
             //assuming single item in order
 
             order.TotalAmountCollected = completeOrderRequest.AmountCollected;
 
             var orderItem = order.OrderItems.First();
-            var currentDate = DateTime.UtcNow;
 
             orderItem.AmountCollected = completeOrderRequest.AmountCollected;
             orderItem.PlanStartDate = currentDate.Date;
             orderItem.PlanEndDate = currentDate.Date.AddDays(orderItem.Subscription.DurationDays);
             orderItem.PartnerReferenceNumber = completeOrderRequest.PartnerReferenceNumber;
-            orderItem.PaymentDepositDate = currentDate.Year * 10000 + currentDate.Month * 100 + currentDate.Day;
 
             order.OrderCompletedDate = currentDate;
             order.OrderStatus = OrderStatus.Completed;
