@@ -17,19 +17,20 @@ namespace blendnet.oms.repository.Interfaces
         Task<Guid> CreateOrder(Order order);
 
         /// <summary>
-        /// Get Order by OrderId
+        /// Get Order by OrderId and phone number
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        Task<Order> GetOrderByOrderId(Guid orderId);
+        Task<Order> GetOrderByOrderId(Guid orderId, string phoneNumber);
 
         /// <summary>
-        /// Returns orders by content provider id and user id. By default returns only active orders. 
+        /// Returns orders by content provider id and user phone number. By default returns only active orders. 
         /// </summary>
-        /// <param name="UserId"></param>
+        /// <param name="userPhoneNumber"></param>
         /// <param name="contentProviderId"></param>
+        /// <param name="orderFilter"></param>
         /// <returns></returns>
-        Task<List<Order>> GetOrder(Guid userId, Guid contentProviderId, bool returnAll = false);
+        Task<List<Order>> GetOrderByContentProviderId(string userPhoneNumber, Guid contentProviderId, OrderStatusFilter orderFilter);
 
         /// <summary>
         /// Update Order

@@ -32,11 +32,89 @@ namespace blendnet.api.proxy.Common
             
             var httpResponse = await httpClient.GetAsync(url);
 
-            httpResponse.EnsureSuccessStatusCode();
+            await EnsureSuccessStatusCodeAsync(httpResponse);
 
             var successResponse = await httpResponse.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<O>(successResponse, _jsonSerializerOptions);
+        }
+
+
+        /// <summary>
+        /// Performs Post
+        /// </summary>
+        /// <typeparam name="I"></typeparam>
+        /// <typeparam name="O"></typeparam>
+        /// <param name="httpClient"></param>
+        /// <param name="url"></param>
+        /// <param name="inputrequest"></param>
+        /// <param name="parseOutput"></param>
+        /// <returns></returns>
+        public static async Task<O> Post<I, O>( this HttpClient httpClient, 
+                                                string url, 
+                                                I inputrequest, 
+                                                bool parseOutput = true, 
+                                                JsonSerializerOptions jsonSerializerOptions = null)
+        {
+            HttpResponseMessage httpResponseMessage = null;
+
+            if (inputrequest != null)
+            {
+                JsonSerializerOptions serializerOptions = null;
+
+                if(jsonSerializerOptions == null )
+                {
+                    serializerOptions = _jsonSerializerOptions;
+                }
+                else
+                {
+                    serializerOptions = jsonSerializerOptions;
+                }
+
+                var postRequest = new StringContent(
+                                           JsonSerializer.Serialize(inputrequest, serializerOptions),
+                                           Encoding.UTF8,
+                                           "application/json");
+
+                httpResponseMessage = await httpClient.PostAsync(url, postRequest);
+            }
+            else
+            {
+                httpResponseMessage = await httpClient.PostAsync(url, null);
+            }
+
+            await EnsureSuccessStatusCodeAsync(httpResponseMessage);
+
+            var successResponse = await httpResponseMessage.Content.ReadAsStringAsync();
+
+            if (parseOutput)
+            {
+                return JsonSerializer.Deserialize<O>(successResponse);
+            }
+            else
+            {
+                return default(O);
+            }
+        }
+
+
+        /// <summary>
+        /// Default ensure looses the actual message
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        private static async Task EnsureSuccessStatusCodeAsync(HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseContent = response.Content == null
+                    ? ""
+                    : await response.Content.ReadAsStringAsync();
+
+                throw new HttpRequestException($"{response.StatusCode} (ReasonPhrase: {response.ReasonPhrase}, Content: {responseContent})",
+                                                            null, response.StatusCode);
+
+            }
         }
     }
 }

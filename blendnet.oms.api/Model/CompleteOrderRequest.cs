@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace blendnet.oms.api.Model
 {
@@ -12,6 +9,9 @@ namespace blendnet.oms.api.Model
         public Guid OrderId { get; set; }
 
         [Required]
+        public string UserPhoneNumber { get; set; }
+
+        [Required]
         public string RetailerPhoneNumber { get; set; }
 
         [Required]
@@ -19,6 +19,9 @@ namespace blendnet.oms.api.Model
 
         [Required]
         public string PartnerReferenceNumber { get; set;}
+
+        [Required]
+        public DateTime DepositDate { get; set; }
 
     }
 }

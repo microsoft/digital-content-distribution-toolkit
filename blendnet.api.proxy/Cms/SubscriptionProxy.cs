@@ -56,9 +56,14 @@ namespace blendnet.api.proxy
 
             string accessToken = await base.GetServiceAccessToken();
 
-            var successResponse = await _cmsHttpClient.Get<ContentProviderSubscriptionDto>(url, accessToken);
+            ContentProviderSubscriptionDto subscription = null;
+            try
+            {
+                subscription = await _cmsHttpClient.Get<ContentProviderSubscriptionDto>(url, accessToken);
+            } catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { }
 
-            return successResponse;
+            return subscription;
         }
     }
 }

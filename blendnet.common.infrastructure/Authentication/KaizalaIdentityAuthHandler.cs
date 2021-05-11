@@ -93,7 +93,10 @@ namespace blendnet.common.infrastructure.Authentication
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            Claim claim = new Claim(ClaimTypes.Name, response.KiazalaCredentials.PhoneNumber);
+            //remove country code from phone number
+            string userIdStr = response.KiazalaCredentials.PhoneNumber.Replace(ApplicationConstants.CountryCodes.India, "");
+
+            Claim claim = new Claim(ClaimTypes.Name, userIdStr);
 
             claims.Add(claim);
 

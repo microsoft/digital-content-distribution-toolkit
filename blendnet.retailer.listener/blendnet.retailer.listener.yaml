@@ -1,0 +1,22 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blendnet-retailer-listener
+  labels:
+    app: blendnet-retailer-listener
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blendnet-retailer-listener
+  template:
+    metadata:
+      labels:
+        app: blendnet-retailer-listener
+        aadpodidbinding: blendnet-dev-pod-identity
+    spec:
+      containers:
+      - name: blendnet-retailer-listener
+        image: acrblendnetdev.azurecr.io/blendnet.retailer.listener:latest
+        ports:
+        - containerPort: 80

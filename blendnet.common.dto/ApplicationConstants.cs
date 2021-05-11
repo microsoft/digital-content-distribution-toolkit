@@ -20,7 +20,6 @@ namespace blendnet.common.dto
             public const string ReadWriteAllPolicyPermissions = "rwlcda";
         }
 
-
         public struct KaizalaIdentityClaims
         {
             public const string AccessToken = "AccessToken";
@@ -44,6 +43,30 @@ namespace blendnet.common.dto
         }
 
         /// <summary>
+        /// Identity Roles
+        /// </summary>
+        public struct KaizalaIdentityRoles
+        {
+            public const string User = "User";
+
+            public const string Retailer = "Retailer";
+
+            public const string SuperAdmin = "SuperAdmin";
+
+            public const string ContentAdmin = "ContentAdmin";
+
+            public const string RetailerManagement = "RetailerManagement";
+        }
+
+        /// <summary>
+        /// Country Codes
+        /// </summary>
+        public struct CountryCodes
+        {
+            public const string India = "+91";
+        }
+
+        /// <summary>
         /// Http Client Name
         /// </summary>
         public struct HttpClientKeys
@@ -52,6 +75,7 @@ namespace blendnet.common.dto
             public const string ORDER_HTTP_CLIENT = "order";
             public const string RETAILER_HTTP_CLIENT = "retailer";
             public const string KAIZALAIDENTITY_HTTP_CLIENT = "kaizala";
+            public const string USER_HTTP_CLIENT = "user";
         }
 
         public struct StorageContainerPolicyNames

@@ -1,8 +1,6 @@
-﻿using AutoMapper.Configuration;
-using blendnet.common.dto;
+﻿using blendnet.common.dto;
 using blendnet.common.dto.Identity;
 using System;
-using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -15,14 +13,15 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Diagnostics;
-using System.Net.Http.Headers;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace blendnet.api.proxy.KaizalaIdentity
 {
     /// <summary>
     /// Invokes the Kaizala Identity Validate Token
     /// </summary>
-    public class KaizalaIdentityProxy
+    public class KaizalaIdentityProxy: BaseProxy
     {
         private readonly HttpClient _kaizalaIdentityHttpClient;
 
@@ -40,8 +39,9 @@ namespace blendnet.api.proxy.KaizalaIdentity
         /// <param name="clientFactory"></param>
         /// <param name="configuration"></param>
         public KaizalaIdentityProxy(IHttpClientFactory clientFactory,
-                                    Microsoft.Extensions.Configuration.IConfiguration configuration,
+                                    IConfiguration configuration,
                                     ILogger<KaizalaIdentityProxy> logger)
+        : base(configuration, clientFactory, logger)
         {
             _kaizalaIdentityHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT);
 
@@ -51,7 +51,6 @@ namespace blendnet.api.proxy.KaizalaIdentity
 
         }
 
-
         /// <summary>
         /// Validate Partner Access Token
         /// </summary>
@@ -59,42 +58,16 @@ namespace blendnet.api.proxy.KaizalaIdentity
         /// <returns></returns>
         public async Task<ValidatePartnerAccessTokenResponse> ValidatePartnerAccessToken(string accessToken)
         {
-            Dictionary<string, string> settings = new Dictionary<string, string>();
-
-            _configuration.GetSection("KaizalaIdentity").Bind(settings);
-
             string kaizalaApplicationName = _configuration.GetValue<string>("KaizalaIdentityAppName");
 
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            Claim userIdClaim;
 
-            JwtSecurityToken securityToken = handler.ReadJwtToken(accessToken);
+            KiazalaCredentials credentials = GetKiazalaCredentials(accessToken, out userIdClaim);
 
-            Claim claim = securityToken.Claims.Where(c => c.Type == URN_MICROSOFT_CREDENTIALS).FirstOrDefault();
+            string urlToInvoke = $"v1/ValidatePartnerAccessToken?applicationName={kaizalaApplicationName}";
 
-            Claim userIdClaim = securityToken.Claims.Where(c => c.Type == UID).FirstOrDefault();
-
-            if (claim == null)
-            {
-                _logger.LogInformation($"{URN_MICROSOFT_CREDENTIALS} not found in the token");
-            }
-
-            KiazalaCredentials credentials = JsonSerializer.Deserialize<KiazalaCredentials>(claim.Value,Utilties.GetJsonSerializerOptions());
-
-            if (credentials == null)
-            {
-                _logger.LogInformation($"Not able to serialize {claim.Value} to KiazalaCredentials");
-            }
-
-            char lastDigit = credentials.PhoneNumber[credentials.PhoneNumber.Length - 1];
-
-            string httpBaseHref = settings[lastDigit.ToString()];
-
-            string url = $"{httpBaseHref}v1/ValidatePartnerAccessToken?applicationName={kaizalaApplicationName}";
-
-            _kaizalaIdentityHttpClient.DefaultRequestHeaders.Remove("accessToken");
-
-            _kaizalaIdentityHttpClient.DefaultRequestHeaders.Add("accessToken", accessToken);
-
+            string url = PrepareHttpClient(credentials, accessToken, urlToInvoke);
+            
             ValidatePartnerAccessTokenResponse successResponse = null;
 
             bool validationPassed = false;
@@ -108,12 +81,15 @@ namespace blendnet.api.proxy.KaizalaIdentity
                 successResponse.KiazalaCredentials = credentials;
 
                 successResponse.UID = userIdClaim.Value.Split(":")[1];
+                
+                //remove scale unit from kaizala
+                successResponse.UID = successResponse.UID.Split('@')[0];
 
                 validationPassed = true;
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                _logger.LogInformation($"401 from ValidatePartnerAccessToken - {accessToken}");
+                _logger.LogInformation($"401 from ValidatePartnerAccessToken - {accessToken}.  Exception {ex} ");
 
                 validationPassed = false;
             }
@@ -123,6 +99,124 @@ namespace blendnet.api.proxy.KaizalaIdentity
             _logger.LogInformation($" Time taken to validate ({validationPassed}) {accessToken} is {stopwatch.ElapsedMilliseconds} (ms)");
 
             return successResponse;
+        }
+
+        /// <summary>
+        /// Adds the user role assignment
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task AddPartnerUsersRole (AddPartnerUsersRoleRequest request)
+        {
+            string kaizalaApplicationName = _configuration.GetValue<string>("KaizalaIdentityAppName");
+
+            request.ApplicationName = kaizalaApplicationName;
+
+            Claim userIdClaim;
+
+            string accessToken = await base.GetServiceAccessToken();
+
+            KiazalaCredentials credentials = GetKiazalaCredentials(accessToken, out userIdClaim);
+
+            string urlToInvoke = $"v1/AddPartnerUsersRole";
+
+            string url = PrepareHttpClient(credentials, accessToken, urlToInvoke);
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            try
+            {
+
+                JsonSerializerOptions jsonSerializerOptions =  Utilties.GetJsonSerializerOptions();
+
+                jsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+
+                await _kaizalaIdentityHttpClient.Post<AddPartnerUsersRoleRequest,object>(url,request,false,jsonSerializerOptions);
+
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogInformation($"Bad Request from AddPartnerUsersRole for {accessToken}. Exception {ex}");
+
+                throw;
+            }
+
+            stopwatch.Stop();
+
+            _logger.LogInformation($" Time taken to AddPartnerUsersRole is {stopwatch.ElapsedMilliseconds} (ms)");
+
+        }
+
+        /// <summary>
+        /// Sets The base url
+        /// Adds the authorization header
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <param name="kaizalaApplicationName"></param>
+        /// <param name="accessToken"></param>
+        private string PrepareHttpClient( KiazalaCredentials credentials,
+                                        string accessToken,
+                                        string urlToInvoke)
+        {
+            char lastDigit = credentials.PhoneNumber[credentials.PhoneNumber.Length - 1];
+
+            string httpBaseHref = GetBaseUrlByPhoneDigit(lastDigit.ToString());
+
+            string url = $"{httpBaseHref}{urlToInvoke}";
+
+            _kaizalaIdentityHttpClient.DefaultRequestHeaders.Remove("accessToken");
+
+            _kaizalaIdentityHttpClient.DefaultRequestHeaders.Add("accessToken", accessToken);
+
+            return url;
+        }
+
+
+        /// <summary>
+        /// Get Kaizala Credentials
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <param name="userIdClaim"></param>
+        /// <returns></returns>
+        private KiazalaCredentials GetKiazalaCredentials(string accessToken, out Claim userIdClaim)
+        {
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+
+            JwtSecurityToken securityToken = handler.ReadJwtToken(accessToken);
+
+            Claim claim = securityToken.Claims.Where(c => c.Type == URN_MICROSOFT_CREDENTIALS).FirstOrDefault();
+
+            userIdClaim = securityToken.Claims.Where(c => c.Type == UID).FirstOrDefault();
+
+            if (claim == null)
+            {
+                _logger.LogInformation($"{URN_MICROSOFT_CREDENTIALS} not found in the token");
+            }
+
+            KiazalaCredentials credentials = JsonSerializer.Deserialize<KiazalaCredentials>(claim.Value, Utilties.GetJsonSerializerOptions());
+
+            if (credentials == null)
+            {
+                _logger.LogInformation($"Not able to serialize {claim.Value} to KiazalaCredentials");
+            }
+
+            return credentials;
+        }
+
+        /// <summary>
+        /// Returns the Kaizala Base Url by Phone Number Last Digit
+        /// Mainly for lower environments.
+        /// For production set the same URL fro all the digits
+        /// </summary>
+        /// <param name="lastDigit"></param>
+        /// <returns></returns>
+        private string GetBaseUrlByPhoneDigit(string lastDigit)
+        {
+            Dictionary<string, string> settings = new Dictionary<string, string>();
+
+            _configuration.GetSection("KaizalaIdentity").Bind(settings);
+
+            return settings[lastDigit.ToString()];
         }
 
     }

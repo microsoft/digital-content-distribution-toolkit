@@ -29,8 +29,6 @@ namespace blendnet.common.dto.cms
 
         public string BroadcastStorageContainerName { get; set; }
 
-        public string ContentAdministratorGroupId { get; set; }
-
         public int SasTokenExpiryForContentProviderInMts { get; set; }
 
         public int SASTokenExpiryToCopyContentInMts { get; set; }
@@ -108,6 +106,8 @@ namespace blendnet.common.dto.cms
         public Dictionary<string,string> KaizalaIdentity { get; set; }
         
         public string CloudApiServiceAccountCertName { get; set; }
+
+        public string KaizalaIdentityAppName { get; set; }
 
     }
 }

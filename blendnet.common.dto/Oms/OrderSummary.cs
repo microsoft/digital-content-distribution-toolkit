@@ -13,9 +13,8 @@ namespace blendnet.common.dto.Oms
     {
         /// <summary>
         /// Total purchase count
-        /// Rename Count
         /// </summary>
-        public int PurchaseCount { get; set; }
+        public int Count { get; set; }
 
         /// <summary>
         /// Retailer phone number
@@ -24,9 +23,8 @@ namespace blendnet.common.dto.Oms
 
         /// <summary>
         /// Payment deposit date in format yyyymmdd stored as integer
-        /// Rename to Date
         /// </summary>
-        public int PaymentDepositDate { get; set; }
+        public int Date { get; set; }
 
         /// <summary>
         /// Content provider id of the subscription

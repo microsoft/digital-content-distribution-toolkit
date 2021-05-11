@@ -8,18 +8,10 @@ namespace blendnet.common.dto
         public Guid? Id { get; set; }
 
         [Required]
-        public string FirstName { get; set; }
-
-        public string MiddleName { get; set; }
-
-        public string LastName { get; set; }
-               
-        public string Email { get; set; }
-
-        public long Mobile { get; set; }
+        public string PhoneNumber { get; set; }
 
         [Required]
-        public string IdentityProviderId { get; set; }
-        
+        public Guid UserId { get; set; }
+
     }
 }

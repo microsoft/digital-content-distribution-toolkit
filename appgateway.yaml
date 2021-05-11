@@ -13,6 +13,18 @@ spec:
         backend:
           serviceName: blendnet-cms-api
           servicePort: 80
+      - path: /userapi/*
+        backend:
+          serviceName: blendnet-user-api
+          servicePort: 80
+      - path: /retailerapi/*
+        backend:
+          serviceName: blendnet-retailer-api
+          servicePort: 80
+      - path: /omsapi/*
+        backend:
+          serviceName: blendnet-oms-api
+          servicePort: 80
       - path: /cmsui/*
         backend:
           serviceName: blendnet-cms-web-ui

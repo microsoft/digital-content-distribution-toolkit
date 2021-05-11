@@ -9,12 +9,6 @@ namespace blendnet.oms.api.Model
     public class OrderRequest
     {
         [Required]
-        public string PhoneNumber { get; set; }
-
-        [Required]
-        public Guid UserId { get; set; }
-
-        [Required]
         public Guid ContentProviderId { get; set; }
 
         [Required]

@@ -1,32 +1,25 @@
-using System;
-using blendnet.cms.listener.IntegrationEventHandling;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using blendnet.api.proxy.KaizalaIdentity;
+using blendnet.common.dto;
+using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.KeyVault;
 using blendnet.common.infrastructure.ServiceBus;
-using Microsoft.Extensions.Configuration.Json;
+using blendnet.retailer.listener.IntegrationEventHandling;
+using blendnet.retailer.repository.CosmosRepository;
+using blendnet.retailer.repository.Interfaces;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using Azure.Storage.Blobs;
-using blendnet.common.infrastructure.KeyVault;
-using Microsoft.Identity.Client;
-using Microsoft.Extensions.Azure;
-using blendnet.common.dto;
-using blendnet.cms.repository.Interfaces;
-using blendnet.cms.repository.CosmosRepository;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Fluent;
-using blendnet.common.dto.cms;
-using blendnet.cms.listener.Common;
-using Polly;
-using Polly.Extensions.Http;
-using System.Net.Http;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using blendnet.api.proxy.KaizalaIdentity;
+using System;
 
-namespace blendnet.cms.listener
+namespace blendnet.retailer.listener
 {
     public class Program
     {
@@ -49,16 +42,16 @@ namespace blendnet.cms.listener
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
+                 .ConfigureLogging(logging =>
+                 {
+                     logging.ClearProviders();
 
-                    logging.AddConsole();
+                     logging.AddConsole();
 
-                    logging.AddDebug();
+                     logging.AddDebug();
 
-                    logging.AddSerilog();
-                })
+                     logging.AddSerilog();
+                 })
                 .ConfigureAppConfiguration((context, config) =>
                 {
                     //read the configuration from keyvault in case of production
@@ -77,7 +70,7 @@ namespace blendnet.cms.listener
                 .ConfigureServices((hostContext, services) =>
                 {
                     //Configure Application Settings
-                    services.Configure<AppSettings>(hostContext.Configuration);
+                    services.Configure<RetailerAppSettings>(hostContext.Configuration);
 
                     services.AddLogging();
 
@@ -85,29 +78,10 @@ namespace blendnet.cms.listener
 
                     services.AddApplicationInsightsTelemetryWorkerService();
 
-                    string cmsStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSStorageConnectionString");
-
-                    string cmsCDNStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSCDNStorageConnectionString");
-
-                    string broadcastStorageConnectionString = hostContext.Configuration.GetValue<string>("BroadcastStorageConnectionString");
-
                     string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
 
-                    services.AddAzureClients(builder => 
+                    services.AddAzureClients(builder =>
                     {
-                        // Register blob service client and initialize it using the Storage section of configuration
-                        builder.AddBlobServiceClient(cmsStorageConnectionString)
-                                .WithName(ApplicationConstants.StorageInstanceNames.CMSStorage)
-                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
-
-                        builder.AddBlobServiceClient(cmsCDNStorageConnectionString)
-                                .WithName(ApplicationConstants.StorageInstanceNames.CMSCDNStorage)
-                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
-
-                        builder.AddBlobServiceClient(broadcastStorageConnectionString)
-                                .WithName(ApplicationConstants.StorageInstanceNames.BroadcastStorage)
-                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
-
                         //Add Service Bus Client
                         builder.AddServiceBusClient(serviceBusConnectionString);
 
@@ -120,34 +94,15 @@ namespace blendnet.cms.listener
                     ConfigureCosmosDB(hostContext, services);
 
                     //Configure Http Clients
-                    ConfigureHttpClients(hostContext,services);
+                    ConfigureHttpClients(services);
 
                     //Configure Repository
-                    services.AddTransient<IContentRepository, ContentRepository>();
-
-                    //Configure Segment Downloader
-                    services.AddTransient<SegmentDowloader>();
-
-                    //Configure Tar Generator
-                    services.AddTransient<TarGenerator>();
+                    services.AddTransient<IRetailerRepository, RetailerRepository>();
 
                     //Configure Kaizala Identity Proxy
                     services.AddTransient<KaizalaIdentityProxy>();
-
                 });
 
-
-        /// <summary>
-        /// Http Client Failures
-        /// </summary>
-        /// <returns></returns>
-        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(int httpClientRetryCount)
-        {
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-                .WaitAndRetryAsync(httpClientRetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,retryAttempt)));
-        }
 
         /// <summary>
         /// Configure Event Bus
@@ -181,22 +136,9 @@ namespace blendnet.cms.listener
 
             services.AddSingleton<IEventBus, EventServiceBus>();
 
-            services.AddTransient<ContentProviderCreatedIntegrationEventHandler>();
-
-            services.AddTransient<ContentUploadedIntegrationEventHandler>();
-
-            services.AddTransient<ContentDeletedIntegrationEventHandler>();
-
-            services.AddTransient<ContentTransformIntegrationEventHandler>();
-
-            services.AddTransient<MediaServiceJobIntegrationEventHandler>();
-
-            services.AddTransient<MicrosoftStorageBlobCreatedIntegrationEventHandler>();
-
-            services.AddTransient<ContentBroadcastIntegrationEventHandler>();
+            services.AddTransient<RetailerCreatedIntegrationEventHandler>();
 
         }
-
 
         /// <summary>
         /// Set up Cosmos DB
@@ -228,26 +170,14 @@ namespace blendnet.cms.listener
         /// Configure Required Http Clients
         /// </summary>
         /// <param name="services"></param>
-        private static void ConfigureHttpClients(HostBuilderContext hostContext, IServiceCollection services)
+        private static void ConfigureHttpClients(IServiceCollection services)
         {
-            string amsStreamingBaseUrl = hostContext.Configuration.GetValue<string>("AmsStreamingBaseUrl");
-
-            int httpHandlerLifeTimeInMts = hostContext.Configuration.GetValue<int>("HttpHandlerLifeTimeInMts");
-
-            int httpClientRetryCount = hostContext.Configuration.GetValue<int>("HttpClientRetryCount");
-
-            services.AddHttpClient(ApplicationConstants.HttpClientNames.AMS, c =>
-            {
-                c.BaseAddress = new Uri($"{amsStreamingBaseUrl}");
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-            }).SetHandlerLifetime(TimeSpan.FromMinutes(httpHandlerLifeTimeInMts))  //Set lifetime to five minutes
-              .AddPolicyHandler(GetRetryPolicy(httpClientRetryCount));
-
             //Configure Http Clients
             services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT, c =>
             {
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }
+
     }
 }

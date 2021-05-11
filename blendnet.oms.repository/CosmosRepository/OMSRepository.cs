@@ -1,5 +1,4 @@
 ﻿using blendnet.common.dto;
-using blendnet.common.dto.cms;
 using blendnet.common.dto.Oms;
 using blendnet.oms.repository.Interfaces;
 using Microsoft.Azure.Cosmos;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace blendnet.oms.repository.CosmosRepository
@@ -65,22 +63,16 @@ namespace blendnet.oms.repository.CosmosRepository
         }
 
         /// <summary>
-        /// *****Phone Number should be as a input parameter.
-        /// So the query should be by Phone Number and Order ID
+        /// Returns order with given phone number and order id
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        public async Task<Order> GetOrderByOrderId(Guid orderId)
+        public async Task<Order> GetOrderByOrderId(Guid orderId, string phoneNumber)
         {
             try
             {
-                string queryString = "SELECT * FROM c where c.id = @orderId";
-
-                var queryDef = new QueryDefinition(queryString).WithParameter("@orderId", orderId);
-
-                List<Order> results = await ExtractDataFromQueryIterator<Order>(queryDef);
-
-                return results.FirstOrDefault();
+                ItemResponse<Order> response =  await _container.ReadItemAsync<Order>(orderId.ToString(), new PartitionKey(phoneNumber));
+                return response.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -89,38 +81,28 @@ namespace blendnet.oms.repository.CosmosRepository
         }
 
         /// <summary>
-        /// *****Remove User Id as input and change it to phone number
-        /// *****Get Order by content provider id 
+        /// Retuns list of orders of user for given content provider
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="userPhoneNumber"></param>
         /// <param name="contentProviderId"></param>
         /// <param name="returnAll"></param>
         /// <returns></returns>
 
-        public async Task<List<Order>> GetOrder(Guid userId, Guid contentProviderId, bool returnAll = false)
+        public async Task<List<Order>> GetOrderByContentProviderId(string userPhoneNumber, Guid contentProviderId, OrderStatusFilter orderFilter)
         {
-            var queryString = "select value c from c join i in c.orderItems " +
-                "where i.subscription.contentProviderId = @contentProviderId and c.userId = @userId and c.orderStatus in ({0})";
+            var queryString = "select value o from o join oi in o.orderItems " +
+                "where oi.subscription.contentProviderId = @contentProviderId and o.phoneNumber = @userPhoneNumber";
 
-            List<OrderStatus> orderStatus = new List<OrderStatus>();
-
-            if(returnAll)
+            if (orderFilter != null && orderFilter.OrderStatuses != null && orderFilter.OrderStatuses.Count() > 0)
             {
-                orderStatus.Add(OrderStatus.Created);
-                orderStatus.Add(OrderStatus.Completed);
-                orderStatus.Add(OrderStatus.Cancelled);
+                queryString = queryString + " and o.orderStatus in ({0})";
+                var orderString = "\"" + string.Join("\",\"", orderFilter.OrderStatuses) + "\"";
+                queryString = string.Format(queryString, orderString);
             }
-            else
-            {
-                orderStatus.Add(OrderStatus.Created);
-            }
-
-            var orderString = "\"" + string.Join("\",\"", orderStatus) + "\"";
-            queryString =  string.Format(queryString, orderString);
 
             var queryDef = new QueryDefinition(queryString)
                                 .WithParameter("@contentProviderId", contentProviderId)
-                                .WithParameter("@userId", userId);
+                                .WithParameter("@userPhoneNumber", userPhoneNumber);
 
             var orders = await ExtractDataFromQueryIterator<Order>(queryDef);
 
@@ -130,10 +112,10 @@ namespace blendnet.oms.repository.CosmosRepository
 
         public async Task<List<OrderSummary>> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
         {
-            var queryString = "SELECT count(o) as purchaseCount, o.retailerPhoneNumber, oi.paymentDepositDate, oi.subscription.contentProviderId, oi.subscription.id as subscriptionId, oi.subscription.title, sum(oi.subscription.price) as totalAmount" +
+            var queryString = "SELECT count(o) as count, o.retailerPhoneNumber, o.paymentDepositDate as date, oi.subscription.contentProviderId, oi.subscription.id as subscriptionId, oi.subscription.title, sum(oi.subscription.price) as totalAmount" +
                             " FROM o join oi in o.orderItems" +
-                            " WHERE o.retailerPhoneNumber = @retailerPhoneNumber and o.orderStatus = \"Completed\" and oi.paymentDepositDate >= @startDate and oi.paymentDepositDate <= @endDate" +
-                            " GROUP BY o.retailerPhoneNumber, oi.paymentDepositDate, oi.subscription.contentProviderId, oi.subscription.id, oi.subscription.title";
+                            " WHERE o.retailerPhoneNumber = @retailerPhoneNumber and o.orderStatus = \"Completed\" and o.paymentDepositDate >= @startDate and o.paymentDepositDate <= @endDate" +
+                            " GROUP BY o.retailerPhoneNumber, o.paymentDepositDate, oi.subscription.contentProviderId, oi.subscription.id, oi.subscription.title";
 
             var queryDef = new QueryDefinition(queryString)
                                 .WithParameter("@retailerPhoneNumber", retailerPhoneNumber)

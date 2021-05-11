@@ -15,6 +15,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using blendnet.common.infrastructure.Ams;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
+using static blendnet.common.dto.ApplicationConstants;
 
 namespace blendnet.oms.api.Controllers
 {
@@ -24,6 +26,7 @@ namespace blendnet.oms.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -69,28 +72,18 @@ namespace blendnet.oms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> CreateOrder(OrderRequest orderRequest)
         {
+            List<string> errorInfo = new List<string>();
+
+            Guid userId = UserClaimData.GetUserId(User.Claims);
+            string userPhoneNumber = User.Identity.Name;
+
             // Get Subscription
             ContentProviderSubscriptionDto subscription = await _subscriptionProxy.GetSubscription(orderRequest.ContentProviderId, orderRequest.SubscriptionId);
 
-            // Get User
-            User user = UserProxy.Instance.GetUser(orderRequest.UserId);
-
-            List<string> errorInfo = new List<string>();
-
-            if (user == null || subscription == null)
+            if (subscription == null)
             {
-                errorInfo .Add("User or subscription not found");
+                errorInfo.Add("Subscription not found");
                 return BadRequest(errorInfo);
-            }
-
-            if (!ValidateUser(user, orderRequest.PhoneNumber))
-            {
-                user.UserName = "Unknown";
-                user.Id = orderRequest.UserId;
-                user.PhoneNumber = orderRequest.PhoneNumber;
-
-                //errorInfo = "Invalid user id or phone number"; -- change back this once user is created
-                //return BadRequest(errorInfo);
             }
 
             var error = ValidateSubscription(subscription);
@@ -100,8 +93,13 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest(errorInfo);
             }
 
+            var orderStatusFilter = new OrderStatusFilter();
+
+            orderStatusFilter.OrderStatuses.Add(OrderStatus.Created);
+            orderStatusFilter.OrderStatuses.Add(OrderStatus.Completed);
+
             // Check if user do not hold active order for same content provider
-            if (await ActiveOrderExists(orderRequest.UserId, orderRequest.ContentProviderId))
+            if (await ActiveOrderExists(userPhoneNumber, orderRequest.ContentProviderId, orderStatusFilter)) 
             {
                 errorInfo.Add("User already holds order for same content provider");
                 return BadRequest(errorInfo);
@@ -110,7 +108,7 @@ namespace blendnet.oms.api.Controllers
             //Populate following in Order object
             // Phone number, user id, user name, content provider id, subscription, Order status, OrderCreatedDate
 
-            Order order = CreateOrder(user, subscription);
+            Order order = CreateOrder(userId, userPhoneNumber, subscription);
 
             //Insert order object in db
             Guid orderId = await _omsRepository.CreateOrder(order);
@@ -126,7 +124,8 @@ namespace blendnet.oms.api.Controllers
         /// <param name="completeOrderRequest"></param>
         /// <returns></returns>
         [HttpPut("completeorder", Name = nameof(CompleteOrder))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [Authorize(Roles = KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
             // Get Retailer
@@ -143,7 +142,7 @@ namespace blendnet.oms.api.Controllers
             }
 
             //Get Order by order id
-            Order order = await _omsRepository.GetOrderByOrderId(completeOrderRequest.OrderId);
+            Order order = await _omsRepository.GetOrderByOrderId(completeOrderRequest.OrderId, completeOrderRequest.UserPhoneNumber);
             
             //Validate order
             var error  = ValidateOrder(order);
@@ -165,9 +164,16 @@ namespace blendnet.oms.api.Controllers
             UpdateOrder(order, retailer, completeOrderRequest);
 
             // Update order
-            await _omsRepository.UpdateOrder(order);
+            var statusCode = await _omsRepository.UpdateOrder(order);
 
-            return Ok(completeOrderRequest.PartnerReferenceNumber);
+            if (statusCode == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>
@@ -176,12 +182,14 @@ namespace blendnet.oms.api.Controllers
         /// <param name="phoneNumber"></param>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        [HttpDelete("cancel/{orderId:guid}", Name = nameof(CancelOrder))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [HttpPut("cancel/{orderId:guid}", Name = nameof(CancelOrder))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> CancelOrder(Guid orderId)
         {
+            var userPhoneNumber = User.Identity.Name;
+
             //Get Order by order id
-            Order order = await _omsRepository.GetOrderByOrderId(orderId);
+            Order order = await _omsRepository.GetOrderByOrderId(orderId, userPhoneNumber);
 
             List<string> errorInfo = new List<string>();
             if(order == null)
@@ -198,12 +206,19 @@ namespace blendnet.oms.api.Controllers
 
             order.OrderStatus = OrderStatus.Cancelled;
             order.OrderCancelledDate = DateTime.UtcNow;
-
+            order.ModifiedBy = UserClaimData.GetUserId(User.Claims);
+                
             // Update order
-            await _omsRepository.UpdateOrder(order);
+            var statusCode = await _omsRepository.UpdateOrder(order);
 
-            return Ok(orderId);
-
+            if (statusCode == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>
@@ -256,18 +271,10 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("summary/{retailerPhoneNumber}", Name = nameof(GetOrderSummary))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [Authorize(Roles = KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
         {
-            // Get Retailer
-            RetailerDto retailer = await _retailerProxy.GetRetailerByPhoneNumber(retailerPhoneNumber);
-
             List<string> errorDetails = new List<string>();
-
-            if(retailer == null)
-            {
-                errorDetails.Add("Retailer not found");
-                return BadRequest(errorDetails);
-            }
 
             if(startDate == 0 || endDate == 0)
             {
@@ -281,12 +288,20 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest(errorDetails);
             }
 
+            // Get Retailer
+            RetailerDto retailer = await _retailerProxy.GetRetailerByPhoneNumber(retailerPhoneNumber);
+            
+            if (retailer == null)
+            {
+                errorDetails.Add("Retailer not found");
+                return BadRequest(errorDetails);
+            }
+
             List<OrderSummary> purchaseData = await _omsRepository.GetOrderSummary(retailerPhoneNumber, startDate, endDate);
             
             if(purchaseData == null || purchaseData.Count == 0)
             {
-                errorDetails.Add("No data found");
-                return NotFound(errorDetails);
+                return NotFound();
             }
 
             return Ok(purchaseData);
@@ -301,7 +316,9 @@ namespace blendnet.oms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<Order>> GetOrderByOrderId(Guid orderId)
         {
-            Order order = await _omsRepository.GetOrderByOrderId(orderId);
+            var userPhoneNumber = User.Identity.Name;
+
+            Order order = await _omsRepository.GetOrderByOrderId(orderId, userPhoneNumber);
 
             if (order == null)
             {
@@ -320,10 +337,34 @@ namespace blendnet.oms.api.Controllers
         /// <param name="orderFilter"></param>
         /// <returns></returns>
         [HttpPost("{phoneNumber}/orderlist")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [Authorize(Roles = KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<List<Order>>> GetOrder(string phoneNumber, OrderStatusFilter orderFilter)
         {
 
+            List<Order> orderlist = await _omsRepository.GetOrdersByPhoneNumber(phoneNumber, orderFilter);
+
+            if (orderlist.Count() > 0)
+            {
+                return Ok(orderlist);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// API to get Orders by customer phoneNumber and OrderStatus
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <param name="orderFilter"></param>
+        /// <returns></returns>
+        [HttpPost("orderlist")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<List<Order>>> GetOrder(OrderStatusFilter orderFilter)
+        {
+            string phoneNumber = User.Identity.Name;
             List<Order> orderlist = await _omsRepository.GetOrdersByPhoneNumber(phoneNumber, orderFilter);
 
             if (orderlist.Count() > 0)
@@ -365,40 +406,16 @@ namespace blendnet.oms.api.Controllers
                 //Get Orders by phone number
                 var orderStatusFilter = new OrderStatusFilter();
 
-                orderStatusFilter.OrderStatuses = new List<OrderStatus>();
-
                 orderStatusFilter.OrderStatuses.Add(OrderStatus.Completed);
 
-                List<Order> orders = await _omsRepository.GetOrdersByPhoneNumber(this.User.Identity.Name, orderStatusFilter);
-
-                if (orders == null || orders.Count <= 0)
+                if(await ActiveOrderExists(this.User.Identity.Name, content.ContentProviderId, orderStatusFilter))
                 {
-                    errorDetails.Add($"Not Active Subscription for {this.User.Identity.Name}");
-
-                    return false;
-                }
-
-                DateTime currentDateTime = DateTime.UtcNow;
-
-                foreach (Order order in orders)
+                    validSubscriptionExists = true;
+                } 
+                else
                 {
-                    OrderItem orderItem = order.OrderItems.Where(oi => oi.Subscription.ContentProviderId == content.ContentProviderId).FirstOrDefault();
-
-                    if (order.OrderStatus == OrderStatus.Completed &&
-                        orderItem != null &&
-                        (currentDateTime >= orderItem.PlanStartDate && currentDateTime <= orderItem.PlanEndDate))
-                    {
-                        validSubscriptionExists = true;
-
-                        break;
-                    }
+                    errorDetails.Add($"No Valid Subscription for {this.User.Identity.Name} and {content.ContentProviderId}");
                 }
-
-                if (!validSubscriptionExists)
-                {
-                    errorDetails.Add($"Not Valid Subscription for {this.User.Identity.Name} and {content.ContentProviderId}");
-                }
-
             }
 
             return validSubscriptionExists;
@@ -422,11 +439,6 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         private string ValidateSubscription(ContentProviderSubscriptionDto subscription)
         {
-            if (subscription.Type != ContentProviderContainerType.Subscription)
-            {
-                return "Invalid subscription type";
-            }
-
             DateTime subscriptionEndDate = subscription.EndDate;
 
             if (subscriptionEndDate < DateTime.UtcNow)
@@ -437,19 +449,20 @@ namespace blendnet.oms.api.Controllers
             return null;
         }
 
-        private async Task<bool> ActiveOrderExists(Guid userId, Guid contentProviderId)
+        private async Task<bool> ActiveOrderExists(string userPhoneNumber, Guid contentProviderId, OrderStatusFilter orderFilter)
         {
-            List<Order> activeOrders = await _omsRepository.GetOrder(userId, contentProviderId, returnAll:true);
+            List<Order> activeOrders = await _omsRepository.GetOrderByContentProviderId(userPhoneNumber, contentProviderId, orderFilter);
 
             if (activeOrders != null && activeOrders.Count > 0)
             {
                 foreach(Order activeOrder in activeOrders)
                 {
-                    if(activeOrder.OrderStatus == OrderStatus.Created)
+                    if(activeOrder.OrderStatus == OrderStatus.Completed && activeOrder.OrderItems[0].PlanEndDate > DateTime.UtcNow)
                     {
                         return true;
                     }
-                    if(activeOrder.OrderStatus == OrderStatus.Completed && activeOrder.OrderItems[0].PlanEndDate > DateTime.UtcNow)
+
+                    if(activeOrder.OrderStatus == OrderStatus.Created)
                     {
                         return true;
                     }
@@ -459,16 +472,17 @@ namespace blendnet.oms.api.Controllers
             return false;
         }
 
-        private Order CreateOrder(User user, ContentProviderSubscriptionDto subscription)
+        private Order CreateOrder(Guid userId, string userPhoneNumber, ContentProviderSubscriptionDto subscription)
         {
             Order order = new Order();
 
             OrderItem orderItem = new OrderItem();
             orderItem.Subscription = subscription;
 
-            order.UserId = (Guid)user.Id;
-            order.PhoneNumber = user.PhoneNumber;
-            order.UserName = user.UserName;
+            order.UserId = userId;
+            order.PhoneNumber = userPhoneNumber;
+            order.CreatedBy = userId;
+            order.ModifiedBy = userId;
             order.OrderItems.Add(orderItem);
 
             return order;
@@ -512,22 +526,24 @@ namespace blendnet.oms.api.Controllers
 
         private void UpdateOrder(Order order, RetailerDto retailer, CompleteOrderRequest completeOrderRequest)
         {
+            var currentDate = DateTime.UtcNow;
+
             order.RetailerId = retailer.Id;
-            order.RetailerName = retailer.GetName();
             order.RetailerPhoneNumber = retailer.Mobile;
+            order.PaymentDepositDate = currentDate.Year * 10000 + currentDate.Month * 100 + currentDate.Day;
+            order.DepositDate = completeOrderRequest.DepositDate;
+            order.ModifiedBy = UserClaimData.GetUserId(User.Claims);
 
             //assuming single item in order
 
             order.TotalAmountCollected = completeOrderRequest.AmountCollected;
 
             var orderItem = order.OrderItems.First();
-            var currentDate = DateTime.UtcNow;
 
             orderItem.AmountCollected = completeOrderRequest.AmountCollected;
             orderItem.PlanStartDate = currentDate.Date;
             orderItem.PlanEndDate = currentDate.Date.AddDays(orderItem.Subscription.DurationDays);
             orderItem.PartnerReferenceNumber = completeOrderRequest.PartnerReferenceNumber;
-            orderItem.PaymentDepositDate = currentDate.Year * 10000 + currentDate.Month * 100 + currentDate.Day;
 
             order.OrderCompletedDate = currentDate;
             order.OrderStatus = OrderStatus.Completed;
