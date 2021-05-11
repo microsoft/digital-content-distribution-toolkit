@@ -1,1 +1,72 @@
-<p>subscription works!</p>
+<div class="cms-container">
+
+    <h1>Subscriptions</h1>
+
+    <button mat-raised-button color="primary" class="create-btn"
+    (click)="openDialog()"> Create </button>
+
+    <div style="float: right;">
+        <button matTooltip="Expand All"   mat-icon-button  
+        color="primary" (click)="accordion.openAll()"><mat-icon>expand_more</mat-icon></button>
+        <button matTooltip="Collapse All"  mat-icon-button  
+        color="primary" (click)="accordion.closeAll()"> <mat-icon>expand_less</mat-icon></button>
+        <button  matTooltip="Refresh"   mat-icon-button  
+        color="primary" (click)="getSubscriptions()">
+           <mat-icon>refresh</mat-icon>
+       </button>
+    </div>
+
+    
+    <mat-accordion class="cms-headers-align" multi>
+        <mat-expansion-panel *ngFor="let sub of cpSubscriptions; index as i;">
+            <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{sub.title}}
+            </mat-panel-title>
+            
+            <mat-panel-description><span></span>
+               <div [ngClass]="sub.endDate <= today ? 'cms-inactive' : 'cms-active'">
+                {{sub.endDate <= today ? "Inactive" : "Active"}}
+               </div>
+                
+                <!-- <mat-icon [ngClass]="sub.endDate <= today ? 'cms-inactive' : 'cms-active'">stop_circle</mat-icon> -->
+            </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-form-field>
+            <mat-label>Price</mat-label>
+            <input matInput [(ngModel)] = "sub.price">
+            </mat-form-field>
+            <mat-form-field>
+            <mat-label>Duration (in days)</mat-label>
+            <input matInput type="number" min="1" max="365" [(ngModel)] = "sub.durationDays">
+            </mat-form-field>
+
+            <br>
+
+            <mat-form-field>
+            <mat-label>Start Date</mat-label>
+            <input matInput  [(ngModel)]="sub.startDate" [matDatepicker]="spicker">
+            <mat-datepicker-toggle matSuffix [for]="spicker"></mat-datepicker-toggle>
+            <mat-datepicker #spicker></mat-datepicker>
+            </mat-form-field>
+            
+            <mat-form-field>
+            <mat-label>End Date</mat-label>
+            <input matInput [(ngModel)]="sub.endDate"  [matDatepicker]="epicker">
+            <mat-datepicker-toggle matSuffix [for]="epicker"></mat-datepicker-toggle>
+            <mat-datepicker #epicker></mat-datepicker>
+            </mat-form-field>
+            <br>
+            <div class="btn-sec">
+                <button mat-raised-button  class="discard-btn" type="button" (click)="reset(sub)">Reset</button>
+                <button mat-raised-button  color="primary" class="update-btn" type="button" 
+                [disabled] ="disableSaveBtn(sub)"
+                (click)="save(sub)">Save</button>
+            </div>
+
+
+        </mat-expansion-panel>
+    
+    </mat-accordion>
+</div>

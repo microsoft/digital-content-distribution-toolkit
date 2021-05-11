@@ -6,13 +6,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 // import { EventMessage, EventType } from '@azure/msal-browser';
 // import { filter } from 'rxjs/operators';
 import { KaizalaService } from '../services/kaizala.service';
-// import { UserService } from '../services/user.service';
+import { UserService } from '../services/user.service';
+import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
-
-interface CountryCode {
-  value: string;
-  viewValue: string;
-}
 
 @Component({
   selector: 'app-login',
@@ -29,21 +26,6 @@ export class LoginComponent implements OnInit {
   otpSendErrorMessage: string;
   otpVerifyErrorMessage: string;
 
-  countryCodes: CountryCode[] = [
-    {value: '+91', viewValue: 'India (+91)'},
-    {value: '+92', viewValue: 'Pakistan (+92)'},
-    {value: '+93', viewValue: 'Sri Lanka (+93)'},
-    {value: '+94', viewValue: 'China (+94)'},
-    {value: '+95', viewValue: 'Russia (+95)'},
-    {value: '+193', viewValue: 'Bangladesh (+192)'},
-    {value: '+96', viewValue: 'Thailand (+96)'},
-    {value: '+97', viewValue: 'Vietnam (+97)'},
-    {value: '+98', viewValue: 'Combodia (+98)'},
-    {value: '+99', viewValue: 'Phillipines (+99)'},
-    {value: '+931', viewValue: 'United Arab Emirates (+931)'},
-    {value: '+937', viewValue: 'Indonesia (+937)'}
-  ];
-
 
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded = true;
@@ -55,13 +37,15 @@ export class LoginComponent implements OnInit {
   isOTPSection: boolean = false;
   contact;
   otp;
+  countryCodes;
   returnUrl: string;
 
   constructor(
     // private authService: MsalService, 
     // private msalBroadcastService: MsalBroadcastService,
+    private toastr : ToastrService,
     private kaizalaService: KaizalaService,
-    // private userService: UserService,
+    private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
     ) { 
@@ -72,6 +56,7 @@ export class LoginComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    this.countryCodes = environment.countryCodes;
     // this.msalBroadcastService.msalSubject$
     //   .pipe(
     //     filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
@@ -135,6 +120,7 @@ export class LoginComponent implements OnInit {
   }
 
   showCountryCodeSection() {
+    this.selectedCountryCodeValue = this.countryCodes[0].value;
     this.isContactOnlySection = false;
     this.isCountryCodeSection = true;
     this.isOTPSection = false;
@@ -145,6 +131,7 @@ export class LoginComponent implements OnInit {
 
   showOTPSection() {
     this.otpSendErrorMessage = "";
+    //this.kaizalaService.getOTP(this.selectedCountryCodeValue.concat(this.contact.value));
     this.kaizalaService.getOTP(this.selectedCountryCodeValue.concat(this.contact.value)).subscribe(
       res => {
         if(res.status === 200) {
@@ -162,11 +149,21 @@ export class LoginComponent implements OnInit {
   verifyOTP () {
     this.kaizalaService.verifyOTP(this.otp.value, this.selectedCountryCodeValue, this.contact.value).subscribe(
       res => {
-        // this.loginDisplay = true;
-        // var response: any = res.body;
-        // localStorage.setItem("userId", response.userId);
-        // localStorage.setItem("clientId", response.clientId);
-        // localStorage.setItem("token", response.authenticationToken);
+        var response : any = res;
+        if(response.IsNewUser) {
+          var user: any;
+          user = {
+            contact : this.contact.value,
+            clientId : response.clientId,
+            userId : response.userId
+          }
+          this.userService.createUser(user).subscribe(res => {
+          },
+          err => {
+            console.log(err);
+            this.toastr.warning("User could not be created in CMS. Please contact admin.")
+          })
+        }
         this.kaizalaService.getUserRoles(this.contact.value).subscribe(
           res => {
             var response: any = res.body;

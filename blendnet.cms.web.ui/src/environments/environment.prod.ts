@@ -10,7 +10,7 @@ export const environment = {
   kaizalaApi0: "/kaizalaApi0",
   kaizalaApi1: "/kaizalaApi1",
   kaizalaApi2: "/kaizalaApi2",
-  appName : "com.microsoft.mobile.mishtu",
+  appName : "com.microsoft.mobile.polymer.mishtu",
   widewineTokenPrefix: "&widevine=true&token=Bearer%3D",
     filters : [
     {
@@ -33,6 +33,9 @@ export const environment = {
       "filterValues" : [
         "Test"]
     },
+  ],
+  countryCodes: [
+    {value: '+91', viewValue: 'India (+91)'}
   ]
  };
 

@@ -3,18 +3,14 @@ export const environment = {
   allowedMaxSelection: 3,
   maxFileUploadSize: 1000000,
   fileAllowedType: 'application/json',
-  // contentProviderApiUrl: 'https://localhost:44338/api/v1/ContentProvider',
-  // contentApiUrl: 'https://localhost:44338/api/v1/Content',
-  // userApiUrl: 'https://localhost:44397/api/v1/Identity',
-  contentProviderApiUrl: 'http://13.71.0.226/cmsapi/api/v1/ContentProvider',
-  contentApiUrl: 'http://13.71.0.226/cmsapi/api/v1/Content',
-  userApiUrl: 'http://13.71.0.226/user/api/v1/Identity',
+  contentProviderApiUrl: '/ContentProvider',
+  contentApiUrl: '/Content',
+  userApiUrl: '/Identity',
   dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
-  //kaizalaApi: "https://api-alpha{0}.kaiza.la/",
-  kaizalaApi0: "/Kaizala0",
-  kaizalaApi1: "/Kaizala1",
-  kaizalaApi2: "/Kaizala2",
-  appName : "com.microsoft.mobile.mishtu",
+  kaizalaApi0: "/kaizala0",
+  kaizalaApi1: "/kaizala1",
+  kaizalaApi2: "/kaizala2",
+  appName : "com.microsoft.mobile.polymer.mishtu",
   widewineTokenPrefix: "&widevine=true&token=Bearer%3D",
     filters : [
     {
@@ -37,6 +33,9 @@ export const environment = {
       "filterValues" : [
         "Test"]
     },
+  ],
+  countryCodes: [
+    {value: '+91', viewValue: 'India (+91)'}
   ]
  };
 

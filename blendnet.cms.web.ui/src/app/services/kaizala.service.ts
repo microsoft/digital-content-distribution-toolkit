@@ -63,9 +63,34 @@ export class KaizalaService {
     }
 
     return this.http.post(url, request, {
-      headers: {'AppName': environment.appName},
+      headers: {
+        'AppName': environment.appName},
       observe: 'response'
     });
+    // var myHeaders = new Headers();
+    // myHeaders.append("Content-Type", "application/json");
+    // myHeaders.append("appName", environment.appName);
+    // var raw = JSON.stringify({"phoneNumber":contact,"useVoice":false});
+    // var requestOptions = {
+    //   mode: "no-cors",      
+    //   method: 'POST',
+    //   headers: myHeaders,
+    //   body: raw,
+    //   redirect: 'follow'
+    // };
+    // fetch("https://api-alpha2.kaiza.la/api/Authentication/LoginWithPhoneForPartners", 
+    // {
+    //   mode: "no-cors",      
+    //   method: 'POST',
+    //   headers: myHeaders,
+    //   body: raw,
+    //   redirect: 'follow'
+    // })
+    // .then(response => {
+    //   return response.text()}
+    //   )
+    // .then(result => console.log(result))
+    // .catch(error => console.log('error', error));
   }
 
   verifyOTP(otp: string, countryCode: string, contact: string) {

@@ -36,15 +36,16 @@ export class RoleGuardService implements CanActivate {
     if(!localStorage.getItem("roles")) {
       window.alert('Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
       return false;
-    } else if (localStorage.getItem("roles") !== expectedRole) {
+    // } else if (localStorage.getItem("roles") !== expectedRole) {
+    } else if (!localStorage.getItem("roles").includes(expectedRole)) {
       window.alert('You do not have access as expected role is missing. Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
       return false;
     } else if(!localStorage.getItem("contentProviderId") 
-      && !route.data.isContentProviderSelectPage
-      && localStorage.getItem("roles") === expectedRole
+      && !route.data.isContentProviderSelectPage ) {
+      // && localStorage.getItem("roles") === expectedRole
       // && expectedRole === roles.SuperUser) {
       //TODO Uncomment above line and delete below line, onces correct roles are assigned
-        && ( expectedRole === roles.SuperUser || expectedRole === roles.NormalUser)) {
+        // && ( expectedRole === roles.SuperUser || expectedRole === roles.NormalUser)) {
       window.alert("Please select a Content Provider to access the management services");
       return false;
     }

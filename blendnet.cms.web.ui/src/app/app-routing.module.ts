@@ -27,8 +27,7 @@ const appRoutes: Routes = [
       RoleGuardService
     ],
     data: { 
-      // expectedRole: roles.SuperUser
-      expectedRole: roles.NormalUser
+      expectedRole: roles.SuperAdmin
     } 
   },
   {
@@ -39,8 +38,7 @@ const appRoutes: Routes = [
       RoleGuardService
     ],
     data: { 
-      // expectedRole: roles.SuperUser
-      expectedRole: roles.NormalUser
+      expectedRole: roles.SuperAdmin
     } 
     },
   {
@@ -52,8 +50,8 @@ const appRoutes: Routes = [
     RoleGuardService
   ],
     data: { 
-    // expectedRole: roles.SuperUser
-    expectedRole: roles.NormalUser    } 
+    expectedRole: roles.SuperAdmin
+    } 
   },
   {
     path: 'devices',
@@ -63,8 +61,7 @@ const appRoutes: Routes = [
     RoleGuardService
   ],
     data: { 
-     // expectedRole: roles.SuperUser
-     expectedRole: roles.NormalUser
+     expectedRole: roles.SuperAdmin
     } 
   },
   {
@@ -75,8 +72,7 @@ const appRoutes: Routes = [
     RoleGuardService
   ],
     data: { 
-      // expectedRole: roles.SuperUser
-      expectedRole: roles.NormalUser
+      expectedRole: roles.SuperAdmin
     } 
   },
   {
@@ -87,8 +83,7 @@ const appRoutes: Routes = [
       RoleGuardService
     ],
     data: { 
-      // expectedRole: roles.SuperUser
-      expectedRole: roles.NormalUser,
+      expectedRole: roles.SuperAdmin,
       isContentProviderSelectPage: true
     } 
     },
@@ -100,8 +95,7 @@ const appRoutes: Routes = [
       RoleGuardService
     ],
     data: { 
-     // expectedRole: roles.SuperUser
-     expectedRole: roles.NormalUser
+     expectedRole: roles.SuperAdmin
     } 
   },
   {
@@ -112,8 +106,7 @@ const appRoutes: Routes = [
       RoleGuardService
     ],
     data: { 
-      // expectedRole: roles.SuperUser
-      expectedRole: roles.NormalUser
+      expectedRole: roles.SuperAdmin
     } 
   },
   // {

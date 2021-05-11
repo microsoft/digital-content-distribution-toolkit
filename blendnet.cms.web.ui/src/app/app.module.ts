@@ -25,7 +25,7 @@ import { HttpErrorInterceptor } from './interceptor/http-error.interceptor';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
 import { SpinnerInterceptor } from './interceptor/spinner.interceptor';
 import { BroadcastComponent } from './broadcast/broadcast.component';
-import { SubscriptionComponent } from './subscription/subscription.component';
+import { AddSubscriptionDialog, SubscriptionComponent } from './subscription/subscription.component';
 import { HomeComponent } from './home/home.component';
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
 
@@ -94,7 +94,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     ProcessConfirmDialog,
     BroadcastComponent,
     SubscriptionComponent,
-    HomeComponent
+    HomeComponent,
+    AddSubscriptionDialog
   ],
   imports: [
     HttpClientModule,

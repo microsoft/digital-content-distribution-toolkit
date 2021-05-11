@@ -79,7 +79,7 @@ export class UnprocessedComponent {
       },
       err => {
         this.toastr.error(err);
-        console.log('HTTP Error', err)
+        console.log('HTTP Error', err);
       }
     );
   }

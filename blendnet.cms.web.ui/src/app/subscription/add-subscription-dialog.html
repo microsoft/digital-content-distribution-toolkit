@@ -1,0 +1,39 @@
+<h1 mat-dialog-title></h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput placeholder="Name" 
+    [formControl]="name" required>
+    <mat-error *ngIf="name.invalid">{{nameError()}}</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Price"  
+    [formControl]="price" required>
+    <mat-error *ngIf="price.invalid">{{priceError()}}</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="number" placeholder="Duration (in days)"  
+    [formControl]="durationDays" required>
+    <mat-error *ngIf="durationDays.invalid">{{durationDaysError()}}</mat-error>
+  </mat-form-field>
+  <mat-form-field >
+    <mat-label>Start date</mat-label>
+    <input matInput  [matDatepicker]="startpicker"
+    [formControl]="startDate" required>
+    <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+    <mat-datepicker #startpicker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field >
+    <mat-label>Start date</mat-label>
+    <input matInput  [matDatepicker]="endpicker"
+    [formControl]="endDate" required>
+    <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+    <mat-datepicker #endpicker></mat-datepicker>
+  </mat-form-field>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button></button>
+  <button mat-raised-button cdkFocusInitial color="primary"
+  (click)="createSubscription()" [disabled]= "disableSaveBtn()"
+  >Create</button>
+</div>

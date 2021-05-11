@@ -48,7 +48,7 @@
                         <br>
                         <div>
                             <button mat-raised-button color="primary" 
-                            (click)="showOTPSection()">
+                            (click)="showOTPSection()" [disabled]="contact.invalid">
                             Continue</button>
                         </div>
                     </div>
@@ -73,7 +73,8 @@
                             <mat-error> {{otpVerifyErrorMessage}}</mat-error>   
                        </div>
                         <div>
-                            <button mat-raised-button color="primary" (click)="verifyOTP()">Continue</button>
+                            <button mat-raised-button color="primary" (click)="verifyOTP()"
+                            [disabled]="!otp.value">Continue</button>
                         </div>
                     </div>
                        

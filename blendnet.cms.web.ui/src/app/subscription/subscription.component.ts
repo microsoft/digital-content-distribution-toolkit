@@ -1,72 +1,198 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import {Component, EventEmitter, Inject, Output, ViewChild} from '@angular/core';
+import {MatAccordion} from '@angular/material/expansion';
+import { CPSubscription} from '../models/subscription.model';
+import { SubscriptionService } from '../services/subscription.service';
+import { ToastrService } from 'ngx-toastr';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DialogData } from '../content-provider/content-provider.component';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  color: string;
-}
 
-/** Constants used to fill up our data base. */
-const COLORS: string[] = [
-  'maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple', 'fuchsia', 'lime', 'teal',
-  'aqua', 'blue', 'navy', 'black', 'gray'
+const subscriptions: CPSubscription[] = [
+  {
+    title: "Premium",
+    durationDays: 60,
+    price: 1000,
+    startDate: new Date(),
+    endDate: new Date()
+  },
+  {
+    title: "Basic",
+    durationDays: 30,
+    price: 199,
+    startDate: new Date(),
+    endDate: new Date()
+  },
+  {
+    title: "Free",
+    durationDays: 10,
+    price: 0,
+    startDate: new Date(),
+    endDate: new Date()
+  },
+  {
+    title: "Trial",
+    durationDays: 3,
+    price: 10,
+    startDate: new Date(),
+    endDate: new Date()
+  }
+
 ];
-const NAMES: string[] = [
-  'Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack', 'Charlotte', 'Theodore', 'Isla', 'Oliver',
-  'Isabella', 'Jasper', 'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'
-];
 
-/**
- * @title Data table with sorting, pagination, and filtering.
- */
+
+
 @Component({
   selector: 'app-subscription',
   styleUrls: ['subscription.component.css'],
   templateUrl: 'subscription.component.html',
 })
-export class SubscriptionComponent implements AfterViewInit {
-  displayedColumns: string[] = ['id', 'name', 'progress', 'color'];
-  dataSource: MatTableDataSource<UserData>;
+export class SubscriptionComponent {
+  
+  @ViewChild(MatAccordion) accordion: MatAccordion;
+  cpSubscriptions;
+  today;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-  constructor() {
-    // Create 100 users
-    const users = Array.from({length: 100}, (_, k) => createNewUser(k + 1));
-
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(users);
+  constructor(
+    private subscriptionService: SubscriptionService,
+    private toastr: ToastrService,
+    public dialog: MatDialog
+    
+  ) {
+    // this.cpSubscriptions = subscriptions;
+    var date = new Date();
+    this.today = date.toISOString();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  ngOnInit(): void {
+    this.getSubscriptions();
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  getSubscriptions() {
+    this.subscriptionService.getSubscriptionsForCP().subscribe(
+      res => this.cpSubscriptions = res,
+      err => {
+        this.toastr.error(err);
+    });
+  }
+  save(sub) {
+    this.subscriptionService.editSubscription(sub).subscribe(
+      res => {
+        this.toastr.success("Subscription updated successfully!");
+        this.getSubscriptions();
+      },
+      err => this.toastr.error(err)
+    );
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+  }
+
+  reset(sub) {
+    
+  }
+  disableSaveBtn(sub) {
+    if(!sub.price || !sub.durationDays || sub.durationDays < 1 || sub.durationDays > 365 ||
+      !sub.startDate || !sub.endDate ||
+      sub.endDate <= sub.startDate) {
+        return true;
+      } else {
+        return false;
+      }
+
+  }
+ 
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AddSubscriptionDialog, {
+      width: '30%',
+      data: {}
+    });
+
+    dialogRef.componentInstance.onSubCreate.subscribe(data => {
+      this.toastr.success("Subscription created successfully!");
+      this.getSubscriptions();
+      dialogRef.close();
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
+}
+
+@Component({
+  selector: 'app-add-subscription',
+  templateUrl: 'add-subscription-dialog.html',
+})
+export class AddSubscriptionDialog {
+   
+  name;
+  price;
+  durationDays;
+  startDate;
+  endDate; 
+  @Output() onSubCreate = new EventEmitter<any>();
+
+  constructor(
+    public dialogRef: MatDialogRef<AddSubscriptionDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private subscriptionService: SubscriptionService,
+    private toastr: ToastrService
+    ) {}
+
+  ngOnInit() {
+    this.name =  new FormControl('', [Validators.required]);
+    this.price = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
+    this.durationDays = new FormControl('', [Validators.required, Validators.max(365), Validators.min(1)]);
+    this.startDate = new FormControl(null, [Validators.required]);
+    this.endDate = new FormControl(null, [Validators.required]);
+  }
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  createSubscription() {
+    var sub = {
+      contentProviderId : localStorage.getItem("contentProviderId"),
+      title: this.name.value,
+      durationDays: this.durationDays.value,
+      price: this.price.value,
+      startDate: this.startDate.value,
+      endDate: this.endDate.value
+    }
+    this.subscriptionService.createSubscription(sub).subscribe(
+      res => this.onSubCreate.emit("Subscription created successfully!"),
+      err => this.toastr.error(err)
+    );
+
+  }
+  
+  nameError() {
+    if (this.name.hasError('required')) {
+      return 'You must enter a value';
     }
   }
+
+  priceError() {
+    if (this.price.hasError('required')) {
+      return 'You must enter a value';
+    }
+    return this.price.invalid ? 'Not a valid Price' : '';
+  }
+
+  durationDaysError() {
+    if (this.durationDays.hasError('required')) {
+      return 'You must enter a value';
+    }
+    return this.durationDays.invalid ? 'Not a valid duration' : '';
+
+  }
+
+  disableSaveBtn() {
+    if(!this.price.value || !this.name.value || !this.durationDays.value ||
+      !this.startDate.value || !this.endDate.value) {
+        return true;
+      }
+      return false;
+  }
 }
 
-/** Builds and returns a new User. */
-function createNewUser(id: number): UserData {
-  const name = NAMES[Math.round(Math.random() * (NAMES.length - 1))] + ' ' +
-      NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) + '.';
-
-  return {
-    id: id.toString(),
-    name: name,
-    progress: Math.round(Math.random() * 100).toString(),
-    color: COLORS[Math.round(Math.random() * (COLORS.length - 1))]
-  };
-}

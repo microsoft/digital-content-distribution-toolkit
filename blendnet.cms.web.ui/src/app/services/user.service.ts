@@ -20,4 +20,10 @@ export class UserService {
     this.logger.log(`Fetching user details`);
     return this.http.get(url);
   }
+
+  createUser(user)  {
+    let url = this.baseUrl;
+    this.logger.log(`Creating new user `);
+    return this.http.post(url, user);
+  }
 }
