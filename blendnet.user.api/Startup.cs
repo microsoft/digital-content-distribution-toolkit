@@ -150,7 +150,6 @@ namespace blendnet.user.api
             app.UseCors(C_CORS_POLICYNAME);
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
-            // app.UseSwagger();
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
