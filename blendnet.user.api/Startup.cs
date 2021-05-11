@@ -150,13 +150,18 @@ namespace blendnet.user.api
             app.UseCors(C_CORS_POLICYNAME);
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
+            // app.UseSwagger();
+            app.UseSwagger(c =>
+                {
+                    c.RouteTemplate = "userapi/swagger/{documentName}/swagger.json";
+                });
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlendNet User API V1");
+                c.SwaggerEndpoint("/userapi/swagger/v1/swagger.json", "BlendNet User API V1");
+                c.RoutePrefix = "userapi/swagger";
             });
 
 
