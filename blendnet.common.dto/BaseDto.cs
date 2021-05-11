@@ -15,5 +15,15 @@ namespace blendnet.common.dto
 
         public Guid? ModifiedByByUserId { get; set; }
 
+        /// <summary>
+        /// Created Date
+        /// </summary>
+        public DateTime CreatedDate { get; set; }
+
+        /// <summary>
+        /// Modified Date
+        /// </summary>
+        public DateTime? ModifiedDate { get; set; }
+
     }
 }

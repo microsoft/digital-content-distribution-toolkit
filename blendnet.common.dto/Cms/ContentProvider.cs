@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.common.dto
 {
-    public class ContentProviderDto
+    public class ContentProviderDto:BaseDto
     {
         [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
@@ -32,11 +32,9 @@ namespace blendnet.common.dto
 
         public List<ContentAdministratorDto> ContentAdministrators { get; set; }
 
-        public bool IsActive { get; set; } = true;
+        public DateTime? ActivationDate { get; set; } = null;
 
-        public DateTime? ActivationDate { get; set; }
-
-        public DateTime? DeactivationDate { get; set; }
+        public DateTime? DeactivationDate { get; set; } = null;
 
         public string LogoUrl { get; set; }
 

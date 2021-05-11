@@ -19,13 +19,17 @@ using Microsoft.Extensions.Azure;
 using System.ComponentModel.DataAnnotations;
 using blendnet.cms.api.Common;
 using blendnet.cms.api.Model;
+using Microsoft.AspNetCore.Authorization;
+using blendnet.common.infrastructure.Authentication;
+using blendnet.common.dto.User;
 
 namespace blendnet.cms.api.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class ContentController  : ControllerBase
+    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
+    public class ContentController  : BaseController
     {
         private readonly ILogger _logger;
 
@@ -35,15 +39,21 @@ namespace blendnet.cms.api.Controllers
 
         private IContentRepository _contentRepository;
 
+        private IContentProviderRepository _contentProviderRepository;
+
         private AmsHelper _amsHelper;
 
-        public ContentController(IContentRepository contentRepository,
-                                            ILogger<ContentController> logger,
-                                            IEventBus eventBus,
-                                            IAzureClientFactory<BlobServiceClient> blobClientFactory,
-                                            AmsHelper amshelper)
+        public ContentController(   IContentRepository contentRepository,
+                                    IContentProviderRepository contentProviderRepository,
+                                    ILogger<ContentController> logger,
+                                    IEventBus eventBus,
+                                    IAzureClientFactory<BlobServiceClient> blobClientFactory,
+                                    AmsHelper amshelper)
+            :base(contentProviderRepository)
         {
             _contentRepository = contentRepository;
+
+            _contentProviderRepository = contentProviderRepository;
 
             _cmsBlobServiceClient = blobClientFactory.CreateClient(ApplicationConstants.StorageInstanceNames.CMSStorage);
 
@@ -63,12 +73,20 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpGet("{contentId:guid}", Name = nameof(GetContent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult<Content>> GetContent(Guid contentId)
         {
             var content = await _contentRepository.GetContentById(contentId);
 
             if (content != default(Content))
             {
+                ActionResult actionResult = await CheckAccess(content.ContentProviderId);
+
+                if (!(actionResult is OkResult))
+                {
+                    return actionResult;
+                }
+
                 return Ok(content);
             }
             else
@@ -84,8 +102,16 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult> UploadContent(IFormFile file, Guid contentProviderId)
         {
+            ActionResult actionResult = await CheckAccess(contentProviderId);
+
+            if (!(actionResult is OkResult))
+            {
+                return actionResult;
+            }
+
             // Check for Json Format
             if (! ValidateFileExtension(file))
             {
@@ -148,6 +174,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpDelete("{contentId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult> DeleteContent(Guid contentId)
         {
             Content contentToDelete = await _contentRepository.GetContentById(contentId);
@@ -155,6 +182,13 @@ namespace blendnet.cms.api.Controllers
             if (contentToDelete == null)
             {
                 return NotFound();
+            }
+
+            ActionResult actionResult = await CheckAccess(contentToDelete.ContentProviderId);
+
+            if (!(actionResult is OkResult))
+            {
+                return actionResult;
             }
 
             if (!(  contentToDelete.ContentUploadStatus == ContentUploadStatus.UploadFailed || 
@@ -198,6 +232,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpGet("{contentId:guid}/token", Name = nameof(GetContentToken))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<string>> GetContentToken(Guid contentId)
         {
             Content content = await _contentRepository.GetContentById(contentId);
@@ -220,8 +255,16 @@ namespace blendnet.cms.api.Controllers
 
         [HttpPost("{contentProviderId:guid}/contentlist")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult<Content>> GetContentByContentProviderId(Guid contentProviderId,ContentStatusFilter statusFilter)
         {
+            ActionResult actionResult = await CheckAccess(contentProviderId);
+
+            if (!(actionResult is OkResult))
+            {
+                return actionResult;
+            }
+
             List<Content> contentlist = await _contentRepository.GetContentByContentProviderId(contentProviderId,statusFilter);
 
             if (contentlist.Count() > 0)
@@ -241,6 +284,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("transform", Name = nameof(TransformContent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> TransformContent(TransformContentRequest transformContentRequest)
         {
             if (transformContentRequest == null || 
@@ -267,7 +311,9 @@ namespace blendnet.cms.api.Controllers
                          content.ContentTransformStatus == ContentTransformStatus.TransformCancelled))
                     {
                         content.ContentTransformStatus = ContentTransformStatus.TransformSubmitted;
-                        
+
+                        content.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
+
                         content.ModifiedDate = DateTime.UtcNow;
 
                         await _contentRepository.UpdateContent(content);
@@ -304,6 +350,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("broadcast", Name = nameof(BroadcastContent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> BroadcastContent(BroadcastContentRequest broadcastContentRequest)
         {
             if (broadcastContentRequest == null ||
@@ -340,6 +387,8 @@ namespace blendnet.cms.api.Controllers
                     {
                         content.ContentBroadcastStatus = ContentBroadcastStatus.BroadcastSubmitted;
 
+                        content.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
+
                         content.ModifiedDate = DateTime.UtcNow;
 
                         await _contentRepository.UpdateContent(content);
@@ -374,7 +423,6 @@ namespace blendnet.cms.api.Controllers
             return Ok(errorList);
 
         }
-
 
 
         #endregion
@@ -413,6 +461,10 @@ namespace blendnet.cms.api.Controllers
                 content.SetIdentifiers();
 
                 content.CreatedDate = DateTime.UtcNow;
+
+                content.CreatedByUserId = UserClaimData.GetUserId(this.User.Claims);
+
+                content.ModifiedByByUserId = null;
 
                 content.ContentProviderId = contentProviderId;
 
@@ -719,7 +771,6 @@ namespace blendnet.cms.api.Controllers
 
             return invlidContentIds;
         }
-
         #endregion
     }
 }
