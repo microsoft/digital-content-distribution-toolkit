@@ -1,7 +1,9 @@
 ﻿using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
+using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,9 +16,9 @@ namespace blendnet.cms.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class ContentProviderController : ControllerBase
+    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
+    public class ContentProviderController : BaseController
     {
-
         private readonly ILogger _logger;
 
         private IEventBus _eventBus;
@@ -26,6 +28,7 @@ namespace blendnet.cms.api.Controllers
         public ContentProviderController(IContentProviderRepository contentProviderRepository,
                                             ILogger<ContentProviderController> logger,
                                             IEventBus eventBus)
+            : base(contentProviderRepository)
         {
             _contentProviderRepository = contentProviderRepository;
 
@@ -43,9 +46,29 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult<List<ContentProviderDto>>> GetContentProviders()
         {
             var contentProviders = await _contentProviderRepository.GetContentProviders();
+
+            List<ContentProviderDto> contentProviderToReturn = new List<ContentProviderDto>();
+
+            //if the user is not super admin filter the list
+            if (!this.User.IsInRole(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin))
+            {
+                if (contentProviders != null && contentProviders.Count() > 0)
+                {
+                    foreach (ContentProviderDto contentProvider in contentProviders)
+                    {
+                        if (base.IsValidContentAdmin(contentProvider))
+                        {
+                            contentProviderToReturn.Add(contentProvider);
+                        }
+                    }
+                }
+
+                return Ok(contentProviderToReturn);
+            }
 
             return Ok(contentProviders);
         }
@@ -57,8 +80,16 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpGet("{contentProviderId:guid}", Name = nameof(GetContentProvider))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult<ContentProviderDto>> GetContentProvider(Guid contentProviderId)
         {
+            ActionResult actionResult = await CheckAccess(contentProviderId);
+
+            if (!(actionResult is OkResult))
+            {
+                return actionResult;
+            }
+
             var contentProvider = await _contentProviderRepository.GetContentProviderById(contentProviderId);
 
             if (contentProvider != default(ContentProviderDto))
@@ -77,10 +108,20 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<string>> CreateContentProvider(ContentProviderDto contentProvider)
         {
             //generate ids for content provider and administrator
             contentProvider.SetIdentifiers();
+            
+            contentProvider.CreatedByUserId = UserClaimData.GetUserId(this.User.Claims);
+
+            contentProvider.CreatedDate = DateTime.UtcNow;
+
+            contentProvider.ModifiedByByUserId = null;
+
+            contentProvider.ModifiedDate = null;
+
             contentProvider.Type = ContentProviderContainerType.ContentProvider;
 
             var contentProviderId = await _contentProviderRepository.CreateContentProvider(contentProvider);
@@ -106,10 +147,16 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateContentProvider(Guid contentProviderId, ContentProviderDto contentProvider)
         {
             contentProvider.Id = contentProviderId;
+
             contentProvider.Type = ContentProviderContainerType.ContentProvider;
+
+            contentProvider.ModifiedDate = DateTime.UtcNow;
+
+            contentProvider.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
 
             int statusCode = await _contentProviderRepository.UpdateContentProvider(contentProvider);
 
@@ -130,6 +177,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpDelete("{contentProviderId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> DeleteContentProvider(Guid contentProviderId)
         {
             int statusCode = await _contentProviderRepository.DeleteContentProvider(contentProviderId);
@@ -151,6 +199,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/activate")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> ActivateContentProvider(Guid contentProviderId)
         {
             return await ActivateDeactivateContentProvider(contentProviderId, true);
@@ -164,11 +213,36 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/deactivate")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> DeactivateContentProvider(Guid contentProviderId)
         {
             return await ActivateDeactivateContentProvider(contentProviderId, false);
         }
 
+        /// <summary>
+        /// Generates SAS token for the content provider
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <returns></returns>
+        [HttpGet("{contentProviderId:guid}/generateSaS")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<SasTokenDto>> GenerateToken(Guid contentProviderId)
+        {
+            SasTokenDto sasUri = await _contentProviderRepository.GenerateSaSToken(contentProviderId);
+
+            if (sasUri != null)
+            {
+                return Ok(sasUri);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        #endregion
+
+        #region Private Methods
         /// <summary>
         /// Private method to support activate and deactivate content provider
         /// </summary>
@@ -184,38 +258,19 @@ namespace blendnet.cms.api.Controllers
                 if (activate)
                 {
                     contentProvider.ActivationDate = DateTime.UtcNow;
-                    contentProvider.IsActive = true;
                 }
                 else
                 {
                     contentProvider.DeactivationDate = DateTime.UtcNow;
-                    contentProvider.IsActive = false;
                 }
+
+                contentProvider.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
+
+                contentProvider.ModifiedDate = DateTime.UtcNow;
 
                 await _contentProviderRepository.UpdateContentProvider(contentProvider);
 
                 return NoContent();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        /// <summary>
-        /// Generates SAS token for the content provider
-        /// </summary>
-        /// <param name="contentProviderId"></param>
-        /// <returns></returns>
-        [HttpGet("{contentProviderId:guid}/generateSaS")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<SasTokenDto>> GenerateToken(Guid contentProviderId)
-        {
-            SasTokenDto sasUri = await _contentProviderRepository.GenerateSaSToken(contentProviderId);
-
-            if (sasUri != null)
-            {
-                return Ok(sasUri);
             }
             else
             {

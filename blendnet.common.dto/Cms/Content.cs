@@ -10,7 +10,7 @@ namespace blendnet.common.dto.Cms
     /// <summary>
     /// Represent a Media Content and Attachment Files
     /// </summary>
-    public class Content
+    public class Content:BaseDto
     {
         /// <summary>
         /// Unique Content Id
@@ -129,16 +129,6 @@ namespace blendnet.common.dto.Cms
         /// List of Attachments
         /// </summary>
         public List<Attachment> Attachments { get; set; }
-
-        /// <summary>
-        /// Created Date
-        /// </summary>
-        public DateTime CreatedDate { get; set; }
-
-        /// <summary>
-        /// Modified Date
-        /// </summary>
-        public DateTime ModifiedDate { get; set; }
 
         /// <summary>
         /// Content Upload Status
