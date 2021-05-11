@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "blendnet.retailer.listener": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
