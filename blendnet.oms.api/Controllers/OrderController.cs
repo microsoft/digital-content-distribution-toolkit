@@ -360,7 +360,7 @@ namespace blendnet.oms.api.Controllers
         /// <param name="phoneNumber"></param>
         /// <param name="orderFilter"></param>
         /// <returns></returns>
-        [HttpPost("/orderlist")]
+        [HttpPost("orderlist")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<List<Order>>> GetOrder(OrderStatusFilter orderFilter)
         {
