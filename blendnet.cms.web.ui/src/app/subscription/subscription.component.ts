@@ -1,46 +1,10 @@
 import {Component, EventEmitter, Inject, Output, ViewChild} from '@angular/core';
 import {MatAccordion} from '@angular/material/expansion';
-import { CPSubscription} from '../models/subscription.model';
 import { SubscriptionService } from '../services/subscription.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogData } from '../content-provider/content-provider.component';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-
-
-const subscriptions: CPSubscription[] = [
-  {
-    title: "Premium",
-    durationDays: 60,
-    price: 1000,
-    startDate: new Date(),
-    endDate: new Date()
-  },
-  {
-    title: "Basic",
-    durationDays: 30,
-    price: 199,
-    startDate: new Date(),
-    endDate: new Date()
-  },
-  {
-    title: "Free",
-    durationDays: 10,
-    price: 0,
-    startDate: new Date(),
-    endDate: new Date()
-  },
-  {
-    title: "Trial",
-    durationDays: 3,
-    price: 10,
-    startDate: new Date(),
-    endDate: new Date()
-  }
-
-];
-
-
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-subscription',
@@ -90,7 +54,7 @@ export class SubscriptionComponent {
     
   }
   disableSaveBtn(sub) {
-    if(!sub.price || !sub.durationDays || sub.durationDays < 1 || sub.durationDays > 365 ||
+    if(!sub.price || sub.price.value < 0 || !sub.durationDays || sub.durationDays.value < 1 || sub.durationDays.value > 365 ||
       !sub.startDate || !sub.endDate ||
       sub.endDate <= sub.startDate) {
         return true;

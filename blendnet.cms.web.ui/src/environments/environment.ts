@@ -7,9 +7,9 @@ export const environment = {
   contentApiUrl: '/Content',
   userApiUrl: '/Identity',
   dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
-  kaizalaApi0: "/kaizala0",
-  kaizalaApi1: "/kaizala1",
-  kaizalaApi2: "/kaizala2",
+  kaizalaApi0: "/Kaizala0",
+  kaizalaApi1: "/Kaizala1",
+  kaizalaApi2: "/Kaizala2",
   appName : "com.microsoft.mobile.polymer.mishtu",
   widewineTokenPrefix: "&widevine=true&token=Bearer%3D",
     filters : [

@@ -78,6 +78,7 @@ export class UnprocessedComponent {
 
       },
       err => {
+        this.dataSource = this.createDataSource([]);
         this.toastr.error(err);
         console.log('HTTP Error', err);
       }

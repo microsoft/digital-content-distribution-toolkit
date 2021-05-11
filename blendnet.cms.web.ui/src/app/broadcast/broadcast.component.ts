@@ -71,6 +71,7 @@ export class BroadcastComponent {
       this.selectedContents=0;
     },
     err => {
+      this.dataSource = this.createDataSource([]);
       this.toastr.error(err);
       console.log('HTTP Error', err)
     }

@@ -127,11 +127,11 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
       useClass: HttpErrorInterceptor,
       multi: true
     },
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: JwtInterceptor,
-    //   multi: true
-    // },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: SpinnerInterceptor,
