@@ -160,7 +160,7 @@ namespace blendnet.user.api
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/userapi/swagger/v1/swagger.json", "BlendNet User API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlendNet User API V1");
             });
 
 
