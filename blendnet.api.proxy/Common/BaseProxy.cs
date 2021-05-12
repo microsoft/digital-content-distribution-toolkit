@@ -1,9 +1,11 @@
 ﻿using blendnet.common.dto;
 using blendnet.common.dto.Identity;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -23,6 +25,8 @@ namespace blendnet.api.proxy.Common
 
         private ILogger _logger;
 
+        private readonly IDistributedCache _cache;
+
         /// <summary>
         /// Base Proxy Class
         /// </summary>
@@ -31,13 +35,16 @@ namespace blendnet.api.proxy.Common
         /// <param name="logger"></param>
         public BaseProxy(IConfiguration configuration, 
                          IHttpClientFactory clientFactory,
-                         ILogger logger)
+                         ILogger logger,
+                         IDistributedCache cache)
         {
             _configuration = configuration;
 
             _kaizalaIdentityHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT);
 
             _logger = logger;
+
+            _cache = cache;
         }
        
 
@@ -48,42 +55,74 @@ namespace blendnet.api.proxy.Common
         /// <returns></returns>
         protected async Task<string> GetServiceAccessToken()
         {
-            Uri keyVaultUrl = new Uri($"https://{_configuration["KeyVaultName"]}.vault.azure.net/");
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
-            string kaizalaIdentityBaseUrl = _configuration["KaizalaIdentityBaseUrl"];
-
-            string certificateName = _configuration["CloudApiServiceAccountCertName"];
+            bool tokenFromCache = false;
 
             string serviceId = _configuration["CloudApiServiceAccountId"];
 
-            string kaizalaIdentityAppName = _configuration["KaizalaIdentityAppName"];
+            string accessTokenCacheKey = $"{serviceId}{ApplicationConstants.DistributedCacheKeyPrefix.SERVICEACCOUNTKEY}";
 
-            int tokenExpiry = _configuration.GetValue<int>("CloudApiAccessTokenExpiryInHrs");
+            string accessTokenFromCache = await _cache.GetStringAsync(accessTokenCacheKey);
 
-            string requestData = $"?serviceId={serviceId}&appName={kaizalaIdentityAppName}&tls={tokenExpiry}";
+            string accessTokenToReturn = string.Empty;
 
-            string signedData = await CertificateHelper.GetSignedDataFromCertificate(keyVaultUrl, certificateName, requestData);
-
-            string url = $"{kaizalaIdentityBaseUrl}v1/GetAccessTokenForPartnerService{requestData}";
-
-            _kaizalaIdentityHttpClient.DefaultRequestHeaders.Remove("Authorization");
-
-            _kaizalaIdentityHttpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", signedData);
-
-            GetAccessTokenForPartnerServiceResponse successResponse = null;
-
-            try
+            if (!string.IsNullOrEmpty(accessTokenFromCache))
             {
-                successResponse = await _kaizalaIdentityHttpClient.Get<GetAccessTokenForPartnerServiceResponse>(url,string.Empty);
+                tokenFromCache = true;
+
+                accessTokenToReturn =  accessTokenFromCache;
             }
-            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            else
             {
-                _logger.LogInformation($"401 from GetAccessTokenForPartnerService - Request Data {requestData} - Signed Data - {signedData}");
+                Uri keyVaultUrl = new Uri($"https://{_configuration["KeyVaultName"]}.vault.azure.net/");
+
+                string kaizalaIdentityBaseUrl = _configuration["KaizalaIdentityBaseUrl"];
+
+                string certificateName = _configuration["CloudApiServiceAccountCertName"];
+
+                string kaizalaIdentityAppName = _configuration["KaizalaIdentityAppName"];
+
+                int tokenExpiry = _configuration.GetValue<int>("CloudApiAccessTokenExpiryInHrs");
+
+                string requestData = $"?serviceId={serviceId}&appName={kaizalaIdentityAppName}&tls={tokenExpiry}";
+
+                string signedData = await CertificateHelper.GetSignedDataFromCertificate(keyVaultUrl, certificateName, requestData);
+
+                string url = $"{kaizalaIdentityBaseUrl}v1/GetAccessTokenForPartnerService{requestData}";
+
+                _kaizalaIdentityHttpClient.DefaultRequestHeaders.Remove("Authorization");
+
+                _kaizalaIdentityHttpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", signedData);
+
+                GetAccessTokenForPartnerServiceResponse successResponse = null;
+
+                try
+                {
+                    successResponse = await _kaizalaIdentityHttpClient.Get<GetAccessTokenForPartnerServiceResponse>(url, string.Empty);
+
+                    DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
+
+                    //let the token expire 15 minutes in advance 
+                    options.SetAbsoluteExpiration(TimeSpan.FromHours(tokenExpiry - 0.25));
+
+                    //Set the token to cache
+                    await _cache.SetStringAsync(accessTokenCacheKey, successResponse.AccessToken,options);
+                }
+                catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    _logger.LogInformation($"401 from GetAccessTokenForPartnerService - Request Data {requestData} - Signed Data - {signedData}");
+                }
+
+                accessTokenToReturn = successResponse.AccessToken;
             }
 
-            return successResponse.AccessToken;
+            stopwatch.Stop();
+
+            _logger.LogInformation($" Time taken to get service access token ({tokenFromCache}) for {serviceId} is {stopwatch.ElapsedMilliseconds} (ms)");
+
+            return accessTokenToReturn;
+
         }
-
-       
     }
 }

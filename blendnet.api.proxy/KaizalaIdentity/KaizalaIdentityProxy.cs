@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Diagnostics;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace blendnet.api.proxy.KaizalaIdentity
 {
@@ -40,8 +41,9 @@ namespace blendnet.api.proxy.KaizalaIdentity
         /// <param name="configuration"></param>
         public KaizalaIdentityProxy(IHttpClientFactory clientFactory,
                                     IConfiguration configuration,
-                                    ILogger<KaizalaIdentityProxy> logger)
-        : base(configuration, clientFactory, logger)
+                                    ILogger<KaizalaIdentityProxy> logger,
+                                    IDistributedCache cache)
+        : base(configuration, clientFactory, logger, cache)
         {
             _kaizalaIdentityHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT);
 

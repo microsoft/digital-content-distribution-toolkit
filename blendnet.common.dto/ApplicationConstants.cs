@@ -140,6 +140,11 @@ namespace blendnet.common.dto
             public const string Final = "fnl";
         }
 
+        public struct DistributedCacheKeyPrefix
+        {
+            public const string SERVICEACCOUNTKEY = "-SVCACCT";
+        }
+
 
         public const string IngestTemplateFileName = "ingest_template.xml";
 

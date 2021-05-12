@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.2.0-beta.5" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />

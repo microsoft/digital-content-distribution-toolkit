@@ -122,6 +122,9 @@ namespace blendnet.cms.listener
                     //Configure Http Clients
                     ConfigureHttpClients(hostContext,services);
 
+                    //Configure Distribute Cache
+                    ConfigureDistributedCache(hostContext, services);
+
                     //Configure Repository
                     services.AddTransient<IContentRepository, ContentRepository>();
 
@@ -248,6 +251,20 @@ namespace blendnet.cms.listener
             {
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
+        }
+
+        /// <summary>
+        /// Configures Redis as distributed cache
+        /// </summary>
+        /// <param name="services"></param>
+        private static void ConfigureDistributedCache(HostBuilderContext hostContext, IServiceCollection services)
+        {
+            string redisCacheConnectionString = hostContext.Configuration.GetValue<string>("RedisCacheConnectionString");
+
+            services.AddStackExchangeRedisCache(options => {
+                options.Configuration = redisCacheConnectionString;
+            });
+
         }
     }
 }
