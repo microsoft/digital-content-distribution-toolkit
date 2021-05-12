@@ -159,6 +159,9 @@ namespace blendnet.oms.api
 
             //Configure Http Clients
             ConfigureHttpClients(services);
+
+            //Configure Redis Cache
+            ConfigureDistributedCache(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -252,6 +255,20 @@ namespace blendnet.oms.api
 
                 return client;
             });
+        }
+
+        /// <summary>
+        /// Configures Redis as distributed cache
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureDistributedCache(IServiceCollection services)
+        {
+            string redisCacheConnectionString = Configuration.GetValue<string>("RedisCacheConnectionString");
+
+            services.AddStackExchangeRedisCache(options => {
+                options.Configuration = redisCacheConnectionString;
+            });
+
         }
     }
 }

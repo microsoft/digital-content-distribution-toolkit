@@ -42,6 +42,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.user.api", "blendnet.user.api\blendnet.user.api.csproj", "{943E1E5F-EA77-44D3-BC53-9A275AC45813}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.user.repository", "blendnet.user.repository\blendnet.user.repository.csproj", "{C79B83A5-BAFA-4DB5-B49C-1B8DC0B3E833}"
+	ProjectSection(ProjectDependencies) = postProject
+		{679DF957-5786-4884-BA05-7F2110AF1824} = {679DF957-5786-4884-BA05-7F2110AF1824}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.retailer.listener", "blendnet.retailer.listener\blendnet.retailer.listener.csproj", "{8FBA90E4-ADDC-47FC-A8A6-19A26E91E8EC}"
 EndProject

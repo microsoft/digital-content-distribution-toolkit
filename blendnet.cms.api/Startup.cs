@@ -174,6 +174,9 @@ namespace blendnet.cms.api
             //Configure Http Clients
             ConfigureHttpClients(services);
 
+            //Configure Redis Cache
+            ConfigureDistributedCache(services);
+
             // Configure mapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -291,6 +294,20 @@ namespace blendnet.cms.api
             {
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
+        }
+
+        /// <summary>
+        /// Configures Redis as distributed cache
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureDistributedCache(IServiceCollection services)
+        {
+            string redisCacheConnectionString = Configuration.GetValue<string>("RedisCacheConnectionString");
+
+            services.AddStackExchangeRedisCache(options => {
+                options.Configuration = redisCacheConnectionString;
+            });
+
         }
     }
 }
