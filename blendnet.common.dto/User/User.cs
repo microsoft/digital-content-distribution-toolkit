@@ -1,28 +1,33 @@
 ﻿using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace blendnet.common.dto.User
 {
     /// <summary>
+    /// Channel Info
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum Channel
+    {
+        Customer = 0,
+        Retailer = 1,
+        Portal = 2
+    }
+
+    /// <summary>
     /// User
     /// </summary>
-    public class User
+    public class User : PersonDto
     {
-        [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        /// <summary>
+        /// Channel ID who creates the user
+        /// </summary>
+        public Channel ChannelId { get; set; }
 
-        public string PhoneNumber { get; set; }
-
-        public string UserName { get; set; }
-
-        public DateTime CreatedDate { get; set; }
-
-        public DateTime ModifiedDate { get; set; }
-
+        /// <summary>
+        /// Refferal information of the user
+        /// </summary>
+        public ReferralDto ReferralInfo { get; set; }
     }
 }

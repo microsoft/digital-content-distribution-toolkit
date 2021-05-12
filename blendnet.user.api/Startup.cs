@@ -1,4 +1,5 @@
 using blendnet.api.proxy.KaizalaIdentity;
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
@@ -122,7 +123,7 @@ namespace blendnet.user.api
             //Configure Services
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<KaizalaIdentityProxy>();
-
+            services.AddTransient<RetailerProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -209,8 +210,7 @@ namespace blendnet.user.api
                            .Build();
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
-
-                //ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Order, "/phoneNumber").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.User, "/phoneNumber").Result;
 
                 return client;
             });

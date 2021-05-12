@@ -11,6 +11,7 @@ namespace blendnet.common.dto
             public const string ContentProvider = "ContentProvider";
             public const string Content = "Content";
             public const string Order = "Order";
+            public const string User = "User";
         }
 
         public struct Policy
@@ -172,6 +173,14 @@ namespace blendnet.common.dto
             public const string COMMAND_ID = "{COMMAND_ID}";
             public const string CONTENT_HIERARCHY = "{CONTENT_HIERARCHY}";
             public const string FILTERS = "{FILTERS}";
+        }
+
+        /// <summary>
+        /// Date and Time Formats
+        /// </summary>
+        public struct DateTimeFormats
+        {
+            public const string FormatYYYYDDMM = "yyyymmdd";
         }
     }
 }
