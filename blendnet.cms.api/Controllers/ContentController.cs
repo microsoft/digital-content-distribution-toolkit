@@ -112,14 +112,16 @@ namespace blendnet.cms.api.Controllers
                 return actionResult;
             }
 
-            // Check for Json Format
-            if (! ValidateFileExtension(file))
-            {
-                string info = "File not found or not in Json format";
-                return BadRequest(info);
-            }
-
+            
             List<string> errorDetails = new List<string>();
+
+            // Check for Json Format
+            if (!ValidateFileExtension(file))
+            {
+                errorDetails.Add("File not found or not in Json format");
+                
+                return BadRequest(errorDetails);
+            }
 
             // Convert Json to list of Contents.
             List<Content> contents = ValidateJsonSchema(file, errorDetails);
