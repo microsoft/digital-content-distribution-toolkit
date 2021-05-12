@@ -22,7 +22,7 @@ namespace blendnet.cms.api.Controllers
 
         private IContentProviderRepository _contentProviderRepository;
 
-        public BrowseSubscriptionController(ILogger<BrowseContentController> logger, IContentProviderRepository contentProviderRepository)
+        public BrowseSubscriptionController(ILogger<BrowseSubscriptionController> logger, IContentProviderRepository contentProviderRepository)
         {
             _logger = logger;
 

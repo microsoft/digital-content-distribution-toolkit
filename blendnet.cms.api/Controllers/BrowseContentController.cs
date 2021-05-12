@@ -23,11 +23,15 @@ namespace blendnet.cms.api.Controllers
 
         private IContentRepository _contentRepository;
 
-        public BrowseContentController(ILogger<BrowseContentController> logger, IContentRepository contentRepository, IMapper mapper)
+        private IContentProviderRepository _contentProviderRepository;
+
+        public BrowseContentController(ILogger<BrowseContentController> logger, IContentRepository contentRepository, IContentProviderRepository contentProviderRepository, IMapper mapper)
         {
             _logger = logger;
 
             _contentRepository = contentRepository;
+
+            _contentProviderRepository = contentProviderRepository;
 
             _mapper = mapper;
         }
@@ -84,6 +88,16 @@ namespace blendnet.cms.api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("contentproviders")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<ContentProviderItem>> GetContentProviders()
+        {
+            var contentProviders = await _contentProviderRepository.GetContentProviderItems();
+
+            return Ok(contentProviders);
+        }
+
 
         #endregion
 
