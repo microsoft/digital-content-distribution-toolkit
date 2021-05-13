@@ -4,6 +4,7 @@ using blendnet.retailer.repository.CosmosRepository;
 using blendnet.retailer.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -122,7 +123,13 @@ namespace blendnet.retailer.api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UsePathBase("/retailerapi");
+            //app.UsePathBase("/retailerapi");
+
+            app.Use((context, next) =>
+            {
+                context.Request.PathBase = new PathString("/retailerapi");
+                return next();
+            });
 
             if (env.IsDevelopment())
             {
