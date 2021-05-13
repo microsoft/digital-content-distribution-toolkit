@@ -125,9 +125,19 @@ namespace blendnet.retailer.api
         {
             //app.UsePathBase("/retailerapi");
 
+            //app.Use((context, next) =>
+            //{
+            //    context.Request.PathBase = new PathString("/retailerapi");
+            //    return next();
+            //});
+
             app.Use((context, next) =>
             {
-                context.Request.PathBase = new PathString("/retailerapi");
+                if (context.Request.Path.StartsWithSegments("/retailerapi", out var remainder))
+                {
+                    context.Request.Path = remainder;
+                }
+
                 return next();
             });
 
