@@ -16,9 +16,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AddContentProviderComponent } from './add-content-provider/add-content-provider.component';
-import { b2cPolicies, apiConfig } from './b2c-config';
-import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
-import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalRedirectComponent, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { LoginComponent } from './login/login.component';
 import { ToastrModule } from 'ngx-toastr';
 import { HttpErrorInterceptor } from './interceptor/http-error.interceptor';
@@ -28,55 +25,6 @@ import { BroadcastComponent } from './broadcast/broadcast.component';
 import { AddSubscriptionDialog, SubscriptionComponent } from './subscription/subscription.component';
 import { HomeComponent } from './home/home.component';
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
-
-
-const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
-
-export function loggerCallback(logLevel: LogLevel, message: string) {
-  console.log(message);
-}
-
-export function MSALInstanceFactory(): IPublicClientApplication {
-  return new PublicClientApplication({
-    auth: {
-      clientId: '8c495645-d008-4371-9128-718b766d7f76',
-      authority: b2cPolicies.authorities.signUpSignIn.authority,
-      redirectUri: '/',
-      postLogoutRedirectUri: '/',
-      knownAuthorities: [b2cPolicies.authorityDomain]
-    },
-    cache: {
-      cacheLocation: BrowserCacheLocation.LocalStorage,
-      storeAuthStateInCookie: isIE, // set to true for IE 11
-    },
-    system: {
-      loggerOptions: {
-        loggerCallback,
-        logLevel: LogLevel.Info,
-        piiLoggingEnabled: false
-      }
-    }
-  });
-}
-
-export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
-  const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set(apiConfig.uri, apiConfig.scopes);
-
-  return {
-    interactionType: InteractionType.Redirect,
-    protectedResourceMap,
-  };
-}
-
-export function MSALGuardConfigFactory(): MsalGuardConfiguration {
-  return {
-    interactionType: InteractionType.Redirect,
-    authRequest: {
-      scopes: [...apiConfig.scopes],
-    },
-  };
-}
 
 @NgModule({
   declarations: [
@@ -107,7 +55,6 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MatNativeDateModule,
     ReactiveFormsModule,
     FlexLayoutModule ,
-    MsalModule,
     ToastrModule.forRoot({
       timeOut: 3500,
       positionClass: 'toast-top-center',
@@ -117,11 +64,6 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   ],
   exports: [RouterModule],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalInterceptor,
-      multi: true
-    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
@@ -136,23 +78,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
       provide: HTTP_INTERCEPTORS,
       useClass: SpinnerInterceptor,
       multi: true,
-    },
-    {
-      provide: MSAL_INSTANCE,
-      useFactory: MSALInstanceFactory
-    },
-    {
-      provide: MSAL_GUARD_CONFIG,
-      useFactory: MSALGuardConfigFactory
-    },
-    {
-      provide: MSAL_INTERCEPTOR_CONFIG,
-      useFactory: MSALInterceptorConfigFactory
-    },
-    MsalService,
-    MsalGuard,
-    MsalBroadcastService
+    }
   ],
-  bootstrap: [AppComponent, MsalRedirectComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

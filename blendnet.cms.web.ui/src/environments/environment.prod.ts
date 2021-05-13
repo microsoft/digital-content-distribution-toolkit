@@ -47,6 +47,11 @@ export const environment = {
   ],
   countryCodes: [
     {value: '+91', viewValue: 'India (+91)'}
-  ]
+  ],
+  roles : {
+    "SuperAdmin" : "SuperAdmin",
+    "ContentAdmin": "ContentAdmin",
+    "User" : "User"
+  }
  };
 

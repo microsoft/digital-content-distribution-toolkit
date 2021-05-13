@@ -24,21 +24,8 @@ export class ContentService {
     let url = this.baseUrl + "/"+ localStorage.getItem("contentProviderId") + "/contentlist";
     this.logger.log(`Fetching content by contentprovider and filters`);
     return this.http.post(url, unprocessedContentFilters, { observe: 'response'});
-  //   this.unprocessedContent$ = timer(1, 3000).pipe(
-  //     switchMap(() => this.http.get<Content[]>(url)),
-  //     retry(),
-  //     share(),
-  //     takeUntil(this.stopPolling)
-  //  );
   }
-  // getAllUnprocessedContent() : Observable<Content[]>{
-  //   return this.unprocessedContent$;
-  // }
-
-  // ngOnDestroy() {
-  //   this.stopPolling.next();
-  // }
-
+ 
   uploadContent(formData){
     let url = this.baseUrl + "/"+ localStorage.getItem("contentProviderId") ;
     this.logger.log(`Uploading Content JSON`);

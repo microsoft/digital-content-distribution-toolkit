@@ -1,6 +1,5 @@
 <mat-toolbar color="primary" class="cms-toolbar">
 	<span>
-		<!-- <div class="cms-app-name" *ngIf="!showLoginDisplay"> -->
 		<div class="cms-app-name" *ngIf="currentUser && hasMenuAccess">
 		<h1>Content Provider : {{selectedCPName}}</h1>
 	</div></span>
@@ -8,13 +7,10 @@
 	<span><h1>BlendNet CMS</h1></span>
   <span class="cms-menu-spacer"></span>
   
-  <!-- <button matTooltip="Login" *ngIf="!loginDisplay" (click)="login()">Login</button> -->
-  <!-- <button mat-icon-button  matTooltip="Logout" *ngIf="!showLoginDisplay" (click)="logout()"><mat-icon>logout</mat-icon></button> -->
   <button mat-icon-button  matTooltip="Logout" *ngIf="currentUser" (click)="logout()"><mat-icon>logout</mat-icon></button>
 
 </mat-toolbar>
 <mat-sidenav-container class="cms-container" autosize >
-	<!-- <mat-sidenav  *ngIf="!showLoginDisplay" #sidenav class="cms-sidenav" mode="side" opened="true" >	 -->
 	<mat-sidenav  *ngIf="currentUser && hasMenuAccess" #sidenav class="cms-sidenav" mode="side" opened="true" >	
 		<mat-nav-list>
 			<mat-list-item class="parent">
@@ -49,7 +45,6 @@
 </mat-sidenav>
 
 	<div class="cms-sidenav-content">
-		<!-- <router-outlet *ngIf="!isIframe"></router-outlet> -->
 		<router-outlet></router-outlet>
 	</div>
 
