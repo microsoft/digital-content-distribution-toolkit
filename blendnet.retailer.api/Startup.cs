@@ -131,15 +131,47 @@ namespace blendnet.retailer.api
             //    return next();
             //});
 
-            app.Use((context, next) =>
+            //app.Use((context, next) =>
+            //{
+            //    if (context.Request.Path.StartsWithSegments("/retailerapi", out var remainder))
+            //    {
+            //        context.Request.Path = remainder;
+            //    }
+
+            //    return next();
+            //});
+
+            app.Run(async (context) =>
             {
-                if (context.Request.Path.StartsWithSegments("/retailerapi", out var remainder))
+                context.Response.ContentType = "text/plain";
+
+                // Request method, scheme, and path
+                await context.Response.WriteAsync(
+                    $"Request Method: {context.Request.Method}{Environment.NewLine}");
+                await context.Response.WriteAsync(
+                    $"Request Scheme: {context.Request.Scheme}{Environment.NewLine}");
+                await context.Response.WriteAsync(
+                    $"Request Path: {context.Request.Path}{Environment.NewLine}");
+                await context.Response.WriteAsync(
+                    $"Request Path Base: {context.Request.PathBase}{Environment.NewLine}");
+
+
+                // Headers
+                await context.Response.WriteAsync($"Request Headers:{Environment.NewLine}");
+
+                foreach (var header in context.Request.Headers)
                 {
-                    context.Request.Path = remainder;
+                    await context.Response.WriteAsync($"{header.Key}: " +
+                        $"{header.Value}{Environment.NewLine}");
                 }
 
-                return next();
+                await context.Response.WriteAsync(Environment.NewLine);
+
+                // Connection: RemoteIp
+                await context.Response.WriteAsync(
+                    $"Request RemoteIp: {context.Connection.RemoteIpAddress}");
             });
+
 
             if (env.IsDevelopment())
             {
