@@ -17,6 +17,7 @@ using blendnet.common.infrastructure.Ams;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
 using static blendnet.common.dto.ApplicationConstants;
+using blendnet.common.infrastructure.Authentication;
 
 namespace blendnet.oms.api.Controllers
 {
@@ -26,7 +27,7 @@ namespace blendnet.oms.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [Authorize]
+    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.User)]
     public class OrderController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -125,7 +126,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPut("completeorder", Name = nameof(CompleteOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        [Authorize(Roles = KaizalaIdentityRoles.RetailerManagement)]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
             // Get Retailer
@@ -271,7 +272,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("summary/{retailerPhoneNumber}", Name = nameof(GetOrderSummary))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [Authorize(Roles = KaizalaIdentityRoles.RetailerManagement)]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
         {
             List<string> errorDetails = new List<string>();
@@ -338,7 +339,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPost("{phoneNumber}/orderlist")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        [Authorize(Roles = KaizalaIdentityRoles.RetailerManagement)]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer)]
         public async Task<ActionResult<List<Order>>> GetOrder(string phoneNumber, OrderStatusFilter orderFilter)
         {
 

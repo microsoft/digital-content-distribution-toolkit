@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.common.dto", "blendnet.common.dto\blendnet.common.dto.csproj", "{679DF957-5786-4884-BA05-7F2110AF1824}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.crm.user.api", "blendnet.crm.user.api\blendnet.crm.user.api.csproj", "{DC2E39F5-A9D4-485C-8227-9D19242A7698}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.common.infrastructure", "blendnet.common.infrastructure\blendnet.common.infrastructure.csproj", "{33B426CC-E93B-4422-B062-737E72478A34}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.cms.api", "blendnet.cms.api\blendnet.cms.api.csproj", "{87B14389-34D6-4382-957E-2E2E76B302D0}"
@@ -44,8 +42,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.user.api", "blendnet.user.api\blendnet.user.api.csproj", "{943E1E5F-EA77-44D3-BC53-9A275AC45813}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.user.repository", "blendnet.user.repository\blendnet.user.repository.csproj", "{C79B83A5-BAFA-4DB5-B49C-1B8DC0B3E833}"
+	ProjectSection(ProjectDependencies) = postProject
+		{679DF957-5786-4884-BA05-7F2110AF1824} = {679DF957-5786-4884-BA05-7F2110AF1824}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.retailer.listener", "blendnet.retailer.listener\blendnet.retailer.listener.csproj", "{8FBA90E4-ADDC-47FC-A8A6-19A26E91E8EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.retailer.listener", "blendnet.retailer.listener\blendnet.retailer.listener.csproj", "{8FBA90E4-ADDC-47FC-A8A6-19A26E91E8EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,10 +58,6 @@ Global
 		{679DF957-5786-4884-BA05-7F2110AF1824}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{679DF957-5786-4884-BA05-7F2110AF1824}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{679DF957-5786-4884-BA05-7F2110AF1824}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC2E39F5-A9D4-485C-8227-9D19242A7698}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC2E39F5-A9D4-485C-8227-9D19242A7698}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC2E39F5-A9D4-485C-8227-9D19242A7698}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC2E39F5-A9D4-485C-8227-9D19242A7698}.Release|Any CPU.Build.0 = Release|Any CPU
 		{33B426CC-E93B-4422-B062-737E72478A34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{33B426CC-E93B-4422-B062-737E72478A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33B426CC-E93B-4422-B062-737E72478A34}.Release|Any CPU.ActiveCfg = Release|Any CPU

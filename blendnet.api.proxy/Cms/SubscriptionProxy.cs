@@ -1,5 +1,6 @@
 ﻿using blendnet.api.proxy.Common;
 using blendnet.common.dto;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,8 +23,9 @@ namespace blendnet.api.proxy
 
         public SubscriptionProxy(   IHttpClientFactory clientFactory,
                                     IConfiguration configuration,
-                                    ILogger<SubscriptionProxy> logger)
-        : base(configuration, clientFactory, logger)
+                                    ILogger<SubscriptionProxy> logger,
+                                    IDistributedCache cache)
+        : base(configuration, clientFactory, logger, cache)
         {
             _cmsHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT);
         }

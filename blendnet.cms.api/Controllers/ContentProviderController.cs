@@ -253,20 +253,22 @@ namespace blendnet.cms.api.Controllers
         {
             var contentProvider = await _contentProviderRepository.GetContentProviderById(contentProviderId);
 
+            DateTime currentDateTime = DateTime.UtcNow;
+
             if (contentProvider != null)
             {
                 if (activate)
                 {
-                    contentProvider.ActivationDate = DateTime.UtcNow;
+                    contentProvider.ActivationDate = currentDateTime;
                 }
                 else
                 {
-                    contentProvider.DeactivationDate = DateTime.UtcNow;
+                    contentProvider.DeactivationDate = currentDateTime;
                 }
 
                 contentProvider.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
 
-                contentProvider.ModifiedDate = DateTime.UtcNow;
+                contentProvider.ModifiedDate = currentDateTime;
 
                 await _contentProviderRepository.UpdateContentProvider(contentProvider);
 

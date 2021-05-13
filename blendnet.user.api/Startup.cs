@@ -1,4 +1,5 @@
 using blendnet.api.proxy.KaizalaIdentity;
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
@@ -122,13 +123,16 @@ namespace blendnet.user.api
             //Configure Services
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<KaizalaIdentityProxy>();
-
+            services.AddTransient<RetailerProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
 
             //Configure Http Clients
             ConfigureHttpClients(services);
+
+            //Configure Redis Cache
+            ConfigureDistributedCache(services);
 
         }
 
@@ -209,11 +213,25 @@ namespace blendnet.user.api
                            .Build();
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
-
-                //ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Order, "/phoneNumber").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.User, "/phoneNumber").Result;
 
                 return client;
             });
+        }
+
+
+        /// <summary>
+        /// Configures Redis as distributed cache
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureDistributedCache(IServiceCollection services)
+        {
+            string redisCacheConnectionString = Configuration.GetValue<string>("RedisCacheConnectionString");
+
+            services.AddStackExchangeRedisCache(options => {
+                options.Configuration = redisCacheConnectionString;
+            });
+
         }
     }
 }

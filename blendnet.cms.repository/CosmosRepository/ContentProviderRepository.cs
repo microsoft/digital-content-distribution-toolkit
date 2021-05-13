@@ -14,6 +14,7 @@ using Azure.Storage.Sas;
 using Azure.Storage.Blobs.Models;
 using Azure;
 using Microsoft.Extensions.Logging;
+using blendnet.common.dto.Cms;
 
 namespace blendnet.cms.repository.CosmosRepository
 {
@@ -105,6 +106,20 @@ namespace blendnet.cms.repository.CosmosRepository
                                 .WithParameter("@type", ContentProviderContainerType.ContentProvider);
 
             var contentProviders = await this._container.ExtractDataFromQueryIterator<ContentProviderDto>(queryDef);
+            return contentProviders;
+        }
+
+        /// <summary>
+        /// Lists all content provider items with just id and names
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<ContentProviderItem>> GetContentProviderItems()
+        {
+            var queryString = $"select c.contentProviderId, c.name from c where c.type = @type";
+            var queryDef = new QueryDefinition(queryString)
+                                .WithParameter("@type", ContentProviderContainerType.ContentProvider);
+
+            var contentProviders = await this._container.ExtractDataFromQueryIterator<ContentProviderItem>(queryDef);
             return contentProviders;
         }
 
