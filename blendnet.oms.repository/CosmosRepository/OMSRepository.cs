@@ -110,15 +110,15 @@ namespace blendnet.oms.repository.CosmosRepository
 
         }
 
-        public async Task<List<OrderSummary>> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
+        public async Task<List<OrderSummary>> GetOrderSummary(string retailerPartnerId, int startDate, int endDate)
         {
-            var queryString = "SELECT count(o) as count, o.retailerPhoneNumber, o.paymentDepositDate as date, oi.subscription.contentProviderId, oi.subscription.id as subscriptionId, oi.subscription.title, sum(oi.subscription.price) as totalAmount" +
+            var queryString = "SELECT count(o) as count, o.retailerPartnerId, o.paymentDepositDate as date, oi.subscription.contentProviderId, oi.subscription.id as subscriptionId, oi.subscription.title, sum(oi.subscription.price) as totalAmount" +
                             " FROM o join oi in o.orderItems" +
-                            " WHERE o.retailerPhoneNumber = @retailerPhoneNumber and o.orderStatus = \"Completed\" and o.paymentDepositDate >= @startDate and o.paymentDepositDate <= @endDate" +
-                            " GROUP BY o.retailerPhoneNumber, o.paymentDepositDate, oi.subscription.contentProviderId, oi.subscription.id, oi.subscription.title";
+                            " WHERE o.retailerPartnerId = @retailerPartnerId and o.orderStatus = \"Completed\" and o.paymentDepositDate >= @startDate and o.paymentDepositDate <= @endDate" +
+                            " GROUP BY o.retailerPartnerId, o.paymentDepositDate, oi.subscription.contentProviderId, oi.subscription.id, oi.subscription.title";
 
             var queryDef = new QueryDefinition(queryString)
-                                .WithParameter("@retailerPhoneNumber", retailerPhoneNumber)
+                                .WithParameter("@retailerPartnerId", retailerPartnerId)
                                 .WithParameter("@startDate", startDate)
                                 .WithParameter("@endDate", endDate);
 
@@ -144,6 +144,27 @@ namespace blendnet.oms.repository.CosmosRepository
                 var queryDef = new QueryDefinition(queryString).WithParameter("@phoneNumber", phoneNumber);
                 var orders = await ExtractDataFromQueryIterator<Order>(queryDef);
                 return orders;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<OrderItem>> GetActiveSubscriptionOrders(string phoneNumber)
+        {
+            try
+            {
+
+                var queryString = "SELECT oi.subscription, oi.amountCollected, oi.planStartDate, oi.planEndDate, oi.partnerReferenceNumber FROM o join oi in o.orderItems where o.phoneNumber = @phoneNumber and o.orderStatus = \"Completed\" and oi.planEndDate >= @currentDate";
+                var queryDef = new QueryDefinition(queryString)
+                    .WithParameter("@phoneNumber", phoneNumber)
+                    .WithParameter("@currentDate", DateTime.UtcNow);
+
+                var orderItems = await ExtractDataFromQueryIterator<OrderItem>(queryDef);
+                return orderItems;
+
+
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {

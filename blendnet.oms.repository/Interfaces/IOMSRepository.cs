@@ -56,5 +56,12 @@ namespace blendnet.oms.repository.Interfaces
         /// <returns></returns>
         Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, OrderStatusFilter orderFilter);
 
+        /// <summary>
+        /// Gets order items with active subscriptions
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        Task<List<OrderItem>> GetActiveSubscriptionOrders(string phoneNumber);
+
     }
 }

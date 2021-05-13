@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using blendnet.cms.repository.CosmosRepository;
 
 namespace blendnet.common.dto.Cms
 {

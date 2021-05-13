@@ -8,7 +8,7 @@ namespace blendnet.common.dto.Oms
     /// <summary>
     /// Order
     /// </summary>
-    public class Order
+    public class Order : BaseDto
     {
         /// <summary>
         /// Unique Order Id
@@ -27,14 +27,14 @@ namespace blendnet.common.dto.Oms
         public Guid UserId { get; set; }
 
         /// <summary>
-        /// Retailer Phone Number
-        /// </summary>
-        public string RetailerPhoneNumber { get; set; }
-
-        /// <summary>
         /// Retailer Id
         /// </summary>
         public Guid? RetailerId { get; set; }
+
+        /// <summary>
+        /// Retailer Partner Id which includes partner code
+        /// </summary>
+        public string RetailerPartnerId { get; set; }
 
         /// <summary>
         /// Order Items
@@ -75,16 +75,6 @@ namespace blendnet.common.dto.Oms
         /// Order Cancelled Date
         /// </summary>
         public DateTime? OrderCancelledDate { get; set; }
-
-        /// <summary>
-        /// Adds created by information
-        /// </summary>
-        public Guid CreatedBy { get; set; }
-
-        /// <summary>
-        /// Adds modified by information
-        /// </summary>
-        public Guid ModifiedBy { get; set; }
 
         public void SetIdentifier()
         {

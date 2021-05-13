@@ -131,7 +131,7 @@ namespace blendnet.oms.api.Controllers
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
             // Get Retailer
-            RetailerDto retailer = await _retailerProxy.GetRetailerByPhoneNumber(completeOrderRequest.RetailerPhoneNumber);
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(completeOrderRequest.RetailerPartnerProvidedId, PartnerCode.NovoPay /*get this from SAS token when available*/);
 
             List<string> errorInfo = new List<string>();
 
@@ -208,7 +208,9 @@ namespace blendnet.oms.api.Controllers
 
             order.OrderStatus = OrderStatus.Cancelled;
             order.OrderCancelledDate = DateTime.UtcNow;
-            order.ModifiedBy = UserClaimData.GetUserId(User.Claims);
+
+            order.ModifiedByByUserId = UserClaimData.GetUserId(User.Claims);
+            order.ModifiedDate = DateTime.UtcNow;
                 
             // Update order
             var statusCode = await _omsRepository.UpdateOrder(order);
@@ -271,10 +273,10 @@ namespace blendnet.oms.api.Controllers
         /// <param name="startDate">Start date in numeric format yyyymmdd</param>
         /// <param name="endDate">End date in numeric format yyyymmdd</param>
         /// <returns></returns>
-        [HttpGet("summary/{retailerPhoneNumber}", Name = nameof(GetOrderSummary))]
+        [HttpGet("summary/{retailerPartnerProvidedId}", Name = nameof(GetOrderSummary))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.RetailerManagement)]
-        public async Task<ActionResult> GetOrderSummary(string retailerPhoneNumber, int startDate, int endDate)
+        public async Task<ActionResult> GetOrderSummary(string retailerPartnerProvidedId, int startDate, int endDate)
         {
             List<string> errorDetails = new List<string>();
 
@@ -291,7 +293,7 @@ namespace blendnet.oms.api.Controllers
             }
 
             // Get Retailer
-            RetailerDto retailer = await _retailerProxy.GetRetailerByPhoneNumber(retailerPhoneNumber);
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, PartnerCode.NovoPay/*get this from SAS token when available*/);
             
             if (retailer == null)
             {
@@ -299,7 +301,7 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest(errorDetails);
             }
 
-            List<OrderSummary> purchaseData = await _omsRepository.GetOrderSummary(retailerPhoneNumber, startDate, endDate);
+            List<OrderSummary> purchaseData = await _omsRepository.GetOrderSummary(retailer.PartnerId, startDate, endDate);
             
             if(purchaseData == null || purchaseData.Count == 0)
             {
@@ -379,6 +381,28 @@ namespace blendnet.oms.api.Controllers
             }
         }
 
+        /// <summary>
+        ///  API to get order details by orderId
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpGet("active")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<OrderItem>> GetActiveSubscriptionOrders()
+        {
+            var userPhoneNumber = User.Identity.Name;
+
+            List<OrderItem> orderItems = await _omsRepository.GetActiveSubscriptionOrders(userPhoneNumber);
+
+            if (orderItems == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(orderItems);
+            }
+        }
 
         #endregion
 
@@ -483,8 +507,10 @@ namespace blendnet.oms.api.Controllers
 
             order.UserId = userId;
             order.PhoneNumber = userPhoneNumber;
-            order.CreatedBy = userId;
-            order.ModifiedBy = userId;
+
+            order.CreatedByUserId = userId;
+            order.CreatedDate = DateTime.UtcNow;
+
             order.OrderItems.Add(orderItem);
 
             return order;
@@ -531,10 +557,12 @@ namespace blendnet.oms.api.Controllers
             var currentDate = DateTime.UtcNow;
 
             order.RetailerId = retailer.Id;
-            order.RetailerPhoneNumber = retailer.Mobile;
+            order.RetailerPartnerId = retailer.PartnerId;
             order.PaymentDepositDate = currentDate.Year * 10000 + currentDate.Month * 100 + currentDate.Day;
             order.DepositDate = completeOrderRequest.DepositDate;
-            order.ModifiedBy = UserClaimData.GetUserId(User.Claims);
+
+            order.ModifiedByByUserId = UserClaimData.GetUserId(User.Claims);
+            order.ModifiedDate = DateTime.UtcNow;
 
             //assuming single item in order
 

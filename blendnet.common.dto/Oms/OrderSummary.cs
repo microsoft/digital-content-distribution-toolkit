@@ -17,9 +17,9 @@ namespace blendnet.common.dto.Oms
         public int Count { get; set; }
 
         /// <summary>
-        /// Retailer phone number
+        /// Retailer partner id
         /// </summary>
-        public string RetailerPhoneNumber { get; set; }
+        public string RetailerPartnerId { get; set; }
 
         /// <summary>
         /// Payment deposit date in format yyyymmdd stored as integer
