@@ -118,7 +118,7 @@ namespace blendnet.user.api.Controllers
                 return NotFound(errorInfo);
             }
 
-            if (user.ChannelId != Channel.Customer)
+            if (user.ChannelId != Channel.ConsumerApp)
             {
                 errorInfo.Add("Only Customers are allowerd to enter referral info");
                 return BadRequest(errorInfo);

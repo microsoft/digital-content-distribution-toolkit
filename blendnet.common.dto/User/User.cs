@@ -10,9 +10,9 @@ namespace blendnet.common.dto.User
     [JsonConverter(typeof(StringEnumConverter))]
     public enum Channel
     {
-        Customer = 0,
-        Retailer = 1,
-        Portal = 2
+        ConsumerApp = 0,
+        NovoRetailerApp = 1,
+        CMSPortal = 2
     }
 
     /// <summary>
