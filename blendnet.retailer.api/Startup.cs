@@ -1,3 +1,4 @@
+using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
 using blendnet.retailer.repository.CosmosRepository;
 using blendnet.retailer.repository.Interfaces;
@@ -182,9 +183,7 @@ namespace blendnet.retailer.api
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
-                //ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.ContentProvider, "/contentProviderId").Result;
-
-                //containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Content, "/contentId").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Retailer, "/partnerId").Result;
 
                 return client;
             });

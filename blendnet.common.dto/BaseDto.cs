@@ -24,6 +24,5 @@ namespace blendnet.common.dto
         /// Modified Date
         /// </summary>
         public DateTime? ModifiedDate { get; set; }
-
     }
 }

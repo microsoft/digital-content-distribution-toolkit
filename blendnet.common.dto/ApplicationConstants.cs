@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace blendnet.common.dto
 {
@@ -12,6 +14,7 @@ namespace blendnet.common.dto
             public const string Content = "Content";
             public const string Order = "Order";
             public const string User = "User";
+            public const string Retailer = "Retailer";
         }
 
         public struct Policy
@@ -186,6 +189,11 @@ namespace blendnet.common.dto
         public struct DateTimeFormats
         {
             public const string FormatYYYYDDMM = "yyyymmdd";
+        }
+
+        public struct PartnerCode
+        {
+            public const string NovoPay = "NV";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using blendnet.common.dto;
+using blendnet.common.dto.Retailer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,23 +18,24 @@ namespace blendnet.api.proxy.Retailer
             _rmsHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.RETAILER_HTTP_CLIENT);
         }
 
-        public async Task<RetailerDto> GetRetailerById(Guid retailerId)
+        /// <summary>
+        /// Get retailer by Partner-provided retailer ID and Partner Code
+        /// </summary>
+        /// <param name="partnerProvidedRetailerId"></param>
+        /// <param name="partnerCode"></param>
+        /// <returns></returns>
+        public async Task<RetailerDto> GetRetailerById(string partnerProvidedRetailerId, string partnerCode)
         {
-            RetailerDto retailer =  new RetailerDto(); //stub
-            retailer.Id = retailerId;
-            retailer.FirstName = "Unknown";
-            retailer.IsActive = true;
-            retailer.Mobile = "9738353779";
-            return retailer;
-        }
+            string retailerPartnerId = RetailerDto.CreatePartnerId(partnerCode, partnerProvidedRetailerId);
+            // STUB
+            RetailerDto retailer = new RetailerDto()
+            {
+                PartnerCode = partnerCode,
+                PartnerProvidedId = partnerProvidedRetailerId,
+                PartnerId = partnerProvidedRetailerId,
+                UserName = "STUB",
+            };
 
-        public async Task<RetailerDto> GetRetailerByPhoneNumber(string retailerPhoneNumber)
-        {
-            RetailerDto retailer = new RetailerDto(); //stub
-            retailer.Id = new Guid("9e6469bc-8881-416a-b031-1c07a856f038"); //dummy id
-            retailer.FirstName = "Unknown";
-            retailer.IsActive = true;
-            retailer.Mobile = retailerPhoneNumber;
             return retailer;
         }
     }

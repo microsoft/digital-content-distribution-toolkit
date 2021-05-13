@@ -10,5 +10,9 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\blendnet.common.dto\blendnet.common.dto.csproj" />
+  </ItemGroup>
   
 </Project>

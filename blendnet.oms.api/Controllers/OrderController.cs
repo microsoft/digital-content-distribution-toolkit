@@ -17,6 +17,7 @@ using blendnet.common.infrastructure.Ams;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
 using static blendnet.common.dto.ApplicationConstants;
+using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure.Authentication;
 
 namespace blendnet.oms.api.Controllers
@@ -496,7 +497,7 @@ namespace blendnet.oms.api.Controllers
                 return false;
             }
 
-            return retailer.IsActive;
+            return retailer.IsActive();
         }
 
         private string ValidateOrder(Order order)
