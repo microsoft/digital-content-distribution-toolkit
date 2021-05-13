@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using blendnet.cms.repository.CosmosRepository;
 using blendnet.cms.repository.Interfaces;
+using blendnet.common.dto;
 using blendnet.common.dto.Cms;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -93,9 +94,11 @@ namespace blendnet.cms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<ContentProviderItem>> GetContentProviders()
         {
-            var contentProviders = await _contentProviderRepository.GetContentProviderItems();
+            var contentProviders = await _contentProviderRepository.GetContentProviders();
 
-            return Ok(contentProviders);
+            var contentProviderItems = _mapper.Map<List<ContentProviderDto>, List<ContentProviderItem>>(contentProviders);
+
+            return Ok(contentProviderItems);
         }
 
 

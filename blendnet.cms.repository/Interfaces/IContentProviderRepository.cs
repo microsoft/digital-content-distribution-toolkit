@@ -16,12 +16,6 @@ namespace blendnet.cms.repository.Interfaces
         Task<List<ContentProviderDto>> GetContentProviders();
 
         /// <summary>
-        /// Lists all content provider items with just id and names
-        /// </summary>
-        /// <returns></returns>
-        Task<List<ContentProviderItem>> GetContentProviderItems();
-
-        /// <summary>
         /// Get Content Provider by Id
         /// </summary>
         /// <param name="id"></param>

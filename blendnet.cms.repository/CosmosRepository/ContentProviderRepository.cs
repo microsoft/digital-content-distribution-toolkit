@@ -110,20 +110,6 @@ namespace blendnet.cms.repository.CosmosRepository
         }
 
         /// <summary>
-        /// Lists all content provider items with just id and names
-        /// </summary>
-        /// <returns></returns>
-        public async Task<List<ContentProviderItem>> GetContentProviderItems()
-        {
-            var queryString = $"select c.contentProviderId, c.name from c where c.type = @type";
-            var queryDef = new QueryDefinition(queryString)
-                                .WithParameter("@type", ContentProviderContainerType.ContentProvider);
-
-            var contentProviders = await this._container.ExtractDataFromQueryIterator<ContentProviderItem>(queryDef);
-            return contentProviders;
-        }
-
-        /// <summary>
         /// Update Content Provider
         /// </summary>
         /// <param name="updatedContentProvider"></param>
