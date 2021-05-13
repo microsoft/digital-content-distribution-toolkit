@@ -57,10 +57,10 @@ namespace blendnet.user.repository.CosmosRepository
         {
             try
             {
-                var response = await this._container.UpsertItemAsync<User>(user, new PartitionKey(user.PhoneNumber));
+                var response = await this._container.ReplaceItemAsync<User>(user, user.Id.ToString(), new PartitionKey(user.PhoneNumber));
                 return (int)response.StatusCode;
             }
-            catch (CosmosException ex)
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return (int)ex.StatusCode;
             }
