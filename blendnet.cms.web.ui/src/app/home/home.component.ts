@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { roles } from '../b2c-config';
 import { KaizalaService } from '../services/kaizala.service';
 
 @Component({
@@ -11,16 +12,18 @@ export class HomeComponent implements OnInit {
   currentUser: any;
   userName: string = "";
   roles: string = "";
+  hasNoAdminRoles: boolean = false;
 
   constructor(
     private kaizalaService: KaizalaService
   ) {
-    this.kaizalaService.currentUser.subscribe(x => this.currentUser = x);
-    
+    this.kaizalaService.currentUser.subscribe(user => this.currentUser = user);
    }
 
   ngOnInit(): void {
     this.roles = localStorage.getItem("roles");
+    this.hasNoAdminRoles = !(localStorage.getItem("roles").includes(roles.SuperAdmin) ||
+    localStorage.getItem("roles").includes(roles.ContentAdmin));
   }
 
 }

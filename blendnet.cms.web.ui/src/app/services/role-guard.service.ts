@@ -19,6 +19,13 @@ export class RoleGuardService implements CanActivate {
   
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const expectedRole = route.data.expectedRole;
+    const userRoles = localStorage.getItem("roles").split(",");
+    var hasExpectedRole = false;
+    userRoles.forEach( role =>{
+      if(expectedRole?.includes(role)) {
+        hasExpectedRole = true;
+      }
+    });
     // let account: Account = this.authService.instance.getAllAccounts()[0];
 
     // if (!account.idTokenClaims?.groups) {
@@ -33,11 +40,11 @@ export class RoleGuardService implements CanActivate {
     //   && expectedRole === roles.SuperUser) {
     // window.alert("Please select a Content Provider to access the management services");
     // return false;
-    if(!localStorage.getItem("roles")) {
+    if(!userRoles) {
       window.alert('Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
       return false;
     // } else if (localStorage.getItem("roles") !== expectedRole) {
-    } else if (!localStorage.getItem("roles").includes(expectedRole)) {
+    } else if (!hasExpectedRole) {
       window.alert('You do not have access as expected role is missing. Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
       return false;
     } else if(!localStorage.getItem("contentProviderId") 

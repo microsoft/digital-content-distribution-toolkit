@@ -10,6 +10,7 @@ import { ContentProviderService } from './services/content-provider.service';
 import { Router } from '@angular/router';
 import { UserService } from './services/user.service';
 import { KaizalaService } from './services/kaizala.service';
+import { roles } from './b2c-config';
 
 
 // interface IdTokenClaims extends AuthenticationResult {
@@ -39,6 +40,7 @@ export class AppComponent {
   selectedCP: Contentprovider;
   selectedCPName: string = "Not Selected";
   currentUser: any;
+  hasMenuAccess: boolean = false;
 
   constructor(
     // @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -49,7 +51,8 @@ export class AppComponent {
     // private userService: UserService,
     private kaizalaService: KaizalaService
   ) {
-    this.kaizalaService.currentUser.subscribe(x => this.currentUser = x);
+    this.kaizalaService.currentUser.subscribe(user => {
+      this.currentUser = user});
     this.selectedCPName = localStorage.getItem("contentProviderName") ? 
       localStorage.getItem("contentProviderName") : "Not Selected";
 
@@ -121,9 +124,13 @@ export class AppComponent {
           localStorage.getItem("contentProviderName") ? 
           localStorage.getItem("contentProviderName") :"Not Selected";
         });
+        
     }
 
     ngDoCheck() {
+      this.hasMenuAccess = localStorage.getItem("roles")?.includes(roles.SuperAdmin) ||
+      localStorage.getItem("roles")?.includes(roles.ContentAdmin);
+
       this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
         // if(selectedCP) {
         //   this.selectedCPName= selectedCP.name;

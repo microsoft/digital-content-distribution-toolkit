@@ -5,7 +5,7 @@
     <button mat-raised-button color="primary" class="create-btn"
     (click)="openDialog()"> Create </button>
 
-    <div style="float: right;" *ngIf="cpSubscriptions.length>0">
+    <div style="float: right;" *ngIf="cpSubscriptions?.length>0">
         <button matTooltip="Expand All"   mat-icon-button  
         color="primary" (click)="accordion.openAll()"><mat-icon>expand_more</mat-icon></button>
         <button matTooltip="Collapse All"  mat-icon-button  

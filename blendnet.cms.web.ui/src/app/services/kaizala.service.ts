@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { last, map } from 'rxjs/operators';
@@ -55,7 +55,7 @@ export class KaizalaService {
 
   getOTP(contact: string) {
     const lastDigit = contact.charAt(contact.length-1);
-    var url = this.getURLSuffix(lastDigit).concat('/api/Authentication/LoginWithPhoneForPartners');
+    var url = this.getURLSuffix(lastDigit).concat(environment.kaizalaSignUpSignIn);
     this.logger.log(`Calling Authentication by OTP`);
     var request = {
       "phoneNumber": contact,
@@ -64,7 +64,7 @@ export class KaizalaService {
 
     return this.http.post(url, request, {
       headers: {
-        'AppName': environment.appName},
+        'AppName': environment.kaizalaAppName},
       observe: 'response'
     });
     // var myHeaders = new Headers();
@@ -95,7 +95,7 @@ export class KaizalaService {
 
   verifyOTP(otp: string, countryCode: string, contact: string) {
     const lastDigit = contact.charAt(contact.length-1);
-    var url = this.getURLSuffix(lastDigit).concat('/api/Authentication/VerifyPhonePinForPartnerLogin');
+    var url = this.getURLSuffix(lastDigit).concat(environment.kaizalaVerifyOTP);
     this.logger.log(`Calling Verify OTP`);
     var request = {
         "phoneNumber": countryCode.concat(contact),
@@ -105,7 +105,7 @@ export class KaizalaService {
       
     return this.http.post(url, request, 
       {
-        headers: {'AppName': environment.appName}
+        headers: {'AppName': environment.kaizalaAppName}
         // ,
         // observe: 'response'
       }).pipe(map(user => {
@@ -117,10 +117,13 @@ export class KaizalaService {
 
   getUserRoles(contact: string) {
     const lastDigit = contact.charAt(contact.length-1);
-    var url = this.getURLSuffix(lastDigit).concat('/v1/ValidatePartnerAccessToken?applicationName=').concat(environment.appName);
+    var url = this.getURLSuffix(lastDigit).concat(environment.kaizalaGetUserRoles);
+    let params = new HttpParams().set(environment.kaizalaAppNameParam, environment.kaizalaAppName);
+    //.concat(environment.appName);
     var user = this.currentUserValue;
     return this.http.get(url, 
       {
+        params: params,
         headers: {'accessToken': user.authenticationToken},
         observe: 'response'
       });

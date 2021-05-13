@@ -5,4 +5,7 @@
         <p>Your have following roles :  {{roles}}</p>
         <!-- <li *ngFor="let r of role"> {{r}}</li> -->
     </div>
+    <div *ngIf="hasNoAdminRoles">
+        <p>Please request admin role for your profile and then log-in again to access the CRM application.</p>
+    </div>
 </div>

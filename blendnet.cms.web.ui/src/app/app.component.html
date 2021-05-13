@@ -1,7 +1,7 @@
 <mat-toolbar color="primary" class="cms-toolbar">
 	<span>
 		<!-- <div class="cms-app-name" *ngIf="!showLoginDisplay"> -->
-		<div class="cms-app-name" *ngIf="currentUser">
+		<div class="cms-app-name" *ngIf="currentUser && hasMenuAccess">
 		<h1>Content Provider : {{selectedCPName}}</h1>
 	</div></span>
 	<span class="cms-menu-spacer"></span>
@@ -15,7 +15,7 @@
 </mat-toolbar>
 <mat-sidenav-container class="cms-container" autosize >
 	<!-- <mat-sidenav  *ngIf="!showLoginDisplay" #sidenav class="cms-sidenav" mode="side" opened="true" >	 -->
-	<mat-sidenav  *ngIf="currentUser" #sidenav class="cms-sidenav" mode="side" opened="true" >	
+	<mat-sidenav  *ngIf="currentUser && hasMenuAccess" #sidenav class="cms-sidenav" mode="side" opened="true" >	
 		<mat-nav-list>
 			<mat-list-item class="parent">
 				<span class="full-width" *ngIf="isExpanded"  [routerLink]="['/']">Home</span>
