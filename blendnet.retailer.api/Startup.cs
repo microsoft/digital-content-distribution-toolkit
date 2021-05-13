@@ -145,7 +145,7 @@ namespace blendnet.retailer.api
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("retailerapi/swagger/v1/swagger.json", "BlendNet API V1");
+                c.SwaggerEndpoint("swagger/v1/swagger.json", "BlendNet API V1");
             });
 
             app.UseRouting();
