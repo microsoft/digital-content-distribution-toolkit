@@ -2,6 +2,7 @@
 .\createSecrets.ps1 -keyvaultName kv-blendnet-dev -displayOnly $false -secretPrefix blendnetcmslistener -secretPath C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\dotnet-blendnet.cms.listener-9ADA3621-3E4D-43B0-8FD1-8E6BDA430110\secrets.json
 .\createSecrets.ps1 -keyvaultName kv-blendnet-dev -displayOnly $false -secretPrefix blendnetomsapi -secretPath C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\0ff93384-295b-43c6-a12f-af2af9f987f3\secrets.json
 .\createSecrets.ps1 -keyvaultName kv-blendnet-dev -displayOnly $false -secretPrefix blendnetretailerapi -secretPath C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\bbece21e-7526-424d-9ab3-602a6f417dd7\secrets.json
+.\createSecrets.ps1 -keyvaultName kv-blendnet-dev -displayOnly $false -secretPrefix blendnetretailerlistener -secretPath C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\dotnet-blendnet.retailer.listener-E6DB0F2A-AFE4-4BE3-BC34-EE1CB2F42564\secrets.json
 
 Listner
 ----Broadcast connection string and container name
