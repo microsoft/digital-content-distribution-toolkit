@@ -34,6 +34,8 @@ namespace blendnet.api.proxy.Retailer
                 PartnerProvidedId = partnerProvidedRetailerId,
                 PartnerId = partnerProvidedRetailerId,
                 UserName = "STUB",
+                StartDate = DateTime.UtcNow.AddDays(-1),
+                EndDate = DateTime.UtcNow.AddDays(2)
             };
 
             return retailer;

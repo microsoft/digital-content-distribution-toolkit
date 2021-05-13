@@ -12,7 +12,7 @@ namespace blendnet.oms.api.Model
         public string UserPhoneNumber { get; set; }
 
         [Required]
-        public string RetailerPhoneNumber { get; set; }
+        public string RetailerPartnerProvidedId { get; set; }
 
         [Required]
         public float AmountCollected { get; set; }
