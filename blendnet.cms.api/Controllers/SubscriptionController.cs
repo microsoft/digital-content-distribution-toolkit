@@ -36,10 +36,18 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contentProviderId">Content Provider ID</param>
         /// <returns></returns>
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetSubscriptions(Guid contentProviderId)
         {
             var result = await this._contentProviderRepository.GetSubscriptions(contentProviderId);
-            return Ok(result);
+            if (result.Count > 0)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         /// <summary>
@@ -49,6 +57,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="subscriptionId"></param>
         /// <returns></returns>
         [HttpGet("{subscriptionId:guid}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetSubscription(Guid contentProviderId, Guid subscriptionId)
         {
             var result = await this._contentProviderRepository.GetSubscription(contentProviderId, subscriptionId);
@@ -68,17 +77,25 @@ namespace blendnet.cms.api.Controllers
         /// <param name="subscription">subscription data</param>
         /// <returns>ID of the created subscription</returns>
         [HttpPost]
-        public async Task<ActionResult<String>> CreateSubscription( Guid contentProviderId,
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<String>> CreateSubscription(Guid contentProviderId,
                                                                     ContentProviderSubscriptionDto subscription)
         {
-            if (!await ValidContentProvider(contentProviderId))
+            // validations
             {
-                return BadRequest();
-            }
+                List<string> listOfValidationErrors = new List<string>();
 
-            if (!await ValidSubscriptionData(subscription))
-            {
-                return BadRequest();
+                if (!await ValidContentProvider(contentProviderId))
+                {
+                    listOfValidationErrors.Add($"No content provider found for ID {contentProviderId}");
+                }
+
+                listOfValidationErrors.AddRange(ValidateSubscriptionData(subscription));
+
+                if (listOfValidationErrors.Count > 0)
+                {
+                    return BadRequest(listOfValidationErrors);
+                }
             }
 
             subscription.SetIdentifiers();
@@ -98,18 +115,26 @@ namespace blendnet.cms.api.Controllers
         /// <param name="subscription">new subscription data</param>
         /// <returns></returns>
         [HttpPut("{subscriptionId:guid}")]
-        public async Task<ActionResult<String>> UpdateSubscription( Guid contentProviderId,
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult<String>> UpdateSubscription(Guid contentProviderId,
                                                                     Guid subscriptionId,
                                                                     ContentProviderSubscriptionDto subscription)
         {
-            if (!await ValidContentProvider(contentProviderId))
+            // Validations
             {
-                return BadRequest();
-            }
+                List<string> listOfValidationErrors = new List<string>();
 
-            if (!await ValidSubscriptionData(subscription))
-            {
-                return BadRequest();
+                if (!await ValidContentProvider(contentProviderId))
+                {
+                    listOfValidationErrors.Add($"No content provider found for ID {contentProviderId}");
+                }
+
+                listOfValidationErrors.AddRange(ValidateSubscriptionData(subscription));
+
+                if (listOfValidationErrors.Count > 0)
+                {
+                    return BadRequest(listOfValidationErrors);
+                }
             }
 
             subscription.Id = subscriptionId;
@@ -135,7 +160,8 @@ namespace blendnet.cms.api.Controllers
         /// <param name="subscriptionId">subscription ID</param>
         /// <returns></returns>
         [HttpDelete("{subscriptionId:guid}")]
-        public async Task<ActionResult<String>> DeleteSubscription( Guid contentProviderId,
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        public async Task<ActionResult<String>> DeleteSubscription(Guid contentProviderId,
                                                                     Guid subscriptionId)
         {
             // Delete is allowed only if there are no orders against this subscription
@@ -177,14 +203,38 @@ namespace blendnet.cms.api.Controllers
             return Task.FromResult(false);
         }
 
-        private Task<bool> ValidSubscriptionData(ContentProviderSubscriptionDto subscription)
+        private List<string> ValidateSubscriptionData(ContentProviderSubscriptionDto subscription)
         {
-            if (subscription.StartDate >= subscription.EndDate)
+            List<string> listOfValidationErrors = new List<string>();
+
+            DateTime now = DateTime.UtcNow;
+
+            if (subscription.StartDate < now)
             {
-                return Task.FromResult(false);
+                listOfValidationErrors.Add("StartDate is in past");
             }
 
-            return Task.FromResult(true);
+            if (subscription.EndDate < now)
+            {
+                listOfValidationErrors.Add("EndDate is in past");
+            }
+
+            if (subscription.StartDate >= subscription.EndDate)
+            {
+                listOfValidationErrors.Add("Start Date has to be before EndDate");
+            }
+
+            if (subscription.DurationDays <= 0)
+            {
+                listOfValidationErrors.Add("DurationDays should be minimum 1");
+            }
+
+            if (subscription.Price < 0)
+            {
+                listOfValidationErrors.Add("Price should be minimum 0");
+            }
+
+            return listOfValidationErrors;
         }
 
         #endregion
