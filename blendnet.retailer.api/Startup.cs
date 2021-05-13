@@ -123,56 +123,6 @@ namespace blendnet.retailer.api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.UsePathBase("/retailerapi");
-
-            //app.Use((context, next) =>
-            //{
-            //    context.Request.PathBase = new PathString("/retailerapi");
-            //    return next();
-            //});
-
-            //app.Use((context, next) =>
-            //{
-            //    if (context.Request.Path.StartsWithSegments("/retailerapi", out var remainder))
-            //    {
-            //        context.Request.Path = remainder;
-            //    }
-
-            //    return next();
-            //});
-
-            app.Run(async (context) =>
-            {
-                context.Response.ContentType = "text/plain";
-
-                // Request method, scheme, and path
-                await context.Response.WriteAsync(
-                    $"Request Method: {context.Request.Method}{Environment.NewLine}");
-                await context.Response.WriteAsync(
-                    $"Request Scheme: {context.Request.Scheme}{Environment.NewLine}");
-                await context.Response.WriteAsync(
-                    $"Request Path: {context.Request.Path}{Environment.NewLine}");
-                await context.Response.WriteAsync(
-                    $"Request Path Base: {context.Request.PathBase}{Environment.NewLine}");
-
-
-                // Headers
-                await context.Response.WriteAsync($"Request Headers:{Environment.NewLine}");
-
-                foreach (var header in context.Request.Headers)
-                {
-                    await context.Response.WriteAsync($"{header.Key}: " +
-                        $"{header.Value}{Environment.NewLine}");
-                }
-
-                await context.Response.WriteAsync(Environment.NewLine);
-
-                // Connection: RemoteIp
-                await context.Response.WriteAsync(
-                    $"Request RemoteIp: {context.Connection.RemoteIpAddress}");
-            });
-
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -196,6 +146,7 @@ namespace blendnet.retailer.api
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlendNet API V1");
+                c.RoutePrefix = "retailerapi";
             });
 
             app.UseRouting();
