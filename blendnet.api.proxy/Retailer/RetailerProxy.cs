@@ -1,19 +1,23 @@
-﻿using blendnet.common.dto;
+﻿using blendnet.api.proxy.Common;
+using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace blendnet.api.proxy.Retailer
 {
-    public class RetailerProxy
+    public class RetailerProxy : BaseProxy
     {
         private readonly HttpClient _rmsHttpClient;
 
-        public RetailerProxy(IHttpClientFactory clientFactory)
+        public RetailerProxy(   IHttpClientFactory clientFactory,
+                                IConfiguration configuration,
+                                ILogger<SubscriptionProxy> logger,
+                                IDistributedCache cache)
+                : base(configuration, clientFactory, logger, cache)
         {
             _rmsHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.RETAILER_HTTP_CLIENT);
         }
@@ -27,16 +31,16 @@ namespace blendnet.api.proxy.Retailer
         public async Task<RetailerDto> GetRetailerById(string partnerProvidedRetailerId, string partnerCode)
         {
             string retailerPartnerId = RetailerDto.CreatePartnerId(partnerCode, partnerProvidedRetailerId);
-            // STUB
-            RetailerDto retailer = new RetailerDto()
+            string url = $"Retailer/byPartnerId/{retailerPartnerId}";
+            string accessToken = await base.GetServiceAccessToken();
+
+            RetailerDto retailer = null;
+            try
             {
-                PartnerCode = partnerCode,
-                PartnerProvidedId = partnerProvidedRetailerId,
-                PartnerId = partnerProvidedRetailerId,
-                UserName = "STUB",
-                StartDate = DateTime.UtcNow.AddDays(-1),
-                EndDate = DateTime.UtcNow.AddDays(2)
-            };
+                retailer = await _rmsHttpClient.Get<RetailerDto>(url, accessToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { }
 
             return retailer;
         }
