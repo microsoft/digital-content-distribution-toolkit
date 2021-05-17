@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Azure.Storage.Blobs;
@@ -15,6 +17,8 @@ using blendnet.common.infrastructure.ServiceBus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
@@ -22,6 +26,7 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 namespace blendnet.cms.api
@@ -62,7 +67,14 @@ namespace blendnet.cms.api
             })
             .AddKaizalaIdentityAuth();
 
+            //Configure Localization
+            ConfigureLocalization(services);
+
             services.AddControllers()
+            .AddDataAnnotationsLocalization(options => {
+                options.DataAnnotationLocalizerProvider = (type, factory) =>
+                    factory.Create(typeof(SharedResource));
+            })
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.IgnoreNullValues = true;
@@ -176,7 +188,7 @@ namespace blendnet.cms.api
 
             //Configure Redis Cache
             ConfigureDistributedCache(services);
-
+            
             // Configure mapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -199,6 +211,11 @@ namespace blendnet.cms.api
             app.UseHttpsRedirection();
 
             app.UseCors(C_CORS_POLICYNAME);
+
+            //To allow accepting language header
+            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(options.Value);
+
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -309,6 +326,31 @@ namespace blendnet.cms.api
                 options.Configuration = redisCacheConnectionString;
             });
 
+        }
+
+
+        private void ConfigureLocalization(IServiceCollection services)
+        {
+            //Add localization
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            services.Configure<RequestLocalizationOptions>(
+               opts =>
+               {
+                   var supportedCultures = new List<CultureInfo>
+                   {
+                        new CultureInfo("en-US")
+                   };
+
+                   opts.DefaultRequestCulture = new RequestCulture("en-US");
+                   
+                   // Formatting numbers, dates, etc.
+                   opts.SupportedCultures = supportedCultures;
+
+                    // UI strings that we have localized.
+                    opts.SupportedUICultures = supportedCultures;
+
+               });
         }
     }
 }

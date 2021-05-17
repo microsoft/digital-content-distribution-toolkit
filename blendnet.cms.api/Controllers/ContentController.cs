@@ -22,6 +22,9 @@ using blendnet.cms.api.Model;
 using Microsoft.AspNetCore.Authorization;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.dto.User;
+using Microsoft.Extensions.Localization;
+using blendnet.cms.api;
+using System.Reflection;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -43,12 +46,15 @@ namespace blendnet.cms.api.Controllers
 
         private AmsHelper _amsHelper;
 
+        IStringLocalizer<SharedResource> _stringLocalizer;
+
         public ContentController(   IContentRepository contentRepository,
                                     IContentProviderRepository contentProviderRepository,
                                     ILogger<ContentController> logger,
                                     IEventBus eventBus,
                                     IAzureClientFactory<BlobServiceClient> blobClientFactory,
-                                    AmsHelper amshelper)
+                                    AmsHelper amshelper,
+                                    IStringLocalizer<SharedResource> stringLocalizer)
             :base(contentProviderRepository)
         {
             _contentRepository = contentRepository;
@@ -62,6 +68,8 @@ namespace blendnet.cms.api.Controllers
             _eventBus = eventBus;
 
             _amsHelper = amshelper;
+
+            _stringLocalizer = stringLocalizer;
         }
 
         #region Content Management Methods
