@@ -13,7 +13,7 @@ namespace blendnet.api.proxy.Retailer
     {
         private readonly HttpClient _rmsHttpClient;
 
-        public RetailerProxy(   IHttpClientFactory clientFactory,
+        public RetailerProxy(IHttpClientFactory clientFactory,
                                 IConfiguration configuration,
                                 ILogger<SubscriptionProxy> logger,
                                 IDistributedCache cache)
@@ -32,6 +32,27 @@ namespace blendnet.api.proxy.Retailer
         {
             string retailerPartnerId = RetailerDto.CreatePartnerId(partnerCode, partnerProvidedRetailerId);
             string url = $"Retailer/byPartnerId/{retailerPartnerId}";
+            string accessToken = await base.GetServiceAccessToken();
+
+            RetailerDto retailer = null;
+            try
+            {
+                retailer = await _rmsHttpClient.Get<RetailerDto>(url, accessToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { }
+
+            return retailer;
+        }
+
+        /// <summary>
+        /// Get retailer by referral Code
+        /// </summary>
+        /// <param name="referralCode"></param>
+        /// <returns></returns>
+        public async Task<RetailerDto> GetRetailerByReferralCode(string referralCode)
+        {
+            string url = $"Retailer/byReferralCode/{referralCode}";
             string accessToken = await base.GetServiceAccessToken();
 
             RetailerDto retailer = null;
