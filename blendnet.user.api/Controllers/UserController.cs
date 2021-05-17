@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.User;
+using blendnet.common.infrastructure.Authentication;
 using blendnet.user.api.Request;
 using blendnet.user.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -72,6 +73,7 @@ namespace blendnet.user.api.Controllers
         /// <returns>User Object</returns>
         [HttpGet("getuser/{phoneNumber}", Name = nameof(GetUserByPhoneNumber))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<User>> GetUserByPhoneNumber(string phoneNumber)
         {
             User user = await _userRepository.GetUserByPhoneNumber(phoneNumber);
