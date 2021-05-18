@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
+using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.user.api.Request;
@@ -105,15 +106,14 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="referralDto"></param>
         /// <returns>/returns>
-        [HttpPost("assignretailer", Name = nameof(AssignRetailer))]
+        [HttpPost("assignretailer/{refferalCode}", Name = nameof(AssignRetailer))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<User>> AssignRetailer(ReferralDto referralDto)
+        public async Task<ActionResult<User>> AssignRetailer(string refferalCode)
         {
             List<string> errorInfo = new List<string>();
 
             String phoneNumber = this.User.Identity.Name;
             User user = await _userRepository.GetUserByPhoneNumber(phoneNumber);
-
             if (user == null)
             {
                 errorInfo.Add($"No valid details found for current user {phoneNumber}");
@@ -132,20 +132,25 @@ namespace blendnet.user.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            if (ValidateReferralData(referralDto) == false)
+            RetailerDto retailerDto = await _retailerProxy.GetRetailerByReferralCode(refferalCode);
+            if(retailerDto == null)
             {
-                errorInfo.Add("Invalid Retailer Data");
+                errorInfo.Add("Invalid referral code");
                 return BadRequest(errorInfo);
             }
 
             var currentDate = DateTime.UtcNow;
-            referralDto.ReferralDate = Int32.Parse(currentDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYDDMM));
-            referralDto.ReferralDateTime = currentDate;
-
-            user.ReferralInfo = referralDto;
+            user.ReferralInfo = new ReferralDto
+            {
+                RetailerId = retailerDto.Id,
+                RetailerPartnerId = retailerDto.PartnerId,
+                RetailerReferralCode = retailerDto.ReferralCode,
+                ReferralDate = Int32.Parse(currentDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYDDMM)),
+                ReferralDateTime = currentDate,
+            };
 
             user.ModifiedByByUserId = UserClaimData.GetUserId(User.Claims);
-            user.ModifiedDate = DateTime.UtcNow;
+            user.ModifiedDate = currentDate;
 
             int statusCode = await _userRepository.UpdateUser(user);
             if (statusCode == (int)System.Net.HttpStatusCode.OK)
@@ -184,18 +189,5 @@ namespace blendnet.user.api.Controllers
 
             return Ok(referralData);
         }
-
-        #region private methods
-        /// <summary>
-        /// Validate Retailer referral info
-        /// </summary>
-        /// <param name="ReferralDto"></param>
-        /// <returns>Success/Fail</returns>
-        private bool ValidateReferralData(ReferralDto referralDto)
-        {
-            //TODO: Validation check to be implemented
-            return true;
-        }
-        #endregion
     }
 }
