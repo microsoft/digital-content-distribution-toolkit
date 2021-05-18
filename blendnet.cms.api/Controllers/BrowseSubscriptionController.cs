@@ -1,5 +1,6 @@
 ﻿using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,6 +17,7 @@ namespace blendnet.cms.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]/{contentProviderId:guid}")]
     [ApiVersion("1.0")]
     [ApiController]
+    [Authorize]
     public class BrowseSubscriptionController : Controller
     {
         private readonly ILogger _logger;
@@ -39,10 +41,10 @@ namespace blendnet.cms.api.Controllers
         {
             var allSubscriptions = await this._contentProviderRepository.GetSubscriptions(contentProviderId);
             var now = DateTime.UtcNow;
-            var activeSubscriptions = ( from o in allSubscriptions
-                                        where o.StartDate <= now
-                                        where o.EndDate >= now
-                                        select o).ToList();
+            var activeSubscriptions = (from o in allSubscriptions
+                                       where o.StartDate <= now
+                                       where o.EndDate >= now
+                                       select o).ToList();
             return activeSubscriptions;
         }
     }

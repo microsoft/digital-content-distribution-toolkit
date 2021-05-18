@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace blendnet.retailer.api.Models
+namespace blendnet.user.api.Models
 {
     public class CreateRetailerRequest
     {

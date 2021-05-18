@@ -38,5 +38,13 @@ namespace blendnet.common.dto.User
             PhoneNumber = phoneNumber;
             UserName = userName;
         }
+
+        public static bool IsPhoneNumberValid(string phoneNumber)
+        {
+            return phoneNumber != null
+                    && phoneNumber.Length == 10
+                    && !phoneNumber.StartsWith("+")
+                    && int.TryParse(phoneNumber, out _);
+        }
     }
 }

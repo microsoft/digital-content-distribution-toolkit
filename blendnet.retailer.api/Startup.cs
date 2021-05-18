@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using blendnet.common.infrastructure.Authentication;
+using blendnet.api.proxy.KaizalaIdentity;
 
 namespace blendnet.retailer.api
 {
@@ -51,6 +53,14 @@ namespace blendnet.retailer.api
                                       builder.AllowAnyOrigin();
                                   });
             });
+
+            // Kaizala Auth Setup
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = KaizalaIdentityAuthOptions.DefaultScheme;
+                options.DefaultChallengeScheme = KaizalaIdentityAuthOptions.DefaultScheme;
+            })
+            .AddKaizalaIdentityAuth();
 
             services.AddControllers()
             .AddJsonOptions(options =>
@@ -85,6 +95,30 @@ namespace blendnet.retailer.api
                         Url = new Uri("https://api.blendnet.com/license"),
                     }
                 });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Scheme = "bearer",
+                    Description = "Please insert JWT token into field"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
             });
 
 
@@ -113,11 +147,16 @@ namespace blendnet.retailer.api
 
             services.AddTransient<IRetailerRepository, RetailerRepository>();
 
+            services.AddTransient<KaizalaIdentityProxy>();
+
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
 
             //Configure Redis Cache
             ConfigureDistributedCache(services);
+
+            //Configure Http Clients
+            ConfigureHttpClients(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -202,6 +241,15 @@ namespace blendnet.retailer.api
                 options.Configuration = redisCacheConnectionString;
             });
 
+        }
+
+        private void ConfigureHttpClients(IServiceCollection services)
+        {
+            //Configure Http Clients
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT, c =>
+            {
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
         }
     }
 }

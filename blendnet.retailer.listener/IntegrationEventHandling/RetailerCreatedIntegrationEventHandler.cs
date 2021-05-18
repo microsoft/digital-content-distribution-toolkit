@@ -1,26 +1,85 @@
-﻿using blendnet.common.dto.Events;
+﻿using blendnet.api.proxy.KaizalaIdentity;
+using blendnet.common.dto;
+using blendnet.common.dto.Events;
+using blendnet.common.dto.Identity;
+using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure;
+using blendnet.retailer.repository.Interfaces;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace blendnet.retailer.listener.IntegrationEventHandling
 {
     public class RetailerCreatedIntegrationEventHandler : IIntegrationEventHandler<RetailerCreatedIntegrationEvent>
     {
+        private readonly IRetailerRepository _retailerRepository;
+        
+        private readonly ILogger _logger;
+
+        private readonly KaizalaIdentityProxy _kaizalaIdentityProxy;
+
+        private readonly RetailerAppSettings _appSettings;
+
+        public RetailerCreatedIntegrationEventHandler(  ILogger<RetailerCreatedIntegrationEventHandler> logger,
+                                                        KaizalaIdentityProxy kaizalaIdentityProxy,
+                                                        IRetailerRepository retailerRepository,
+                                                        IOptionsMonitor<RetailerAppSettings> optionsMonitor)
+        {
+            _retailerRepository = retailerRepository;
+            _logger = logger;
+            _kaizalaIdentityProxy = kaizalaIdentityProxy;
+            _appSettings = optionsMonitor.CurrentValue;
+        }
+
         /// <summary>
         /// Handle Retailer Created Event
         /// 1) Insert a record in retailer collection
         /// 2) Assign the retailer role
-        /// 3) Refer ContentProviderCreatedIntegrationEventHandler for details
         /// </summary>
         /// <param name="integrationEvent"></param>
         /// <returns></returns>
-        public Task Handle(RetailerCreatedIntegrationEvent integrationEvent)
+        public async Task Handle(RetailerCreatedIntegrationEvent integrationEvent)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation($"Assigning Retailer role for Retailer {integrationEvent.Retailer.PartnerId}");
+                await AssignRoleInKaizalaIdentity(integrationEvent);
+
+                // Create retailer
+                _logger.LogInformation($"Creating Retailer in DB {integrationEvent.Retailer.PartnerId}");
+                await this._retailerRepository.CreateRetailer(integrationEvent.Retailer);
+
+                _logger.LogInformation($"Done Creating Retailer {integrationEvent.Retailer.PartnerId}");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"RetailerCreatedIntegrationEvent.Handle failed for PartnerID: {integrationEvent.Retailer.PartnerId}");
+            }
+        }
+
+        private async Task AssignRoleInKaizalaIdentity(RetailerCreatedIntegrationEvent integrationEvent)
+        {
+            AddPartnerUsersRoleRequest addPartnerUsersRoleRequest = new AddPartnerUsersRoleRequest();
+            addPartnerUsersRoleRequest.ApplicationName = _appSettings.KaizalaIdentityAppName;
+            addPartnerUsersRoleRequest.PhoneRoleList = new List<PhoneRole>();
+
+            PhoneRole phoneRole = new PhoneRole();
+            phoneRole.PhoneNo = $"{ApplicationConstants.CountryCodes.India}{integrationEvent.Retailer.PhoneNumber}";
+            phoneRole.Role = ApplicationConstants.KaizalaIdentityRoles.Retailer;
+            addPartnerUsersRoleRequest.PhoneRoleList.Add(phoneRole);
+          
+            try
+            {
+                await _kaizalaIdentityProxy.AddPartnerUsersRole(addPartnerUsersRoleRequest);
+                _logger.LogInformation($"Assigned Retailer role for Retailer {integrationEvent.Retailer.PartnerId}");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Failed to assign Retailer role for Retailer {integrationEvent.Retailer.PartnerId}");
+            }
         }
     }
 }

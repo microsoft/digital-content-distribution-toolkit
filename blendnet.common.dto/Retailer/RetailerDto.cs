@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace blendnet.common.dto.Retailer
 {
@@ -95,6 +96,18 @@ namespace blendnet.common.dto.Retailer
         public static string CreatePartnerId(string partnerCode, string partnerProvidedId)
         {
             return $"{partnerCode}-{partnerProvidedId}";
+        }
+
+        /// <summary>
+        /// Checks if the given string is a valid partner code
+        /// </summary>
+        /// <param name="partnerCode">code to check</param>
+        /// <returns></returns>
+        public static bool IsPartnerCodeValid(string partnerCode)
+        {
+            return ApplicationConstants.PartnerCode.ValidPatnerCodes
+                        .Where(code => code == partnerCode)
+                        .Count() != 0;
         }
     }
 

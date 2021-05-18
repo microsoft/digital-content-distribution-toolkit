@@ -227,9 +227,9 @@ namespace blendnet.cms.api.Controllers
         [HttpGet("{contentProviderId:guid}/generateSaS")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<SasTokenDto>> GenerateToken(Guid contentProviderId)
+        public ActionResult<SasTokenDto> GenerateToken(Guid contentProviderId)
         {
-            SasTokenDto sasUri = await _contentProviderRepository.GenerateSaSToken(contentProviderId);
+            SasTokenDto sasUri = _contentProviderRepository.GenerateSaSToken(contentProviderId);
 
             if (sasUri != null)
             {

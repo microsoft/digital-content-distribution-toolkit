@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using blendnet.common.infrastructure.Authentication;
+using blendnet.common.dto.User;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -16,6 +18,7 @@ namespace blendnet.cms.api.Controllers
     [Route("api/v{version:apiVersion}/ContentProvider/{contentProviderId:guid}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
+    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
     public class SubscriptionController : Controller
     {
         private readonly ILogger _logger;
@@ -98,9 +101,12 @@ namespace blendnet.cms.api.Controllers
                 }
             }
 
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+
             subscription.SetIdentifiers();
             subscription.ContentProviderId = contentProviderId;
-            subscription.DateCreated = subscription.DateModified = DateTime.UtcNow;
+            subscription.CreatedDate = DateTime.UtcNow;
+            subscription.CreatedByUserId = callerUserId;
             subscription.Type = ContentProviderContainerType.Subscription;
 
             var subscriptionId = await this._contentProviderRepository.CreateSubscription(subscription);
@@ -137,9 +143,12 @@ namespace blendnet.cms.api.Controllers
                 }
             }
 
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+
             subscription.Id = subscriptionId;
             subscription.ContentProviderId = contentProviderId;
-            subscription.DateModified = DateTime.UtcNow;
+            subscription.ModifiedDate = DateTime.UtcNow;
+            subscription.ModifiedByByUserId = callerUserId;
             subscription.Type = ContentProviderContainerType.Subscription;
 
             int response = await this._contentProviderRepository.UpdateSubscription(contentProviderId, subscription);
@@ -229,9 +238,9 @@ namespace blendnet.cms.api.Controllers
                 listOfValidationErrors.Add("DurationDays should be minimum 1");
             }
 
-            if (subscription.Price < 0)
+            if (subscription.Price <= 0)
             {
-                listOfValidationErrors.Add("Price should be minimum 0");
+                listOfValidationErrors.Add("Price should be minimum 1");
             }
 
             return listOfValidationErrors;

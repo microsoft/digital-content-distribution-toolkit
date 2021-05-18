@@ -73,12 +73,22 @@ namespace blendnet.retailer.repository.CosmosRepository
         /// </summary>
         /// <param name="retailerPartnerId"></param>
         /// <returns>Retailer Entity</returns>
-        async Task<RetailerDto> IRetailerRepository.GetRetailerByPartnerId(string retailerPartnerId /* composed*/)
+        async Task<RetailerDto> IRetailerRepository.GetRetailerByPartnerId(string retailerPartnerId /* composed*/, bool shouldGetInactiveRetailer)
         {
-            const string queryString = @"SELECT * FROM r WHERE r.partnerId = @retailerPartnerId AND r.type = @type";
+            const string queryString = 
+                @"SELECT * FROM r 
+                WHERE (@shouldGetInactiveRetailer OR (r.startDate < @now AND r.endDate > @now)) 
+                    AND r.partnerId = @retailerPartnerId 
+                    AND r.type = @type";
+
+            DateTime now = DateTime.UtcNow;
+
             var query = new QueryDefinition(queryString)
                                 .WithParameter("@retailerPartnerId", retailerPartnerId)
-                                .WithParameter("@type", RetailerContainerType.Retailer);
+                                .WithParameter("@type", RetailerContainerType.Retailer)
+                                .WithParameter("@shouldGetInactiveRetailer", shouldGetInactiveRetailer)
+                                .WithParameter("@now", now);
+
             var resultList = await this._container.ExtractDataFromQueryIterator<RetailerDto>(query);
             var result = resultList.FirstOrDefault();
             return result;
@@ -89,12 +99,22 @@ namespace blendnet.retailer.repository.CosmosRepository
         /// </summary>
         /// <param name="referralCode"></param>
         /// <returns>Retailer Entity</returns>
-        async Task<RetailerDto> IRetailerRepository.GetRetailerByReferralCode(string referralCode)
+        async Task<RetailerDto> IRetailerRepository.GetRetailerByReferralCode(string referralCode, bool shouldGetInactiveRetailer)
         {
-            const string queryString = @"SELECT * FROM r WHERE r.referralCode = @referralCode AND r.type = @type";
+            const string queryString =  
+                @"SELECT * FROM r 
+                WHERE (@shouldGetInactiveRetailer OR (r.startDate < @now AND r.endDate > @now)) 
+                    AND r.referralCode = @referralCode 
+                    AND r.type = @type";
+
+            DateTime now = DateTime.UtcNow;
+
             var query = new QueryDefinition(queryString)
                                 .WithParameter("@referralCode", referralCode)
-                                .WithParameter("@type", RetailerContainerType.Retailer);
+                                .WithParameter("@type", RetailerContainerType.Retailer)
+                                .WithParameter("@shouldGetInactiveRetailer", shouldGetInactiveRetailer)
+                                .WithParameter("@now", now);
+            
             var resultList = await this._container.ExtractDataFromQueryIterator<RetailerDto>(query);
             var result = resultList.FirstOrDefault();
             return result;
@@ -107,7 +127,7 @@ namespace blendnet.retailer.repository.CosmosRepository
         /// <param name="lng"></param>
         /// <param name="distance">in meters</param>
         /// <returns>List of Retailer entities and their distance from the location</returns>
-        public async Task<List<RetailerWithDistanceDto>> GetNearbyRetailers(double lat, double lng, double distance)
+        async Task<List<RetailerWithDistanceDto>> IRetailerRepository.GetNearbyRetailers(double lat, double lng, double distance, bool shouldGetInactiveRetailers)
         {
             const string queryString = 
                 @"SELECT r as retailer, ST_DISTANCE({
@@ -118,18 +138,23 @@ namespace blendnet.retailer.repository.CosmosRepository
                     coordinates: [@lat, @lng]
                 }) as distanceMeters
                 FROM r
-                WHERE r.type = @type AND ST_DISTANCE({
+                WHERE (@shouldGetInactiveRetailers OR (r.startDate < @now AND r.endDate > @now))
+                AND r.type = @type AND ST_DISTANCE({
                     type: ""Point"",
                     coordinates: [r.address.mapLocation.latitude, r.address.mapLocation.longitude]
                 },{
                     type: ""Point"",
                     coordinates: [@lat, @lng]
                 }) <= @distance";
+            
+            var now = DateTime.UtcNow;
             var query = new QueryDefinition(queryString)
                             .WithParameter("@type", RetailerContainerType.Retailer)
                             .WithParameter("@lat", lat)
                             .WithParameter("@lng", lng)
-                            .WithParameter("@distance", distance);
+                            .WithParameter("@distance", distance)
+                            .WithParameter("@shouldGetInactiveRetailers", shouldGetInactiveRetailers)
+                            .WithParameter("@now", now);
 
             var results = await this._container.ExtractDataFromQueryIterator<RetailerWithDistanceDto>(query);
 
@@ -146,7 +171,7 @@ namespace blendnet.retailer.repository.CosmosRepository
         private async Task<string> ReserveReferralCode()
         {
             const string PREFIX = "RN";
-            const int MAX_ATTEMPTS = 100;
+            const int MAX_ATTEMPTS = 10;
 
             int attemptCount = 0;
             

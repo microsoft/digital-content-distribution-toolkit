@@ -135,7 +135,7 @@ namespace blendnet.cms.repository.CosmosRepository
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        public async Task<SasTokenDto> GenerateSaSToken(Guid contentProviderId)
+        public SasTokenDto GenerateSaSToken(Guid contentProviderId)
         {    
             var containerName = $"{contentProviderId}{ApplicationConstants.StorageContainerSuffix.Raw}";
 

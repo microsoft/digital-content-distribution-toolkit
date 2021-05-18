@@ -22,6 +22,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using blendnet.common.infrastructure.ServiceBus;
+using Microsoft.Extensions.Azure;
+using blendnet.common.infrastructure;
 
 namespace blendnet.user.api
 {
@@ -158,6 +161,8 @@ namespace blendnet.user.api
             //Configure Redis Cache
             ConfigureDistributedCache(services);
 
+            // Configure Event Bus
+            ConfigureEventBus(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -213,6 +218,14 @@ namespace blendnet.user.api
             {
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
+
+            //Configure Http Clients
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.RETAILER_HTTP_CLIENT, c =>
+            {
+                string retailerBaseUrl = Configuration.GetValue<string>("RetailerBaseUrl");
+                c.BaseAddress = new Uri(retailerBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
         }
 
 
@@ -257,6 +270,28 @@ namespace blendnet.user.api
                 options.Configuration = redisCacheConnectionString;
             });
 
+        }
+
+        private void ConfigureEventBus(IServiceCollection services)
+        {
+            //event bus related registrations
+            string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
+            string serviceBusTopicName = Configuration.GetValue<string>("ServiceBusTopicName");
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddServiceBusClient(serviceBusConnectionString);
+            });
+
+            services.AddSingleton<EventBusConnectionData>(ebcd =>
+            {
+                EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
+                eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
+                eventBusConnectionData.TopicName = serviceBusTopicName;
+                return eventBusConnectionData;
+            });
+
+            services.AddSingleton<IEventBus, EventServiceBus>();
         }
     }
 }

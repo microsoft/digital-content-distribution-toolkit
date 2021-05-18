@@ -1,4 +1,4 @@
-﻿using blendnet.api.proxy.Common;
+using blendnet.api.proxy.Common;
 using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
 using Microsoft.Extensions.Caching.Distributed;
@@ -31,6 +31,7 @@ namespace blendnet.api.proxy.Retailer
         public async Task<RetailerDto> GetRetailerById(string partnerProvidedRetailerId, string partnerCode)
         {
             string retailerPartnerId = RetailerDto.CreatePartnerId(partnerCode, partnerProvidedRetailerId);
+
             string url = $"Retailer/byPartnerId/{retailerPartnerId}";
             string accessToken = await base.GetServiceAccessToken();
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace blendnet.common.dto
 {
-    public class ContentProviderSubscriptionDto
+    public class ContentProviderSubscriptionDto : BaseDto
     {
         /// <summary>
         /// Subscription Id
@@ -31,10 +31,6 @@ namespace blendnet.common.dto
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
-
-        public DateTime DateCreated { get; set; }
-
-        public DateTime DateModified { get; set; }
 
         public void SetIdentifiers()
         {

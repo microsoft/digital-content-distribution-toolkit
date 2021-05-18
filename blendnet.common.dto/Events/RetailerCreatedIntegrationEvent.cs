@@ -12,6 +12,6 @@ namespace blendnet.common.dto.Events
     /// </summary>
     public class RetailerCreatedIntegrationEvent: IntegrationEvent
     {
-
+        public Retailer.RetailerDto Retailer { get; set; }
     }
 }

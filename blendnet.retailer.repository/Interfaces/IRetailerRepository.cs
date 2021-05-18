@@ -21,15 +21,17 @@ namespace blendnet.retailer.repository.Interfaces
         /// Gets Retailer by RetailerPartnerId (composed)
         /// </summary>
         /// <param name="retailerPartnerId"></param>
+        /// <param name="shouldGetInactiveRetailer"></param>
         /// <returns>Retailer Entity</returns>
-        Task<RetailerDto> GetRetailerByPartnerId(string retailerPartnerId);
+        Task<RetailerDto> GetRetailerByPartnerId(string retailerPartnerId, bool shouldGetInactiveRetailer = false);
 
         /// <summary>
         /// Gets Retailer by Referral Code
         /// </summary>
         /// <param name="referralCode"></param>
+        /// <param name="shouldGetInactiveRetailer"></param>
         /// <returns>Retailer Entity</returns>
-        Task<RetailerDto> GetRetailerByReferralCode(string referralCode);
+        Task<RetailerDto> GetRetailerByReferralCode(string referralCode, bool shouldGetInactiveRetailer = false);
 
         /// <summary>
         /// Gets nearby retailers for a given location and within distance
@@ -38,7 +40,7 @@ namespace blendnet.retailer.repository.Interfaces
         /// <param name="lng"></param>
         /// <param name="distance">in meters</param>
         /// <returns>List of Retailer entities and their distance from the location</returns>
-        Task<List<RetailerWithDistanceDto>> GetNearbyRetailers(double lat, double lng, double distance);
+        Task<List<RetailerWithDistanceDto>> GetNearbyRetailers(double lat, double lng, double distance, bool shouldGetInactiveRetailers = false);
 
         /// <summary>
         /// Update a retailer entity

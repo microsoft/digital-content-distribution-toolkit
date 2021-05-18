@@ -1,13 +1,12 @@
 ﻿using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
-using blendnet.retailer.api.Models;
+using blendnet.common.dto.User;
+using blendnet.common.infrastructure.Authentication;
 using blendnet.retailer.repository.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace blendnet.retailer.api.Controllers
@@ -15,6 +14,7 @@ namespace blendnet.retailer.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
+    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
     public class RetailerController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -28,76 +28,6 @@ namespace blendnet.retailer.api.Controllers
         }
 
         #region API methods
-
-        [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<string>> CreateRetailer(CreateRetailerRequest retailerRequest)
-        {
-            var partnerCode = GetPartnerCodeFromRequest();
-
-            var listOfValidationErrors = new List<string>();
-
-            // validations
-            {
-                string phoneNumber = retailerRequest.PhoneNumber;
-                if (phoneNumber.Length != 10
-                    || phoneNumber.StartsWith("+")
-                    || !int.TryParse(phoneNumber, out _)
-                    )
-                {
-                    listOfValidationErrors.Add("Invalid Phone number format");
-                }
-
-                if (!retailerRequest.Address.MapLocation.isValid())
-                {
-                    listOfValidationErrors.Add("Map Location is not valid");
-                }
-
-                string retailerPartnerId = RetailerDto.CreatePartnerId(partnerCode, retailerRequest.RetailerId);
-                RetailerDto existingRetailer = await this._retailerRepository.GetRetailerByPartnerId(retailerPartnerId);
-                if (existingRetailer != null)
-                {
-                    return Conflict("Already Exists");
-                }
-            }
-
-            // check and return validation errors
-            if (listOfValidationErrors.Count > 0)
-            {
-                return BadRequest(listOfValidationErrors);
-            }
-
-            DateTime now = DateTime.UtcNow;
-
-            // create RetailerDto from request
-            RetailerDto retailer = new RetailerDto()
-            {
-                // Base propeties
-                CreatedByUserId = retailerRequest.UserId, // TODO: this should be from Claim
-                CreatedDate = now,
-
-                // Person Properties
-                Id = retailerRequest.UserId,
-                PhoneNumber = retailerRequest.PhoneNumber,
-                UserName = retailerRequest.Name,
-
-                // User properties
-                // Retailer properties
-                PartnerProvidedId = retailerRequest.RetailerId,
-                PartnerCode = partnerCode, // TODO: extract from Claim
-                Address = retailerRequest.Address,
-                Services = new List<ServiceType>() { ServiceType.Media },
-                AdditionalAttibutes = retailerRequest.AdditionalAttributes,
-
-                StartDate = now,
-                EndDate = DateTime.MaxValue,
-            };
-
-            // create retailer in DB
-            string retailerId = await this._retailerRepository.CreateRetailer(retailer);
-
-            return Ok(retailerId);
-        }
 
         [HttpGet("byPartnerId/{retailerPartnerId}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -142,9 +72,11 @@ namespace blendnet.retailer.api.Controllers
                 return BadRequest(listOfValidationErrors);
             }
 
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+
             // update the metadata
             retailer.ModifiedDate = DateTime.UtcNow;
-            retailer.ModifiedByByUserId = retailer.Id; // TODO: update with auth integration
+            retailer.ModifiedByByUserId = callerUserId;
 
             int response = await this._retailerRepository.UpdateRetailer(retailer);
             if (response == (int)System.Net.HttpStatusCode.OK)
@@ -158,11 +90,5 @@ namespace blendnet.retailer.api.Controllers
         }
 
         #endregion
-
-        private string GetPartnerCodeFromRequest()
-        {
-            // TODO: implement
-            return ApplicationConstants.PartnerCode.NovoPay;
-        }
     }
 }

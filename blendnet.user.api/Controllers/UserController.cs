@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using blendnet.api.proxy.Retailer;
+﻿using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
+using blendnet.common.dto.Events;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
+using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
-using blendnet.user.api.Request;
+using blendnet.user.api.Models;
 using blendnet.user.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 
 namespace blendnet.user.api.Controllers
@@ -24,16 +26,20 @@ namespace blendnet.user.api.Controllers
 
         private RetailerProxy _retailerProxy;
 
+        private IEventBus _eventBus;
+
         private UserAppSettings _appSettings;
 
         public UserController(IUserRepository userRepository,
                               ILogger<UserController> logger,
                               RetailerProxy retailerProxy,
+                              IEventBus eventBus,
                               IOptionsMonitor<UserAppSettings> optionsMonitor)
         {
             _logger = logger;
             _userRepository = userRepository;
             _retailerProxy = retailerProxy;
+            _eventBus = eventBus;
             _appSettings = optionsMonitor.CurrentValue;
         }
 
@@ -70,6 +76,34 @@ namespace blendnet.user.api.Controllers
             await _userRepository.CreateUser(user);
 
             return Ok(user.Id);
+        }
+
+        /// <summary>
+        /// Creates a new retailer - to be called by partner
+        /// </summary>
+        /// <param name="retailerRequest">Request containg retailer details</param>
+        /// <returns>Retailer ID of the created retailer</returns>
+        [HttpPost("createretailer")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.RetailerManagement)]
+        public async Task<ActionResult<string>> CreateRetailer(CreateRetailerRequest retailerRequest)
+        {
+            var partnerCode = ApplicationConstants.PartnerCode.NovoPay; // TODO: extract from claim
+            
+            return await this.CreateRetailerInternal(retailerRequest, partnerCode);
+        }
+
+        /// <summary>
+        /// Creates a new retailer - to be called by Super Admin
+        /// </summary>
+        /// <param name="retailerRequest">Request containg retailer details</param>
+        /// <returns>Retailer ID of the created retailer</returns>
+        [HttpPost("CreateRetailerAsSuperAdmin")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<string>> CreateRetailerAsSuperAdmin(string partnerCode, CreateRetailerRequest retailerRequest)
+        {
+            return await this.CreateRetailerInternal(retailerRequest, partnerCode);
         }
 
         /// <summary>
@@ -194,5 +228,127 @@ namespace blendnet.user.api.Controllers
 
             return Ok(referralData);
         }
+
+        #region private methods
+        /// <summary>
+        /// Validate Retailer referral info
+        /// </summary>
+        /// <param name="ReferralDto"></param>
+        /// <returns>Success/Fail</returns>
+        private bool ValidateReferralData(ReferralDto referralDto)
+        {
+            //TODO: Validation check to be implemented
+            return true;
+        }
+
+        /// <summary>
+        /// Creates the user, if not already exists
+        /// </summary>
+        /// <param name="user">user to be created</param>
+        /// <returns>true if the user was created, false otherwise</returns>
+        private async Task<bool> CreateUserIfNotExist(User user)
+        {
+            if (await _userRepository.GetUserByPhoneNumber(user.PhoneNumber) == null)
+            {
+                await _userRepository.CreateUser(user);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Logic for creating retailer from the request
+        /// </summary>
+        /// <param name="retailerRequest">request</param>
+        /// <param name="partnerCode">Partner Code</param>
+        /// <returns>Retailer ID of the created retailer</returns>
+        private async Task<ActionResult<string>> CreateRetailerInternal(CreateRetailerRequest retailerRequest, string partnerCode)
+        {
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+
+            // validations
+            {
+                var listOfValidationErrors = new List<string>();
+
+                if (!RetailerDto.IsPartnerCodeValid(partnerCode))
+                {
+                    listOfValidationErrors.Add($"Invalid partner code : {partnerCode}");
+                }
+
+                string phoneNumber = retailerRequest.PhoneNumber;
+                if (!PersonDto.IsPhoneNumberValid(phoneNumber))
+                {
+                    listOfValidationErrors.Add("Invalid Phone number format");
+                }
+
+                if (!retailerRequest.Address.MapLocation.isValid())
+                {
+                    listOfValidationErrors.Add("Map Location is not valid");
+                }
+
+                var existingRetailer = await _retailerProxy.GetRetailerById(retailerRequest.RetailerId, partnerCode);
+                if (existingRetailer != null)
+                {
+                    listOfValidationErrors.Add($"Retailer Already Exists ID : {retailerRequest.RetailerId}");
+                }
+
+                // check and return validation errors
+                if (listOfValidationErrors.Count > 0)
+                {
+                    return BadRequest(listOfValidationErrors);
+                }
+            }
+
+            DateTime now = DateTime.UtcNow;
+
+            // create user if not exists
+            User user = new User
+            {
+                Id = retailerRequest.UserId, 
+                PhoneNumber = retailerRequest.PhoneNumber, 
+                UserName = retailerRequest.Name,
+                ChannelId = Channel.NovoRetailerApp, // TODO: this should be from the Claim / partnerCode
+                CreatedDate = now,
+                CreatedByUserId = callerUserId,
+            };
+
+            await this.CreateUserIfNotExist(user);
+
+            // create RetailerDto from request
+            RetailerDto retailer = new RetailerDto()
+            {
+                // Base propeties
+                CreatedByUserId = callerUserId,
+                CreatedDate = now,
+
+                // Person Properties
+                Id = retailerRequest.UserId,
+                PhoneNumber = retailerRequest.PhoneNumber,
+                UserName = retailerRequest.Name,
+
+                // User properties
+                // Retailer properties
+                PartnerProvidedId = retailerRequest.RetailerId,
+                PartnerCode = partnerCode,
+                Address = retailerRequest.Address,
+                Services = new List<ServiceType>() { ServiceType.Media },
+                AdditionalAttibutes = retailerRequest.AdditionalAttributes,
+
+                StartDate = now,
+                EndDate = DateTime.MaxValue,
+            };
+
+            RetailerCreatedIntegrationEvent retailerCreatedIntegrationEvent = new RetailerCreatedIntegrationEvent()
+            {
+                Retailer = retailer,
+            };
+
+            await _eventBus.Publish(retailerCreatedIntegrationEvent);
+
+            return Ok(retailerRequest.RetailerId);
+        }
+
+        #endregion
     }
 }

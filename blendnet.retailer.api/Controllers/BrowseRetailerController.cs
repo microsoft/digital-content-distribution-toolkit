@@ -1,6 +1,6 @@
-﻿using blendnet.common.dto.Retailer;
+using blendnet.common.dto.Retailer;
 using blendnet.retailer.repository.Interfaces;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,6 +13,7 @@ namespace blendnet.retailer.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
+    [Authorize]
     public class BrowseRetailerController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -37,15 +38,7 @@ namespace blendnet.retailer.api.Controllers
             distanceMeters = distanceMeters >= DISTANCE_METERS_MIN ? distanceMeters : DISTANCE_METERS_MIN;
             distanceMeters = distanceMeters <= DISTANCE_METERS_MAX ? distanceMeters : DISTANCE_METERS_MAX;
 
-            List<RetailerWithDistanceDto> nearbyRetailers = await this._retailerRepository.GetNearbyRetailers(lat, lng, distanceMeters);
-
-            // filter active retailers
-            var now = DateTime.UtcNow;
-            List<RetailerWithDistanceDto> nearbyActiveRetailers = (from o in nearbyRetailers
-                                                                   where o.Retailer.IsActive()
-                                                                   orderby o.DistanceMeters ascending
-                                                                   select o)
-                                                                  .ToList();
+            List<RetailerWithDistanceDto> nearbyActiveRetailers = await this._retailerRepository.GetNearbyRetailers(lat, lng, distanceMeters, false /* shouldGetInactive*/);
 
             return nearbyActiveRetailers;
         }
