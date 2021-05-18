@@ -277,7 +277,7 @@ namespace blendnet.user.api.Controllers
                 }
 
                 string phoneNumber = retailerRequest.PhoneNumber;
-                if (!PersonDto.IsPhoneNumberValid(phoneNumber))
+                if (!common.dto.User.User.IsPhoneNumberValid(phoneNumber))
                 {
                     listOfValidationErrors.Add("Invalid Phone number format");
                 }
