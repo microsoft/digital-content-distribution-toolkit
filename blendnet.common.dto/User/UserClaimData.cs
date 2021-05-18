@@ -37,5 +37,18 @@ namespace blendnet.common.dto.User
 
             return userClaim.First().Value;
         }
+
+        /// <summary>
+        /// returns the partner code by mapping claims' user ID to the partner code mentioned in the service ID mapping
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <param name="serviceIdMapping"></param>
+        /// <returns></returns>
+        public static string GetPartnerCode(IEnumerable<Claim> claims, Dictionary<string, string> serviceIdMapping)
+        {
+            var userId = GetUserId(claims).ToString();
+            var mappedPartnerCode = serviceIdMapping.GetValueOrDefault(userId, ApplicationConstants.PartnerCode.UNKNOWN);
+            return mappedPartnerCode;
+        }
     }
 }

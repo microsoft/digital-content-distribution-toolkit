@@ -88,7 +88,7 @@ namespace blendnet.user.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<string>> CreateRetailer(CreateRetailerRequest retailerRequest)
         {
-            var partnerCode = ApplicationConstants.PartnerCode.NovoPay; // TODO: extract from claim
+            string partnerCode = UserClaimData.GetPartnerCode(this.User.Claims, _appSettings.ServiceIdMapping);
             
             return await this.CreateRetailerInternal(retailerRequest, partnerCode);
         }
@@ -271,7 +271,7 @@ namespace blendnet.user.api.Controllers
             {
                 var listOfValidationErrors = new List<string>();
 
-                if (!RetailerDto.IsPartnerCodeValid(partnerCode))
+                if (!RetailerDto.IsPartnerCodeValid(partnerCode, _appSettings.ServiceIdMapping))
                 {
                     listOfValidationErrors.Add($"Invalid partner code : {partnerCode}");
                 }

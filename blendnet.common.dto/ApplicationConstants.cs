@@ -195,7 +195,7 @@ namespace blendnet.common.dto
         {
             public const string NovoPay = "NV";
 
-            public static readonly string[] ValidPatnerCodes = { NovoPay }; // Update this when adding new partner codes
+            public const string UNKNOWN = "UNKNOWN";
         }
     }
 }

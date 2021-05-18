@@ -102,12 +102,13 @@ namespace blendnet.common.dto.Retailer
         /// Checks if the given string is a valid partner code
         /// </summary>
         /// <param name="partnerCode">code to check</param>
+        /// <param name="serviceIdMapping">Service ID mappings for lookup</param>
         /// <returns></returns>
-        public static bool IsPartnerCodeValid(string partnerCode)
+        public static bool IsPartnerCodeValid(string partnerCode, Dictionary<string, string> serviceIdMapping)
         {
-            return ApplicationConstants.PartnerCode.ValidPatnerCodes
-                        .Where(code => code == partnerCode)
-                        .Count() != 0;
+            return serviceIdMapping.Values
+                    .Where(code => code == partnerCode)
+                    .Count() == 1;
         }
     }
 
