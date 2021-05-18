@@ -10,6 +10,7 @@ using blendnet.user.api.Request;
 using blendnet.user.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace blendnet.user.api.Controllers
 {
@@ -23,13 +24,17 @@ namespace blendnet.user.api.Controllers
 
         private RetailerProxy _retailerProxy;
 
+        private UserAppSettings _appSettings;
+
         public UserController(IUserRepository userRepository,
                               ILogger<UserController> logger,
-                              RetailerProxy retailerProxy)
+                              RetailerProxy retailerProxy,
+                              IOptionsMonitor<UserAppSettings> optionsMonitor)
         {
             _logger = logger;
             _userRepository = userRepository;
             _retailerProxy = retailerProxy;
+            _appSettings = optionsMonitor.CurrentValue;
         }
 
         /// <summary>
