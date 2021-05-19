@@ -46,6 +46,11 @@ namespace blendnet.common.dto.User
         /// </summary>
         public ReferralDto ReferralInfo { get; set; }
 
+        /// <summary>
+        /// Type
+        /// </summary>
+        public UserContainerType Type { get; set; }
+
         public static bool IsPhoneNumberValid(string phoneNumber)
         {
             return phoneNumber != null

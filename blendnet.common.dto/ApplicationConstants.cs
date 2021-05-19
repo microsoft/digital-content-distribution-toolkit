@@ -188,7 +188,7 @@ namespace blendnet.common.dto
         /// </summary>
         public struct DateTimeFormats
         {
-            public const string FormatYYYYDDMM = "yyyymmdd";
+            public const string FormatYYYYDDMM = "yyyyMMdd";
         }
 
         public struct PartnerCode

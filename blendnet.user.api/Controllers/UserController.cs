@@ -48,7 +48,7 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="User"></param>
         /// <returns>Status</returns>
-        [HttpPost("createuser", Name = nameof(CreateUser))]
+        [HttpPost("user", Name = nameof(CreateUser))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult> CreateUser(CreateUserRequest request)
         {
@@ -70,7 +70,8 @@ namespace blendnet.user.api.Controllers
                     UserName = request.UserName,
                     ChannelId = request.ChannelId,
                     CreatedDate = DateTime.UtcNow,
-                    CreatedByUserId = userId
+                    CreatedByUserId = userId,
+                    Type = UserContainerType.User
             };
 
             await _userRepository.CreateUser(user);
@@ -83,7 +84,7 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="retailerRequest">Request containg retailer details</param>
         /// <returns>Retailer ID of the created retailer</returns>
-        [HttpPost("createretailer")]
+        [HttpPost("retailer")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<string>> CreateRetailer(CreateRetailerRequest retailerRequest)
@@ -94,24 +95,11 @@ namespace blendnet.user.api.Controllers
         }
 
         /// <summary>
-        /// Creates a new retailer - to be called by Super Admin
-        /// </summary>
-        /// <param name="retailerRequest">Request containg retailer details</param>
-        /// <returns>Retailer ID of the created retailer</returns>
-        [HttpPost("CreateRetailerAsSuperAdmin")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<string>> CreateRetailerAsSuperAdmin(string partnerCode, CreateRetailerRequest retailerRequest)
-        {
-            return await this.CreateRetailerInternal(retailerRequest, partnerCode);
-        }
-
-        /// <summary>
         /// Get user using phone number
         /// </summary>
         /// <param name="User"></param>
         /// <returns>User Object</returns>
-        [HttpGet("getuser/{phoneNumber}", Name = nameof(GetUserByPhoneNumber))]
+        [HttpGet("user/{phoneNumber}", Name = nameof(GetUserByPhoneNumber))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<User>> GetUserByPhoneNumber(string phoneNumber)
@@ -132,7 +120,7 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="User"></param>
         /// <returns>User Object</returns>
-        [HttpGet("getuser", Name = nameof(GetUser))]
+        [HttpGet("me", Name = nameof(GetUser))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<User>> GetUser()
         {
@@ -145,9 +133,9 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="referralDto"></param>
         /// <returns>/returns>
-        [HttpPost("assignretailer/{refferalCode}", Name = nameof(AssignRetailer))]
+        [HttpPost("assignretailer/{referralCode}", Name = nameof(AssignRetailer))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<User>> AssignRetailer(string refferalCode)
+        public async Task<ActionResult<User>> AssignRetailer(string referralCode)
         {
             List<string> errorInfo = new List<string>();
 
@@ -171,7 +159,7 @@ namespace blendnet.user.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            RetailerDto retailerDto = await _retailerProxy.GetRetailerByReferralCode(refferalCode);
+            RetailerDto retailerDto = await _retailerProxy.GetRetailerByReferralCode(referralCode);
             if(retailerDto == null)
             {
                 errorInfo.Add("Invalid referral code");
@@ -202,6 +190,14 @@ namespace blendnet.user.api.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Get Referral Summary
+        /// </summary>
+        /// <param name="retailerPartnerId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
         [HttpGet("summary/{retailerPartnerId}", Name = nameof(GetReferralSummary))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> GetReferralSummary(string retailerPartnerId, int startDate, int endDate)
@@ -311,6 +307,7 @@ namespace blendnet.user.api.Controllers
                 ChannelId = Channel.NovoRetailerApp, // TODO: this should be from the Claim / partnerCode
                 CreatedDate = now,
                 CreatedByUserId = callerUserId,
+                Type = UserContainerType.User
             };
 
             await this.CreateUserIfNotExist(user);

@@ -3,8 +3,17 @@
 .\createSecrets.ps1 -keyvaultName kv-blendnet-dev -displayOnly $false -secretPrefix blendnetomsapi -secretPath C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\0ff93384-295b-43c6-a12f-af2af9f987f3\secrets.json
 .\createSecrets.ps1 -keyvaultName kv-blendnet-dev -displayOnly $false -secretPrefix blendnetretailerapi -secretPath C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\bbece21e-7526-424d-9ab3-602a6f417dd7\secrets.json
 .\createSecrets.ps1 -keyvaultName kv-blendnet-dev -displayOnly $false -secretPrefix blendnetretailerlistener -secretPath C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\dotnet-blendnet.retailer.listener-E6DB0F2A-AFE4-4BE3-BC34-EE1CB2F42564\secrets.json
+.\createSecrets.ps1 -keyvaultName kv-blendnet-dev -displayOnly $false -secretPrefix blendnetuserapi -secretPath C:\Users\hemantk\AppData\Roaming\Microsoft\UserSecrets\a0a0df70-be31-4546-a40e-4c1d46dfe90e\secrets.json
 
-Listner
+CMS ---Listner
 ----Broadcast connection string and container name
+blendnetcmslistener-BroadcastStorageConnectionString
+blendnetcmslistener-BroadcastStorageContainerName
+
 OMS
-----OMS base url
+----CMS base url
+http://13.71.0.226/cmsapi/api/v1/
+----Retailer base url
+"RetailerBaseUrl" http://13.71.0.226/retailerapi/api/v1/
+User API
+"RetailerBaseUrl": "https://localhost:44313/api/v1/",

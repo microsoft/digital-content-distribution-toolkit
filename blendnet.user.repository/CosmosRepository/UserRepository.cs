@@ -73,8 +73,12 @@ namespace blendnet.user.repository.CosmosRepository
         /// <returns>User Object</returns>
         public async Task<User> GetUserByPhoneNumber(string phoneNumber)
         {
-            var queryString = "select * from c where c.phoneNumber = @phoneNumber";
-            var queryDef = new QueryDefinition(queryString).WithParameter("@phoneNumber", phoneNumber);
+            var queryString = "select * from c where c.phoneNumber = @phoneNumber and c.type = @type";
+            
+            var queryDef = new QueryDefinition(queryString)
+                                                .WithParameter("@phoneNumber", phoneNumber)
+                                                .WithParameter("@type", UserContainerType.User);
+
 
             return await ExtractFirstDataFromQueryIterator<User>(queryDef);
         }
@@ -86,8 +90,10 @@ namespace blendnet.user.repository.CosmosRepository
         /// <returns>User Object</returns>
         public async Task<User> GetUserById(string id)
         {
-            var queryString = "select * from c where c.id = @id";
-            var queryDef = new QueryDefinition(queryString).WithParameter("@id", id);
+            var queryString = "select * from c where c.id = @id and c.type = @type";
+            var queryDef = new QueryDefinition(queryString)
+                                .WithParameter("@id", id)
+                                .WithParameter("@type", UserContainerType.User);
 
             return await ExtractFirstDataFromQueryIterator<User>(queryDef);
         }
@@ -102,13 +108,14 @@ namespace blendnet.user.repository.CosmosRepository
         public async Task<List<ReferralSummary>> GetReferralSummary(string retailerPartnerId, int startDate, int endDate)
         {
             var queryString = "SELECT count(u) as Count, u.referralInfo.referralDate as Date FROM u " +
-                "WHERE u.referralInfo.retailerPartnerId = @retailerPartnerId  and u.referralInfo.referralDate >= @startDate and u.referralInfo.referralDate <= @endDate " +
+                "WHERE u.referralInfo.retailerPartnerId = @retailerPartnerId  and u.referralInfo.referralDate >= @startDate and u.referralInfo.referralDate <= @endDate and u.type = @type " +
                 "Group By u.referralInfo.referralDate";
 
             var queryDef = new QueryDefinition(queryString)
                         .WithParameter("@retailerPartnerId", retailerPartnerId)
                         .WithParameter("@startDate", startDate)
-                        .WithParameter("@endDate", endDate);
+                        .WithParameter("@endDate", endDate)
+                        .WithParameter("@type", UserContainerType.User);
 
             var referralData = await ExtractAllDataFromQueryIterator<ReferralSummary>(queryDef);
 
