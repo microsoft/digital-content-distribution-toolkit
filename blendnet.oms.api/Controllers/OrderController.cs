@@ -130,8 +130,10 @@ namespace blendnet.oms.api.Controllers
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
+
+            string partnerCode = UserClaimData.GetPartnerCode(User.Claims, _omsAppSettings.ServiceIdMapping);
             // Get Retailer
-            RetailerDto retailer = await _retailerProxy.GetRetailerById(completeOrderRequest.RetailerPartnerProvidedId, PartnerCode.NovoPay /*get this from SAS token when available*/);
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(completeOrderRequest.RetailerPartnerProvidedId, partnerCode);
 
             List<string> errorInfo = new List<string>();
 
@@ -292,8 +294,10 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest(errorDetails);
             }
 
+            string partnerCode = UserClaimData.GetPartnerCode(User.Claims, _omsAppSettings.ServiceIdMapping);
+
             // Get Retailer
-            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, PartnerCode.NovoPay/*get this from SAS token when available*/);
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, partnerCode);
             
             if (retailer == null)
             {
