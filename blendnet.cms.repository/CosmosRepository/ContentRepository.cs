@@ -192,7 +192,7 @@ namespace blendnet.cms.repository.CosmosRepository
         {
             string queryString = string.Empty;
 
-            queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId";
+            queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId ";
 
             if (contentStatusFilter != null)
             {
@@ -223,6 +223,8 @@ namespace blendnet.cms.repository.CosmosRepository
                 }
 
             }
+
+            queryString = $" {queryString} ORDER BY c.modifiedDate desc";
 
             var queryDef = new QueryDefinition(queryString);
 

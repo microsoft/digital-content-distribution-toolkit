@@ -101,7 +101,7 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns></returns>
         public async Task<List<ContentProviderDto>> GetContentProviders()
         {
-            var queryString = $"select * from c where c.type = @type";
+            var queryString = $"select * from c where c.type = @type order by c.createdDate desc";
             var queryDef = new QueryDefinition(queryString)
                                 .WithParameter("@type", ContentProviderContainerType.ContentProvider);
 
