@@ -13,11 +13,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
 
 namespace blendnet.user.api.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -172,7 +174,7 @@ namespace blendnet.user.api.Controllers
                 RetailerId = retailerDto.Id,
                 RetailerPartnerId = retailerDto.PartnerId,
                 RetailerReferralCode = retailerDto.ReferralCode,
-                ReferralDate = Int32.Parse(currentDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYDDMM)),
+                ReferralDate = Int32.Parse(currentDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYMMDD)),
                 ReferralDateTime = currentDate,
             };
 
@@ -190,7 +192,6 @@ namespace blendnet.user.api.Controllers
             }
         }
 
-
         /// <summary>
         /// Get Referral Summary
         /// </summary>
@@ -200,6 +201,7 @@ namespace blendnet.user.api.Controllers
         /// <returns></returns>
         [HttpGet("summary/{retailerPartnerId}", Name = nameof(GetReferralSummary))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> GetReferralSummary(string retailerPartnerId, int startDate, int endDate)
         {
             List<string> errorDetails = new List<string>();
@@ -226,17 +228,6 @@ namespace blendnet.user.api.Controllers
         }
 
         #region private methods
-        /// <summary>
-        /// Validate Retailer referral info
-        /// </summary>
-        /// <param name="ReferralDto"></param>
-        /// <returns>Success/Fail</returns>
-        private bool ValidateReferralData(ReferralDto referralDto)
-        {
-            //TODO: Validation check to be implemented
-            return true;
-        }
-
         /// <summary>
         /// Creates the user, if not already exists
         /// </summary>
