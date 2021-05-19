@@ -15,7 +15,7 @@ namespace blendnet.common.infrastructure.Util
         private const string format = "yyyy-MM-ddTHH:mm:ss.fffZ";
         public override bool CanConvert(Type objectType)
         {
-            throw new NotImplementedException();
+            return objectType == typeof(DateTime);
         }
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
