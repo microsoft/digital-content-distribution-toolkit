@@ -1,7 +1,7 @@
 <div class="content-home">
     <div >
             <mat-card class="cms-login">
-                <div *ngIf="isContactOnlySection">
+                <!-- <div *ngIf="isContactOnlySection">
                     <div class="cms-login-form">
                         <h3><b>Sign up or Sign in</b></h3>
                     
@@ -17,13 +17,14 @@
                             (click)="showCountryCodeSection()">Continue</button>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div *ngIf="isCountryCodeSection">
-                    <div>
+                    <!-- <div>
                         <button mat-button (click)="showContactOnlySection()"><mat-icon>arrow_left</mat-icon>Cancel</button>
                     </div>
-                    <br><br>
+                    <br><br> -->
                     <div class="cms-login-form">
+                        <h3><b>Sign up or Sign in</b></h3>
                         <div>
                             <mat-form-field appearance="outline" class="cms-login-contact">
                                 <mat-label>Country Code</mat-label>
@@ -49,7 +50,7 @@
                         <div>
                             <button mat-raised-button color="primary" 
                             (click)="showOTPSection()" [disabled]="contact.invalid">
-                            Continue</button>
+                            Send OTP</button>
                         </div>
                     </div>
                     

@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
   showHomeSubmenu: boolean = true;
   showContentSubmenu: boolean = true;
   showDeviceSubmenu: boolean = true;
-  isCountryCodeSection: boolean = false;
+  isCountryCodeSection: boolean = true;
   isContactOnlySection: boolean = true;
   isOTPSection: boolean = false;
   contact;
@@ -57,6 +57,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.countryCodes = environment.countryCodes;
+    this.selectedCountryCodeValue = this.countryCodes[0].value;
     // this.msalBroadcastService.msalSubject$
     //   .pipe(
     //     filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
