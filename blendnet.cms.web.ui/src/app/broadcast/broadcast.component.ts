@@ -98,6 +98,7 @@ export class BroadcastComponent {
     var dataSource: Content[] =[];
     if(rawData) {
       rawData.forEach( data => {
+        data.status = data.contentBroadcastStatus;
         data.isSelected = false;
         dataSource.push(data);
       });

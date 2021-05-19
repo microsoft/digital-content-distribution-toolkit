@@ -105,6 +105,8 @@ export class UnprocessedComponent {
     var dataSource: Content[] =[];
     if(rawData) {
       rawData.forEach( data => {
+        data.status = data.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED ? 
+        data.contentTransformStatus : data.contentUploadStatus;
         data.isSelected = false;
         dataSource.push(data);
       });

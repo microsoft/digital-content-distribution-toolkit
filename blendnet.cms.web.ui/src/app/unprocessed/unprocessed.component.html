@@ -61,8 +61,8 @@
 
         <!-- Status Column -->
         <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef> Status </th>
-            <td mat-cell *matCellDef="let row"> {{row.contentTransformStatus !== "TransformNotInitialized" ? row.contentTransformStatus : row.contentUploadStatus}} </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+            <td mat-cell *matCellDef="let row"> {{row.status}} </td>
         </ng-container>
 
     
