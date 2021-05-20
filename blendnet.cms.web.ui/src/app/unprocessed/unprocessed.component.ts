@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Inject, Output, ViewChild, EventEmitter} from '@angular/core';
+import { Component, Inject, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -97,9 +97,7 @@ export class UnprocessedComponent {
   }
 
   allowSelection(row) {
-    if(!row.isSelected && this.selectedContents >= this.allowedMaxSelection)
-      return true;
-    return false;
+    return (!row.isSelected && this.selectedContents >= this.allowedMaxSelection);
   }
 
   createDataSource(rawData) {

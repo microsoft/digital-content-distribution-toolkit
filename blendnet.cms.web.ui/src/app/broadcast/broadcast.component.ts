@@ -89,9 +89,7 @@ export class BroadcastComponent {
   }
 
   allowSelection(row) {
-    if(!row.isSelected && this.selectedContents >= this.allowedMaxSelection)
-      return true;
-    return false;
+    return (!row.isSelected && this.selectedContents >= this.allowedMaxSelection);
   }
 
   createDataSource(rawData) {
