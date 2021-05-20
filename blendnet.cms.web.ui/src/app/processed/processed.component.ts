@@ -10,6 +10,7 @@ import { ContentService } from '../services/content.service';
 import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 
 
 export interface DialogData {
@@ -171,24 +172,44 @@ openBroadcastConfirmDialog(content): void {
 }
 
 openDeleteConfirmModal(row): void {
-  const dialogRef = this.dialog.open(ProcessConfirmDeleteDialog, {
+  const dialogRef = this.dialog.open(CommonDialogComponent, {
     data: {
       message: this.deleteConfirmMessage,
-      contents: row
+      contents: row,
+      buttons: this.openSelectCPModalButtons()
     },
-    width: '40%'
+    width: '400px'
   });
-
-  dialogRef.componentInstance.onSuccessfulSubmission.subscribe(res => {
-    this.toastr.success("Content submitted for deletion for successfully");
-    this.getProcessedContent();
-    dialogRef.close();
-  })
 
   dialogRef.afterClosed().subscribe(result => {
-    console.log('The dialog was closed');
+    if (result === 'proceed') {
+      this.contentService.deleteContent(row.id).subscribe(
+        res => this.onDeleteSuccess(),
+        err => this.toastr.error(err));
+    }
   });
 
+}
+
+onDeleteSuccess() {
+  this.toastr.success("Content submitted for deletion for successfully");
+  this.getProcessedContent();
+}
+
+openSelectCPModalButtons(): Array<any> {
+  return [{
+    label: 'Cancel',
+    type: 'basic',
+    value: 'cancel',
+    class: 'discard-btn'
+  },
+  {
+    label: 'Continue',
+    type: 'primary',
+    value: 'submit',
+    class: 'update-btn'
+  }
+  ]
 }
 
 viewURL(selectedContent) : void {
@@ -306,38 +327,6 @@ export class ProcessConfirmDialog {
   }
 
 
-
-}
-
-
-@Component({
-  selector: 'process-confirm-dialog',
-  templateUrl: 'process-delete-confirm-dialog.html',
-  styleUrls: ['processed.component.css']
-})
-export class ProcessConfirmDeleteDialog {
-  @Output() onSuccessfulSubmission= new EventEmitter<any>();
-  constructor(
-    public dialogRef: MatDialogRef<ProcessConfirmDeleteDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public contentService: ContentService,
-    private toastr: ToastrService) {}
-
-
- 
-
-  onCancel(): void {
-    this.dialogRef.close();
-  }
-
-
-  onConfirm(): void {
-    this.contentService.deleteContent(this.data.contents.id).subscribe(
-      res => //this.toastr.success("Content submitted for deletion sucessfully!!"),
-      this.onSuccessfulSubmission.emit(res),
-      err => this.toastr.error(err));
-    this.dialogRef.close();
-  }
 
 }
 

@@ -25,6 +25,7 @@ import { BroadcastComponent } from './broadcast/broadcast.component';
 import { AddSubscriptionDialog, SubscriptionComponent } from './subscription/subscription.component';
 import { HomeComponent } from './home/home.component';
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
+import { CommonDialogComponent } from './common-dialog/common-dialog.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { JwtInterceptor } from './interceptor/jwt.interceptor';
     BroadcastComponent,
     SubscriptionComponent,
     HomeComponent,
-    AddSubscriptionDialog
+    AddSubscriptionDialog,
+    CommonDialogComponent
   ],
   imports: [
     HttpClientModule,

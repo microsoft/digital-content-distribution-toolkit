@@ -12,6 +12,7 @@ import {catchError, map, } from 'rxjs/operators';
 import {  HttpEventType } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
+import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 
 
 @Component({
@@ -212,49 +213,90 @@ openProcessConfirmModal(row): void {
 }
 
 openProcessDialog(rows) {
-  const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
+  const dialogRef = this.dialog.open(CommonDialogComponent, {
     data: {
       message: this.processConfirmMessage,
       contents: rows,
-      action: "PROCESS"
+      action: "PROCESS",
+      buttons: this.openSelectCPModalButtons()
     },
-    width: '60%'
+    maxHeight: '400px'
   });
-  dialogRef.componentInstance.onSuccessfulSubmission.subscribe(res => {
-    if(res.body.length == 0) {
-      this.toastr.success("Content/s submitted successfully for transformation");
-    } else {
-      this.toastr.warning(res.body[0]);
-    }
-    this.getUnprocessedContent();
-    dialogRef.close();
-  })
+
 
   dialogRef.afterClosed().subscribe(result => {
-    console.log('The dialog was closed');
+    if (result === 'proceed') {
+      this.onConfirmProcess(rows);
+    }
   });
+}
+
+openSelectCPModalButtons(): Array<any> {
+  return [{
+    label: 'Cancel',
+    type: 'basic',
+    value: 'cancel',
+    class: 'discard-btn'
+  },
+  {
+    label: 'Continue',
+    type: 'primary',
+    value: 'submit',
+    class: 'update-btn'
+  }
+  ]
+}
+
+onConfirmProcess(contents): void {
+  var selectedIds = contents.map(content => 
+    {return content.id});
+  var contentIds ={
+    "contentIds": selectedIds
+  }
+  this.contentService.processContent(contentIds).subscribe(
+    res => //this.toastr.success("Content/s submitted for transformation sucessfully!!"),
+    this.successEmit(res),
+    err => this.toastr.error(err));
+}
+
+successEmit(res) {
+  if(res.body.length == 0) {
+    this.toastr.success("Content/s submitted successfully for transformation");
+  } else {
+    this.toastr.warning(res.body[0]);
+  }
+  this.getUnprocessedContent();
 }
 
 openDeleteConfirmModal(row): void {
-  const dialogRef = this.dialog.open(UnprocessConfirmDialog, {
+  const dialogRef = this.dialog.open(CommonDialogComponent, {
     data: {
       message: this.deleteConfirmMessage,
       action: "DELETE",
-      contents: row
+      contents: row,
+      buttons: this.openSelectCPModalButtons()
     },
-    width: '40%'
+    maxWidth: '400px'
   });
-  dialogRef.componentInstance.onSuccessfulSubmission.subscribe(res => {
-    this.toastr.success("Content submitted for deletion for successfully");
-    this.getUnprocessedContent();
-    dialogRef.close();
-  })
 
   dialogRef.afterClosed().subscribe(result => {
-    console.log('The dialog was closed');
+    if (result === 'proceed') {
+      this.onConfirmDelete(row.id);
+    }
   });
 
 }
+
+  onConfirmDelete(contentId): void {
+    this.contentService.deleteContent(contentId).subscribe(
+      res => this.onDeleteSuccess(),
+      err => this.toastr.error(err));
+  }
+
+  onDeleteSuccess() {
+    this.toastr.success("Content submitted for deletion for successfully");
+    this.getUnprocessedContent();
+  }
 
 viewContent(selectedContent) : void {
   const dialogRef = this.dialog.open(ContentDetailsDialog, {
@@ -295,60 +337,6 @@ export class ContentDetailsDialog {
   }
 
 }
-
-
-@Component({
-  selector: 'process-confirm-dialog',
-  templateUrl: 'unprocess-action-confirm-dialog.html',
-  styleUrls: ['unprocessed.component.css']
-})
-export class UnprocessConfirmDialog {
-  
-  @Output() onSuccessfulSubmission= new EventEmitter<any>();
-
-  constructor(
-    public dialogRef: MatDialogRef<UnprocessConfirmDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public contentService: ContentService,
-    private toastr: ToastrService) {}
-
-
-  onConfirm() {
-    if(this.data.action === "DELETE") {
-      this.onConfirmDelete(this.data.contents.id);
-    } else {
-      this.onConfirmProcess(this.data.contents);
-    }
-  }
-
-  onCancel(): void {
-    this.dialogRef.close();
-  }
-
-  onConfirmProcess(contents): void {
-    var selectedIds = contents.map(content => 
-      {return content.id});
-    var contentIds ={
-      "contentIds": selectedIds
-    }
-    this.contentService.processContent(contentIds).subscribe(
-      res => //this.toastr.success("Content/s submitted for transformation sucessfully!!"),
-      this.onSuccessfulSubmission.emit(res),
-      err => this.toastr.error(err));
-    this.dialogRef.close();
-  }
-
-
-
-  onConfirmDelete(contentId): void {
-    this.contentService.deleteContent(contentId).subscribe(
-      res => this.onSuccessfulSubmission.emit(res),
-      err => this.toastr.error(err));
-    this.dialogRef.close();
-  }
-
-}
-
 
 
 

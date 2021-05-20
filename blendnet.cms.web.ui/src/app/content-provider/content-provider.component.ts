@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 
 export interface DialogData {
   message: string;
@@ -101,10 +102,11 @@ export class ContentProviderComponent implements OnInit {
     });
   }
 
-  openEditConfirmModal(selectedCp): void {
+  openEditConfirmModal(selectedCp, edit = true): void {
+    const heading = edit ? 'Edit ': 'Add '
     const dialogRef = this.dialog.open(AddContentProviderComponent, {
       width: '60%',disableClose: true,
-      data: {cp: selectedCp}
+      data: {cp: selectedCp, heading: heading + 'Content Provider'}
     });
   
     dialogRef.componentInstance.onCPUpdateOrCreate.subscribe(data => {
@@ -117,20 +119,41 @@ export class ContentProviderComponent implements OnInit {
     });
   }
 
-  openSelectCPModal(selectedCp): void {
-    const dialogRef = this.dialog.open(CPSelectConfirmDialog, {
-      width: '60%',disableClose: true,
-      data: {cp: selectedCp, message: "Please confirm to continue with your selection"}
-    });
-  
-    dialogRef.componentInstance.onCPSelect.subscribe(data => {
-      this.contentProviderService.changeDefaultCP(data);
-      dialogRef.close();
-    })
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
-  }
+    openSelectCPModal(selectedCp): void {
+      const dialogRef = this.dialog.open(CommonDialogComponent, {
+        disableClose: true,
+        data: {message: "Please confirm to continue with your selection", heading:'Confirm',
+          buttons: this.openSelectCPModalButtons()
+        },
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'proceed') {
+          console.log('proceed');
+          localStorage.setItem("contentProviderId", selectedCp.id);
+          localStorage.setItem("contentProviderName", selectedCp.name);
+          this.toastr.success("Your have selected " + selectedCp.name);
+          this.contentProviderService.changeDefaultCP(selectedCp);
+        }
+      });
+
+    }
+
+    openSelectCPModalButtons(): Array<any> {
+      return [{
+        label: 'Cancel',
+        type: 'basic',
+        value: 'cancel',
+        class: 'discard-btn'
+      },
+      {
+        label: 'Continue',
+        type: 'primary',
+        value: 'submit',
+        class: 'update-btn'
+      }
+      ]
+    }
 
   }
 
@@ -167,37 +190,6 @@ export class CPDeleteConfirmDialog {
         this.onCPDelete.emit("Error deleting Content Provider. Please try again!");
       }
     });
-  }
-
-}
-
-
-
-@Component({
-  selector: 'cp-select-confirm-dialog',
-  templateUrl: 'cp-select-confirm-dialog.html',
-  styleUrls: ['./content-provider.component.css']
-})
-export class CPSelectConfirmDialog {
-
-  @Output() onCPSelect= new EventEmitter<any>();
-
-  constructor(
-    public dialogRef: MatDialogRef<CPSelectConfirmDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private toastr: ToastrService,
-    ) {}
-
-    onCancelSelect(): void {
-    this.dialogRef.close();
-  }
-
-  onConfirmSelect() {
-    console.log("Select a CP is called !!");
-    localStorage.setItem("contentProviderId", this.data.cp.id);
-    localStorage.setItem("contentProviderName", this.data.cp.name);
-    this.toastr.success("Your have selected " + this.data.cp.name);
-    this.onCPSelect.emit(this.data.cp);
   }
 
 }
