@@ -218,7 +218,10 @@ namespace blendnet.user.api.Controllers
                 return BadRequest(errorDetails);
             }
 
-            List<ReferralSummary> referralData = await _userRepository.GetReferralSummary(retailerPartnerId, startDate, endDate);
+            string partnerCode = UserClaimData.GetPartnerCode(User.Claims, _appSettings.ServiceIdMapping);
+            string partnerId = RetailerDto.CreatePartnerId(partnerCode, retailerPartnerId);
+
+            List<ReferralSummary> referralData = await _userRepository.GetReferralSummary(partnerId, startDate, endDate);
             if (referralData == null || referralData.Count == 0)
             {
                 return NotFound();
