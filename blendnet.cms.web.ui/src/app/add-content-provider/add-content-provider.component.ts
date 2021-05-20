@@ -25,6 +25,7 @@ export class AddContentProviderComponent implements OnInit {
   cpForm = new FormGroup({
     cpname :  new FormControl(' ', [Validators.required]),
     logoUrl : new FormControl(' '),
+    admins: new FormControl(''),
     // isActive : new FormControl("inactive", [Validators.required]),
     // activationDate : new FormControl(null, [Validators.required]),
     // deactivationDate : new FormControl(null, [Validators.required]),
@@ -61,23 +62,20 @@ export class AddContentProviderComponent implements OnInit {
     // this.cpForm.get("isActive").setValue(this.cp.isActive? "active" : "inactive");
     // this.cpForm.get("activationDate").setValue(this.cp.activationDate);
     // this.cpForm.get("deactivationDate").setValue(this.cp.deactivationDate);
-    this.contentAdministrators= this.cp.contentAdministrators ? this.cp.contentAdministrators :[];
+    this.contentAdministrators = this.cp.contentAdministrators ? this.cp.contentAdministrators :[];
     this.cpForm.get("admins").setValue(this.contentAdministrators);
   }
 
   searchAndAddAdmin() {
     var upn = this.cpForm.get("adminUpn").value;
-    if(this.contentAdministrators.some(admin => admin.mobile ===  Number(upn))) {
+    if(this.contentAdministrators.some(admin => admin.phoneNumber ===  upn)) {
       this.toastr.warning("Provided user is already an admin");
     } else {
       this.userService.getUserDetails(upn).subscribe(res => {
           var newAdmin = {
-            identityProviderId: res.id,
-            firstName: res.displayName ? res.displayName : res.givenName,
-            middleName: "",
-            lastName: "",
-            mobile: Number(upn),
-            email: "" 
+            id : res.id,
+            phoneNumber: res.phoneNumber,
+            userId: res.id
           }
           this.contentAdministrators.push(newAdmin);
           this.toastr.success("Please click save to add the user as admin");

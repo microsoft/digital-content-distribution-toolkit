@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import {AfterViewInit, Component, Inject, Output, ViewChild, EventEmitter, SimpleChange} from '@angular/core';
+import { Component, Inject, Output, ViewChild, EventEmitter} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -125,14 +125,6 @@ export class UnprocessedComponent {
     || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED
     && row.contentTransformStatus !== ContentStatus.TRANSFORM_FAILED);  
   }
-
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
- 
-
 
 
   applyFilter(event: Event) {

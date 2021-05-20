@@ -45,6 +45,7 @@ export class KaizalaService {
         url = this.baseUrl1;
         break;
       case '2' :
+      case '7' :
       case '8' :
       case '9' :
         url = this.baseUrl2;

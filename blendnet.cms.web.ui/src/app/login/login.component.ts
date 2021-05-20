@@ -151,14 +151,14 @@ export class LoginComponent implements OnInit {
     this.kaizalaService.verifyOTP(this.otp.value, this.selectedCountryCodeValue, this.contact.value).subscribe(
       res => {
         var response : any = res;
-        if(response.IsNewUser) {
+        if(response.isNewUser) {
           var user: any;
           user = {
-            contact : this.contact.value,
-            clientId : response.clientId,
-            userId : response.userId
+            userName : this.contact.value,
+            channelId : environment.channelName
           }
           this.userService.createUser(user).subscribe(res => {
+            console.log("User created successfully");
           },
           err => {
             console.log(err);

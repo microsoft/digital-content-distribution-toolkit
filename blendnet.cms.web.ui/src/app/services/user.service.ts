@@ -16,13 +16,13 @@ export class UserService {
   ) { }
 
   getUserDetails(upn): Observable<any>{
-    let url = this.baseUrl + '/getuser?upn=%2B91' + upn;
+    let url = this.baseUrl + '/user/' + upn;
     this.logger.log(`Fetching user details`);
     return this.http.get(url);
   }
 
   createUser(user)  {
-    let url = this.baseUrl;
+    let url = this.baseUrl + '/user';
     this.logger.log(`Creating new user `);
     return this.http.post(url, user);
   }
