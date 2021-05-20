@@ -158,10 +158,26 @@ namespace blendnet.cms.api.Controllers
 
             contentProvider.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
 
+            ContentProviderDto beforeContentProvider = await _contentProviderRepository.GetContentProviderById(contentProvider.Id.Value);
+
+            if (beforeContentProvider == null)
+            {
+                return NotFound();
+            }
+
             int statusCode = await _contentProviderRepository.UpdateContentProvider(contentProvider);
 
             if (statusCode == (int)System.Net.HttpStatusCode.OK)
             {
+                //publish the update content provider event
+                ContentProviderUpdatedIntegrationEvent contentProviderUpdatedIntegrationEvent = new ContentProviderUpdatedIntegrationEvent()
+                {
+                    BeforeUpdateContentProvider = beforeContentProvider,
+                    AfterUpdateContentProvider = contentProvider,
+                };
+
+                await _eventBus.Publish(contentProviderUpdatedIntegrationEvent);
+
                 return NoContent();
             }
             else

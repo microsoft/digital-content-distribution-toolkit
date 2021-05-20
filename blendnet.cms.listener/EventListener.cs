@@ -49,6 +49,8 @@ namespace blendnet.cms.listener
 
             _eventBus.Subscribe<ContentProviderCreatedIntegrationEvent,ContentProviderCreatedIntegrationEventHandler>();
 
+            _eventBus.Subscribe<ContentProviderUpdatedIntegrationEvent, ContentProviderUpdatedIntegrationEventHandler>();
+
             _eventBus.Subscribe<ContentUploadedIntegrationEvent, ContentUploadedIntegrationEventHandler>();
 
             _eventBus.Subscribe<ContentDeletedIntegrationEvent, ContentDeletedIntegrationEventHandler>();

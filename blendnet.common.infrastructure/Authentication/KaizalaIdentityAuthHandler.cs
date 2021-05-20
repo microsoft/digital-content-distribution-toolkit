@@ -60,6 +60,11 @@ namespace blendnet.common.infrastructure.Authentication
                 return AuthenticateResult.NoResult();
             }
 
+            if (string.IsNullOrEmpty(headerValue.Parameter))
+            {
+                return AuthenticateResult.NoResult();
+            }
+
             ValidatePartnerAccessTokenResponse response = await _kaizalaIdentityProxy.ValidatePartnerAccessToken(headerValue.Parameter);
 
             //If the response is null

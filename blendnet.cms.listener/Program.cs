@@ -186,6 +186,8 @@ namespace blendnet.cms.listener
 
             services.AddTransient<ContentProviderCreatedIntegrationEventHandler>();
 
+            services.AddTransient<ContentProviderUpdatedIntegrationEventHandler>();
+
             services.AddTransient<ContentUploadedIntegrationEventHandler>();
 
             services.AddTransient<ContentDeletedIntegrationEventHandler>();

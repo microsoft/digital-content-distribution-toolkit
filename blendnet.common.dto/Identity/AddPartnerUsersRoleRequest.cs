@@ -23,6 +23,20 @@ namespace blendnet.common.dto.Identity
 
     }
 
+    public class DeletePartnerUsersRoleRequest
+    {
+        /// <summary>
+        /// Application Name
+        /// </summary>
+        public string ApplicationName { get; set; }
+
+        /// <summary>
+        /// Phone Role List
+        /// </summary>
+        public List<PhoneRole> PhoneRoleList { get; set; }
+
+    }
+
     /// <summary>
     /// Phone Role List
     /// </summary>

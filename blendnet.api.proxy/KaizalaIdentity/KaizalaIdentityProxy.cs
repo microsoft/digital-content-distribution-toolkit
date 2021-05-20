@@ -149,6 +149,53 @@ namespace blendnet.api.proxy.KaizalaIdentity
 
         }
 
+
+        /// <summary>
+        /// Deletes the user role assignment
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task DeletePartnerUsersRole(DeletePartnerUsersRoleRequest request)
+        {
+            string kaizalaApplicationName = _configuration.GetValue<string>("KaizalaIdentityAppName");
+
+            request.ApplicationName = kaizalaApplicationName;
+
+            Claim userIdClaim;
+
+            string accessToken = await base.GetServiceAccessToken();
+
+            KiazalaCredentials credentials = GetKiazalaCredentials(accessToken, out userIdClaim);
+
+            string urlToInvoke = $"v1/DeletePartnerUsersRole";
+
+            string url = PrepareHttpClient(credentials, accessToken, urlToInvoke);
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            try
+            {
+
+                JsonSerializerOptions jsonSerializerOptions = Utilties.GetJsonSerializerOptions();
+
+                jsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+
+                await _kaizalaIdentityHttpClient.Post<DeletePartnerUsersRoleRequest, object>(url, request, false, jsonSerializerOptions);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Bad Request from DeletePartnerUsersRole for {accessToken}. Exception {ex}");
+
+                throw;
+            }
+
+            stopwatch.Stop();
+
+            _logger.LogInformation($" Time taken to DeletePartnerUsersRole is {stopwatch.ElapsedMilliseconds} (ms)");
+
+        }
+
         /// <summary>
         /// Sets The base url
         /// Adds the authorization header
