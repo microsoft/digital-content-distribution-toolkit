@@ -215,6 +215,7 @@ openProcessConfirmModal(row): void {
 openProcessDialog(rows) {
   const dialogRef = this.dialog.open(CommonDialogComponent, {
     data: {
+      heading: 'Confirm',
       message: this.processConfirmMessage,
       contents: rows,
       action: "PROCESS",
@@ -271,6 +272,7 @@ successEmit(res) {
 openDeleteConfirmModal(row): void {
   const dialogRef = this.dialog.open(CommonDialogComponent, {
     data: {
+      heading: 'Confirm',
       message: this.deleteConfirmMessage,
       action: "DELETE",
       contents: row,
@@ -323,10 +325,18 @@ export class ContentDetailsDialog {
   constructor(
     public dialogRef: MatDialogRef<ContentDetailsDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any) {}
-    content: Content
+    content: Content;
+    cast: string = '';
+    attachments: string = '';
 
   ngOnInit(): void {
     this.content = this.data.content;
+    this.data.content.people.filter(each => 
+      this.cast += (each.role === 'Actor') ?  each.name + ' ' : ''
+    );
+    this.content.attachments.filter( each => {
+      this.attachments +=  each.name + ' ';
+    })
   }
   onCancelUpload(): void {
     this.dialogRef.close();

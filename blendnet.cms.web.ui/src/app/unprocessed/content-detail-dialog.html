@@ -7,7 +7,7 @@
         <td class="content-detail-name">
             Content ID 
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.id}}
         </td>
     </tr>
@@ -15,7 +15,7 @@
         <td class="content-detail-name">
             Content Provider Content ID 
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.contentProviderContentId}}
         </td>
     </tr>
@@ -23,7 +23,7 @@
         <td class="content-detail-name">
             Short Description
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.shortDescription}}
         </td>
     </tr>
@@ -31,7 +31,7 @@
         <td class="content-detail-name">
             Long Description
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.longDescription}}
         </td>
     </tr> 
@@ -39,7 +39,7 @@
         <td class="content-detail-name">
             Additional Description 1
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.additionalDescription1}}
         </td>
     </tr>
@@ -47,7 +47,7 @@
         <td class="content-detail-name">
             Additional Description 2
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.additionalDescription2}}
         </td>
     </tr>
@@ -55,7 +55,7 @@
         <td class="content-detail-name"> 
             Genre
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.genre}}
         </td>
     </tr>
@@ -63,7 +63,7 @@
         <td class="content-detail-name">
             Year of Release
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.yearOfRelease}}
         </td>
     </tr>
@@ -71,7 +71,7 @@
         <td class="content-detail-name">
             Language
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.language}}
         </td>
     </tr>
@@ -79,7 +79,7 @@
         <td class="content-detail-name">
             Duration (in minutes)
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.durationInMts}}
         </td>
     </tr>
@@ -87,7 +87,7 @@
         <td class="content-detail-name">
             Rating
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.rating}}
         </td>
     </tr>
@@ -95,7 +95,7 @@
         <td class="content-detail-name">
             Media File Name
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.mediaFileName}}
         </td>
     </tr>
@@ -103,7 +103,7 @@
         <td class="content-detail-name">
             Hierarchy
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.hierarchy}}
         </td>
     </tr>
@@ -111,7 +111,7 @@
         <td class="content-detail-name">
             Is Header content ?
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.isHeaderContent ? "Yes" : "No"}}
         </td>
     </tr>
@@ -119,24 +119,24 @@
         <td class="content-detail-name">
             Is Free content ?
         </td>
-        <td>
+        <td class="content-detail-value">
             {{content.isFreeContent ? "Yes" : "No"}}
         </td>
     </tr>
     <tr>
         <td class="content-detail-name">
-            Artists 
+            Cast 
         </td>
-        <td>
-            {{content.artists}}
+        <td class="content-detail-value">
+            {{cast}}
         </td>
     </tr>
     <tr>
         <td class="content-detail-name">
             Attachments
         </td>
-        <td>
-            <li *ngFor="let attachment of content.attachments"> {{attachment.name}} &nbsp; {{attachment.attachmentType}}</li>
+        <td class="content-detail-value">
+                <b>{{attachments}}</b>
         </td>
     </tr>
 </table>

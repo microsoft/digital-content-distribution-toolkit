@@ -174,6 +174,7 @@ openBroadcastConfirmDialog(content): void {
 openDeleteConfirmModal(row): void {
   const dialogRef = this.dialog.open(CommonDialogComponent, {
     data: {
+      heading: 'Confirm',
       message: this.deleteConfirmMessage,
       contents: row,
       buttons: this.openSelectCPModalButtons()

@@ -61,6 +61,11 @@ td.mat-footer-cell:last-of-type {
   font-weight: bolder;
   color: grey;
 }
+
+.content-detail-value {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
 .content-detail-table {
   border: 1px;
   border-color: rgb(176, 176, 241);
