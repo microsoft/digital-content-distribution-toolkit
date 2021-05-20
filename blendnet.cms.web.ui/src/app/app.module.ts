@@ -22,10 +22,11 @@ import { HttpErrorInterceptor } from './interceptor/http-error.interceptor';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
 import { SpinnerInterceptor } from './interceptor/spinner.interceptor';
 import { BroadcastComponent } from './broadcast/broadcast.component';
-import { AddSubscriptionDialog, SubscriptionComponent } from './subscription/subscription.component';
+import { SubscriptionComponent } from './subscription/subscription.component';
 import { HomeComponent } from './home/home.component';
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
 import { CommonDialogComponent } from './common-dialog/common-dialog.component';
+import { AddSubscriptionDialog } from './subscription/add-subscription-dialog';
 
 @NgModule({
   declarations: [
