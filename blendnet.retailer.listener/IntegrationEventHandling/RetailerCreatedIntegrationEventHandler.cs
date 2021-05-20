@@ -5,6 +5,8 @@ using blendnet.common.dto.Identity;
 using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure;
 using blendnet.retailer.repository.Interfaces;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -16,20 +18,24 @@ namespace blendnet.retailer.listener.IntegrationEventHandling
     public class RetailerCreatedIntegrationEventHandler : IIntegrationEventHandler<RetailerCreatedIntegrationEvent>
     {
         private readonly IRetailerRepository _retailerRepository;
-        
+
         private readonly ILogger _logger;
+
+        private TelemetryClient _telemetryClient;
 
         private readonly KaizalaIdentityProxy _kaizalaIdentityProxy;
 
         private readonly RetailerAppSettings _appSettings;
 
-        public RetailerCreatedIntegrationEventHandler(  ILogger<RetailerCreatedIntegrationEventHandler> logger,
+        public RetailerCreatedIntegrationEventHandler(ILogger<RetailerCreatedIntegrationEventHandler> logger,
+                                                        TelemetryClient tc,
                                                         KaizalaIdentityProxy kaizalaIdentityProxy,
                                                         IRetailerRepository retailerRepository,
                                                         IOptionsMonitor<RetailerAppSettings> optionsMonitor)
         {
             _retailerRepository = retailerRepository;
             _logger = logger;
+            _telemetryClient = tc;
             _kaizalaIdentityProxy = kaizalaIdentityProxy;
             _appSettings = optionsMonitor.CurrentValue;
         }
@@ -45,14 +51,17 @@ namespace blendnet.retailer.listener.IntegrationEventHandling
         {
             try
             {
-                _logger.LogInformation($"Assigning Retailer role for Retailer {integrationEvent.Retailer.PartnerId}");
-                await AssignRoleInKaizalaIdentity(integrationEvent);
+                using (_telemetryClient.StartOperation<RequestTelemetry>("RetailerCreatedIntegrationEvent.Handle"))
+                {
+                    _logger.LogInformation($"Assigning Retailer role for Retailer {integrationEvent.Retailer.PartnerId}");
+                    await AssignRoleInKaizalaIdentity(integrationEvent);
 
-                // Create retailer
-                _logger.LogInformation($"Creating Retailer in DB {integrationEvent.Retailer.PartnerId}");
-                await this._retailerRepository.CreateRetailer(integrationEvent.Retailer);
+                    // Create retailer
+                    _logger.LogInformation($"Creating Retailer in DB {integrationEvent.Retailer.PartnerId}");
+                    await this._retailerRepository.CreateRetailer(integrationEvent.Retailer);
 
-                _logger.LogInformation($"Done Creating Retailer {integrationEvent.Retailer.PartnerId}");
+                    _logger.LogInformation($"Done Creating Retailer {integrationEvent.Retailer.PartnerId}");
+                }
             }
             catch (Exception e)
             {
@@ -70,13 +79,13 @@ namespace blendnet.retailer.listener.IntegrationEventHandling
             phoneRole.PhoneNo = $"{ApplicationConstants.CountryCodes.India}{integrationEvent.Retailer.PhoneNumber}";
             phoneRole.Role = ApplicationConstants.KaizalaIdentityRoles.Retailer;
             addPartnerUsersRoleRequest.PhoneRoleList.Add(phoneRole);
-          
+
             try
             {
                 await _kaizalaIdentityProxy.AddPartnerUsersRole(addPartnerUsersRoleRequest);
                 _logger.LogInformation($"Assigned Retailer role for Retailer {integrationEvent.Retailer.PartnerId}");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"Failed to assign Retailer role for Retailer {integrationEvent.Retailer.PartnerId}");
             }

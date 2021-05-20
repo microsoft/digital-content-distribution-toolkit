@@ -43,6 +43,7 @@ namespace blendnet.cms.api.Controllers
         public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetSubscriptions(Guid contentProviderId)
         {
             var result = await this._contentProviderRepository.GetSubscriptions(contentProviderId);
+            result = result.OrderByDescending(o => o.CreatedDate).ToList();
             if (result.Count > 0)
             {
                 return Ok(result);
@@ -61,7 +62,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpGet("{subscriptionId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetSubscription(Guid contentProviderId, Guid subscriptionId)
+        public async Task<ActionResult<ContentProviderSubscriptionDto>> GetSubscription(Guid contentProviderId, Guid subscriptionId)
         {
             var result = await this._contentProviderRepository.GetSubscription(contentProviderId, subscriptionId);
             if (result != null)
@@ -84,6 +85,8 @@ namespace blendnet.cms.api.Controllers
         public async Task<ActionResult<String>> CreateSubscription(Guid contentProviderId,
                                                                     ContentProviderSubscriptionDto subscription)
         {
+            DateTime now = DateTime.UtcNow;
+
             // validations
             {
                 List<string> listOfValidationErrors = new List<string>();
@@ -91,6 +94,16 @@ namespace blendnet.cms.api.Controllers
                 if (!await ValidContentProvider(contentProviderId))
                 {
                     listOfValidationErrors.Add($"No content provider found for ID {contentProviderId}");
+                }
+
+                if (subscription.StartDate < now)
+                {
+                    listOfValidationErrors.Add("StartDate is in past");
+                }
+
+                if (subscription.EndDate < now)
+                {
+                    listOfValidationErrors.Add("EndDate is in past");
                 }
 
                 listOfValidationErrors.AddRange(ValidateSubscriptionData(subscription));
@@ -105,7 +118,7 @@ namespace blendnet.cms.api.Controllers
 
             subscription.SetIdentifiers();
             subscription.ContentProviderId = contentProviderId;
-            subscription.CreatedDate = DateTime.UtcNow;
+            subscription.CreatedDate = now;
             subscription.CreatedByUserId = callerUserId;
             subscription.Type = ContentProviderContainerType.Subscription;
 
@@ -217,16 +230,6 @@ namespace blendnet.cms.api.Controllers
             List<string> listOfValidationErrors = new List<string>();
 
             DateTime now = DateTime.UtcNow;
-
-            if (subscription.StartDate < now)
-            {
-                listOfValidationErrors.Add("StartDate is in past");
-            }
-
-            if (subscription.EndDate < now)
-            {
-                listOfValidationErrors.Add("EndDate is in past");
-            }
 
             if (subscription.StartDate >= subscription.EndDate)
             {

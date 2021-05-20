@@ -65,7 +65,7 @@ namespace blendnet.common.dto.Retailer
         [Required]
         public DateTime EndDate { get; set; }
 
-        public RetailerContainerType Type
+        public new RetailerContainerType Type
         {
             get
             {

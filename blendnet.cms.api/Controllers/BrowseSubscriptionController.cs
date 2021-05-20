@@ -44,6 +44,7 @@ namespace blendnet.cms.api.Controllers
             var activeSubscriptions = (from o in allSubscriptions
                                        where o.StartDate <= now
                                        where o.EndDate >= now
+                                       orderby o.CreatedDate descending
                                        select o).ToList();
             return activeSubscriptions;
         }
