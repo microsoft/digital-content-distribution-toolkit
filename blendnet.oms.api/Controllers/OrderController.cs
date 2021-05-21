@@ -575,8 +575,8 @@ namespace blendnet.oms.api.Controllers
             var orderItem = order.OrderItems.First();
 
             orderItem.AmountCollected = completeOrderRequest.AmountCollected;
-            orderItem.PlanStartDate = currentDate.Date;
-            orderItem.PlanEndDate = currentDate.Date.AddDays(orderItem.Subscription.DurationDays);
+            orderItem.PlanStartDate = currentDate;
+            orderItem.PlanEndDate = currentDate.Date.AddDays(orderItem.Subscription.DurationDays).AddMilliseconds(1);//to ensure millisecond part is shown
             orderItem.PartnerReferenceNumber = completeOrderRequest.PartnerReferenceNumber;
 
             order.OrderCompletedDate = currentDate;
