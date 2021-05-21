@@ -53,9 +53,10 @@
             <!-- View Action Column -->
             <ng-container matColumnDef="url">
                 <th mat-header-cell *matHeaderCellDef> 
-                    <button mat-icon-button disabled>
+                    <!-- <button mat-icon-button disabled>
                         <mat-icon mat-list-icon  matTooltip="View URL">link</mat-icon> 
-                    </button>
+                    </button> -->
+                    Dash URL
                 </th>
                 <td mat-cell *matCellDef="let row" >
                     <button mat-icon-button  (click)="viewURL(row)">
@@ -69,7 +70,8 @@
             <ng-container matColumnDef="isBroadcastable">
                 <th mat-header-cell *matHeaderCellDef> 
                     <button mat-icon-button (click)="openBroadcastConfirmModal(null)">
-                        <mat-icon mat-list-icon >podcasts</mat-icon>
+                        <mat-icon mat-list-icon 
+                        matTooltip="Broadcast selected">podcasts</mat-icon>
                     </button> 
                 </th>
                 <td mat-cell *matCellDef="let row" >
@@ -77,7 +79,7 @@
                     [disabled]="isContentNotBroadcastable(row)"
                     (click)="openBroadcastConfirmModal(row)">
                         <mat-icon mat-list-icon 
-                        matTooltip="Start broadcast">podcasts</mat-icon> 
+                        matTooltip="Broadcast">podcasts</mat-icon> 
                     </button>
                 </td>
             </ng-container>
@@ -85,9 +87,10 @@
             <!-- Delete Action Column -->
             <ng-container matColumnDef="isDeletable">
                 <th mat-header-cell *matHeaderCellDef> 
-                    <button mat-icon-button disabled>
+                    <!-- <button mat-icon-button disabled>
                         <mat-icon mat-list-icon >delete</mat-icon> 
-                    </button>
+                    </button> -->
+                    Delete
                 </th>
                 <td mat-cell *matCellDef="let row" >
                     <button mat-icon-button 

@@ -21,7 +21,7 @@ import { CommonDialogComponent } from '../common-dialog/common-dialog.component'
   templateUrl: 'unprocessed.component.html',
 })
 export class UnprocessedComponent {
-  displayedColumns: string[] = ['select', 'title', 'status', 'view', 'isProcessable', 'isDeletable'];
+  displayedColumns: string[] = ['select', 'title', 'status', 'view', 'isDeletable', 'isProcessable'];
   dataSource: MatTableDataSource<Content>;
   fileUploadError: string ="";
   showDialog: boolean = false;

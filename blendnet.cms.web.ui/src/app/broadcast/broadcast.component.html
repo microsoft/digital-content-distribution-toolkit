@@ -45,9 +45,10 @@
             <!-- Stop Broadcast Action Column -->
             <ng-container matColumnDef="isBroadcastCancellable">
                 <th mat-header-cell *matHeaderCellDef> 
-                    <button mat-icon-button  (click)="openBroadcastConfirmModal(null)">
+                    <!-- <button mat-icon-button  (click)="openBroadcastConfirmModal(null)">
                         <mat-icon mat-list-icon>cancel</mat-icon>
-                    </button> 
+                    </button>  -->
+                    Cancel broadcast
                 </th>
                 <td mat-cell *matCellDef="let row" >
                     <button mat-icon-button [disabled]="isBroadcastCancellable(row)" (click)="openBroadcastConfirmModal(row)">
@@ -60,9 +61,7 @@
             <!-- Manage Device Action Column -->
             <ng-container matColumnDef="manageDevices">
                 <th mat-header-cell *matHeaderCellDef> 
-                    <button mat-button color="primary" disabled>
-                        Manage Devices
-                    </button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Manage Devices
                 </th>
                 <td mat-cell *matCellDef="let row" >
                     <button mat-button color="primary">

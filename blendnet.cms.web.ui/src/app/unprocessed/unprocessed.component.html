@@ -69,9 +69,10 @@
         <!-- View Action Column -->
         <ng-container matColumnDef="view">
             <th mat-header-cell *matHeaderCellDef> 
-                <button mat-icon-button disabled>
+                Meta-data
+                <!-- <button mat-icon-button disabled>
                     <mat-icon mat-list-icon >visibility</mat-icon> 
-                </button>
+                </button> -->
              </th>
             <td mat-cell *matCellDef="let row" >
                 <button mat-icon-button  (click)="viewContent(row)">
@@ -87,7 +88,8 @@
                 <button mat-icon-button
                 
                  (click)="openProcessConfirmModal(null)">
-                    <mat-icon mat-list-icon >settings</mat-icon> 
+                    <mat-icon mat-list-icon 
+                    matTooltip="Transform selected">settings</mat-icon> 
                 </button>
                  </th>
                 <td mat-cell *matCellDef="let row" >
@@ -95,7 +97,7 @@
                     [disabled]="isContentNotProcessable(row)"
                      (click)="openProcessConfirmModal(row)">
                         <mat-icon mat-list-icon 
-                        matTooltip="Start processing content">settings</mat-icon> 
+                        matTooltip="Transform">settings</mat-icon> 
                     </button>
                 </td>
         </ng-container>
@@ -103,10 +105,11 @@
         <!-- Delete Action Column -->
         <ng-container matColumnDef="isDeletable">
             <th mat-header-cell *matHeaderCellDef> 
-                <button mat-icon-button 
+                <!-- <button mat-icon-button 
                 disabled >
                     <mat-icon mat-list-icon >delete</mat-icon> 
-                </button>
+                </button> -->
+                Delete
              </th>
             <td mat-cell *matCellDef="let row" >
                 <button mat-icon-button 
