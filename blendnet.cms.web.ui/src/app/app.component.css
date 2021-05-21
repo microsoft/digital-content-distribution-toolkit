@@ -36,7 +36,6 @@
     transition: transform 300ms ease;
     transform: scaleY(0);
     transform-origin: top;
-    padding-left: 30px;
 }
 .submenu.expanded {
     transform: scaleY(1);
@@ -44,3 +43,6 @@
 .cms-menu-spacer {
     flex: 1 1 auto;
 }
+.active {
+    background-color: lightgray;
+  }

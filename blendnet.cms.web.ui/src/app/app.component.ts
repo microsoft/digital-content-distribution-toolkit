@@ -16,7 +16,7 @@ import { environment } from 'src/environments/environment';
 export class AppComponent {
   title = 'CMS';
   private readonly _destroying$ = new Subject<void>();
-  
+  selectedItem = '';
 
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded = true;
@@ -59,6 +59,11 @@ export class AppComponent {
         localStorage.getItem("contentProviderName") :"Not Selected";      
       });
     }
+
+    handleClick(selectedItem) {
+      this.selectedItem = selectedItem.linkTitle;
+    }
+  
 
   
     logout() {
