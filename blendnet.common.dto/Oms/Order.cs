@@ -1,5 +1,4 @@
-﻿using blendnet.common.infrastructure.Util;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -109,14 +108,12 @@ namespace blendnet.common.dto.Oms
         /// <summary>
         /// Purchased Plan Date.
         /// </summary>
-        [JsonConverter(typeof(DateTimeConverter))]
         public DateTime? PlanStartDate { get; set; }
 
         /// <summary>
         /// Purchased Plan End Date.
         /// To Be calculated based on the configured subscription days 
         /// </summary>
-        [JsonConverter(typeof(DateTimeConverter))]
         public DateTime? PlanEndDate { get; set; }
 
         /// <summary>
