@@ -56,6 +56,7 @@ export class ProcessedComponent {
       ],
       "contentBroadcastStatuses": [
         ContentStatus.BROADCAST_NOT_INITIALIZED, 
+        ContentStatus.BROADCAST_SUBMITTED,
         ContentStatus.BROADCAST_INPROGRESS,
         ContentStatus.BROADCAST_FAILED
       ]
