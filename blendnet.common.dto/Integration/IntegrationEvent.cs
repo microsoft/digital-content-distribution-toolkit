@@ -24,13 +24,23 @@ namespace blendnet.common.dto.Integration
         /// <summary>
         /// Name of the event
         /// </summary>
-        public string  EventName
+        public virtual string  EventName
         {
             get
             {
                 return this.GetType().Name;
             }
         }
+
+        /// <summary>
+        /// CorrelationId
+        /// </summary>
+        public string CorrelationId {get;set;}
+
+        /// <summary>
+        /// Body
+        /// </summary>
+        public string Body { get; set; }
 
         /// <summary>
         /// Creation Date of Event

@@ -1,5 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
+using blendnet.common.dto.Events;
 using blendnet.common.dto.Integration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -140,7 +141,7 @@ namespace blendnet.common.infrastructure.ServiceBus
 
             if (correlationRule == null)
             {
-                eventName = typeof(T).Name;
+                eventName = GetEventName(typeof(T));
 
                 ruleOptions = new CreateRuleOptions
                 {
@@ -150,7 +151,7 @@ namespace blendnet.common.infrastructure.ServiceBus
             }
             else
             {
-                eventName = typeof(T).Name;
+                eventName = GetEventName(typeof(T));
 
                 CorrelationRuleFilter customerPropertyFilter = new CorrelationRuleFilter();
                 
@@ -188,6 +189,44 @@ namespace blendnet.common.infrastructure.ServiceBus
         }
 
         /// <summary>
+        /// Returns the event Name
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private string GetEventName(Type type)
+        {
+            object[] eventNameAttribute = type.GetCustomAttributes(typeof(EventDetailsAttribute), true);
+
+            if (eventNameAttribute != null && eventNameAttribute.Length > 0)
+            {
+                return ((EventDetailsAttribute)eventNameAttribute[0]).EventName;
+            }
+            else
+            {
+                return type.Name;
+            }
+        }
+
+        /// <summary>
+        /// Check If Serialization Needed
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private bool CheckIfSerializationNeeded(Type type)
+        {
+            object[] eventNameAttribute = type.GetCustomAttributes(typeof(EventDetailsAttribute), true);
+
+            if (eventNameAttribute != null && eventNameAttribute.Length > 0)
+            {
+                return ((EventDetailsAttribute)eventNameAttribute[0]).PerformJsonSerialization;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Unsubscribe the subscribers
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -196,7 +235,7 @@ namespace blendnet.common.infrastructure.ServiceBus
         where T : IntegrationEvent
         where TH : IIntegrationEventHandler<T>
         {
-            string eventName = typeof(T).Name;
+            string eventName = GetEventName(typeof(T));
 
             _subscribers.Remove(eventName);
 
@@ -247,14 +286,28 @@ namespace blendnet.common.infrastructure.ServiceBus
 
                 Type subscriber =  eventTypeData.EventHandlerType;
 
-                var integrationEvent = System.Text.Json.JsonSerializer.Deserialize(messageData, eventType);
-                
+                object? integrationEvent;
+
+                if (CheckIfSerializationNeeded(eventType))
+                {
+                    integrationEvent = System.Text.Json.JsonSerializer.Deserialize(messageData, eventType);
+                }
+                else
+                {
+                    integrationEvent = Activator.CreateInstance(eventType);
+                }
+                                
                 var registeredHandler = _serviceProvider.GetService(subscriber);
 
                 if (registeredHandler != null)
                 {
                     //Get the actual event handler
                     var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+
+                    //Set the Correlation id in case any handler wants to use.
+                    ((IntegrationEvent)integrationEvent).CorrelationId = args.Message.CorrelationId;
+
+                    ((IntegrationEvent)integrationEvent).Body = messageData;
 
                     //call the handle method
                     await (Task)concreteType.GetMethod("Handle").Invoke(registeredHandler, new object[] { integrationEvent });
