@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 namespace blendnet.cms.listener.IntegrationEventHandling
 {
     /// <summary>
-    /// MomOrder Created Integration EventHandler
+    /// MomOrder Active Integration EventHandler
     /// </summary>
-    public class MomOrderCreatedIntegrationEventHandler : IIntegrationEventHandler<MomOrderCreatedIntegrationEvent>
+    public class MomOrderActiveIntegrationEventHandler : IIntegrationEventHandler<MomOrderActiveIntegrationEvent>
     {
         private MomOrderIntegrationEventHandler _momOrderIntegrationEventHandler;
 
@@ -25,11 +25,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         private TelemetryClient _telemetryClient;
 
         /// <summary>
-        /// Mom Order Created Integration Event Handler
+        /// Mom Order Active Integration Event Handler
         /// </summary>
         /// <param name="momOrderIntegrationEventHandler"></param>
-        public MomOrderCreatedIntegrationEventHandler(ILogger<MomOrderIntegrationEventHandler> logger,
-                                                      TelemetryClient tc,
+        public MomOrderActiveIntegrationEventHandler( ILogger<MomOrderIntegrationEventHandler> logger,
+                                                      TelemetryClient tc, 
                                                       MomOrderIntegrationEventHandler momOrderIntegrationEventHandler)
         {
             _momOrderIntegrationEventHandler = momOrderIntegrationEventHandler;
@@ -37,24 +37,24 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             _logger = logger;
 
             _telemetryClient = tc;
+
         }
         /// <summary>
-        /// Handle Mom Order Created Integration Event
+        /// Handle Mom Order Active Integration Event
         /// </summary>
         /// <param name="integrationEvent"></param>
         /// <returns></returns>
-        public async Task Handle(MomOrderCreatedIntegrationEvent integrationEvent)
+        public async Task Handle(MomOrderActiveIntegrationEvent integrationEvent)
         {
             //await _momOrderIntegrationEventHandler.Handle(integrationEvent,
-            //                                              "MomOrderCreatedIntegrationEventHandler.Handle", 
+            //                                              "MomOrderActiveIntegrationEventHandler.Handle", 
             //                                              integrationEvent.EventName, 
-            //                                              ContentBroadcastStatus.BroadcastOrderCreated);
+            //                                              ContentBroadcastStatus.BroadcastOrderActive);
 
-            using (_telemetryClient.StartOperation<RequestTelemetry>("MomOrderCreatedIntegrationEventHandler.Handle"))
+            using (_telemetryClient.StartOperation<RequestTelemetry>("MomOrderActiveIntegrationEventHandler.Handle"))
             {
-                _logger.LogInformation($"Broadcast MomOrderCreated status message recieved for command id: {integrationEvent.CorrelationId} Message Body : {integrationEvent.Body}");
-            }
-
+                _logger.LogInformation($"Broadcast MomOrderActive status message recieved for command id: {integrationEvent.CorrelationId} Message Body : {integrationEvent.Body}");
+            } 
         }
     }
 }

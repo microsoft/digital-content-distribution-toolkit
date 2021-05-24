@@ -76,7 +76,7 @@ namespace blendnet.cms.api.Controllers
         {
             ContentStatusFilter contentStatusFilter = new ContentStatusFilter();
             contentStatusFilter.ContentTransformStatuses = new string[] { ContentTransformStatus.TransformComplete.ToString() };
-            contentStatusFilter.ContentBroadcastStatuses = new string[] { ContentBroadcastStatus.BroadcastComplete.ToString() };
+            contentStatusFilter.ContentBroadcastStatuses = new string[] { ContentBroadcastStatus.BroadcastOrderComplete.ToString() };
 
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
 

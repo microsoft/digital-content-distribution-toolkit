@@ -200,6 +200,20 @@ namespace blendnet.cms.listener
 
             services.AddTransient<ContentBroadcastIntegrationEventHandler>();
 
+            //Broadcast Partner Event Handler
+            services.AddTransient<MomOrderCreatedIntegrationEventHandler>();
+
+            services.AddTransient<MomOrderActiveIntegrationEventHandler>();
+
+            services.AddTransient<MomOrderCompletedIntegrationEventHandler>();
+
+            services.AddTransient<MomOrderCancelledIntegrationEventHandler>();
+
+            services.AddTransient<MomOrderFailedIntegrationEventHandler>();
+
+            services.AddTransient<MomOrderRejectedIntegrationEventHandler>();
+
+            services.AddTransient<MomOrderIntegrationEventHandler>();
         }
 
 

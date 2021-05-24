@@ -118,6 +118,16 @@ namespace blendnet.common.dto
             public const string JobErrored = "Errored";
         }
 
+        public struct BroadcastJobStatuses
+        {
+            public const string MOMORDERCREATED = "MOMORDER-CREATED-";
+            public const string MOMORDERACTIVE = "MOMORDER-ACTIVE-";
+            public const string MOMORDERCOMPLETED = "MOMORDER-COMPLETED-";
+            public const string MOMORDERREJECTED = "MOMORDER-REJECTED-";
+            public const string MOMORDERFAILED = "MOMORDER-FAILED-";
+            public const string MOMORDERCANCELLED = "MOMORDER-CANCELLED-";
+        }
+
         public struct HttpClientNames
         {
             public const string AMS = "AMS";

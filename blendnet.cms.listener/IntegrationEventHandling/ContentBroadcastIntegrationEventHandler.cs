@@ -430,6 +430,14 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             broadcastCommand.ModifiedDate = currentTime;
 
+            CommandExecutionDetails commandExecutionDetails = new CommandExecutionDetails();
+
+            commandExecutionDetails.ContentBroadcastStatus = content.ContentBroadcastStatus.Value;
+
+            commandExecutionDetails.EventDateTime = currentTime;
+
+            broadcastCommand.ExecutionDetails.Add(commandExecutionDetails);
+
             await _contentRepository.UpdateContent(content);
 
             await _contentRepository.UpdateContentCommand(broadcastCommand);
@@ -448,6 +456,14 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             contentCommand.CreatedDate = currentDateTime;
             contentCommand.ModifiedDate = currentDateTime;
             contentCommand.FailureDetails = new List<string>();
+
+            CommandExecutionDetails commandExecutionDetails = new CommandExecutionDetails();
+            
+            commandExecutionDetails.ContentBroadcastStatus = ContentBroadcastStatus.BroadcastInProgress;
+            
+            commandExecutionDetails.EventDateTime = currentDateTime;
+
+            contentCommand.ExecutionDetails.Add(commandExecutionDetails);
         }
     }
 }

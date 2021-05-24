@@ -67,6 +67,19 @@ namespace blendnet.cms.listener
 
             _eventBus.Subscribe<MediaServiceJobIntegrationEvent, MediaServiceJobIntegrationEventHandler>(correlationRule);
 
+            //Broadcast Eventing Status
+            _eventBus.Subscribe<MomOrderCreatedIntegrationEvent, MomOrderCreatedIntegrationEventHandler>();
+
+            _eventBus.Subscribe<MomOrderActiveIntegrationEvent, MomOrderActiveIntegrationEventHandler>();
+            
+            _eventBus.Subscribe<MomOrderCompletedIntegrationEvent, MomOrderCompletedIntegrationEventHandler>();
+            
+            _eventBus.Subscribe<MomOrderFailedIntegrationEvent, MomOrderFailedIntegrationEventHandler>();
+            
+            _eventBus.Subscribe<MomOrderRejectedIntegrationEvent, MomOrderRejectedIntegrationEventHandler>();
+            
+            _eventBus.Subscribe<MomOrderCancelledIntegrationEvent, MomOrderCancelledIntegrationEventHandler>();
+
             await _eventBus.StartProcessing();
 
             //todo: read from config once we finalize that we are ok to consume blob created event here.

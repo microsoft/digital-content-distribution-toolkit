@@ -61,6 +61,11 @@ namespace blendnet.common.dto.Cms
         /// Details about broadcast data
         /// </summary>
         public BroadcastRequest BroadcastRequest { get; set; }
+
+        /// <summary>
+        /// Execution Details
+        /// </summary>
+        public List<CommandExecutionDetails> ExecutionDetails { get; set; } = new List<CommandExecutionDetails>();
     }
 
     /// <summary>
@@ -86,5 +91,15 @@ namespace blendnet.common.dto.Cms
         InProgress = 0,
         Complete = 1,
         Failed = 2
+    }
+
+    public class CommandExecutionDetails
+    {
+        public string EventName { get; set; }
+
+        public ContentBroadcastStatus ContentBroadcastStatus { get; set; }
+
+        public DateTime EventDateTime { get; set; }
+
     }
 }

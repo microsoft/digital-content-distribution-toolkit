@@ -92,6 +92,13 @@ namespace blendnet.cms.repository.Interfaces
         Task<ContentCommand> GetContentCommandById(Guid commandId, Guid contentId);
 
         /// <summary>
+        /// Returns the content command by Id
+        /// </summary>
+        /// <param name="commandId"></param>
+        /// <returns></returns>
+        Task<ContentCommand> GetContentCommandById(Guid commandId);
+
+        /// <summary>
         /// Get Command by Content Id and Command Type
         /// </summary>
         /// <param name="contentId"></param>

@@ -99,6 +99,28 @@ namespace blendnet.cms.repository.CosmosRepository
         }
 
         /// <summary>
+        /// Get the content command by command id. 
+        /// Fan out query. Use rarely
+        /// </summary>
+        /// <param name="commandId"></param>
+        /// <returns></returns>
+        public async Task<ContentCommand> GetContentCommandById(Guid commandId)
+        {
+            var queryString = "select * from c where c.type = @type and c.id = @id";
+
+            var queryDef = new QueryDefinition(queryString)
+                                .WithParameter("@type", ContentContainerType.Command)
+                                .WithParameter("@id", commandId);
+
+            var commands = await this._container.ExtractDataFromQueryIterator<ContentCommand>(queryDef);
+            
+            var command = commands.FirstOrDefault();
+            
+            return command;
+        }
+
+
+        /// <summary>
         /// Create content commad.
         /// Partition key is content id
         /// </summary>
@@ -169,6 +191,10 @@ namespace blendnet.cms.repository.CosmosRepository
 
             return contentList;
         }
+
+
+       
+
 
         /// <summary>
         /// Get content by provider id, status filter and continuation token

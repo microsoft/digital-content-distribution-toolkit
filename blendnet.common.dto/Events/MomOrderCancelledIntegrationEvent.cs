@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace blendnet.common.dto.Events
 {
-    [EventDetails(  EventName = ApplicationConstants.BroadcastJobStatuses.MOMORDERCREATED, 
+    [EventDetails(  EventName = ApplicationConstants.BroadcastJobStatuses.MOMORDERCANCELLED, 
                     PerformJsonSerialization =false)]
-    public class MomOrderCreatedIntegrationEvent: IntegrationEvent
+    public class MomOrderCancelledIntegrationEvent: IntegrationEvent
     {
         public override string EventName
         {
             get
             {
-                return ApplicationConstants.BroadcastJobStatuses.MOMORDERCREATED;
+                return ApplicationConstants.BroadcastJobStatuses.MOMORDERCANCELLED;
             }
         }
     }

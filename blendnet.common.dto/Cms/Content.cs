@@ -241,10 +241,13 @@ namespace blendnet.common.dto.Cms
         BroadcastSubmitted = 1,
         BroadcastInProgress = 2,
         BroadcastTarPushed = 3,
-        BroadcastComplete = 4,
-        BroadcastFailed = 5
+        BroadcastOrderCreated = 4,
+        BroadcastOrderActive = 5,
+        BroadcastOrderComplete = 6,
+        BroadcastOrderRejected = 7,
+        BroadcastOrderFailed = 8,
+        BroadcastOrderCancelled = 9,
+        BroadcastFailed = 10
     }
-
-    
 
 }
