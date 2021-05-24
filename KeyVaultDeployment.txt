@@ -13,7 +13,8 @@ blendnetcmslistener-BroadcastStorageContainerName
 OMS
 ----CMS base url
 http://13.71.0.226/cmsapi/api/v1/
+
 ----Retailer base url
 "RetailerBaseUrl" http://13.71.0.226/retailerapi/api/v1/
 User API
-"RetailerBaseUrl": "https://localhost:44313/api/v1/",
+"RetailerBaseUrl": "http://13.71.0.226/retailerapi/api/v1/",
