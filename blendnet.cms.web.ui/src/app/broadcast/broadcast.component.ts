@@ -9,7 +9,6 @@ import { Content } from '../models/content.model';
 import { ContentService } from '../services/content.service';
 import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export interface DialogData {
   message: string;
@@ -60,7 +59,13 @@ export class BroadcastComponent {
       "contentBroadcastStatuses": [
         ContentStatus.BROADCAST_COMPLETE,
         ContentStatus.BROADCAST_TAR_PUSHED,
-        ContentStatus.BROADCAST_CANCEL_INPROGRESS
+        ContentStatus.BROADCAST_CANCEL_INPROGRESS,
+        ContentStatus.BROADCAST_ORDER_ACTIVE,
+        ContentStatus.BROADCAST_ORDER_CANCELLED,
+        ContentStatus.BROADCAST_ORDER_CREATED,
+        ContentStatus.BROADCAST_ORDER_COMPLETE,
+        ContentStatus.BROADCAST_ORDER_REJECTED,
+        ContentStatus.BROADCAST_ORDER_FAILED
       ]
     }
     this.contentService.getContentByCpIdAndFilters(broadcastContentFilters).subscribe(
