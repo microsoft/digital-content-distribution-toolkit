@@ -12,6 +12,8 @@ import { LogService } from './log.service';
 export class KaizalaService {
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser: Observable<any>;
+  private currentUserNameSubject: BehaviorSubject<any>;
+  public currentUserName: Observable<any>;
 
   
   baseUrl0 = environment.kaizalaApi0;
@@ -25,10 +27,16 @@ export class KaizalaService {
   ) {
     this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
+    this.currentUserNameSubject = new BehaviorSubject<any>(localStorage.getItem('currentUserName'));
+    this.currentUserName = this.currentUserNameSubject.asObservable();
    }
 
   public get currentUserValue() {
     return this.currentUserSubject.value;
+  }
+
+  public get currentUserNameValue() {
+    return this.currentUserNameSubject.value;
   }
 
   getURLSuffix (lastDigit) {
@@ -107,9 +115,8 @@ export class KaizalaService {
     return this.http.post(url, request, 
       {
         headers: {'AppName': environment.kaizalaAppName}
-        // ,
-        // observe: 'response'
       }).pipe(map(user => {
+        localStorage.setItem('currentUserName', contact);
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
         return user;
@@ -139,6 +146,7 @@ export class KaizalaService {
     this.contentProviderService.changeDefaultCP(null);
     // remove user from local storage and set current user to null
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUserName');
     this.currentUserSubject.next(null);
   }
 }

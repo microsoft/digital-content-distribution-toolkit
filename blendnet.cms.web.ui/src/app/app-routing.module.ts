@@ -24,7 +24,7 @@ const appRoutes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: [environment.roles.SuperAdmin, environment.roles.ContentAdmin]
+      expectedRole: [environment.roles.SuperAdmin]
     } 
   },
   {
@@ -96,7 +96,7 @@ const appRoutes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: [environment.roles.SuperAdmin, environment.roles.ContentAdmin]
+      expectedRole: [environment.roles.SuperAdmin]
     } 
   },
   { 

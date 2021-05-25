@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { environment } from 'src/environments/environment';
 
 export interface DialogData {
   message: string;
@@ -69,18 +70,17 @@ export class ContentProviderComponent implements OnInit {
       //  }
       
     });
-    var emptyCP = {
-      id: null,
-      name: '',
-      logoUrl:'',
-      // activationDate: null,
-      // deactivationDate: null,
-      // isActive: false,
-      contentAdministrators: []
+
+    if(localStorage.getItem("roles").includes(environment.roles.SuperAdmin)) {
+      var emptyCP = {
+        id: null,
+        name: '',
+        logoUrl:'',
+        contentAdministrators: []
+      }
+      cpList.unshift(emptyCP);
     }
-    cpList.unshift(emptyCP);
     return cpList;
-;
   }
 
   openDeleteConfirmModal(selectedCp): void {

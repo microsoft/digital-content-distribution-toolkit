@@ -16,7 +16,6 @@ import { environment } from 'src/environments/environment';
 export class AppComponent {
   title = 'CMS';
   private readonly _destroying$ = new Subject<void>();
-  selectedItem = '';
 
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded = true;
@@ -26,6 +25,7 @@ export class AppComponent {
   selectedCP: Contentprovider;
   selectedCPName: string = "Not Selected";
   currentUser: any;
+  currentUserName: string = '';
   hasMenuAccess: boolean = false;
 
   constructor(
@@ -35,6 +35,8 @@ export class AppComponent {
   ) {
     this.kaizalaService.currentUser.subscribe(user => {
       this.currentUser = user});
+    this.kaizalaService.currentUserName.subscribe(userName => {
+        this.currentUserName = userName});
     this.selectedCPName = localStorage.getItem("contentProviderName") ? 
       localStorage.getItem("contentProviderName") : "Not Selected";
 
@@ -58,14 +60,10 @@ export class AppComponent {
         localStorage.getItem("contentProviderName") ? 
         localStorage.getItem("contentProviderName") :"Not Selected";      
       });
+      this.kaizalaService.currentUser.subscribe(user => {
+        this.currentUser = user});
     }
 
-    handleClick(selectedItem) {
-      this.selectedItem = selectedItem.linkTitle;
-    }
-  
-
-  
     logout() {
       this.selectedCPName = "Not Selected";
       this.kaizalaService.logout();
