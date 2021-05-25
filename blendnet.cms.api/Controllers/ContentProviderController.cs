@@ -242,9 +242,16 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpGet("{contentProviderId:guid}/generateSaS")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public ActionResult<SasTokenDto> GenerateToken(Guid contentProviderId)
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
+        public async Task<ActionResult<SasTokenDto>> GenerateToken(Guid contentProviderId)
         {
+            ActionResult actionResult = await CheckAccess(contentProviderId);
+
+            if (!(actionResult is OkResult))
+            {
+                return actionResult;
+            }
+
             SasTokenDto sasUri = _contentProviderRepository.GenerateSaSToken(contentProviderId);
 
             if (sasUri != null)
