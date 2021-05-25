@@ -38,7 +38,7 @@ namespace blendnet.cms.api.Controllers
 
                 if (!validContentAdmin)
                 {
-                    return Unauthorized("Not a valid administrator for the given content");
+                    return Forbid();
                 }
             }
 
