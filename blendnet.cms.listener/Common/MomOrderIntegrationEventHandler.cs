@@ -155,8 +155,5 @@ namespace blendnet.cms.listener.Common
 
             await _contentRepository.UpdateContentCommand(broadcastCommand);
         }
-
-
-
     }
 }

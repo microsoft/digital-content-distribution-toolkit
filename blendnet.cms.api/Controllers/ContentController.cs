@@ -393,6 +393,9 @@ namespace blendnet.cms.api.Controllers
                     if (content.ContentUploadStatus == ContentUploadStatus.UploadComplete &&
                         content.ContentTransformStatus == ContentTransformStatus.TransformComplete && 
                          (content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastNotInitialized ||
+                         content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderCancelled ||
+                         content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderFailed ||
+                         content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderRejected ||
                          content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastFailed))
                     {
                         content.ContentBroadcastStatus = ContentBroadcastStatus.BroadcastSubmitted;
@@ -425,7 +428,7 @@ namespace blendnet.cms.api.Controllers
                     }
                     else
                     {
-                        errorList.Add($"{content.Id.Value} - Upload Status should be {ContentUploadStatus.UploadComplete},  Tranform Status should be {ContentTransformStatus.TransformComplete} and Broadcast Status should be in {ContentBroadcastStatus.BroadcastNotInitialized},{ContentBroadcastStatus.BroadcastFailed}");
+                        errorList.Add($"{content.Id.Value} - Upload Status should be {ContentUploadStatus.UploadComplete},  Tranform Status should be {ContentTransformStatus.TransformComplete} and Broadcast Status should be in {ContentBroadcastStatus.BroadcastNotInitialized},{ContentBroadcastStatus.BroadcastFailed}, {ContentBroadcastStatus.BroadcastOrderCancelled}, {ContentBroadcastStatus.BroadcastOrderFailed}, {ContentBroadcastStatus.BroadcastOrderRejected}");
                     }
                 }
             }
