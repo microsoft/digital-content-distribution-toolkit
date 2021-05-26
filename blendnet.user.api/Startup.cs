@@ -25,6 +25,9 @@ using System.Threading.Tasks;
 using blendnet.common.infrastructure.ServiceBus;
 using Microsoft.Extensions.Azure;
 using blendnet.common.infrastructure;
+using Microsoft.Extensions.Options;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace blendnet.user.api
 {
@@ -63,6 +66,9 @@ namespace blendnet.user.api
                 options.DefaultChallengeScheme = KaizalaIdentityAuthOptions.DefaultScheme;
             })
             .AddKaizalaIdentityAuth();
+
+            //Configure Localization
+            ConfigureLocalization(services);
 
             services.AddControllers()
            .AddJsonOptions(options =>
@@ -182,6 +188,10 @@ namespace blendnet.user.api
 
             app.UseCors(C_CORS_POLICYNAME);
 
+            //To allow accepting language header
+            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(options.Value);
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -292,6 +302,31 @@ namespace blendnet.user.api
             });
 
             services.AddSingleton<IEventBus, EventServiceBus>();
+        }
+
+
+        private void ConfigureLocalization(IServiceCollection services)
+        {
+            //Add localization
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            services.Configure<RequestLocalizationOptions>(
+               opts =>
+               {
+                   var supportedCultures = new List<CultureInfo>
+                   {
+                        new CultureInfo("en-US")
+                   };
+
+                   opts.DefaultRequestCulture = new RequestCulture("en-US");
+
+                   // Formatting numbers, dates, etc.
+                   opts.SupportedCultures = supportedCultures;
+
+                   // UI strings that we have localized.
+                   opts.SupportedUICultures = supportedCultures;
+
+               });
         }
     }
 }
