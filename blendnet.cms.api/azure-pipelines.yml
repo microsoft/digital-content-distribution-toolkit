@@ -6,6 +6,11 @@ parameters:
     default: false
     type: boolean
 
+  - name: environment
+    displayName: Environment
+    type: string
+    default: stage
+
   - name: deployBuildNumber
     default: latest
     type: string
@@ -26,23 +31,23 @@ stages:
       displayName: Login to ACR
       inputs:
         command: login
-        containerRegistry: $(acr-service-connection)
+        containerRegistry: 'acrblendnet${{ parameters.environment }}'
 
     - task: CmdLine@2
       displayName: "Building docker image"
       inputs:
-        script: "docker build -t $(image_name):$(RunNumber) -f ./blendnet.cms.api/Dockerfile ."
+        script: "docker build -t acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.api:$(RunNumber) -f ./blendnet.cms.api/Dockerfile ."
 
     - task: CmdLine@2
       displayName: "Pushing image to ACR"
       inputs:
-        script: "docker push $(image_name):$(RunNumber)"
+        script: "docker push acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.api:$(RunNumber)"
 
     - task: Docker@2
       displayName: Logout of ACR
       inputs:
         command: logout
-        containerRegistry: $(acr-service-connection)
+        containerRegistry: 'acrblendnet${{ parameters.environment }}'
 
 - stage: Deploy
   dependsOn: Build
@@ -53,18 +58,18 @@ stages:
     - task: CmdLine@2
       condition: eq('${{ parameters.onlyDeploy }}', false)
       inputs:
-        script: 'sed -i ''s/blendnet.cms.api:latest/blendnet.cms.api:$(RunNumber)/g'' blendnet.cms.api/blendnet.cms.api.yaml'
+        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.api:$(RunNumber)|g'' blendnet.cms.api/blendnet.cms.api.yaml'
     - task: CmdLine@2
       condition: eq('${{ parameters.onlyDeploy }}', true)
       inputs:
-        script: 'sed -i ''s/blendnet.cms.api:latest/blendnet.cms.api:${{ parameters.deployBuildNumber }}/g'' blendnet.cms.api/blendnet.cms.api.yaml'
+        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.api:$(RunNumber)|g'' blendnet.cms.api/blendnet.cms.api.yaml'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
-        kubernetesServiceConnection: 'aks-blendnet-dev-default'
+        kubernetesServiceConnection: 'aks-blendnet-${{ parameters.environment }}-default'
         manifests: 'blendnet.cms.api/blendnet.cms.api.yaml'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
-        kubernetesServiceConnection: 'aks-blendnet-dev-default'
+        kubernetesServiceConnection: 'aks-blendnet-${{ parameters.environment }}-default'
         manifests: 'appgateway.yaml'

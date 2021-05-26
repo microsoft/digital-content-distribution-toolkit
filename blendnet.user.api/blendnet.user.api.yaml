@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: blendnet-user-api
-        image: acrblendnetdev.azurecr.io/blendnet.user.api:latest
+        image: image_name
         ports:
         - containerPort: 80
         readinessProbe:

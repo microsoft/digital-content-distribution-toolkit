@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: blendnet-retailer-listener
-        image: acrblendnetdev.azurecr.io/blendnet.retailer.listener:latest
+        image: image_name
         ports:
         - containerPort: 80

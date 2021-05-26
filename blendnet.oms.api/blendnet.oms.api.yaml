@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: blendnet-oms-api
-        image: acrblendnetdev.azurecr.io/blendnet.oms.api:latest
+        image: image_name
         ports:
         - containerPort: 80
         readinessProbe:
