@@ -71,9 +71,16 @@ namespace blendnet.cms.listener.Common
                         return;
                     }
 
-                    _logger.LogInformation($"Broadcast related message recieved for command id: {integrationEvent.CorrelationId} Message Body : {integrationEvent.Body}");
+                    Guid commandId;
 
-                    Guid commandId = Guid.Parse(integrationEvent.CorrelationId);
+                    if (!Guid.TryParse(integrationEvent.CorrelationId, out commandId))
+                    {
+                        _logger.LogInformation($"Invalid correlation id recieved. This is not meant for our application as it has to be a valid guid. Event Correlation Id {integrationEvent.CorrelationId} Event Body : {integrationEvent.Body}");
+
+                        return;
+                    }
+
+                    _logger.LogInformation($"Broadcast related message recieved for command id: {integrationEvent.CorrelationId} Message Body : {integrationEvent.Body}");
 
                     ContentCommand broadcastCommand = await _contentRepository.GetContentCommandById(commandId);
 
