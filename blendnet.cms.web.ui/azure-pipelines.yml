@@ -41,7 +41,7 @@ stages:
     - task: CmdLine@2
       displayName: "Pushing image to ACR"
       inputs:
-        script: "docker push acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.web.ui:$(RunNumber):$(RunNumber)"
+        script: "docker push acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.web.ui:$(RunNumber)"
 
     - task: Docker@2
       displayName: Logout of ACR
@@ -58,11 +58,11 @@ stages:
     - task: CmdLine@2
       condition: eq('${{ parameters.onlyDeploy }}', false)
       inputs:
-        script: 'sed -i ''s/blendnet.cms.web.ui:latest/blendnet.cms.web.ui:$(RunNumber)/g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
+        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.web.ui:$(RunNumber)|g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
     - task: CmdLine@2
       condition: eq('${{ parameters.onlyDeploy }}', true)
       inputs:
-        script: 'sed -i ''s/blendnet.cms.web.ui:latest/blendnet.cms.web.ui:${{ parameters.deployBuildNumber }}/g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
+        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.web.ui:$(RunNumber)|g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
