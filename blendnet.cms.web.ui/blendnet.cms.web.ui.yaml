@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: blendnet-cms-web-ui
-        image: acrblendnetdev.azurecr.io/blendnet.cms.web.ui:latest
+        image: image_name
         ports:
         - containerPort: 80
         readinessProbe:
