@@ -30,8 +30,7 @@ namespace blendnet.cms.api.Controllers
         IStringLocalizer<SharedResource> _stringLocalizer;
 
         public BrowseContentController(ILogger<BrowseContentController> logger, IContentRepository contentRepository, 
-            IContentProviderRepository contentProviderRepository, IMapper mapper,
-            IStringLocalizer<SharedResource> stringLocalizer)
+            IContentProviderRepository contentProviderRepository, IMapper mapper, IStringLocalizer<SharedResource> stringLocalizer)
         {
             _logger = logger;
 
