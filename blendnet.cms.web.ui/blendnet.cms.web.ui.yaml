@@ -13,7 +13,7 @@ spec:
     metadata:
       labels:
         app: blendnet-cms-web-ui
-        aadpodidbinding: blendnet-dev-pod-identity
+        aadpodidbinding: pod_identity_name
     spec:
       containers:
       - name: blendnet-cms-web-ui
