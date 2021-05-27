@@ -9,7 +9,7 @@ parameters:
   - name: environment
     displayName: Environment
     type: string
-    default: stage
+    default: dev
 
   - name: deployBuildNumber
     default: latest
@@ -32,7 +32,9 @@ stages:
       inputs:
         command: login
         containerRegistry: 'acrblendnet${{ parameters.environment }}'
-
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|kv-blendnet-dev|kv-blendnet-${{ parameters.environment }}|g'' blendnet.retailer.listener/appsettings.json'
     - task: CmdLine@2
       displayName: "Building docker image"
       inputs:
@@ -62,7 +64,10 @@ stages:
     - task: CmdLine@2
       condition: eq('${{ parameters.onlyDeploy }}', true)
       inputs:
-        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.retailer.listener:$(RunNumber)|g'' blendnet.retailer.listener/blendnet.retailer.listener.yaml'
+        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.retailer.listener:${{ parameters.deployBuildNumber }}|g'' blendnet.retailer.listener/blendnet.retailer.listener.yaml'
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|pod_identity_name|blendnet-${{ parameters.environment }}-pod-identity|g'' blendnet.retailer.listener/blendnet.retailer.listener.yaml'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'

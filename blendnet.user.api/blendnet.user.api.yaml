@@ -13,7 +13,7 @@ spec:
     metadata:
       labels:
         app: blendnet-user-api
-        aadpodidbinding: blendnet-dev-pod-identity
+        aadpodidbinding: pod_identity_name
     spec:
       containers:
       - name: blendnet-user-api
