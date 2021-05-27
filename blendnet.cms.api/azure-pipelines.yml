@@ -66,6 +66,9 @@ stages:
     - task: CmdLine@2
       inputs:
         script: 'sed -i ''s|pod_identity_name|blendnet-${{ parameters.environment }}-pod-identity|g'' blendnet.cms.api/blendnet.cms.api.yaml'
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|kv-blendnet-dev|kv-blendnet-${{ parameters.environment }}|g'' blendnet.cms.api/appsettings.json'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'
