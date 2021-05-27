@@ -126,7 +126,7 @@ namespace blendnet.cms.api.Controllers
             // Check for Json Format
             if (!ValidateFileExtension(file))
             {
-                errorDetails.Add("File not found or not in Json format");
+                errorDetails.Add(_stringLocalizer["CMS_ERR_0001"]);
                 
                 return BadRequest(errorDetails);
             }
@@ -206,7 +206,8 @@ namespace blendnet.cms.api.Controllers
                     contentToDelete.ContentTransformStatus == ContentTransformStatus.TransformNotInitialized &&
                     contentToDelete.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastNotInitialized)
             {
-                return BadRequest($"{contentToDelete.Id.Value} - Upload Status should be in {ContentUploadStatus.UploadComplete} , {ContentUploadStatus.UploadFailed} and Tranform Status should be {ContentTransformStatus.TransformNotInitialized} and Broadcast Status should be {ContentBroadcastStatus.BroadcastNotInitialized}");
+                return BadRequest(String.Format(_stringLocalizer["CMS_ERR_0002"], contentToDelete.Id.Value, ContentUploadStatus.UploadComplete,
+                    ContentUploadStatus.UploadFailed, ContentTransformStatus.TransformNotInitialized, ContentBroadcastStatus.BroadcastNotInitialized));
             }
 
             int statusCode = await _contentRepository.DeleteContent(contentId);
@@ -249,12 +250,12 @@ namespace blendnet.cms.api.Controllers
 
             if (content == null)
             {
-                return BadRequest($"No valid details found for givent content id {contentId}");
+                return BadRequest(String.Format(_stringLocalizer["CMS_ERR_0003"], contentId));
             }
 
             if (content.ContentTransformStatus != ContentTransformStatus.TransformComplete)
             {
-                return BadRequest($"The content tranform status should be complete. Current status is {content.ContentTransformStatus.ToString()}");
+                return BadRequest(String.Format(_stringLocalizer["CMS_ERR_0004"], content.ContentTransformStatus.ToString()));
             }
 
             string token = await _amsHelper.GetContentToken(content.Id.Value, content.ContentTransformStatusUpdatedBy.Value);
@@ -301,7 +302,7 @@ namespace blendnet.cms.api.Controllers
                 transformContentRequest.ContentIds == null || 
                 transformContentRequest.ContentIds.Count() <= 0)
             {
-                return BadRequest($"No content id(s) found in the input request. Please provide valid content id(s)");
+                return BadRequest(_stringLocalizer["CMS_ERR_0005"]);
             }
 
             List<Content> contentlist = await _contentRepository.GetContentByIds(transformContentRequest.ContentIds);
@@ -344,7 +345,8 @@ namespace blendnet.cms.api.Controllers
                     }
                     else
                     {
-                        errorList.Add($"{content.Id.Value} - Upload Status should be {ContentUploadStatus.UploadComplete} and Tranform Status should be in {ContentTransformStatus.TransformNotInitialized},{ContentTransformStatus.TransformFailed},{ContentTransformStatus.TransformCancelled}");
+                        errorList.Add(String.Format(_stringLocalizer["CMS_ERR_0006"], content.Id.Value, ContentUploadStatus.UploadComplete,
+                            ContentTransformStatus.TransformNotInitialized, ContentTransformStatus.TransformFailed, ContentTransformStatus.TransformCancelled));
                     }
                 }
             }
@@ -371,12 +373,12 @@ namespace blendnet.cms.api.Controllers
                 broadcastContentRequest.StartDate.Equals(DateTime.MinValue) ||
                 broadcastContentRequest.EndDate.Equals(DateTime.MinValue))
             {
-                return BadRequest($"Content Id(s), Filter(s) , Start Date and End Date, all are mandatory!");
+                return BadRequest(_stringLocalizer["CMS_ERR_0007"]);
             }
 
             if (broadcastContentRequest.EndDate <= broadcastContentRequest.StartDate)
             {
-                return BadRequest($"End Date should be a future date and should be greater than start date!");
+                return BadRequest(_stringLocalizer["CMS_ERR_0008"]);
             }
 
             List<Content> contentlist = await _contentRepository.GetContentByIds(broadcastContentRequest.ContentIds);
@@ -428,7 +430,10 @@ namespace blendnet.cms.api.Controllers
                     }
                     else
                     {
-                        errorList.Add($"{content.Id.Value} - Upload Status should be {ContentUploadStatus.UploadComplete},  Tranform Status should be {ContentTransformStatus.TransformComplete} and Broadcast Status should be in {ContentBroadcastStatus.BroadcastNotInitialized},{ContentBroadcastStatus.BroadcastFailed}, {ContentBroadcastStatus.BroadcastOrderCancelled}, {ContentBroadcastStatus.BroadcastOrderFailed}, {ContentBroadcastStatus.BroadcastOrderRejected}");
+                        errorList.Add(String.Format(_stringLocalizer["CMS_ERR_0009"], content.Id.Value, ContentUploadStatus.UploadComplete,
+                            ContentTransformStatus.TransformComplete, ContentBroadcastStatus.BroadcastNotInitialized, ContentBroadcastStatus.BroadcastFailed,
+                            ContentBroadcastStatus.BroadcastOrderCancelled, ContentBroadcastStatus.BroadcastOrderFailed,
+                            ContentBroadcastStatus.BroadcastOrderRejected));
                     }
                 }
             }
@@ -456,7 +461,7 @@ namespace blendnet.cms.api.Controllers
             {
                 foreach (Guid invalidId in invalidIds)
                 {
-                    errorList.Add($"For { invalidId} no valid details found in application database.");
+                    errorList.Add(String.Format(_stringLocalizer["CMS_ERR_0010"], invalidId));
                 }
             }
         }
@@ -613,11 +618,10 @@ namespace blendnet.cms.api.Controllers
 
             foreach (Content content in contents)
             {
-                // contentIds.Add(content.ContentProviderContentId);
                 if (!contentIds.Add(content.ContentProviderContentId))
                 {
                     // Duplicate ContentIds in the file
-                    string info = $"Content with Id {content.ContentProviderContentId} and Title{content.Title} is found multiple times in the uploaded file.";
+                    string info = String.Format(_stringLocalizer["CMS_ERR_0011"], content.ContentProviderContentId, content.Title);
                     errorList.Add(info);
                 }
 
@@ -638,7 +642,7 @@ namespace blendnet.cms.api.Controllers
 
             foreach (string Id in commonIds)
             {
-                string info = $"Content with Id {Id} and is already uploaded to the Database.";
+                string info = String.Format(_stringLocalizer["CMS_ERR_0012"], Id);
                 errorList.Add(info);
 
             }
@@ -666,7 +670,7 @@ namespace blendnet.cms.api.Controllers
                 if (!Mediatypes.Contains(mediatype))
                 {
 
-                    string info = $"File format of type Media for the Blob {content.MediaFileName} from the content {content.Title} is not supported.";
+                    string info = String.Format(_stringLocalizer["CMS_ERR_0013"], content.MediaFileName, content.Title);
 
                     errorList.Add(info);
                 }
@@ -679,7 +683,7 @@ namespace blendnet.cms.api.Controllers
 
                         if (!Thumbnailtypes.Contains(imagetype))
                         {
-                            string info = $"File format of type {attachment.Type} for the Blob {attachment.Name} from the content {content.Title} is not supported.";
+                            string info = String.Format(_stringLocalizer["CMS_ERR_0014"], attachment.Type, attachment.Name, content.Title);
                             errorList.Add(info);
                         }
                     }
@@ -690,7 +694,7 @@ namespace blendnet.cms.api.Controllers
 
                         if (!Mediatypes.Contains(teasertype))
                         {
-                            string info = $"File format of type {attachment.Type} for the Blob {attachment.Name} from the content {content.Title} is not supported.";
+                            string info = String.Format(_stringLocalizer["CMS_ERR_0014"], attachment.Type, attachment.Name, content.Title);
                             errorList.Add(info);
                         }
                     }
@@ -721,7 +725,8 @@ namespace blendnet.cms.api.Controllers
             {
                 if (!await rawClient.GetBlobClient(content.MediaFileName).ExistsAsync())
                 {
-                    string info = $"Blob file of type Media with name {content.MediaFileName} from the content {content.Title} is not found.";
+
+                    string info = String.Format(_stringLocalizer["CMS_ERR_0015"], content.MediaFileName, content.Title);
 
                     errorList.Add(info);
                 }
@@ -733,7 +738,7 @@ namespace blendnet.cms.api.Controllers
                         if (!await rawClient.GetBlobClient(attachment.Name).ExistsAsync())
                         {
 
-                            string info = $"Blob file of type {attachment.Type} with name {attachment.Name} from the content {content.Title} is not found";
+                            string info = String.Format(_stringLocalizer["CMS_ERR_0016"], attachment.Type, attachment.Name, content.Title);
 
                             errorList.Add(info);
                         }
@@ -743,7 +748,7 @@ namespace blendnet.cms.api.Controllers
                         if (!await rawClient.GetBlobClient(attachment.Name).ExistsAsync())
                         {
 
-                            string info = $"Blob file of type {attachment.Type} with name {attachment.Name} from the content {content.Title} is not found";
+                            string info = String.Format(_stringLocalizer["CMS_ERR_0016"], attachment.Type, attachment.Name, content.Title);
 
                             errorList.Add(info);
                         }

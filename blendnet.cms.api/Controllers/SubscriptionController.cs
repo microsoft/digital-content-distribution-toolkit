@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.dto.User;
+using Microsoft.Extensions.Localization;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -25,10 +26,14 @@ namespace blendnet.cms.api.Controllers
 
         private IContentProviderRepository _contentProviderRepository;
 
-        public SubscriptionController(ILogger<SubscriptionController> logger, IContentProviderRepository contentProviderRepository)
+        IStringLocalizer<SharedResource> _stringLocalizer;
+
+        public SubscriptionController(ILogger<SubscriptionController> logger, IContentProviderRepository contentProviderRepository, 
+            IStringLocalizer<SharedResource> stringLocalizer)
         {
             this._logger = logger;
             this._contentProviderRepository = contentProviderRepository;
+            _stringLocalizer = stringLocalizer;
         }
 
         #region methods
@@ -93,17 +98,17 @@ namespace blendnet.cms.api.Controllers
 
                 if (!await ValidContentProvider(contentProviderId))
                 {
-                    listOfValidationErrors.Add($"No content provider found for ID {contentProviderId}");
+                    listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0018"], contentProviderId));
                 }
 
                 if (subscription.StartDate < now)
                 {
-                    listOfValidationErrors.Add("StartDate is in past");
+                    listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0019"]);
                 }
 
                 if (subscription.EndDate < now)
                 {
-                    listOfValidationErrors.Add("EndDate is in past");
+                    listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0019"]);
                 }
 
                 listOfValidationErrors.AddRange(ValidateSubscriptionData(subscription));
@@ -145,7 +150,7 @@ namespace blendnet.cms.api.Controllers
 
                 if (!await ValidContentProvider(contentProviderId))
                 {
-                    listOfValidationErrors.Add($"No content provider found for ID {contentProviderId}");
+                    listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0018"], contentProviderId));
                 }
 
                 listOfValidationErrors.AddRange(ValidateSubscriptionData(subscription));
@@ -233,17 +238,17 @@ namespace blendnet.cms.api.Controllers
 
             if (subscription.StartDate >= subscription.EndDate)
             {
-                listOfValidationErrors.Add("Start Date has to be before EndDate");
+                listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0021"]);
             }
 
             if (subscription.DurationDays <= 0)
             {
-                listOfValidationErrors.Add("DurationDays should be minimum 1");
+                listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0022"]);
             }
 
             if (subscription.Price <= 0)
             {
-                listOfValidationErrors.Add("Price should be minimum 1");
+                listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0023"]);
             }
 
             return listOfValidationErrors;
