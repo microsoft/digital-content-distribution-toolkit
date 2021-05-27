@@ -1,11 +1,8 @@
-<div class="content-home">
-    
-    <div *ngIf="currentUser">
-        <p>Welcome {{userName}} !!!</p>
-        <p>Your have following roles :  {{roles}}</p>
-        <!-- <li *ngFor="let r of role"> {{r}}</li> -->
-    </div>
-    <div *ngIf="hasNoAdminRoles">
-        <p>Please request admin role for your profile and then log-in again to access the CRM application.</p>
-    </div>
+<div class="cms-image">
+    <div class="cms-text">
+        <h1 style="font-size:30px; font-weight: bold;">Content Management System</h1>
+        <h3 *ngIf="currentUser">Your have following roles :  {{roles}}</h3>
+        <h4 *ngIf="hasNoAdminRoles">Please request admin role for your profile and then log-in again to access the CRM application.</h4>
+      </div>
 </div>
+

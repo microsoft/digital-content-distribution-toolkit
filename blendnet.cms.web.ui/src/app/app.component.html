@@ -7,7 +7,17 @@
 	<span><h1>BlendNet CMS</h1></span>
   <span class="cms-menu-spacer"></span>
   
-  <div *ngIf="currentUser"> <span>{{currentUserName}}</span><mat-icon>account_circle</mat-icon></div>
+    <div class="cms-profile" *ngIf="currentUser"><span>{{currentUserName}}</span>
+		<button mat-button [matMenuTriggerFor]="menu">
+			<mat-icon style="margin-bottom: 3px;">account_circle</mat-icon>
+		</button>
+		<mat-menu #menu="matMenu" xPosition="before">
+			<button mat-menu-item (click)="logout()">	
+				<mat-icon>logout</mat-icon>
+    			<span>Logout</span>
+			</button>
+		</mat-menu>
+	</div>
 
 </mat-toolbar>
 <mat-sidenav-container class="cms-container" autosize >
@@ -75,10 +85,8 @@
 			[routerLink]="['manage-content']">
 			<mat-icon mat-list-icon>manage_accounts</mat-icon>
 			&nbsp;&nbsp;Manage content</a>
-			<hr>
-			<a mat-list-item (click)="logout()" *ngIf="currentUser">	
-				<mat-icon mat-list-icon>logout</mat-icon>&nbsp;&nbsp;Logout
-			</a>
+
+			
 			
       </div>
 		</mat-nav-list>
