@@ -43,6 +43,9 @@
 .cms-menu-spacer {
     flex: 1 1 auto;
 }
+.cms-profile {
+    font-size: small;
+}
 .active {
     background-color: lightgray;
   }

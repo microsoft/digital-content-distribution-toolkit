@@ -9,7 +9,7 @@ parameters:
   - name: environment
     displayName: Environment
     type: string
-    default: stage
+    default: dev
 
   - name: deployBuildNumber
     default: latest
@@ -62,7 +62,10 @@ stages:
     - task: CmdLine@2
       condition: eq('${{ parameters.onlyDeploy }}', true)
       inputs:
-        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.web.ui:$(RunNumber)|g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
+        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.web.ui:${{ parameters.deployBuildNumber }}|g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|pod_identity_name|blendnet-${{ parameters.environment }}-pod-identity|g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'

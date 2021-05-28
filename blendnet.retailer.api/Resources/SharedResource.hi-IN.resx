@@ -117,73 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CMS_ERR_0001" xml:space="preserve">
-    <value>CMS_ERR_0001-फ़ाइल Json प्रारूप में नहीं मिली या नहीं</value>
+  <data name="RMS_ERR_0001" xml:space="preserve">
+    <value>RMS_ERR_0001-अमान्य पता</value>
   </data>
-  <data name="CMS_ERR_0002" xml:space="preserve">
-    <value>CMS_ERR_0002-{0} - अपलोड स्थिति {1} , {2} में होनी चाहिए और ट्रांसफ़ॉर्म स्थिति {3} होनी चाहिए और प्रसारण स्थिति {4} होनी चाहिए</value>
-  </data>
-  <data name="CMS_ERR_0003" xml:space="preserve">
-    <value>CMS_ERR_0003-दी गई सामग्री आईडी के लिए कोई मान्य विवरण नहीं मिला {0}</value>
-  </data>
-  <data name="CMS_ERR_0004" xml:space="preserve">
-    <value>CMS_ERR_0004-सामग्री रूपांतरण स्थिति पूर्ण होनी चाहिए। वर्तमान स्थिति है {0}</value>
-  </data>
-  <data name="CMS_ERR_0005" xml:space="preserve">
-    <value>CMS_ERR_0005-इनपुट अनुरोध में कोई सामग्री आईडी नहीं मिली। कृपया मान्य सामग्री आईडी प्रदान करें</value>
-  </data>
-  <data name="CMS_ERR_0006" xml:space="preserve">
-    <value>CMS_ERR_0006-{0} - अपलोड स्थिति {1} होनी चाहिए और ट्रांसफ़ॉर्म स्थिति {2},{3},{4} में होनी चाहिए</value>
-  </data>
-  <data name="CMS_ERR_0007" xml:space="preserve">
-    <value>CMS_ERR_0007-Content Id(s), Filter(s), प्रारंभ तिथि और समाप्ति तिथि, सभी अनिवार्य हैं!</value>
-  </data>
-  <data name="CMS_ERR_0008" xml:space="preserve">
-    <value>CMS_ERR_0008-समाप्ति तिथि भविष्य की तिथि होनी चाहिए और प्रारंभ तिथि से बड़ी होनी चाहिए!</value>
-  </data>
-  <data name="CMS_ERR_0009" xml:space="preserve">
-    <value>CMS_ERR_0009-{0} - अपलोड स्थिति {1} होनी चाहिए, ट्रांसफ़ॉर्म स्थिति {2} होनी चाहिए और प्रसारण स्थिति {3},{4}, {5}, {6}, {7} में होनी चाहिए</value>
-  </data>
-  <data name="CMS_ERR_0010" xml:space="preserve">
-    <value>CMS_ERR_0010-{0} के लिए एप्लिकेशन डेटाबेस में कोई मान्य विवरण नहीं मिला।</value>
-  </data>
-  <data name="CMS_ERR_0011" xml:space="preserve">
-    <value>CMS_ERR_0011-आईडी {0} और शीर्षक वाली सामग्री{1} अपलोड की गई फ़ाइल में कई बार पाई जाती है।</value>
-  </data>
-  <data name="CMS_ERR_0012" xml:space="preserve">
-    <value>CMS_ERR_0012-Id {0} वाली सामग्री और पहले से ही डेटाबेस में अपलोड की गई है।</value>
-  </data>
-  <data name="CMS_ERR_0013" xml:space="preserve">
-    <value>CMS_ERR_0013- सामग्री {1} से ब्लॉब {0} के लिए मीडिया प्रकार का फ़ाइल स्वरूप समर्थित नहीं है.</value>
-  </data>
-  <data name="CMS_ERR_0014" xml:space="preserve">
-    <value>CMS_ERR_0014- सामग्री {2} से ब्लॉब {1} के लिए प्रकार {0} का फ़ाइल स्वरूप समर्थित नहीं है।</value>
-  </data>
-  <data name="CMS_ERR_0015" xml:space="preserve">
-    <value>CMS_ERR_0014- सामग्री {2} से ब्लॉब {1} के लिए प्रकार {0} का फ़ाइल स्वरूप समर्थित नहीं है।</value>
-  </data>
-  <data name="CMS_ERR_0016" xml:space="preserve">
-    <value>CMS_ERR_0016- सामग्री {2} से {1} नाम वाली {0} प्रकार की ब्लॉब फ़ाइल नहीं मिली</value>
-  </data>
-  <data name="CMS_ERR_0017" xml:space="preserve">
-    <value>CMS_ERR_0017-कोई डेटा नहीं मिला</value>
-  </data>
-  <data name="CMS_ERR_0018" xml:space="preserve">
-    <value>CMS_ERR_0018-आईडी {0} के लिए कोई सामग्री प्रदाता नहीं मिला</value>
-  </data>
-  <data name="CMS_ERR_0019" xml:space="preserve">
-    <value>CMS_ERR_0019- प्रारंभ दिनांक अतीत में है</value>
-  </data>
-  <data name="CMS_ERR_0020" xml:space="preserve">
-    <value>CMS_ERR_0020-समाप्ति तिथि बीत चुकी है</value>
-  </data>
-  <data name="CMS_ERR_0021" xml:space="preserve">
-    <value>CMS_ERR_0021-आरंभ तिथि समाप्ति तिथि से पहले की होनी चाहिए</value>
-  </data>
-  <data name="CMS_ERR_0022" xml:space="preserve">
-    <value>CMS_ERR_0022-अवधिदिन कम से कम 1 . होना चाहिए</value>
-  </data>
-  <data name="CMS_ERR_0023" xml:space="preserve">
-    <value>CMS_ERR_0023-कीमत कम से कम 1 . होनी चाहिए</value>
+  <data name="RMS_ERR_0002" xml:space="preserve">
+    <value>RMS_ERR_0002-अमान्य प्रारंभ और समाप्ति तिथियां</value>
   </data>
 </root>

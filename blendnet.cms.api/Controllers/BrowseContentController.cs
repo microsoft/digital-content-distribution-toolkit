@@ -5,6 +5,7 @@ using blendnet.common.dto;
 using blendnet.common.dto.Cms;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,10 @@ namespace blendnet.cms.api.Controllers
 
         private IContentProviderRepository _contentProviderRepository;
 
-        public BrowseContentController(ILogger<BrowseContentController> logger, IContentRepository contentRepository, IContentProviderRepository contentProviderRepository, IMapper mapper)
+        IStringLocalizer<SharedResource> _stringLocalizer;
+
+        public BrowseContentController(ILogger<BrowseContentController> logger, IContentRepository contentRepository, 
+            IContentProviderRepository contentProviderRepository, IMapper mapper, IStringLocalizer<SharedResource> stringLocalizer)
         {
             _logger = logger;
 
@@ -35,6 +39,8 @@ namespace blendnet.cms.api.Controllers
             _contentProviderRepository = contentProviderRepository;
 
             _mapper = mapper;
+
+            _stringLocalizer = stringLocalizer;
         }
 
         #region Browse content methods
@@ -58,7 +64,7 @@ namespace blendnet.cms.api.Controllers
 
             if (result._data == null || result._data.Count == 0)
             {
-                return BadRequest("No data found");
+                return BadRequest(_stringLocalizer["CMS_ERR_0017"]);
             }
 
             return Ok(result);
@@ -84,7 +90,7 @@ namespace blendnet.cms.api.Controllers
 
             if(result._data == null || result._data.Count == 0)
             {
-                return BadRequest("No data found");
+                return BadRequest(_stringLocalizer["CMS_ERR_0017"]);
             }
 
             return Ok(result);

@@ -118,9 +118,72 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CMS_ERR_0001" xml:space="preserve">
-    <value>CMS_ERR_0001-This is the test value</value>
+    <value>CMS_ERR_0001-File not found or not in Json format</value>
   </data>
   <data name="CMS_ERR_0002" xml:space="preserve">
-    <value>CMS_ERR_0002-ContentIds is required</value>
+    <value>CMS_ERR_0002-{0} - Upload Status should be in {1} , {2} and Tranform Status should be {3} and Broadcast Status should be {4}</value>
+  </data>
+  <data name="CMS_ERR_0003" xml:space="preserve">
+    <value>CMS_ERR_0003-No valid details found for givent content id {0}</value>
+  </data>
+  <data name="CMS_ERR_0004" xml:space="preserve">
+    <value>CMS_ERR_0004-The content tranform status should be complete. Current status is {0}</value>
+  </data>
+  <data name="CMS_ERR_0005" xml:space="preserve">
+    <value>CMS_ERR_0005-No content id(s) found in the input request. Please provide valid content id(s)</value>
+  </data>
+  <data name="CMS_ERR_0006" xml:space="preserve">
+    <value>CMS_ERR_0006-{0} - Upload Status should be {1} and Tranform Status should be in {2},{3},{4}</value>
+  </data>
+  <data name="CMS_ERR_0007" xml:space="preserve">
+    <value>CMS_ERR_0007-Content Id(s), Filter(s) , Start Date and End Date, all are mandatory!</value>
+  </data>
+  <data name="CMS_ERR_0008" xml:space="preserve">
+    <value>CMS_ERR_0008-End Date should be a future date and should be greater than start date!</value>
+  </data>
+  <data name="CMS_ERR_0009" xml:space="preserve">
+    <value>CMS_ERR_0009-{0} - Upload Status should be {1},  Tranform Status should be {2} and Broadcast Status should be in {3},{4}, {5}, {6}, {7}</value>
+  </data>
+  <data name="CMS_ERR_0010" xml:space="preserve">
+    <value>CMS_ERR_0010-For {0} no valid details found in application database.</value>
+  </data>
+  <data name="CMS_ERR_0011" xml:space="preserve">
+    <value>CMS_ERR_0011-Content with Id {0} and Title{1} is found multiple times in the uploaded file.</value>
+  </data>
+  <data name="CMS_ERR_0012" xml:space="preserve">
+    <value>CMS_ERR_0012-Content with Id {0} and is already uploaded to the Database.</value>
+  </data>
+  <data name="CMS_ERR_0013" xml:space="preserve">
+    <value>CMS_ERR_0013-File format of type Media for the Blob {0} from the content {1} is not supported.</value>
+  </data>
+  <data name="CMS_ERR_0014" xml:space="preserve">
+    <value>CMS_ERR_0014-File format of type {0} for the Blob {1} from the content {2} is not supported.</value>
+  </data>
+  <data name="CMS_ERR_0015" xml:space="preserve">
+    <value>CMS_ERR_0015-Blob file of type Media with name {0} from the content {1} is not found.</value>
+  </data>
+  <data name="CMS_ERR_0016" xml:space="preserve">
+    <value>CMS_ERR_0016-Blob file of type {0} with name {1} from the content {2} is not found</value>
+  </data>
+  <data name="CMS_ERR_0017" xml:space="preserve">
+    <value>CMS_ERR_0017-No data found</value>
+  </data>
+  <data name="CMS_ERR_0018" xml:space="preserve">
+    <value>CMS_ERR_0018-No content provider found for ID {0}</value>
+  </data>
+  <data name="CMS_ERR_0019" xml:space="preserve">
+    <value>CMS_ERR_0019-StartDate is in past</value>
+  </data>
+  <data name="CMS_ERR_0020" xml:space="preserve">
+    <value>CMS_ERR_0020-EndDate is in past</value>
+  </data>
+  <data name="CMS_ERR_0021" xml:space="preserve">
+    <value>CMS_ERR_0021-Start Date has to be before EndDate</value>
+  </data>
+  <data name="CMS_ERR_0022" xml:space="preserve">
+    <value>CMS_ERR_0022-DurationDays should be minimum 1</value>
+  </data>
+  <data name="CMS_ERR_0023" xml:space="preserve">
+    <value>CMS_ERR_0023-Price should be minimum 1</value>
   </data>
 </root>

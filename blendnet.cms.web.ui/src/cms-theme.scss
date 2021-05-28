@@ -1,0 +1,21 @@
+@import "../node_modules/@angular/material/theming"; 
+@include mat-core();
+
+// $custom-collection: (
+//     default: #0095e0,
+//     warning :  $mat-deep-orange,
+//     success :  #0a630f,
+//     danger:    #c00000,
+//     contrast: (
+//         warning :  #000000,
+//         success :  #FFFFFF,
+//         danger:    #FFFFFF,
+//     )
+// );
+
+
+$my-primary: mat-palette($mat-blue);
+$my-accent:  mat-palette($mat-pink);
+$my-warn:    mat-palette($mat-deep-orange);
+$my-theme: mat-light-theme($my-primary, $my-accent, $my-warn);
+@include angular-material-theme($my-theme);

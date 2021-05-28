@@ -13,11 +13,11 @@ export class HomeComponent implements OnInit {
   userName: string = "";
   roles: string = "";
   hasNoAdminRoles: boolean = false;
-
   constructor(
     private kaizalaService: KaizalaService
   ) {
     this.kaizalaService.currentUser.subscribe(user => this.currentUser = user);
+    this.userName = localStorage.getItem("currentUserName");
    }
 
   ngOnInit(): void {

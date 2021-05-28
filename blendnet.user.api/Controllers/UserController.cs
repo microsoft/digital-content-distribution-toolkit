@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Localization;
 
 namespace blendnet.user.api.Controllers
 {
@@ -32,17 +33,21 @@ namespace blendnet.user.api.Controllers
 
         private UserAppSettings _appSettings;
 
+        IStringLocalizer<SharedResource> _stringLocalizer;
+
         public UserController(IUserRepository userRepository,
                               ILogger<UserController> logger,
                               RetailerProxy retailerProxy,
                               IEventBus eventBus,
-                              IOptionsMonitor<UserAppSettings> optionsMonitor)
+                              IOptionsMonitor<UserAppSettings> optionsMonitor,
+                              IStringLocalizer<SharedResource> stringLocalizer)
         {
             _logger = logger;
             _userRepository = userRepository;
             _retailerProxy = retailerProxy;
             _eventBus = eventBus;
             _appSettings = optionsMonitor.CurrentValue;
+            _stringLocalizer = stringLocalizer;
         }
 
         /// <summary>
@@ -61,7 +66,7 @@ namespace blendnet.user.api.Controllers
 
             if (await _userRepository.GetUserByPhoneNumber(phoneNumber) != null)
             {
-                errorInfo.Add($"User Already exists in the system {phoneNumber}");
+                errorInfo.Add(String.Format(_stringLocalizer["USR_ERR_001"], phoneNumber));
                 return BadRequest(errorInfo);
             }
 
@@ -145,26 +150,26 @@ namespace blendnet.user.api.Controllers
             User user = await _userRepository.GetUserByPhoneNumber(phoneNumber);
             if (user == null)
             {
-                errorInfo.Add($"No valid details found for current user {phoneNumber}");
+                errorInfo.Add(String.Format(_stringLocalizer["USR_ERR_002"], phoneNumber));
                 return NotFound(errorInfo);
             }
 
             if (user.ChannelId != Channel.ConsumerApp)
             {
-                errorInfo.Add("Only Customers are allowerd to enter referral info");
+                errorInfo.Add(_stringLocalizer["USR_ERR_003"]);
                 return BadRequest(errorInfo);
             }
 
             if (user.ReferralInfo != null)
             {
-                errorInfo.Add("ReferralCode is already assigned");
+                errorInfo.Add(_stringLocalizer["USR_ERR_004"]);
                 return BadRequest(errorInfo);
             }
 
             RetailerDto retailerDto = await _retailerProxy.GetRetailerByReferralCode(referralCode);
             if(retailerDto == null)
             {
-                errorInfo.Add("Invalid referral code");
+                errorInfo.Add(_stringLocalizer["USR_ERR_005"]);
                 return BadRequest(errorInfo);
             }
 
@@ -208,13 +213,13 @@ namespace blendnet.user.api.Controllers
 
             if (startDate <= 0 || endDate <= 0)
             {
-                errorDetails.Add("Invalid start or end date");
+                errorDetails.Add(_stringLocalizer["USR_ERR_007"]);
                 return BadRequest(errorDetails);
             }
 
             if (startDate > endDate)
             {
-                errorDetails.Add("Invalid date range");
+                errorDetails.Add(_stringLocalizer["USR_ERR_008"]);
                 return BadRequest(errorDetails);
             }
 
@@ -263,24 +268,24 @@ namespace blendnet.user.api.Controllers
 
                 if (!RetailerDto.IsPartnerCodeValid(partnerCode, _appSettings.ServiceIdMapping))
                 {
-                    listOfValidationErrors.Add($"Invalid partner code : {partnerCode}");
+                    listOfValidationErrors.Add(String.Format(_stringLocalizer["USR_ERR_009"], partnerCode));
                 }
 
                 string phoneNumber = retailerRequest.PhoneNumber;
                 if (!common.dto.User.User.IsPhoneNumberValid(phoneNumber))
                 {
-                    listOfValidationErrors.Add("Invalid Phone number format");
+                    listOfValidationErrors.Add(_stringLocalizer["USR_ERR_010"]);
                 }
 
                 if (!retailerRequest.Address.MapLocation.isValid())
                 {
-                    listOfValidationErrors.Add("Map Location is not valid");
+                    listOfValidationErrors.Add(_stringLocalizer["USR_ERR_011"]);
                 }
 
                 var existingRetailer = await _retailerProxy.GetRetailerById(retailerRequest.RetailerId, partnerCode);
                 if (existingRetailer != null)
                 {
-                    listOfValidationErrors.Add($"Retailer Already Exists ID : {retailerRequest.RetailerId}");
+                    listOfValidationErrors.Add(String.Format(_stringLocalizer["USR_ERR_012"], retailerRequest.RetailerId));
                 }
 
                 // check and return validation errors

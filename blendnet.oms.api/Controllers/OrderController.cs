@@ -20,6 +20,7 @@ using static blendnet.common.dto.ApplicationConstants;
 using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.dto.Events;
+using Microsoft.Extensions.Localization;
 using blendnet.common.infrastructure;
 
 namespace blendnet.oms.api.Controllers
@@ -47,6 +48,7 @@ namespace blendnet.oms.api.Controllers
 
         private OmsAppSettings _omsAppSettings;
 
+        IStringLocalizer<SharedResource> _stringLocalizer;
 
         public OrderController(IOMSRepository omsRepository,
                                 ILogger<OrderController> logger,
@@ -54,7 +56,8 @@ namespace blendnet.oms.api.Controllers
                                 RetailerProxy retailerProxy,
                                 SubscriptionProxy subscriptionProxy,
                                 IEventBus eventBus,
-                                IOptionsMonitor<OmsAppSettings> optionsMonitor)
+                                IOptionsMonitor<OmsAppSettings> optionsMonitor,
+                                IStringLocalizer<SharedResource> stringLocalizer)
         {
             _omsRepository = omsRepository;
 
@@ -69,6 +72,8 @@ namespace blendnet.oms.api.Controllers
             _eventBus = eventBus;
 
             _omsAppSettings = optionsMonitor.CurrentValue;
+
+            _stringLocalizer = stringLocalizer;
         }
 
         #region Order management methods
@@ -91,7 +96,7 @@ namespace blendnet.oms.api.Controllers
 
             if (subscription == null)
             {
-                errorInfo.Add("Subscription not found");
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0001"]);
                 return BadRequest(errorInfo);
             }
 
@@ -110,7 +115,7 @@ namespace blendnet.oms.api.Controllers
             // Check if user do not hold active order for same content provider
             if (await ActiveOrderExists(userPhoneNumber, orderRequest.ContentProviderId, orderStatusFilter)) 
             {
-                errorInfo.Add("User already holds order for same content provider");
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0002"]);
                 return BadRequest(errorInfo);
             }
 
@@ -148,7 +153,7 @@ namespace blendnet.oms.api.Controllers
 
             if (!ValidateRetailer(retailer))
             {
-                errorInfo .Add("Invalid retailer");
+                errorInfo .Add(_stringLocalizer["OMS_ERR_0004"]);
                 return BadRequest(errorInfo);
             }
 
@@ -167,7 +172,7 @@ namespace blendnet.oms.api.Controllers
             //validate amount collected
             if(!ValidateAmount(completeOrderRequest))
             {
-                errorInfo.Add("Invalid amount collected");
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0003"]);
                 return BadRequest(errorInfo);
             }
 
@@ -212,13 +217,13 @@ namespace blendnet.oms.api.Controllers
             List<string> errorInfo = new List<string>();
             if(order == null)
             {
-                errorInfo.Add("Order does not exist");
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0005"]);
                 return BadRequest(errorInfo);
             }
 
             if(order.OrderStatus != OrderStatus.Created)
             {
-                errorInfo.Add("Order is already processed");
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0006"]);
                 return BadRequest(errorInfo);
             }
 
@@ -258,7 +263,7 @@ namespace blendnet.oms.api.Controllers
             //Check if content is valid
             if (content == null)
             {
-                errorDetails.Add($"No valid details found for givent content id {contentId}");
+                errorDetails.Add(String.Format(_stringLocalizer["OMS_ERR_0007"], contentId));
 
                 return BadRequest(errorDetails);
             }
@@ -266,7 +271,7 @@ namespace blendnet.oms.api.Controllers
             //Check the the content transformation status
             if (content.ContentTransformStatus != ContentTransformStatus.TransformComplete)
             {
-                errorDetails.Add($"The content tranform status should be complete. Current status is {content.ContentTransformStatus}");
+                errorDetails.Add(String.Format(_stringLocalizer["OMS_ERR_0008"], content.ContentTransformStatus));
 
                 return BadRequest(errorDetails);
             }
@@ -298,13 +303,13 @@ namespace blendnet.oms.api.Controllers
 
             if(startDate == 0 || endDate == 0)
             {
-                errorDetails.Add("Invalid start or end date");
+                errorDetails.Add(_stringLocalizer["OMS_ERR_0009"]);
                 return BadRequest(errorDetails);
             }
 
             if(startDate > endDate)
             {
-                errorDetails.Add("Invalid date range");
+                errorDetails.Add(_stringLocalizer["OMS_ERR_0010"]);
                 return BadRequest(errorDetails);
             }
 
@@ -315,7 +320,7 @@ namespace blendnet.oms.api.Controllers
             
             if (retailer == null)
             {
-                errorDetails.Add("Retailer not found");
+                errorDetails.Add(_stringLocalizer["OMS_ERR_0011"]);
                 return BadRequest(errorDetails);
             }
 
@@ -458,7 +463,7 @@ namespace blendnet.oms.api.Controllers
                 } 
                 else
                 {
-                    errorDetails.Add($"No Valid Subscription for {this.User.Identity.Name} and {content.ContentProviderId}");
+                    errorDetails.Add(String.Format(_stringLocalizer["OMS_ERR_0012"], this.User.Identity.Name, content.ContentProviderId));
                 }
             }
 
@@ -487,7 +492,7 @@ namespace blendnet.oms.api.Controllers
 
             if (subscriptionEndDate < DateTime.UtcNow)
             {
-                return "Subscription is not active";
+                return _stringLocalizer["OMS_ERR_0013"];
             }
 
             return null;
@@ -550,11 +555,11 @@ namespace blendnet.oms.api.Controllers
 
             if(order == null)
             {
-                errorInfo = "Order does not exist";
+                errorInfo = _stringLocalizer["OMS_ERR_0014"];
             }
             else if(order.OrderStatus != OrderStatus.Created)
             {
-                errorInfo = "Order is not active";
+                errorInfo = _stringLocalizer["OMS_ERR_0015"];
             }
 
             return errorInfo;

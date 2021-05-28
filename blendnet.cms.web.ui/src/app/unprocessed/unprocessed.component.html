@@ -65,6 +65,18 @@
             <td mat-cell *matCellDef="let row"> {{row.status}} </td>
         </ng-container>
 
+         <!-- CreatedDate Column -->
+         <ng-container matColumnDef="createdDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+            <td mat-cell *matCellDef="let row"> {{row.createdDate | date: 'short'}} </td>
+        </ng-container>
+
+         <!-- ModifiedDate Column -->
+         <ng-container matColumnDef="modifiedDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Modified Date </th>
+            <td mat-cell *matCellDef="let row"> {{row.modifiedDate | date: 'short'}} </td>
+        </ng-container>
+
     
         <!-- View Action Column -->
         <ng-container matColumnDef="view">

@@ -4,6 +4,7 @@ using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.retailer.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,13 @@ namespace blendnet.retailer.api.Controllers
 
         private IRetailerRepository _retailerRepository;
 
-        public RetailerController(ILogger<RetailerController> logger, IRetailerRepository retailerRepository)
+        IStringLocalizer<SharedResource> _stringLocalizer;
+
+        public RetailerController(ILogger<RetailerController> logger, IRetailerRepository retailerRepository, IStringLocalizer<SharedResource> stringLocalizer)
         {
             this._logger = logger;
             this._retailerRepository = retailerRepository;
+            _stringLocalizer = stringLocalizer;
         }
 
         #region API methods
@@ -55,16 +59,16 @@ namespace blendnet.retailer.api.Controllers
             {
                 return NotFound();
             }
-
+        
             var listOfValidationErrors = new List<string>();
             if (retailer.Address == null || retailer.Address.MapLocation == null || !retailer.Address.MapLocation.isValid())
             {
-                listOfValidationErrors.Add("Invalid Address");
+                listOfValidationErrors.Add(_stringLocalizer["RMS_ERR_0001"]);
             }
 
             if (retailer.StartDate > retailer.EndDate)
             {
-                listOfValidationErrors.Add("Invalid Start and End Dates");
+                listOfValidationErrors.Add(_stringLocalizer["RMS_ERR_0002"]);
             }
 
             if (listOfValidationErrors.Count > 0)

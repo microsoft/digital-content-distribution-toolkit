@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace blendnet.notification.listener
+namespace blendnet.oms.listener
 {
     public class EventListener : IHostedService
     {
@@ -29,13 +29,13 @@ namespace blendnet.notification.listener
         /// <returns></returns>
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Starting Eventlistner of blendnet.retailer.listener");
+            _logger.LogInformation("Starting Eventlistner of blendnet.oms.listener");
 
             _eventBus.Subscribe<OrderCompletedIntegrationEvent, OrderCompleteEventHandler>();
 
             await _eventBus.StartProcessing();
 
-            _logger.LogInformation("Subscribe complete by blendnet.retailer.listener");
+            _logger.LogInformation("Subscribe complete by blendnet.oms.listener");
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace blendnet.notification.listener
         /// <returns></returns>
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Stopping Eventlistner of blendnet.retailer.listener");
+            _logger.LogInformation("Stopping Eventlistner of blendnet.oms.listener");
 
             return Task.CompletedTask;
         }

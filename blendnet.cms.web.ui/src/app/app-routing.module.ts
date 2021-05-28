@@ -13,6 +13,7 @@ import { SubscriptionComponent } from './subscription/subscription.component';
 import { HomeComponent } from './home/home.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { environment } from 'src/environments/environment';
+import { ProfileComponent } from './profile/profile.component';
 
 
 const appRoutes: Routes = [
@@ -88,6 +89,10 @@ const appRoutes: Routes = [
     data: { 
       expectedRole: [environment.roles.SuperAdmin, environment.roles.ContentAdmin]
     } 
+  },
+  {
+    path: 'profile', 
+    component: ProfileComponent
   },
   {
     path: 'subscriptions', 
