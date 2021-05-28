@@ -49,3 +49,27 @@
 .active {
     background-color: lightgray;
   }
+
+  .sidenav-toggler {
+      cursor: pointer;
+  }
+
+  .menu-side-text {
+      vertical-align: super;
+  }
+
+  .menu-small-text {
+    font-size: 10px;
+  }
+
+  @media only screen and (max-width: 767px) {
+    ::ng-deep .mat-list-item-content {
+        padding-right: 0 !important;
+      }
+
+      ::ng-deep .cms-image {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+  }
