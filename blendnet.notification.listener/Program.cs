@@ -13,11 +13,10 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using blendnet.api.proxy.KaizalaIdentity;
-using blendnet.notification.listener.IntegrationEventHandling;
 using blendnet.api.proxy.Kaizala;
+using blendnet.oms.listener.IntegrationEventHandling;
 
-namespace blendnet.notification.listener
+namespace blendnet.oms.listener
 {
     public class Program
     {

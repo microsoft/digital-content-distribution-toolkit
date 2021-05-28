@@ -1,6 +1,6 @@
 ﻿using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
-using blendnet.notification.listener.IntegrationEventHandling;
+using blendnet.oms.listener.IntegrationEventHandling;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading;

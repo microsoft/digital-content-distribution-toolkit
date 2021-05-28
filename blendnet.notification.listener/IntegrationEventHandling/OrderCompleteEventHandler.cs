@@ -1,22 +1,19 @@
 ﻿using blendnet.api.proxy.Kaizala;
-using blendnet.api.proxy.KaizalaIdentity;
-using blendnet.common.dto;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Notification;
 using blendnet.common.dto.Oms;
 using blendnet.common.infrastructure;
-using blendnet.notification.listener.Util;
+using blendnet.oms.listener.Util;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace blendnet.notification.listener.IntegrationEventHandling
+namespace blendnet.oms.listener.IntegrationEventHandling
 {
     public class OrderCompleteEventHandler : IIntegrationEventHandler<OrderCompletedIntegrationEvent>
     {
