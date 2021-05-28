@@ -1,6 +1,7 @@
 .cms-image {
-    background-image: url("./../../assets/logo.svg");
+    background-image: url("../../assets/reel.jpg");
     background-position: center;
+    opacity: 0.4;
     background-repeat: no-repeat;
     background-size: contain;
     position: relative;

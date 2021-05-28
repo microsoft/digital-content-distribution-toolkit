@@ -1,0 +1,13 @@
+
+
+<div >
+    
+                        <b>Roles</b>
+                        <div *ngFor="let role of roles">
+                            {{role}}
+                        </div>
+                        <div *ngIf="roles.length==1">
+                            Please request admin role for your profile and then log-in again to access the CRM application.
+                        </div>
+
+</div>
