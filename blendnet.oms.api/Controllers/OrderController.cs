@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Authorization;
 using static blendnet.common.dto.ApplicationConstants;
 using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.common.dto.Events;
+using blendnet.common.infrastructure;
 
 namespace blendnet.oms.api.Controllers
 {
@@ -41,7 +43,9 @@ namespace blendnet.oms.api.Controllers
 
         private RetailerProxy _retailerProxy;
 
-        OmsAppSettings _omsAppSettings;
+        private IEventBus _eventBus;
+
+        private OmsAppSettings _omsAppSettings;
 
 
         public OrderController(IOMSRepository omsRepository,
@@ -49,6 +53,7 @@ namespace blendnet.oms.api.Controllers
                                 ContentProxy contentProxy,
                                 RetailerProxy retailerProxy,
                                 SubscriptionProxy subscriptionProxy,
+                                IEventBus eventBus,
                                 IOptionsMonitor<OmsAppSettings> optionsMonitor)
         {
             _omsRepository = omsRepository;
@@ -60,6 +65,8 @@ namespace blendnet.oms.api.Controllers
             _contentProxy = contentProxy;
 
             _retailerProxy = retailerProxy;
+
+            _eventBus = eventBus;
 
             _omsAppSettings = optionsMonitor.CurrentValue;
         }
@@ -172,6 +179,13 @@ namespace blendnet.oms.api.Controllers
 
             if (statusCode == (int)System.Net.HttpStatusCode.OK)
             {
+                OrderCompletedIntegrationEvent orderCompletedIntegrationEvent = new OrderCompletedIntegrationEvent()
+                {
+                    Order = order,
+                };
+
+                await _eventBus.Publish(orderCompletedIntegrationEvent);
+
                 return NoContent();
             }
             else
