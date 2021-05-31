@@ -1,13 +1,17 @@
 
 
-<div >
-    
-                        <b>Roles</b>
-                        <div *ngFor="let role of roles">
-                            {{role}}
-                        </div>
-                        <div *ngIf="roles.length==1">
-                            Please request admin role for your profile and then log-in again to access the CRM application.
-                        </div>
+<div class="profile-outer-wrapper">
+    <div class="profile-inner-wrapper">
+        <div class="profile-block-heading">Profile</div>
+        <div class="profile-content-wrapper">
+            <div class="profile-sub-heading">Your Roles:</div>
+            <div *ngFor="let role of roles" class="each-role">
+                {{role | pascalToString}}
+            </div>
+            <div *ngIf="roles.length==1">
+                Please request admin role for your profile and then log-in again to access the CRM application.
+            </div>
+        </div>
 
+    </div>
 </div>

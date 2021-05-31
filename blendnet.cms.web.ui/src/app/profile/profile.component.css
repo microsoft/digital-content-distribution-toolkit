@@ -6,3 +6,39 @@
     background-image: url('../../assets/avatar.png');
     background-size: cover;
   } */
+
+  .profile-outer-wrapper {
+    padding: 50px;
+    text-align: center;
+  }
+  
+  .profile-inner-wrapper {
+    display: inline-block;
+    width: 100%;
+    border: 1px solid lightgrey;
+    max-width: 400px;
+    background-color: white;
+  }
+
+  .profile-content-wrapper {
+    padding: 30px;
+    text-align: left;
+  }
+
+  .profile-block-heading {
+    font-size: 20px;
+    padding: 15px 20px;
+    font-weight: 500;
+    border-bottom: 1px solid lightgray;
+    
+  }
+
+  .profile-sub-heading {
+    font-size: 16px;
+    font-weight: 500;
+    padding-bottom: 10px;
+  }
+
+  .each-role {
+    padding: 2px 0;
+  }

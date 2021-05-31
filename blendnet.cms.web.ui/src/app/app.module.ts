@@ -28,6 +28,7 @@ import { JwtInterceptor } from './interceptor/jwt.interceptor';
 import { CommonDialogComponent } from './common-dialog/common-dialog.component';
 import { AddSubscriptionDialog } from './subscription/add-subscription-dialog';
 import { ProfileComponent } from './profile/profile.component';
+import { PascalToStringPipe } from './custom-pipes/pascalcase-to-string.pipe';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ProfileComponent } from './profile/profile.component';
     HomeComponent,
     AddSubscriptionDialog,
     CommonDialogComponent,
-    ProfileComponent
+    ProfileComponent,
+    PascalToStringPipe
   ],
   imports: [
     HttpClientModule,
