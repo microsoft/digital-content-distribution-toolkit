@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.dto.User;
 using Microsoft.Extensions.Localization;
+using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -101,7 +102,11 @@ namespace blendnet.cms.api.Controllers
                     listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0018"], contentProviderId));
                 }
 
-                if (subscription.StartDate < now)
+                // convert dates to IST, ignoring the time part
+                var subscriptionStartDate = subscription.StartDate.ToIndiaStandardTime().Date;
+                var startOfDayNow = now.ToIndiaStandardTime().Date;
+
+                if (subscriptionStartDate < startOfDayNow)
                 {
                     listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0019"]);
                 }
