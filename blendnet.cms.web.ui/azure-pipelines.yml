@@ -34,6 +34,10 @@ stages:
         containerRegistry: 'acrblendnet${{ parameters.environment }}'
 
     - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|environment_name|${{ parameters.environment }}|g'' blendnet.cms.web.ui/Dockerfile'
+
+    - task: CmdLine@2
       displayName: "Building docker image"
       inputs:
         script: "docker build -t acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.cms.web.ui:$(RunNumber) -f ./blendnet.cms.web.ui/Dockerfile ."
