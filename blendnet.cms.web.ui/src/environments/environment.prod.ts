@@ -1,15 +1,15 @@
 export const environment = {
   production: true,
-  allowedMaxSelection: 3,
+  allowedMaxSelection: 5,
   maxFileUploadSize: 1000000,
   fileAllowedType: 'application/json',
   channelName: "CMSPortal",
   // contentProviderApiUrl: '/ContentProvider',
-  contentProviderApiUrl: "http://13.71.0.226/cmsapi/api/v1/ContentProvider",
+  contentProviderApiUrl: "/cmsapi/api/v1/ContentProvider",
   // contentApiUrl: '/Content',
-  contentApiUrl: "http://13.71.0.226/cmsapi/api/v1/Content",
+  contentApiUrl: "/cmsapi/api/v1/Content",
   // userApiUrl: '/User',
-  userApiUrl: "http://13.71.0.226/userapi/api/v1/User",
+  userApiUrl: "/userapi/api/v1/User",
   dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
   // kaizalaApi0: "/Kaizala0",
   // kaizalaApi1: "/Kaizala1",
@@ -28,7 +28,7 @@ export const environment = {
     {
       "filterName" : "Language",
       "filterValues" : [
-        "English", "Hindi", "Marathi", "Gujarati", "Kannada", "Tamil", "Malayalam", "Telugu","Klingon"]
+        "English", "Hindi", "Marathi", "Gujarati", "Kannada", "Tamil", "Malayalam", "Telugu"]
     },
     {
       "filterName" : "Region",
@@ -40,11 +40,11 @@ export const environment = {
     //   "filterValues" : [
     //     "MAP 100", "MAP 500", "MAP 200"]
     // },
-    {
-      "filterName" : "Content Types",
-      "filterValues" : [
-        "Test"]
-    },
+    // {
+    //   "filterName" : "Content Types",
+    //   "filterValues" : [
+    //     "Test"]
+    // },
   ],
   countryCodes: [
     {value: '+91', viewValue: 'India (+91)'}
