@@ -3,15 +3,16 @@ using blendnet.common.dto.Events;
 using blendnet.common.dto.Notification;
 using blendnet.common.dto.Oms;
 using blendnet.common.infrastructure;
-using blendnet.oms.listener.Util;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static blendnet.common.dto.ApplicationConstants;
 
 namespace blendnet.oms.listener.IntegrationEventHandling
 {
@@ -23,13 +24,17 @@ namespace blendnet.oms.listener.IntegrationEventHandling
 
         private readonly NotificationProxy _notificationProxy;
 
+        private readonly OmsAppSettings _appSettings;
+
         public OrderCompleteEventHandler(ILogger<OrderCompleteEventHandler> logger,
                                                         TelemetryClient tc,
-                                                        NotificationProxy notificationProxy)
+                                                        NotificationProxy notificationProxy,
+                                                        IOptionsMonitor<OmsAppSettings> optionsMonitor)
         {
             _logger = logger;
             _telemetryClient = tc;
             _notificationProxy = notificationProxy;
+            _appSettings = optionsMonitor.CurrentValue;
         }
 
         /// <summary>
@@ -99,7 +104,7 @@ namespace blendnet.oms.listener.IntegrationEventHandling
             dynamic gcm = new JObject();
             dynamic data = new JObject();
             gcm.pushNotificationKey = "newMsgPushNotification";
-            gcm.appname = "com.microsoft.mobile.polymer.mishtu";
+            gcm.appname = _appSettings.KaizalaIdentityAppName;
 
             data.message = gcm;
             data.type = PushNotificationType.OrderComplete;
@@ -109,7 +114,6 @@ namespace blendnet.oms.listener.IntegrationEventHandling
             gcmObject.data = data;
             gcmObject.message = message;
             string msg = JsonConvert.SerializeObject(gcmObject);
-            Console.WriteLine(msg);
             return msg;
         }
 

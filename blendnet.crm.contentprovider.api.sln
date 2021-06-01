@@ -48,7 +48,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.user.repository", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.retailer.listener", "blendnet.retailer.listener\blendnet.retailer.listener.csproj", "{8FBA90E4-ADDC-47FC-A8A6-19A26E91E8EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.oms.listener", "blendnet.notification.listener\blendnet.oms.listener.csproj", "{99E4DC21-A5E1-4908-9925-404D28C8A820}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.oms.listener", "blendnet.oms.listener\blendnet.oms.listener.csproj", "{99E4DC21-A5E1-4908-9925-404D28C8A820}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -176,7 +176,7 @@ namespace blendnet.retailer.listener
         private static void ConfigureHttpClients(IServiceCollection services)
         {
             //Configure Http Clients
-            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT, c =>
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
             {
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });

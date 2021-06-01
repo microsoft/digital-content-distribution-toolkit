@@ -41,6 +41,8 @@ namespace blendnet.common.dto.Oms
 
         public string AmsTokenSigningKey { get; set; }
 
+        public string KaizalaIdentityAppName { get; set; }
+
         public Dictionary<string, string> ServiceIdMapping { get; set; }
     }
 }

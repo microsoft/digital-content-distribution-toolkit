@@ -37,7 +37,7 @@ namespace blendnet.api.proxy.Kaizala
                                 )
         : base(configuration, clientFactory, logger, cache)
         {
-            _kaizalaNotificationHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT);
+            _kaizalaNotificationHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT);
 
             _configuration = configuration;
 
@@ -82,6 +82,7 @@ namespace blendnet.api.proxy.Kaizala
                 catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     _logger.LogInformation($"401 from sendExternalNotification - {string.Join(",", batch.Value)}.  Exception {ex} ");
+                    throw;
                 }
 
                 stopwatch.Stop();
@@ -117,13 +118,5 @@ namespace blendnet.api.proxy.Kaizala
             return userIdBatch;
         }
 
-        private string GetBaseUrlByPhoneDigit(string lastDigit)
-        {
-            Dictionary<string, string> settings = new Dictionary<string, string>();
-
-            _configuration.GetSection("KaizalaIdentity").Bind(settings);
-
-            return settings[lastDigit.ToString()];
-        }
     }
 }

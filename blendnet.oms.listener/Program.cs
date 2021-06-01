@@ -9,12 +9,11 @@ using Serilog;
 using blendnet.common.infrastructure.KeyVault;
 using Microsoft.Extensions.Azure;
 using blendnet.common.dto;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Fluent;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using blendnet.api.proxy.Kaizala;
 using blendnet.oms.listener.IntegrationEventHandling;
+using blendnet.common.dto.Oms;
 
 namespace blendnet.oms.listener
 {
@@ -67,7 +66,7 @@ namespace blendnet.oms.listener
                 .ConfigureServices((hostContext, services) =>
                 {
                     //Configure Application Settings
-                    services.Configure<NotificationAppSettings>(hostContext.Configuration);
+                    services.Configure<OmsAppSettings>(hostContext.Configuration);
 
                     services.AddLogging();
 
@@ -134,39 +133,13 @@ namespace blendnet.oms.listener
         }
 
         /// <summary>
-        /// Set up Cosmos DB
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="services"></param>
-        private static void ConfigureCosmosDB(HostBuilderContext context, IServiceCollection services)
-        {
-            string account = context.Configuration.GetValue<string>("AccountEndPoint");
-
-            string databaseName = context.Configuration.GetValue<string>("DatabaseName");
-
-            string key = context.Configuration.GetValue<string>("AccountKey");
-
-            services.AddSingleton<CosmosClient>((cc) => {
-
-                CosmosClient client = new CosmosClientBuilder(account, key)
-                           .WithSerializerOptions(new CosmosSerializationOptions()
-                           {
-                               PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                           })
-                           .Build();
-
-                return client;
-            });
-        }
-
-        /// <summary>
         /// Configure Required Http Clients
         /// </summary>
         /// <param name="services"></param>
         private static void ConfigureHttpClients(IServiceCollection services)
         {
             //Configure Http Clients
-            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT, c =>
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
             {
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });

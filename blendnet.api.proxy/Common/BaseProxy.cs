@@ -40,7 +40,7 @@ namespace blendnet.api.proxy.Common
         {
             _configuration = configuration;
 
-            _kaizalaIdentityHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT);
+            _kaizalaIdentityHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT);
 
             _logger = logger;
 
@@ -123,6 +123,22 @@ namespace blendnet.api.proxy.Common
 
             return accessTokenToReturn;
 
+        }
+
+        /// <summary>
+        /// Returns the Kaizala Base Url by Phone Number Last Digit
+        /// Mainly for lower environments.
+        /// For production set the same URL fro all the digits
+        /// </summary>
+        /// <param name="lastDigit"></param>
+        /// <returns></returns>
+        public string GetBaseUrlByPhoneDigit(string lastDigit)
+        {
+            Dictionary<string, string> settings = new Dictionary<string, string>();
+
+            _configuration.GetSection("KaizalaIdentity").Bind(settings);
+
+            return settings[lastDigit.ToString()];
         }
     }
 }
