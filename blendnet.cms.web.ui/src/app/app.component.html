@@ -1,4 +1,6 @@
 <mat-toolbar color="primary" class="cms-toolbar">
+	<!-- <img class="sidenav-toggler" src="../assets/noun_menu.svg"
+	(click)="isExpanded = !isExpanded"> -->
 	<span>
 		<div class="cms-app-name" *ngIf="currentUser && hasMenuAccess">
 		<h1>Content Provider : {{selectedCPName}}</h1>
@@ -25,7 +27,7 @@
 
 </mat-toolbar>
 <mat-sidenav-container class="cms-container" autosize >
-	<mat-sidenav  *ngIf="currentUser && hasMenuAccess" #sidenav class="cms-sidenav" mode="side" opened="true" >	
+	<mat-sidenav  *ngIf="currentUser && hasMenuAccess" #sidenav class="cms-sidenav" mode="side" opened="true">	
 		<mat-nav-list>
 			<!-- <mat-list-item class="parent"> -->
 				<!-- <span class="full-width" *ngIf="isExpanded" 
@@ -34,24 +36,41 @@
 			<!-- </mat-list-item> -->
 			<div class="submenu" [ngClass]="{'expanded' : true}">
 				<a mat-list-item
-				 [routerLink]="['/']"><mat-icon mat-list-icon>
-					home</mat-icon>
-					&nbsp;&nbsp;Home</a>
+				 [routerLink]="['/']">
+				 <div>
+					<mat-icon mat-list-icon>
+						home</mat-icon>
+						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Home</span>
+						<div *ngIf="!isExpanded" class="menu-small-text">Home</div>
+				 </div>
+				</a>
         		<a mat-list-item
 				 routerLinkActive="active" 
 				 [routerLink]="['content-providers']">
-				 <mat-icon mat-list-icon>play_lesson</mat-icon>
-				 &nbsp;&nbsp;Content Providers</a>
+					<div>
+						<mat-icon mat-list-icon>play_lesson</mat-icon>
+						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Content Providers</span>
+						<div *ngIf="!isExpanded" class="menu-small-text">Providers</div>
+					</div>
+				</a>
 				<a mat-list-item
 				 routerLinkActive="active" 
 				 [routerLink]="['sas-key']">
-				 <mat-icon mat-list-icon>vpn_key</mat-icon>
-				 &nbsp;&nbsp;SAS Key</a>
+					<div>
+						<mat-icon mat-list-icon>vpn_key</mat-icon>
+						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">SAS Key</span>
+						<div *ngIf="!isExpanded" class="menu-small-text">SAS Key</div>
+					</div>
+				</a>
 				<a mat-list-item 
 				 routerLinkActive="active" 
 				[routerLink]="['subscriptions']">
-				<mat-icon mat-list-icon>subscriptions</mat-icon>
-				&nbsp;&nbsp;Subscriptions</a>
+					<div>
+						<mat-icon mat-list-icon>subscriptions</mat-icon>
+						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Subscriptions</span>
+						<div *ngIf="!isExpanded" class="menu-small-text">Subscriptions</div>
+					</div>
+				</a>
       <!-- </div> -->
       <!-- <mat-list-item  class="parent">
 				<span class="full-width" *ngIf="isExpanded">Content</span>
@@ -61,18 +80,30 @@
 			<a mat-list-item 
 			routerLinkActive="active" 
 			[routerLink]="['unprocessed-content']">
-			<mat-icon mat-list-icon>movie</mat-icon>
-			&nbsp;&nbsp;Unprocessed</a>
+				<div>
+					<mat-icon mat-list-icon>movie</mat-icon>
+					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Unprocessed</span>
+					<div *ngIf="!isExpanded" class="menu-small-text">Unprocessed</div>
+				</div>
+			</a>
 			<a mat-list-item 
 			routerLinkActive="active" 
 			[routerLink]="['processed-content']">
-			<mat-icon mat-list-icon>local_movies</mat-icon>
-			&nbsp;&nbsp;Processed</a>
+				<div>
+					<mat-icon mat-list-icon>local_movies</mat-icon>
+					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Processed</span>
+					<div *ngIf="!isExpanded" class="menu-small-text">Processed</div>
+				</div>
+			</a>
 			<a mat-list-item 
 			routerLinkActive="active" 
 			[routerLink]="['broadcast-content']">
-			<mat-icon mat-list-icon>live_tv</mat-icon>
-			&nbsp;&nbsp;Broadcast</a>
+				<div>
+					<mat-icon mat-list-icon>live_tv</mat-icon>
+					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Broadcast</span>
+					<div *ngIf="!isExpanded" class="menu-small-text">Broadcast</div>
+				</div>
+			</a>
       <!-- </div> -->
       <!-- <mat-list-item class="parent">
 				<span class="full-width" *ngIf="isExpanded">Devices</span>
@@ -82,13 +113,21 @@
 			<a mat-list-item 
 			routerLinkActive="active" 
 			[routerLink]="['devices']">
-			<mat-icon mat-list-icon>router</mat-icon>
-			&nbsp;&nbsp;Devices</a>
+				<div>
+					<mat-icon mat-list-icon>router</mat-icon>
+					&nbsp;&nbsp;<span *ngIf="isExpanded"  class="menu-side-text">Devices</span>
+					<div *ngIf="!isExpanded"  class="menu-small-text">Devices</div>
+				</div>
+			</a>
 			<a mat-list-item 
 			routerLinkActive="active" 
 			[routerLink]="['manage-content']">
-			<mat-icon mat-list-icon>manage_accounts</mat-icon>
-			&nbsp;&nbsp;Manage content</a>
+				<div>
+					<mat-icon mat-list-icon>manage_accounts</mat-icon>
+					&nbsp;&nbsp;<span *ngIf="isExpanded"   class="menu-side-text">Manage content</span>
+					<div *ngIf="!isExpanded"  class="menu-small-text">Manage content</div>
+				</div>
+			</a>
 
 			
 			
