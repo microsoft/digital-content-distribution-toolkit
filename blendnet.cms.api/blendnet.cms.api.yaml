@@ -5,7 +5,7 @@ metadata:
   labels:
     app: blendnet-cms-api
 spec:
-  replicas: 1
+  replicas: pod_count
   selector:
     matchLabels:
       app: blendnet-cms-api

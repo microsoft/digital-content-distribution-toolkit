@@ -5,7 +5,7 @@ metadata:
   labels:
     app: blendnet-retailer-listener
 spec:
-  replicas: 1
+  replicas: pod_count
   selector:
     matchLabels:
       app: blendnet-retailer-listener
