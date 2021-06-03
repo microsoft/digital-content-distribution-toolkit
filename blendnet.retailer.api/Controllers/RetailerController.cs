@@ -54,7 +54,7 @@ namespace blendnet.retailer.api.Controllers
         public async Task<ActionResult<string>> UpdateRetailer(string retailerPartnerId /* composed */,
                                                                 RetailerDto retailer)
         {
-            var existingRetailer = await this._retailerRepository.GetRetailerByPartnerId(retailerPartnerId);
+            var existingRetailer = await this._retailerRepository.GetRetailerByPartnerId(retailerPartnerId, true);
             if (existingRetailer == null)
             {
                 return NotFound();
