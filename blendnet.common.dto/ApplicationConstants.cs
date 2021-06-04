@@ -15,6 +15,8 @@ namespace blendnet.common.dto
             public const string Order = "Order";
             public const string User = "User";
             public const string Retailer = "Retailer";
+            public const string IncentivePlan = "IncentivePlan";
+            public const string Event = "Event";
         }
 
         public struct Policy
