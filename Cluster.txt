@@ -98,3 +98,6 @@ stacloudpointp01.blob.core.windows.net	CNAME	stacloudpointp01.privatelink.blob.c
 stacloudpointp01.privatelink.blob.core.windows.net	A	172.18.0.4
 
 nslookup stacloudpointp01.blob.core.windows.net
+
+
+https://docs.microsoft.com/en-us/azure/cosmos-db/cosmosdb-monitor-logs-basic-queries
