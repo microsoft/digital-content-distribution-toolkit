@@ -387,6 +387,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             using (MemoryStream stream = new MemoryStream())
             {
                 await blockBlobClient.DownloadToAsync(stream);
+                
+                stream.Position = 0;
 
                 checksum = EventHandlingUtilities.GetChecksum(_logger, filepath, stream);
             }
