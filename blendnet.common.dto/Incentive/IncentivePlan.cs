@@ -38,7 +38,7 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// List of events and corresponding formula associated with plan
         /// </summary>
-        public List<Detail> IncentiveDetails { get; set; }
+        public List<PlanDetail> IncentiveDetails { get; set; }
     }
 
     
