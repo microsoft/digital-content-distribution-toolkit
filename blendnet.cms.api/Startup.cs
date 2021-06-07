@@ -71,7 +71,8 @@ namespace blendnet.cms.api
             ConfigureLocalization(services);
 
             services.AddControllers()
-            .AddDataAnnotationsLocalization(options => {
+            .AddDataAnnotationsLocalization(options =>
+            {
                 options.DataAnnotationLocalizerProvider = (type, factory) =>
                     factory.Create(typeof(SharedResource));
             })
@@ -157,7 +158,7 @@ namespace blendnet.cms.api
 
             string cmsStorageConnectionString = Configuration.GetValue<string>("CMSStorageConnectionString");
 
-            services.AddAzureClients(builder => 
+            services.AddAzureClients(builder =>
                     {
                         // Register blob service client and initialize it using the Storage section of configuration
                         builder.AddBlobServiceClient(cmsStorageConnectionString)
@@ -188,7 +189,7 @@ namespace blendnet.cms.api
 
             //Configure Redis Cache
             ConfigureDistributedCache(services);
-            
+
             // Configure mapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -216,17 +217,20 @@ namespace blendnet.cms.api
             var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(options.Value);
 
-
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            bool swaggerEnabled = env.IsDevelopment() || Configuration.GetValue<bool>("SwaggerDocEnabled");
+            if (swaggerEnabled)
             {
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
+                app.UseSwagger();
+
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
                 //c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlendNet API V1");
                 c.SwaggerEndpoint("v1/swagger.json", "BlendNet CMS API V1");
-            });
+                });
+            }
 
             app.UseRouting();
 
@@ -283,12 +287,14 @@ namespace blendnet.cms.api
 
             string key = Configuration.GetValue<string>("AccountKey");
 
-            services.AddSingleton<CosmosClient>((cc) => {
+            services.AddSingleton<CosmosClient>((cc) =>
+            {
 
                 CosmosClient client = new CosmosClientBuilder(account, key)
-                           .WithSerializerOptions(new CosmosSerializationOptions() 
-                            {   PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase 
-                            })
+                           .WithSerializerOptions(new CosmosSerializationOptions()
+                           {
+                               PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                           })
                            .Build();
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
@@ -322,7 +328,8 @@ namespace blendnet.cms.api
         {
             string redisCacheConnectionString = Configuration.GetValue<string>("RedisCacheConnectionString");
 
-            services.AddStackExchangeRedisCache(options => {
+            services.AddStackExchangeRedisCache(options =>
+            {
                 options.Configuration = redisCacheConnectionString;
             });
 
@@ -343,12 +350,12 @@ namespace blendnet.cms.api
                    };
 
                    opts.DefaultRequestCulture = new RequestCulture("en-US");
-                   
+
                    // Formatting numbers, dates, etc.
                    opts.SupportedCultures = supportedCultures;
 
-                    // UI strings that we have localized.
-                    opts.SupportedUICultures = supportedCultures;
+                   // UI strings that we have localized.
+                   opts.SupportedUICultures = supportedCultures;
 
                });
         }
