@@ -157,6 +157,7 @@ namespace blendnet.user.api
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<RetailerProxy>();
+            services.AddTransient<RetailerProviderProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);

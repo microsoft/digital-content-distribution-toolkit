@@ -29,6 +29,8 @@ namespace blendnet.user.api.Controllers
 
         private RetailerProxy _retailerProxy;
 
+        private RetailerProviderProxy _retailerProviderProxy;
+
         private IEventBus _eventBus;
 
         private UserAppSettings _appSettings;
@@ -38,6 +40,7 @@ namespace blendnet.user.api.Controllers
         public UserController(IUserRepository userRepository,
                               ILogger<UserController> logger,
                               RetailerProxy retailerProxy,
+                              RetailerProviderProxy retailerProviderProxy,
                               IEventBus eventBus,
                               IOptionsMonitor<UserAppSettings> optionsMonitor,
                               IStringLocalizer<SharedResource> stringLocalizer)
@@ -45,6 +48,7 @@ namespace blendnet.user.api.Controllers
             _logger = logger;
             _userRepository = userRepository;
             _retailerProxy = retailerProxy;
+            _retailerProviderProxy = retailerProviderProxy;
             _eventBus = eventBus;
             _appSettings = optionsMonitor.CurrentValue;
             _stringLocalizer = stringLocalizer;
@@ -96,9 +100,7 @@ namespace blendnet.user.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<string>> CreateRetailer(CreateRetailerRequest retailerRequest)
         {
-            string partnerCode = UserClaimData.GetPartnerCode(this.User.Claims, _appSettings.ServiceIdMapping);
-            
-            return await this.CreateRetailerInternal(retailerRequest, partnerCode);
+            return await this.CreateRetailerInternal(retailerRequest);
         }
 
         /// <summary>
@@ -223,8 +225,15 @@ namespace blendnet.user.api.Controllers
                 return BadRequest(errorDetails);
             }
 
-            string partnerCode = UserClaimData.GetPartnerCode(User.Claims, _appSettings.ServiceIdMapping);
-            string partnerId = RetailerDto.CreatePartnerId(partnerCode, retailerPartnerId);
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(callerUserId);
+            if (retailerProvider == null)
+            {
+                errorDetails.Add(string.Format(_stringLocalizer["USR_ERR_013"], callerUserId));
+                return BadRequest(errorDetails);
+            }
+            
+            string partnerId = RetailerDto.CreatePartnerId(retailerProvider.PartnerCode, retailerPartnerId);
 
             List<ReferralSummary> referralData = await _userRepository.GetReferralSummary(partnerId, startDate, endDate);
             if (referralData == null || referralData.Count == 0)
@@ -256,20 +265,15 @@ namespace blendnet.user.api.Controllers
         /// Logic for creating retailer from the request
         /// </summary>
         /// <param name="retailerRequest">request</param>
-        /// <param name="partnerCode">Partner Code</param>
         /// <returns>Retailer ID of the created retailer</returns>
-        private async Task<ActionResult<string>> CreateRetailerInternal(CreateRetailerRequest retailerRequest, string partnerCode)
+        private async Task<ActionResult<string>> CreateRetailerInternal(CreateRetailerRequest retailerRequest)
         {
             Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(callerUserId);
 
             // validations
             {
                 var listOfValidationErrors = new List<string>();
-
-                if (!RetailerDto.IsPartnerCodeValid(partnerCode, _appSettings.ServiceIdMapping))
-                {
-                    listOfValidationErrors.Add(String.Format(_stringLocalizer["USR_ERR_009"], partnerCode));
-                }
 
                 string phoneNumber = retailerRequest.PhoneNumber;
                 if (!common.dto.User.User.IsPhoneNumberValid(phoneNumber))
@@ -282,7 +286,12 @@ namespace blendnet.user.api.Controllers
                     listOfValidationErrors.Add(_stringLocalizer["USR_ERR_011"]);
                 }
 
-                var existingRetailer = await _retailerProxy.GetRetailerById(retailerRequest.RetailerId, partnerCode);
+                if (retailerProvider == null)
+                {
+                    listOfValidationErrors.Add(string.Format(_stringLocalizer["USR_ERR_13"], callerUserId));
+                }
+
+                var existingRetailer = await _retailerProxy.GetRetailerById(retailerRequest.RetailerId, retailerProvider.PartnerCode);
                 if (existingRetailer != null)
                 {
                     listOfValidationErrors.Add(String.Format(_stringLocalizer["USR_ERR_012"], retailerRequest.RetailerId));
@@ -326,7 +335,7 @@ namespace blendnet.user.api.Controllers
                 // User properties
                 // Retailer properties
                 PartnerProvidedId = retailerRequest.RetailerId,
-                PartnerCode = partnerCode,
+                PartnerCode = retailerProvider.PartnerCode,
                 Address = retailerRequest.Address,
                 Services = new List<ServiceType>() { ServiceType.Media },
                 AdditionalAttibutes = retailerRequest.AdditionalAttributes,

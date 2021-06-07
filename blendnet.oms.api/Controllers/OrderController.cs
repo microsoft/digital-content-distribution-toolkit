@@ -42,6 +42,8 @@ namespace blendnet.oms.api.Controllers
 
         private RetailerProxy _retailerProxy;
 
+        private RetailerProviderProxy _retailerProviderProxy;
+
         OmsAppSettings _omsAppSettings;
 
         IStringLocalizer<SharedResource> _stringLocalizer;
@@ -50,6 +52,7 @@ namespace blendnet.oms.api.Controllers
                                 ILogger<OrderController> logger,
                                 ContentProxy contentProxy,
                                 RetailerProxy retailerProxy,
+                                RetailerProviderProxy retailerProviderProxy,
                                 SubscriptionProxy subscriptionProxy,
                                 IOptionsMonitor<OmsAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer)
@@ -63,6 +66,8 @@ namespace blendnet.oms.api.Controllers
             _contentProxy = contentProxy;
 
             _retailerProxy = retailerProxy;
+
+            _retailerProviderProxy = retailerProviderProxy;
 
             _omsAppSettings = optionsMonitor.CurrentValue;
 
@@ -135,12 +140,18 @@ namespace blendnet.oms.api.Controllers
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
-
-            string partnerCode = UserClaimData.GetPartnerCode(User.Claims, _omsAppSettings.ServiceIdMapping);
-            // Get Retailer
-            RetailerDto retailer = await _retailerProxy.GetRetailerById(completeOrderRequest.RetailerPartnerProvidedId, partnerCode);
-
             List<string> errorInfo = new List<string>();
+
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(callerUserId);
+            if (retailerProvider == null)
+            {
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0016"]);
+                return BadRequest(errorInfo);
+            }
+
+            // Get Retailer
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(completeOrderRequest.RetailerPartnerProvidedId, retailerProvider.PartnerCode);
 
             //Validate retailer
 
@@ -299,10 +310,16 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest(errorDetails);
             }
 
-            string partnerCode = UserClaimData.GetPartnerCode(User.Claims, _omsAppSettings.ServiceIdMapping);
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(callerUserId);
+            if (retailerProvider == null)
+            {
+                errorDetails.Add(_stringLocalizer["OMS_ERR_0016"]);
+                return BadRequest(errorDetails);
+            }
 
             // Get Retailer
-            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, partnerCode);
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, retailerProvider.PartnerCode);
             
             if (retailer == null)
             {

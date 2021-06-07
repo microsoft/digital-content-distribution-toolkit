@@ -15,6 +15,7 @@ namespace blendnet.common.dto
             public const string Order = "Order";
             public const string User = "User";
             public const string Retailer = "Retailer";
+            public const string RetailerProvider = "RetailerProvider";
             public const string IncentivePlan = "IncentivePlan";
             public const string Event = "Event";
         }
@@ -201,13 +202,6 @@ namespace blendnet.common.dto
         public struct DateTimeFormats
         {
             public const string FormatYYYYMMDD = "yyyyMMdd";
-        }
-
-        public struct PartnerCode
-        {
-            public const string NovoPay = "NV";
-
-            public const string UNKNOWN = "UNKNOWN";
         }
     }
 }

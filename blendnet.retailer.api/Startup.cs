@@ -152,6 +152,7 @@ namespace blendnet.retailer.api
             services.AddHealthChecks();
 
             services.AddTransient<IRetailerRepository, RetailerRepository>();
+            services.AddTransient<IRetailerProviderRepository, RetailerProviderRepository>();
 
             services.AddTransient<KaizalaIdentityProxy>();
 
@@ -239,6 +240,7 @@ namespace blendnet.retailer.api
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
                 ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Retailer, "/partnerId").Result;
+                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.RetailerProvider, "/partnerCode").Result;
 
                 return client;
             });

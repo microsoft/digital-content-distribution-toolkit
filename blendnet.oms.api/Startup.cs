@@ -155,6 +155,7 @@ namespace blendnet.oms.api
             services.AddTransient<ContentProxy>();
             services.AddTransient<SubscriptionProxy>();
             services.AddTransient<RetailerProxy>();
+            services.AddTransient<RetailerProviderProxy>();
             services.AddTransient<UserProxy>();
             services.AddTransient<KaizalaIdentityProxy>();
 

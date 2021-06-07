@@ -97,19 +97,6 @@ namespace blendnet.common.dto.Retailer
         {
             return $"{partnerCode}-{partnerProvidedId}";
         }
-
-        /// <summary>
-        /// Checks if the given string is a valid partner code
-        /// </summary>
-        /// <param name="partnerCode">code to check</param>
-        /// <param name="serviceIdMapping">Service ID mappings for lookup</param>
-        /// <returns></returns>
-        public static bool IsPartnerCodeValid(string partnerCode, Dictionary<string, string> serviceIdMapping)
-        {
-            return serviceIdMapping.Values
-                    .Where(code => code == partnerCode)
-                    .Count() == 1;
-        }
     }
 
     public class RetailerWithDistanceDto

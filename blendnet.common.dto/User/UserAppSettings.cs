@@ -13,7 +13,5 @@ namespace blendnet.common.dto.User
         public string AccountKey { get; set; }
 
         public string DatabaseName { get; set; }
-
-        public Dictionary<string,string> ServiceIdMapping { get; set; }
     }
 }
