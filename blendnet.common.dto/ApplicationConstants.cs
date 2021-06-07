@@ -203,5 +203,12 @@ namespace blendnet.common.dto
         {
             public const string FormatYYYYMMDD = "yyyyMMdd";
         }
+
+        public struct Common
+        {
+            public const string NIL_GUID = "00000000-0000-0000-0000-000000000000";
+
+            public const string ALL = "All";
+        }
     }
 }

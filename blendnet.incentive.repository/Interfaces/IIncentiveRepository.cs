@@ -13,14 +13,15 @@ namespace blendnet.incentive.repository.Interfaces
         /// Create incentive plan
         /// </summary>
         /// <param name="incentivePlan"></param>
-        /// <returns>Status</returns>
-        public Task<int> CreateIncentivePlan(IncentivePlan incentivePlan);
+        /// <returns>Plan id</returns>
+        public Task<Guid> CreateIncentivePlan(IncentivePlan incentivePlan);
 
         /// <summary>
-        /// Adds event to repository
+        /// Update incentive plan
         /// </summary>
-        /// <param name="incentiveEvent"></param>
-        /// <returns>Status</returns>
-        public Task<int> AddEvent(Event incentiveEvent);
+        /// <param name="incentivePlan"></param>
+        /// <returns></returns>
+        public Task<int> UpdateIncentivePlan(IncentivePlan incentivePlan);
+
     }
 }
