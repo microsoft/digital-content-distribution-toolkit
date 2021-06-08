@@ -22,6 +22,11 @@ namespace blendnet.common.dto.AIEvents
             
         }
 
+        /// <summary>
+        /// Creates a dictionary based on Property Name and Values.
+        /// Assuming we will not have complex object properties.
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<string, string> ToDictionary()
         {
             Dictionary<string, string> ret = new Dictionary<string, string>();
