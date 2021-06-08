@@ -33,3 +33,8 @@ spec:
         backend:
           serviceName: blendnet-crm-user-api
           servicePort: 80
+      - path: /incentiveapi/*
+        backend:
+          serviceName: blendnet-incentive-api
+          servicePort: 80
+      
