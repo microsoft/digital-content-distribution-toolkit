@@ -121,24 +121,18 @@
     <value>INC_ERR_0001-Invalid date range</value>
   </data>
   <data name="INC_ERR_0002" xml:space="preserve">
-    <value>INC_ERR_0002-Consumer subtype id should be nil guid (00000000-0000-0000-0000-000000000000)</value>
+    <value>INC_ERR_0002-Retailer provider id does not exist</value>
   </data>
   <data name="INC_ERR_0003" xml:space="preserve">
-    <value>INC_ERR_0003-Consumer subtype name should be 'All'</value>
+    <value>INC_ERR_0003-Plan should have atleast one plan detail</value>
   </data>
   <data name="INC_ERR_0004" xml:space="preserve">
-    <value>INC_ERR_0004-Retailer provider id does not exist</value>
+    <value>INC_ERR_0004-Event type {0} is not applicable for audience {1}</value>
   </data>
   <data name="INC_ERR_0005" xml:space="preserve">
-    <value>INC_ERR_0005-Retailer provider name is not matching with id</value>
+    <value>INC_ERR_0005-Duplicate event type {0} for given plan</value>
   </data>
   <data name="INC_ERR_0006" xml:space="preserve">
-    <value>INC_ERR_0006-Plan should have atleast one plan detail</value>
-  </data>
-  <data name="INC_ERR_0007" xml:space="preserve">
-    <value>INC_ERR_0007-Event type {0} is not applicable for audience {1}</value>
-  </data>
-  <data name="INC_ERR_0008" xml:space="preserve">
-    <value>INC_ERR_0008-Duplicate event type for given plan</value>
+    <value>INC_ERR_0006-Consumer event should have null or nil guid (00000000-0000-0000-0000-000000000000)</value>
   </data>
 </root>

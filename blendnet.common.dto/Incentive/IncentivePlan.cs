@@ -21,6 +21,11 @@ namespace blendnet.common.dto.Incentive
         public string PlanName { get; set; }
 
         /// <summary>
+        /// Type of the plan
+        /// </summary>
+        public PlanType PlanType { get; set; }
+
+        /// <summary>
         /// Start date of the plan
         /// </summary>
         public DateTime StartDate { get; set; }
@@ -38,6 +43,12 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// List of events and corresponding formula associated with plan
         /// </summary>
-        public List<PlanDetail> IncentiveDetails { get; set; }
+        public List<PlanDetail> PlanDetails { get; set; }
+    }
+
+    public enum PlanType
+    {
+        REGULAR,
+        MILESTONE
     }
 }

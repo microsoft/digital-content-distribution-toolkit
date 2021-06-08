@@ -9,10 +9,15 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// Unique id associated with detail
         /// </summary>
-        public Guid DetailId { get; set; }
+        public Guid? DetailId { get; set; }
 
         /// <summary>
         /// Type of event
+        /// </summary>
+        public EventGroupType EventGroupType { get; set; }
+
+        /// <summary>
+        /// Sub type of event
         /// </summary>
         public EventType EventType { get; set; }
 
@@ -31,6 +36,18 @@ namespace blendnet.common.dto.Incentive
         /// </summary>
         public Formula Formula { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            return obj is PlanDetail detail &&
+                   EventGroupType == detail.EventGroupType &&
+                   EventType == detail.EventType &&
+                   EqualityComparer<Formula>.Default.Equals(Formula, detail.Formula);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(EventGroupType, EventType, Formula);
+        }
     }
 
     public class Formula
@@ -55,7 +72,16 @@ namespace blendnet.common.dto.Incentive
         /// </summary>
         public List<RangeValue> RangeOperand { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Formula formula &&
+                   FormulaType == formula.FormulaType;
+        }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(FormulaType);
+        }
     }
 
 

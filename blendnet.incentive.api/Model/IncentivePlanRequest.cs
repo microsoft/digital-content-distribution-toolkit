@@ -14,6 +14,12 @@ namespace blendnet.incentive.api.Model
         public string PlanName { get; set; }
 
         /// <summary>
+        /// Type of the plan
+        /// </summary>
+        [Required]
+        public PlanType PlanType { get; set; }
+
+        /// <summary>
         /// Start date of the plan
         /// </summary>
         [Required]
@@ -29,12 +35,23 @@ namespace blendnet.incentive.api.Model
         /// Target audience of the plan
         /// </summary>
         [Required]
-        public Audience Audience { get; set; }
+        public AudienceRequest Audience { get; set; }
 
         /// <summary>
         /// List of events and corresponding formula associated with plan
         /// </summary>
         [Required]
-        public List<PlanDetail> IncentiveDetails { get; set; }
+        public List<PlanDetail> PlanDetails { get; set; }
+    }
+
+    public class AudienceRequest
+    {
+        /// <summary>
+        /// Audience type
+        /// </summary>
+        [Required]
+        public AudienceType AudienceType { get; set; }
+
+        public Guid SubTypeId { get; set; }
     }
 }

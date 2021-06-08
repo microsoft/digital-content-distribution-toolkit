@@ -1,5 +1,9 @@
-﻿using blendnet.common.dto;
+﻿using blendnet.api.proxy.Retailer;
+using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
+using blendnet.common.dto.Retailer;
+using blendnet.common.dto.User;
+using blendnet.common.infrastructure.Authentication;
 using blendnet.incentive.api.Model;
 using blendnet.incentive.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +12,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using static blendnet.common.dto.ApplicationConstants;
 
 namespace blendnet.incentive.api.Controllers
 {
+    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
     public class IncentiveController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -22,10 +29,14 @@ namespace blendnet.incentive.api.Controllers
 
         IStringLocalizer<SharedResource> _stringLocalizer;
 
+        private RetailerProviderProxy _retailerProviderProxy;
+
         public IncentiveController(IIncentiveRepository incentiveRepository,
                                 ILogger<IncentiveController> logger,
                                 IOptionsMonitor<IncentiveAppSettings> optionsMonitor,
-                                IStringLocalizer<SharedResource> stringLocalizer)
+                                IStringLocalizer<SharedResource> stringLocalizer,
+                                RetailerProviderProxy retailerProviderProxy
+                                )
         {
             _incentiveRepository = incentiveRepository;
 
@@ -39,7 +50,7 @@ namespace blendnet.incentive.api.Controllers
         #region Incentive management methods
 
         /// <summary>
-        /// Create incentivePlan 
+        /// Create incentivePlan by a retailer
         /// </summary>
         /// <param name="incentivePlanRequest"></param>
         /// <returns></returns>
@@ -57,15 +68,6 @@ namespace blendnet.incentive.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            // Validate Audience
-
-            errorInfo = ValidateAudience(incentivePlanRequest);
-
-            if(HasError(errorInfo))
-            {
-                return BadRequest(errorInfo);
-            }
-
             //Validate PlanDetail
 
             errorInfo = ValidatePlanDetail(incentivePlanRequest);
@@ -75,12 +77,36 @@ namespace blendnet.incentive.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            IncentivePlan incentivePlan = CreatePlan(incentivePlanRequest);
+
+            //Get retailer provider info if it is a retailer plan
+            RetailerProviderDto retailerProviderDto = null;
+
+            if(incentivePlanRequest.Audience.AudienceType == AudienceType.RETAILER)
+            {
+                retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(incentivePlanRequest.Audience.SubTypeId);
+
+                if(retailerProviderDto == null)
+                {
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0002"]);
+                    return BadRequest(errorInfo);
+                }
+            }
+            else
+            {
+                if(!Common.NIL_GUID.Equals(incentivePlanRequest.Audience.SubTypeId))
+                {
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0006"]);
+                    return BadRequest(errorInfo);
+                }
+            }
+
+            IncentivePlan incentivePlan = CreatePlan(incentivePlanRequest, retailerProviderDto);
 
             Guid planId = await _incentiveRepository.CreateIncentivePlan(incentivePlan);
 
             return Ok(planId);
         }
+
 
         #endregion
 
@@ -102,42 +128,83 @@ namespace blendnet.incentive.api.Controllers
             return errorInfo;
         }
 
-        private List<string> ValidateAudience(IncentivePlanRequest incentivePlanRequest)
+        private List<string> ValidatePlanDetail(IncentivePlanRequest incentivePlanRequest)
         {
-            AudienceType audienceType = incentivePlanRequest.Audience.AudienceType;
+            List<PlanDetail> planDetails = incentivePlanRequest.PlanDetails;
+
             List<string> errorInfo = new List<string>();
 
-            if(audienceType == AudienceType.CONSUMER)
+            if(planDetails.Count == 0)
             {
-                if(!ApplicationConstants.Common.NIL_GUID.Equals(incentivePlanRequest.Audience.SubTypeId))
+                errorInfo.Add(_stringLocalizer["INC_ERR_0003"]);
+                return errorInfo;
+            }
+
+            AudienceType audienceType = incentivePlanRequest.Audience.AudienceType;
+
+            HashSet<PlanDetail> processed = new HashSet<PlanDetail>();
+
+            foreach(PlanDetail planDetail in planDetails)
+            {
+                if(processed.Contains(planDetail))
                 {
-                    errorInfo.Add(_stringLocalizer["INC_ERR_0002"]);
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0005"], planDetail.EventType));
+                    return errorInfo;
                 }
 
-                if(!ApplicationConstants.Common.ALL.Equals(incentivePlanRequest.Audience.SubTypeName))
+                if (!isEventForAudience(audienceType, planDetail.EventType))
                 {
-                    errorInfo.Add(_stringLocalizer["INC_ERR_0003"]);
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0004"], planDetail.EventType.ToString(), audienceType));
+                    return errorInfo;
                 }
-            } 
-            else
-            {
-                // Get retailer provider for given id
 
-                //Validate retailer provider name
+                planDetail.DetailId = Guid.NewGuid();
 
+                processed.Add(planDetail);
             }
 
             return errorInfo;
+
         }
 
-        private List<string> ValidatePlanDetail(IncentivePlanRequest incentivePlanRequest)
+        private IncentivePlan CreatePlan(IncentivePlanRequest incentivePlanRequest, RetailerProviderDto retailerProviderDto)
         {
-            throw new NotImplementedException();
+            IncentivePlan incentivePlan = new IncentivePlan();
+            incentivePlan.PlanId = Guid.NewGuid();
+            incentivePlan.PlanName = incentivePlanRequest.PlanName;
+            incentivePlan.StartDate = incentivePlanRequest.StartDate;
+            incentivePlan.EndDate = incentivePlanRequest.EndDate;
+
+            incentivePlan.Audience = new Audience();
+            incentivePlan.Audience.AudienceType = incentivePlanRequest.Audience.AudienceType;
+
+            if (incentivePlan.Audience.AudienceType == AudienceType.CONSUMER)
+            {
+                incentivePlan.Audience.SubTypeId = new Guid(ApplicationConstants.Common.NIL_GUID);
+                incentivePlan.Audience.SubTypeName = ApplicationConstants.Common.ALL;
+            }
+            else
+            {
+                incentivePlan.Audience.SubTypeId = retailerProviderDto.ServiceAccountId;
+                incentivePlan.Audience.SubTypeName = retailerProviderDto.Name;
+            }
+
+            incentivePlan.PlanDetails = incentivePlanRequest.PlanDetails;
+
+            incentivePlan.CreatedByUserId = UserClaimData.GetUserId(User.Claims);
+            incentivePlan.CreatedDate = DateTime.UtcNow;
+
+            return incentivePlan;
         }
 
-        private IncentivePlan CreatePlan(IncentivePlanRequest incentivePlanRequest)
+        private bool isEventForAudience(AudienceType audienceType, EventType eventSubType)
         {
-            throw new NotImplementedException();
+            if(audienceType == AudienceType.CONSUMER)
+            {
+                return eventSubType.ToString().StartsWith("CNSR");
+            }
+
+            return eventSubType.ToString().StartsWith("RTLR");
         }
 
         #endregion

@@ -1,5 +1,11 @@
 ﻿namespace blendnet.common.dto.Incentive
 {
+
+    public enum EventGroupType
+    {
+        COMMISSION,
+        REFERRAL
+    }
     public enum EventType
     {
         CNSR_INCM_FIRST_SIGNIN,
