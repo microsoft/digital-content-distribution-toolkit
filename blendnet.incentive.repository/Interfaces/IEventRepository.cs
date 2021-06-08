@@ -14,9 +14,9 @@ namespace blendnet.incentive.repository.Interfaces
         /// </summary>
         /// <param name="eventItem"></param>
         /// <returns></returns>
-        public Task<int> StoreEvent(Event eventItem);
+        public Task<Guid> StoreEvent(Event eventItem);
 
-        public List<Event> GetEvents(string eventGeneratorId, DateTime? startDate, DateTime? endDate);
+        public List<Event> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate);
 
         
     }
