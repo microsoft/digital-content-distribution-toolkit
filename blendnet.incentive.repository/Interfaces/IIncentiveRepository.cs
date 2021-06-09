@@ -31,5 +31,12 @@ namespace blendnet.incentive.repository.Interfaces
         /// <returns></returns>
         public Task<List<IncentivePlan>> GetCurrentActivePlan(PlanType planType, AudienceType audienceType);
 
+        /// <summary>
+        /// Gets plan with given plan id
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetPlan(Guid planId);
+
     }
 }

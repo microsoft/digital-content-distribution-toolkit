@@ -50,6 +50,19 @@ namespace blendnet.incentive.repository.IncentiveRepository
             }
         }
 
+        public async Task<IncentivePlan> GetPlan(Guid planId)
+        {
+            try
+            {
+                ItemResponse<IncentivePlan> response = await _container.ReadItemAsync<IncentivePlan>(planId.ToString(), new PartitionKey(planId.ToString()));
+                return response.Resource;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
         public async Task<List<IncentivePlan>> GetCurrentActivePlan(PlanType planType, AudienceType audienceType)
         {
             try

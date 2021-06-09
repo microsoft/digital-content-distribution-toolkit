@@ -115,35 +115,14 @@ namespace blendnet.incentive.api.Controllers
         [HttpGet("{planId:guid}", Name = nameof(GetIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
 
-        public async Task<ActionResult<IncentivePlan>> GetIncentivePlan()
+        public async Task<ActionResult<IncentivePlan>> GetIncentivePlan(Guid planId)
         {
-            IncentivePlan plan = new IncentivePlan();
-            plan.PlanId = Guid.NewGuid();
-            plan.PlanName = "Incentive plan";
-            plan.PlanType = PlanType.REGULAR;
-            plan.Audience = new Audience()
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId);
+
+            if(plan == null)
             {
-                AudienceType = AudienceType.CONSUMER,
-                SubTypeId = new Guid(Common.NIL_GUID),
-                SubTypeName = Common.ALL
-            };
-            plan.StartDate = DateTime.UtcNow.Date;
-            plan.EndDate = DateTime.UtcNow.Date.AddYears(2);
-
-            plan.PlanDetails = new List<PlanDetail>();
-
-            PlanDetail planDetail = new PlanDetail();
-            planDetail.DetailId = Guid.NewGuid();
-            planDetail.EventTitle = "app open";
-            planDetail.EventType = EventType.CNSR_INCM_APP_ONCE_OPEN;
-            planDetail.RuleType = RuleType.SUM;
-            planDetail.Formula = new Formula
-            {
-                FormulaType = FormulaType.PLUS,
-                RightOperand = 10
-            };
-
-            plan.PlanDetails.Add(planDetail);
+                return NotFound();
+            }
 
             return Ok(plan);
         }
