@@ -139,7 +139,9 @@ namespace blendnet.api.proxy.Common
             string baseUrl = _configuration["KaizalaIdentityBaseUrl"];
             _configuration.GetSection("KaizalaIdentity").Bind(settings);
 
-            string baseUrlWithSu = string.Format(baseUrl, settings[lastDigit.ToString()]);
+            string scaleUnit = GetScaleUnit(settings[lastDigit.ToString()]);
+
+            string baseUrlWithSu = string.Format(baseUrl, scaleUnit);
 
             return baseUrlWithSu;
         }
@@ -150,7 +152,12 @@ namespace blendnet.api.proxy.Common
 
             _configuration.GetSection("KaizalaIdentity").Bind(settings);
 
-            return settings[lastDigit.ToString()];
+            return GetScaleUnit(settings[lastDigit.ToString()]);
+        }
+
+        private string GetScaleUnit(string scaleUnit)
+        {
+            return "0".Equals(scaleUnit) ? "" : scaleUnit;
         }
     } 
 }
