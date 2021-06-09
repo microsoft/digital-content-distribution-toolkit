@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\blendnet.common.dto\blendnet.common.dto.csproj" />
+    <ProjectReference Include="..\blendnet.common.infrastructure\blendnet.common.infrastructure.csproj" />
   </ItemGroup>
   
 </Project>
