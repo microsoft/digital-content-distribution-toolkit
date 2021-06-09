@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Localization;
+using Microsoft.ApplicationInsights;
 
 namespace blendnet.user.api.Controllers
 {
@@ -37,13 +38,16 @@ namespace blendnet.user.api.Controllers
 
         IStringLocalizer<SharedResource> _stringLocalizer;
 
+        private TelemetryClient _telemetryClient;
+
         public UserController(IUserRepository userRepository,
                               ILogger<UserController> logger,
                               RetailerProxy retailerProxy,
                               RetailerProviderProxy retailerProviderProxy,
                               IEventBus eventBus,
                               IOptionsMonitor<UserAppSettings> optionsMonitor,
-                              IStringLocalizer<SharedResource> stringLocalizer)
+                              IStringLocalizer<SharedResource> stringLocalizer,
+                              TelemetryClient telemetryClient)
         {
             _logger = logger;
             _userRepository = userRepository;
@@ -52,6 +56,7 @@ namespace blendnet.user.api.Controllers
             _eventBus = eventBus;
             _appSettings = optionsMonitor.CurrentValue;
             _stringLocalizer = stringLocalizer;
+            _telemetryClient = telemetryClient;
         }
 
         /// <summary>
@@ -86,6 +91,15 @@ namespace blendnet.user.api.Controllers
             };
 
             await _userRepository.CreateUser(user);
+
+            //Track the user created event to Application Insights
+            CreateUserAIEvent createUserAIEvent = new CreateUserAIEvent()
+            {
+                UserId = userId,
+                ChannelId = request.ChannelId,
+            };
+
+            _telemetryClient.TrackEvent(createUserAIEvent.GetAIEventName(), createUserAIEvent.ToDictionary());
 
             return Ok(user.Id);
         }
