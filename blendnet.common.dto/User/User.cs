@@ -56,7 +56,7 @@ namespace blendnet.common.dto.User
             return phoneNumber != null
                     && phoneNumber.Length == 10
                     && !phoneNumber.StartsWith("+")
-                    && int.TryParse(phoneNumber, out _);
+                    && long.TryParse(phoneNumber, out _);
         }
     }
 }

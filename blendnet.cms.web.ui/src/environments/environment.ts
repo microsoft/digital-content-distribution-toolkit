@@ -28,7 +28,7 @@ export const environment = {
     {
       "filterName" : "Language",
       "filterValues" : [
-        "English", "Hindi", "Marathi", "Gujarati", "Kannada", "Tamil", "Malayalam", "Telugu","Klingon"]
+        "English", "Hindi", "Marathi", "Gujarati", "Kannada", "Tamil", "Malayalam", "Telugu"]
     },
     {
       "filterName" : "Region",

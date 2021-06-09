@@ -4,6 +4,7 @@ using blendnet.common.dto.Retailer;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace blendnet.api.proxy.Retailer
 
         public RetailerProxy(IHttpClientFactory clientFactory,
                                 IConfiguration configuration,
-                                ILogger<SubscriptionProxy> logger,
+                                ILogger<RetailerProxy> logger,
                                 IDistributedCache cache)
                 : base(configuration, clientFactory, logger, cache)
         {

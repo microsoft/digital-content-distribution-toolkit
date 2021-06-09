@@ -152,6 +152,7 @@ namespace blendnet.retailer.api
             services.AddHealthChecks();
 
             services.AddTransient<IRetailerRepository, RetailerRepository>();
+            services.AddTransient<IRetailerProviderRepository, RetailerProviderRepository>();
 
             services.AddTransient<KaizalaIdentityProxy>();
 
@@ -187,15 +188,19 @@ namespace blendnet.retailer.api
             var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(options.Value);
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            bool swaggerEnabled = env.IsDevelopment() || Configuration.GetValue<bool>("SwaggerDocEnabled");
+            if (swaggerEnabled)
             {
-                c.SwaggerEndpoint("v1/swagger.json", "BlendNet Retailer API V1");
-            });
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
+                app.UseSwagger();
+
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("v1/swagger.json", "BlendNet Retailer API V1");
+                });
+            }
 
             app.UseRouting();
 
@@ -222,7 +227,8 @@ namespace blendnet.retailer.api
 
             string key = Configuration.GetValue<string>("AccountKey");
 
-            services.AddSingleton<CosmosClient>((cc) => {
+            services.AddSingleton<CosmosClient>((cc) =>
+            {
 
                 CosmosClient client = new CosmosClientBuilder(account, key)
                            .WithSerializerOptions(new CosmosSerializationOptions()
@@ -234,6 +240,7 @@ namespace blendnet.retailer.api
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
                 ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Retailer, "/partnerId").Result;
+                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.RetailerProvider, "/partnerCode").Result;
 
                 return client;
             });
@@ -247,7 +254,8 @@ namespace blendnet.retailer.api
         {
             string redisCacheConnectionString = Configuration.GetValue<string>("RedisCacheConnectionString");
 
-            services.AddStackExchangeRedisCache(options => {
+            services.AddStackExchangeRedisCache(options =>
+            {
                 options.Configuration = redisCacheConnectionString;
             });
 

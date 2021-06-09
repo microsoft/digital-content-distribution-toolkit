@@ -31,11 +31,65 @@
             "scripts": []
           },
           "configurations": {
-            "production": {
+            "prod": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "stage": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.stage.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
                 }
               ],
               "optimization": true,
@@ -66,8 +120,14 @@
             "browserTarget": "CMS:build"
           },
           "configurations": {
-            "production": {
-              "browserTarget": "CMS:build:production"
+            "prod": {
+              "browserTarget": "CMS:build:prod"
+            },
+            "stage": {
+              "browserTarget": "CMS:build:stage"
+            },
+            "dev": {
+              "browserTarget": "CMS:build:dev"
             }
           }
         },
@@ -115,8 +175,14 @@
             "devServerTarget": "CMS:serve"
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "CMS:serve:production"
+            "prod": {
+              "devServerTarget": "CMS:serve:prod"
+            },
+            "stage": {
+              "devServerTarget": "CMS:serve:stage"
+            },
+            "dev": {
+              "devServerTarget": "CMS:serve:dev"
             }
           }
         }

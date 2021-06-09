@@ -15,6 +15,9 @@ namespace blendnet.common.dto
             public const string Order = "Order";
             public const string User = "User";
             public const string Retailer = "Retailer";
+            public const string RetailerProvider = "RetailerProvider";
+            public const string IncentivePlan = "IncentivePlan";
+            public const string Event = "Event";
         }
 
         public struct Policy
@@ -200,12 +203,6 @@ namespace blendnet.common.dto
         {
             public const string FormatYYYYMMDD = "yyyyMMdd";
         }
-
-        public struct PartnerCode
-        {
-            public const string NovoPay = "NV";
-
-            public const string UNKNOWN = "UNKNOWN";
         }
 
         public struct PushNotificationType
@@ -213,6 +210,5 @@ namespace blendnet.common.dto
             public const int OrderComplete = 1;
 
             public const int NewArrival = 2;
-        }
     }
 }

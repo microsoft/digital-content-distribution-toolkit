@@ -13,7 +13,6 @@ namespace blendnet.common.dto.Notification
         public string Payload { get; set; }
 
         public List<UserData> UserData { get; set; }
-
     }
 
     public class KaizalaNotificationRequest
@@ -23,6 +22,8 @@ namespace blendnet.common.dto.Notification
         public string Payload { get; set; }
 
         public List<Guid> UserIds { get; set; }
+
+        public string ScaleUnit { get; set; }
     }
 
     public class UserData

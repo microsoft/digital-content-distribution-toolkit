@@ -158,6 +158,7 @@ namespace blendnet.oms.api
             services.AddTransient<ContentProxy>();
             services.AddTransient<SubscriptionProxy>();
             services.AddTransient<RetailerProxy>();
+            services.AddTransient<RetailerProviderProxy>();
             services.AddTransient<UserProxy>();
             services.AddTransient<KaizalaIdentityProxy>();
 
@@ -198,17 +199,20 @@ namespace blendnet.oms.api
             var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(options.Value);
 
-
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            bool swaggerEnabled = env.IsDevelopment() || Configuration.GetValue<bool>("SwaggerDocEnabled");
+            if (swaggerEnabled)
             {
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
+                app.UseSwagger();
+
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
                 //c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlendNet API V1");
                 c.SwaggerEndpoint("v1/swagger.json", "BlendNet OMS API V1");
-            });
+                });
+            }
 
             app.UseRouting();
 
@@ -266,7 +270,8 @@ namespace blendnet.oms.api
 
             string key = Configuration.GetValue<string>("AccountKey");
 
-            services.AddSingleton<CosmosClient>((cc) => {
+            services.AddSingleton<CosmosClient>((cc) =>
+            {
 
                 CosmosClient client = new CosmosClientBuilder(account, key)
                            .WithSerializerOptions(new CosmosSerializationOptions()
@@ -291,7 +296,8 @@ namespace blendnet.oms.api
         {
             string redisCacheConnectionString = Configuration.GetValue<string>("RedisCacheConnectionString");
 
-            services.AddStackExchangeRedisCache(options => {
+            services.AddStackExchangeRedisCache(options =>
+            {
                 options.Configuration = redisCacheConnectionString;
             });
 

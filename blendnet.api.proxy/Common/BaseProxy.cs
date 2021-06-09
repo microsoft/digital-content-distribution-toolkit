@@ -77,7 +77,7 @@ namespace blendnet.api.proxy.Common
             {
                 Uri keyVaultUrl = new Uri($"https://{_configuration["KeyVaultName"]}.vault.azure.net/");
 
-                string kaizalaIdentityBaseUrl = _configuration["KaizalaIdentityBaseUrl"];
+                string kaizalaIdentityBaseUrl = string.Format(_configuration["KaizalaIdentityBaseUrl"], ""); // base url do not require SU information
 
                 string certificateName = _configuration["CloudApiServiceAccountCertName"];
 
@@ -136,9 +136,21 @@ namespace blendnet.api.proxy.Common
         {
             Dictionary<string, string> settings = new Dictionary<string, string>();
 
+            string baseUrl = _configuration["KaizalaIdentityBaseUrl"];
+            _configuration.GetSection("KaizalaIdentity").Bind(settings);
+
+            string baseUrlWithSu = string.Format(baseUrl, settings[lastDigit.ToString()]);
+
+            return baseUrlWithSu;
+        }
+
+        public string GetUserScaleUnitByPhoneDigit(string lastDigit)
+        {
+            Dictionary<string, string> settings = new Dictionary<string, string>();
+
             _configuration.GetSection("KaizalaIdentity").Bind(settings);
 
             return settings[lastDigit.ToString()];
         }
-    }
+    } 
 }

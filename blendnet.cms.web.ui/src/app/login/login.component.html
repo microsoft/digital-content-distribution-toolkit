@@ -66,7 +66,7 @@
                         <b>Enter the OTP received on {{contact.value}}</b>
                         <mat-form-field appearance="outline" class="cms-login-contact">
                             <mat-label>Verification Code</mat-label>
-                            <input matInput [formControl]="otp" required>
+                            <input matInput [formControl]="otp" type="password" required>
                             <mat-icon matSuffix>otp</mat-icon>
                             <mat-error *ngIf="otp.invalid">{{getOTPErrorMessage()}}</mat-error>
                         </mat-form-field>

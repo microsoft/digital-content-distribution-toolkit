@@ -50,13 +50,16 @@ import { SubscriptionService } from "../services/subscription.service";
     }
   
     createSubscription() {
+      var selectedEndDate = this.subForm.get('endDate').value;
+      selectedEndDate.setHours(selectedEndDate.getHours() + 23);
+      selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
       var sub = {
         contentProviderId : localStorage.getItem("contentProviderId"),
         title: this.subForm.get('name').value,
         durationDays: this.subForm.get('durationDays').value,
         price: this.subForm.get('price').value,
         startDate: this.subForm.get('startDate').value,
-        endDate: this.subForm.get('endDate').value
+        endDate: selectedEndDate
       }
       this.subscriptionService.createSubscription(sub).subscribe(
         res => this.onSubCreate.emit("Subscription created successfully!"),

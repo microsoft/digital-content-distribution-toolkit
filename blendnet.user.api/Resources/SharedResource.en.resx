@@ -153,4 +153,7 @@
   <data name="USR_ERR_012" xml:space="preserve">
     <value>USR_ERR_012-Retailer Already Exists ID : {0}</value>
   </data>
+  <data name="USR_ERR_013" xml:space="preserve">
+    <value>USR_ERR_013-Retailer Provider not found for ID : {0}</value>
+  </data>
 </root>

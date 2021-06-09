@@ -123,4 +123,10 @@
   <data name="RMS_ERR_0002" xml:space="preserve">
     <value>RMS_ERR_0002-Invalid Start and End Dates</value>
   </data>
+  <data name="RMS_ERR_0003" xml:space="preserve">
+    <value>RMS_ERR_0003-RetailerProvider already exists for Partner Code : {0}</value>
+  </data>
+  <data name="RMS_ERR_0004" xml:space="preserve">
+    <value>RMS_ERR_0004-RetailerProvider already exists for service account : {0}</value>
+  </data>
 </root>

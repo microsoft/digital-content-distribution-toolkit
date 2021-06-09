@@ -121,6 +121,12 @@ namespace blendnet.common.dto.Cms
         public bool IsFreeContent { get; set; }
 
         /// <summary>
+        /// Is Exclusive
+        /// </summary>
+        [Required]
+        public bool IsExclusiveContent { get; set; }
+
+        /// <summary>
         /// Artist list
         /// </summary>
         public List<People> People { get; set; }
@@ -189,6 +195,7 @@ namespace blendnet.common.dto.Cms
     {
         Thumbnail = 0,
         Teaser = 1,
+        LargeThumbnail = 2
     }
 
     /// <summary>

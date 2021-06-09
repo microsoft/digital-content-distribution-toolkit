@@ -15,6 +15,11 @@ parameters:
     default: latest
     type: string
 
+  - name: podCount
+    displayName: Number of Pods
+    default: 1
+    type: string
+
 trigger:
 - manual
 
@@ -68,6 +73,9 @@ stages:
     - task: CmdLine@2
       inputs:
         script: 'sed -i ''s|pod_identity_name|blendnet-${{ parameters.environment }}-pod-identity|g'' blendnet.retailer.api/blendnet.retailer.api.yaml'
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|pod_count|${{ parameters.podCount }}|g'' blendnet.retailer.api/blendnet.retailer.api.yaml'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'

@@ -162,4 +162,7 @@
   <data name="OMS_ERR_0015" xml:space="preserve">
     <value>OMS_ERR_0015-Order is not active</value>
   </data>
+  <data name="OMS_ERR_0016" xml:space="preserve">
+    <value>OMS_ERR_0016-Invalid Retailer Provider</value>
+  </data>
 </root>

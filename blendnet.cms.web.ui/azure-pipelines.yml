@@ -15,6 +15,11 @@ parameters:
     default: latest
     type: string
 
+  - name: podCount
+    displayName: Number of Pods
+    default: 1
+    type: string
+
 trigger:
 - manual
 
@@ -32,6 +37,10 @@ stages:
       inputs:
         command: login
         containerRegistry: 'acrblendnet${{ parameters.environment }}'
+
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|environment_name|${{ parameters.environment }}|g'' blendnet.cms.web.ui/Dockerfile'
 
     - task: CmdLine@2
       displayName: "Building docker image"
@@ -66,6 +75,9 @@ stages:
     - task: CmdLine@2
       inputs:
         script: 'sed -i ''s|pod_identity_name|blendnet-${{ parameters.environment }}-pod-identity|g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|pod_count|${{ parameters.podCount }}|g'' blendnet.cms.web.ui/blendnet.cms.web.ui.yaml'
     - task: KubernetesManifest@0
       inputs:
         action: 'deploy'

@@ -63,10 +63,11 @@ namespace blendnet.api.proxy.Kaizala
                 {
                     PartnerName = notificationRequest.PartnerName,
                     Payload = notificationRequest.Payload,
-                    UserIds = batch.Value
+                    UserIds = batch.Value,
+                    ScaleUnit = GetUserScaleUnitByPhoneDigit(batch.Key.ToString())
 
                 };
-                string url = PrepareHttpClient(batch.Key, accessToken, urlToInvoke);
+                string url = PrepareHttpClient(accessToken, urlToInvoke);
 
                 Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -92,13 +93,12 @@ namespace blendnet.api.proxy.Kaizala
             }
         }
 
-        private string PrepareHttpClient(char lastDigit,
-                                        string accessToken,
+        private string PrepareHttpClient(string accessToken,
                                         string urlToInvoke)
         {
             
 
-            string httpBaseHref = GetBaseUrlByPhoneDigit(lastDigit.ToString());
+            string httpBaseHref = string.Format(_configuration["KaizalaIdentityBaseUrl"], ""); // base url do not need SU
 
             string url = $"{httpBaseHref}{urlToInvoke}";
 

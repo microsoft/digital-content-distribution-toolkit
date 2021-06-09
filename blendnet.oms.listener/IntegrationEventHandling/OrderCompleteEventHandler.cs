@@ -1,4 +1,5 @@
 ﻿using blendnet.api.proxy.Kaizala;
+using blendnet.common.dto;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Notification;
 using blendnet.common.dto.Oms;

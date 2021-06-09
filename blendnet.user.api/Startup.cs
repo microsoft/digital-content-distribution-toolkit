@@ -157,6 +157,7 @@ namespace blendnet.user.api
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<RetailerProxy>();
+            services.AddTransient<RetailerProviderProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -178,7 +179,8 @@ namespace blendnet.user.api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseForwardedHeaders();
-            }else
+            }
+            else
             {
                 app.UseExceptionHandler("/error");
                 app.UseForwardedHeaders();
@@ -192,17 +194,21 @@ namespace blendnet.user.api
             var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(options.Value);
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            // Swagger configuration
+            bool swaggerEnabled = env.IsDevelopment() || Configuration.GetValue<bool>("SwaggerDocEnabled");
+            if (swaggerEnabled)
             {
-                //c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlendNet User API V1");
-                c.SwaggerEndpoint("v1/swagger.json", "BlendNet User API V1");
-            });
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
+                app.UseSwagger();
 
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
+                    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlendNet User API V1");
+                    c.SwaggerEndpoint("v1/swagger.json", "BlendNet User API V1");
+                });
+            }
 
             app.UseRouting();
 
@@ -251,7 +257,8 @@ namespace blendnet.user.api
 
             string key = Configuration.GetValue<string>("AccountKey");
 
-            services.AddSingleton<CosmosClient>((cc) => {
+            services.AddSingleton<CosmosClient>((cc) =>
+            {
 
                 CosmosClient client = new CosmosClientBuilder(account, key)
                            .WithSerializerOptions(new CosmosSerializationOptions()
@@ -276,7 +283,8 @@ namespace blendnet.user.api
         {
             string redisCacheConnectionString = Configuration.GetValue<string>("RedisCacheConnectionString");
 
-            services.AddStackExchangeRedisCache(options => {
+            services.AddStackExchangeRedisCache(options =>
+            {
                 options.Configuration = redisCacheConnectionString;
             });
 
