@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 
@@ -61,6 +62,7 @@ namespace blendnet.common.dto.Incentive
         public string Value { get; set; }
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum EventCategoryType
     {
         INCOME,

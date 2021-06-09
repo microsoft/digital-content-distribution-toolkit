@@ -229,6 +229,14 @@ namespace blendnet.incentive.api
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 
+            //Configure Http Clients
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.RETAILER_HTTP_CLIENT, c =>
+            {
+                string retailerBaseUrl = Configuration.GetValue<string>("RetailerBaseUrl");
+                c.BaseAddress = new Uri(retailerBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
         }
 
         /// <summary>

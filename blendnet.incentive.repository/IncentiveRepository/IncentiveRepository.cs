@@ -5,6 +5,8 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace blendnet.incentive.repository.IncentiveRepository
@@ -47,5 +49,52 @@ namespace blendnet.incentive.repository.IncentiveRepository
                 return (int)ex.StatusCode;
             }
         }
+
+        public async Task<List<IncentivePlan>> GetCurrentActivePlan(PlanType planType, AudienceType audienceType)
+        {
+            try
+            {
+                var curDate = DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffZ");
+
+                var queryString = "select * from c where c.planType = @planType " +
+                    "and c.audience.audienceType = @audienceType " +
+                    "and c.startDate <= @stDate and c.endDate >= @endDate";
+
+                var queryDef = new QueryDefinition(queryString)
+                    .WithParameter("@planType", planType)
+                    .WithParameter("@audienceType", (int)audienceType)
+                    .WithParameter("@stDate", curDate)
+                    .WithParameter("@endDate", curDate);
+
+                var activePlans = await ExtractDataFromQueryIterator<IncentivePlan>(queryDef);
+                return activePlans;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
+        #region private methods
+        /// <summary>
+        /// Helper method to run a SELECT query and return all results as a list
+        /// </summary>
+        /// <typeparam name="T">Result type</typeparam>
+        /// <param name="queryDef">the SELECT query</param>
+        /// <returns>List of items that match the query</returns>
+        private async Task<List<T>> ExtractDataFromQueryIterator<T>(QueryDefinition queryDef)
+        {
+            var returnList = new List<T>();
+            var query = _container.GetItemQueryIterator<T>(queryDef);
+
+            while (query.HasMoreResults)
+            {
+                var response = await query.ReadNextAsync();
+                returnList.AddRange(response.ToList());
+            }
+
+            return returnList;
+        }
+        #endregion
     }
 }

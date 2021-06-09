@@ -23,5 +23,13 @@ namespace blendnet.incentive.repository.Interfaces
         /// <returns></returns>
         public Task<int> UpdateIncentivePlan(IncentivePlan incentivePlan);
 
+        /// <summary>
+        /// Retrive current active plans for given plan type and audience type
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceType"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetCurrentActivePlan(PlanType planType, AudienceType audienceType);
+
     }
 }

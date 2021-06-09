@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace blendnet.common.dto.Incentive
@@ -27,9 +29,10 @@ namespace blendnet.common.dto.Incentive
         public string SubTypeName { get; set; }
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum AudienceType
     {
-        CONSUMER = 0,
-        RETAILER = 1
+        CONSUMER,
+        RETAILER
     }
 }

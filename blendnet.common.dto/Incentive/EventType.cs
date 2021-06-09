@@ -1,11 +1,17 @@
-﻿namespace blendnet.common.dto.Incentive
+﻿using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
+
+namespace blendnet.common.dto.Incentive
 {
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum EventGroupType
     {
         COMMISSION,
         REFERRAL
     }
+
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum EventType
     {
         CNSR_INCM_FIRST_SIGNIN,

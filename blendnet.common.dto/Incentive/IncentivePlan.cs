@@ -1,18 +1,26 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 
 namespace blendnet.common.dto.Incentive
 {
-    /// <summary>
+    /// <summarynsee
     /// Plan which indicates how the incentive calculation needs to be done
     /// </summary>
     public class IncentivePlan : BaseDto
     {
+
         /// <summary>
         /// Unique id of the plan
         /// </summary>
         [JsonProperty(PropertyName = "id")]
+        public Guid? Id { get; set; }
+
+        /// <summary>
+        /// Unique id of the plan
+        /// </summary>
+        [JsonProperty(PropertyName = "planId")]
         public Guid? PlanId { get; set; }
 
         /// <summary>
@@ -46,6 +54,7 @@ namespace blendnet.common.dto.Incentive
         public List<PlanDetail> PlanDetails { get; set; }
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum PlanType
     {
         REGULAR,
