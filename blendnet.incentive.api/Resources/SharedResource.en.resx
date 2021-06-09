@@ -133,7 +133,7 @@
     <value>INC_ERR_0005-Duplicate event type {0} for given plan</value>
   </data>
   <data name="INC_ERR_0006" xml:space="preserve">
-    <value>INC_ERR_0006-Consumer event should have audience subtype as null or nil guid (00000000-0000-0000-0000-000000000000)</value>
+    <value>INC_ERR_0006-Consumer event should have audience subtype as null or empty guid (00000000-0000-0000-0000-000000000000)</value>
   </data>
   <data name="INC_ERR_0007" xml:space="preserve">
     <value>INC_ERR_0007-More than one active plan exists</value>

@@ -206,7 +206,7 @@ namespace blendnet.common.dto
 
         public struct Common
         {
-            public const string NIL_GUID = "00000000-0000-0000-0000-000000000000";
+            public static readonly Guid NIL_GUID = Guid.Empty;
 
             public const string ALL = "All";
         }

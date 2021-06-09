@@ -1,6 +1,7 @@
 ﻿using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
 using blendnet.incentive.repository.Interfaces;
+using blendnet.common.infrastructure.Extensions;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -67,19 +68,18 @@ namespace blendnet.incentive.repository.IncentiveRepository
         {
             try
             {
-                var curDate = DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffZ");
+                var curDate = DateTime.UtcNow;
 
                 var queryString = "select * from c where c.planType = @planType " +
                     "and c.audience.audienceType = @audienceType " +
-                    "and c.startDate <= @stDate and c.endDate >= @endDate";
+                    "and c.startDate <= @now and c.endDate >= @now";
 
                 var queryDef = new QueryDefinition(queryString)
                     .WithParameter("@planType", planType)
-                    .WithParameter("@audienceType", (int)audienceType)
-                    .WithParameter("@stDate", curDate)
-                    .WithParameter("@endDate", curDate);
+                    .WithParameter("@audienceType", audienceType)
+                    .WithParameter("@now", curDate);
 
-                var activePlans = await ExtractDataFromQueryIterator<IncentivePlan>(queryDef);
+                var activePlans = await _container.ExtractDataFromQueryIterator<IncentivePlan>(queryDef);
                 return activePlans;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -87,27 +87,5 @@ namespace blendnet.incentive.repository.IncentiveRepository
                 return null;
             }
         }
-
-        #region private methods
-        /// <summary>
-        /// Helper method to run a SELECT query and return all results as a list
-        /// </summary>
-        /// <typeparam name="T">Result type</typeparam>
-        /// <param name="queryDef">the SELECT query</param>
-        /// <returns>List of items that match the query</returns>
-        private async Task<List<T>> ExtractDataFromQueryIterator<T>(QueryDefinition queryDef)
-        {
-            var returnList = new List<T>();
-            var query = _container.GetItemQueryIterator<T>(queryDef);
-
-            while (query.HasMoreResults)
-            {
-                var response = await query.ReadNextAsync();
-                returnList.AddRange(response.ToList());
-            }
-
-            return returnList;
-        }
-        #endregion
     }
 }

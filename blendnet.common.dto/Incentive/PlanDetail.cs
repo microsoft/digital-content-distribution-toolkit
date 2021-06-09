@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json.Converters;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace blendnet.common.dto.Incentive
 {
@@ -43,19 +43,6 @@ namespace blendnet.common.dto.Incentive
         /// </summary>
         [Required]
         public Formula Formula { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            return obj is PlanDetail detail &&
-                   EventGroupType == detail.EventGroupType &&
-                   EventType == detail.EventType &&
-                   EqualityComparer<Formula>.Default.Equals(Formula, detail.Formula);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(EventGroupType, EventType, Formula);
-        }
     }
 
     public class Formula
@@ -81,17 +68,6 @@ namespace blendnet.common.dto.Incentive
         /// List of ranges to decide the value
         /// </summary>
         public List<RangeValue> RangeOperand { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Formula formula &&
-                   FormulaType == formula.FormulaType;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(FormulaType);
-        }
     }
 
 
@@ -129,5 +105,22 @@ namespace blendnet.common.dto.Incentive
     {
         SUM,
         COUNT
+    }
+
+    public class PlanDetailComparer : IEqualityComparer<PlanDetail>
+    {
+        public bool Equals(PlanDetail planDetailLeft, PlanDetail planDetailRight)
+        {
+            return planDetailLeft.EventGroupType == planDetailRight.EventGroupType &&
+                   planDetailLeft.EventType == planDetailRight.EventType &&
+                   planDetailLeft.Formula.FormulaType == planDetailRight.Formula.FormulaType;
+
+        }
+
+        public int GetHashCode(PlanDetail item)
+        {
+            return HashCode.Combine(item.EventGroupType, item.EventType, item.Formula.FormulaType);
+
+        }
     }
 }

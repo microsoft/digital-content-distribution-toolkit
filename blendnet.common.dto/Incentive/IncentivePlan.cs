@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace blendnet.common.dto.Incentive
 {
-    /// <summarynsee
+    /// <summary>
     /// Plan which indicates how the incentive calculation needs to be done
     /// </summary>
     public class IncentivePlan : BaseDto

@@ -97,7 +97,7 @@ namespace blendnet.incentive.api.Controllers
             }
             else
             {
-                if(!Common.NIL_GUID.Equals(incentivePlanRequest.Audience.SubTypeId.ToString()))
+                if(!Common.NIL_GUID.ToString().Equals(incentivePlanRequest.Audience.SubTypeId.ToString()))
                 {
                     errorInfo.Add(_stringLocalizer["INC_ERR_0006"]);
                     return BadRequest(errorInfo);
@@ -180,7 +180,7 @@ namespace blendnet.incentive.api.Controllers
 
             AudienceType audienceType = incentivePlanRequest.Audience.AudienceType;
 
-            HashSet<PlanDetail> processed = new HashSet<PlanDetail>();
+            HashSet<PlanDetail> processed = new HashSet<PlanDetail>(new PlanDetailComparer());
 
             foreach(PlanDetail planDetail in planDetails)
             {
@@ -232,8 +232,8 @@ namespace blendnet.incentive.api.Controllers
 
             if (incentivePlan.Audience.AudienceType == AudienceType.CONSUMER)
             {
-                incentivePlan.Audience.SubTypeId = new Guid(ApplicationConstants.Common.NIL_GUID);
-                incentivePlan.Audience.SubTypeName = ApplicationConstants.Common.ALL;
+                incentivePlan.Audience.SubTypeId = new Guid(Common.NIL_GUID.ToString());
+                incentivePlan.Audience.SubTypeName = Common.ALL;
             }
             else
             {
