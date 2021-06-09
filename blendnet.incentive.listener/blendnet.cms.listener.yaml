@@ -1,0 +1,22 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blendnet-incentive-listener
+  labels:
+    app: blendnet-incentive-listener
+spec:
+  replicas: pod_count
+  selector:
+    matchLabels:
+      app: blendnet-incentive-listener
+  template:
+    metadata:
+      labels:
+        app: blendnet-incentive-listener
+        aadpodidbinding: pod_identity_name
+    spec:
+      containers:
+      - name: blendnet-incentive-listener
+        image: image_name
+        ports:
+        - containerPort: 80
