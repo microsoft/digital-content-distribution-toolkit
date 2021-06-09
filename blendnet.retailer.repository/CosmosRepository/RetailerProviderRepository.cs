@@ -1,8 +1,8 @@
 using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.retailer.repository.Interfaces;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;

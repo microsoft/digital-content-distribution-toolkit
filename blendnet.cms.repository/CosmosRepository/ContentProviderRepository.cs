@@ -1,20 +1,17 @@
-﻿using blendnet.cms.repository.Interfaces;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
+using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.cms;
+using blendnet.common.infrastructure.Extensions;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Azure;
-using Microsoft.Extensions.Options;
 using System.Linq;
-using Azure.Storage.Blobs;
-using Azure.Storage.Sas;
-using Azure.Storage.Blobs.Models;
-using Azure;
-using Microsoft.Extensions.Logging;
-using blendnet.common.dto.Cms;
+using System.Threading.Tasks;
 
 namespace blendnet.cms.repository.CosmosRepository
 {

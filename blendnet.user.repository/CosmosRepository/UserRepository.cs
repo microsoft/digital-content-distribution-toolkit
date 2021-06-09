@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
+﻿using blendnet.common.dto;
+using blendnet.common.dto.User;
+using blendnet.common.infrastructure.Extensions;
+using blendnet.user.repository.Interfaces;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos;
-using blendnet.common.dto;
-using blendnet.common.dto.User;
-using blendnet.user.repository.Interfaces;
 using User = blendnet.common.dto.User.User;
 
 namespace blendnet.user.repository.CosmosRepository
@@ -80,7 +78,7 @@ namespace blendnet.user.repository.CosmosRepository
                                                 .WithParameter("@type", UserContainerType.User);
 
 
-            return await ExtractFirstDataFromQueryIterator<User>(queryDef);
+            return await _container.ExtractFirstDataFromQueryIterator<User>(queryDef);
         }
 
         /// <summary>
@@ -95,7 +93,7 @@ namespace blendnet.user.repository.CosmosRepository
                                 .WithParameter("@id", id)
                                 .WithParameter("@type", UserContainerType.User);
 
-            return await ExtractFirstDataFromQueryIterator<User>(queryDef);
+            return await _container.ExtractFirstDataFromQueryIterator<User>(queryDef);
         }
 
         /// <summary>
@@ -117,52 +115,13 @@ namespace blendnet.user.repository.CosmosRepository
                         .WithParameter("@endDate", endDate)
                         .WithParameter("@type", UserContainerType.User);
 
-            var referralData = await ExtractAllDataFromQueryIterator<ReferralSummary>(queryDef);
+            var referralData = await _container.ExtractDataFromQueryIterator<ReferralSummary>(queryDef);
 
             return referralData;
         }
 
         #region private methods
-        /// <summary>
-        /// Helper method to run a SELECT query and return first object
-        /// </summary>
-        /// <typeparam name="User">Result type</typeparam>
-        /// <param name="queryDef">the SELECT query</param>
-        /// <returns></returns>
-        private async Task<T> ExtractFirstDataFromQueryIterator<T>(QueryDefinition queryDef)
-        {
-            var query = _container.GetItemQueryIterator<T>(queryDef);
-            if (query.HasMoreResults)
-            {
-                var response = await query.ReadNextAsync();
-                if (response.Count > 0)
-                {
-                    return response.Resource.ElementAt(0);
-                }
-            }
 
-            return default(T);
-        }
-
-        /// <summary>
-        /// Helper method to run a SELECT query and return all results as a list
-        /// </summary>
-        /// <typeparam name="T">Result type</typeparam>
-        /// <param name="queryDef">the SELECT query</param>
-        /// <returns>List of items that match the query</returns>
-        private async Task<List<T>> ExtractAllDataFromQueryIterator<T>(QueryDefinition queryDef)
-        {
-            var returnList = new List<T>();
-            var query = _container.GetItemQueryIterator<T>(queryDef);
-
-            while (query.HasMoreResults)
-            {
-                var response = await query.ReadNextAsync();
-                returnList.AddRange(response.ToList());
-            }
-
-            return returnList;
-        }
         #endregion
     }
 }

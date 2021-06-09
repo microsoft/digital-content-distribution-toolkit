@@ -1,5 +1,6 @@
-﻿using blendnet.common.dto;
+using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.retailer.repository.Interfaces;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
@@ -7,10 +8,9 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace blendnet.retailer.repository.CosmosRepository
 {

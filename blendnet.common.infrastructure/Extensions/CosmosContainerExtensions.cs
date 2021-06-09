@@ -1,14 +1,12 @@
-﻿using blendnet.cms.repository.CosmosRepository;
+using blendnet.cms.repository.CosmosRepository;
 using Microsoft.Azure.Cosmos;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace blendnet.cms.repository
+namespace blendnet.common.infrastructure.Extensions
 {
-    static class ContainerExtensions
+    public static class ContainerExtensions
     {
         /// <summary>
         /// Helper method to run a SELECT query and return all results as a list
@@ -28,6 +26,28 @@ namespace blendnet.cms.repository
             }
 
             return returnList;
+        }
+
+        /// <summary>
+        /// Helper method to run a SELECT query and return first results
+        /// </summary>
+        /// <typeparam name="T">Result type</typeparam>
+        /// <param name="queryDef">the SELECT query</param>
+        /// <returns>first item that matches the query</returns>
+        public static async Task<T> ExtractFirstDataFromQueryIterator<T>(this Container container, QueryDefinition queryDef)
+        {
+            var query = container.GetItemQueryIterator<T>(queryDef);
+
+            while (query.HasMoreResults)
+            {
+                var response = await query.ReadNextAsync();
+                if (response.Count > 0)
+                {
+                    return response.Resource.ElementAt(0);
+                }
+            }
+
+            return default(T);
         }
 
         /// <summary>

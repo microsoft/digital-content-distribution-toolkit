@@ -1,5 +1,6 @@
 ﻿using blendnet.common.dto;
 using blendnet.common.dto.Oms;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.oms.repository.Interfaces;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
@@ -104,7 +105,7 @@ namespace blendnet.oms.repository.CosmosRepository
                                 .WithParameter("@contentProviderId", contentProviderId)
                                 .WithParameter("@userPhoneNumber", userPhoneNumber);
 
-            var orders = await ExtractDataFromQueryIterator<Order>(queryDef);
+            var orders = await _container.ExtractDataFromQueryIterator<Order>(queryDef);
 
             return orders;
 
@@ -122,7 +123,7 @@ namespace blendnet.oms.repository.CosmosRepository
                                 .WithParameter("@startDate", startDate)
                                 .WithParameter("@endDate", endDate);
 
-            var purchaseData = await ExtractDataFromQueryIterator<OrderSummary>(queryDef);
+            var purchaseData = await _container.ExtractDataFromQueryIterator<OrderSummary>(queryDef);
 
             return purchaseData;
         }
@@ -142,7 +143,7 @@ namespace blendnet.oms.repository.CosmosRepository
                 }
 
                 var queryDef = new QueryDefinition(queryString).WithParameter("@phoneNumber", phoneNumber);
-                var orders = await ExtractDataFromQueryIterator<Order>(queryDef);
+                var orders = await _container.ExtractDataFromQueryIterator<Order>(queryDef);
                 return orders;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -161,7 +162,7 @@ namespace blendnet.oms.repository.CosmosRepository
                     .WithParameter("@phoneNumber", phoneNumber)
                     .WithParameter("@currentDate", DateTime.UtcNow);
 
-                var orderItems = await ExtractDataFromQueryIterator<OrderItem>(queryDef);
+                var orderItems = await _container.ExtractDataFromQueryIterator<OrderItem>(queryDef);
                 return orderItems;
 
 
@@ -174,25 +175,7 @@ namespace blendnet.oms.repository.CosmosRepository
 
 
         #region private methods
-        /// <summary>
-        /// Helper method to run a SELECT query and return all results as a list
-        /// </summary>
-        /// <typeparam name="T">Result type</typeparam>
-        /// <param name="queryDef">the SELECT query</param>
-        /// <returns>List of items that match the query</returns>
-        private async Task<List<T>> ExtractDataFromQueryIterator<T>(QueryDefinition queryDef)
-        {
-            var returnList = new List<T>();
-            var query = _container.GetItemQueryIterator<T>(queryDef);
 
-            while (query.HasMoreResults)
-            {
-                var response = await query.ReadNextAsync();
-                returnList.AddRange(response.ToList());
-            }
-
-            return returnList;
-        }
         #endregion
     }
 }
