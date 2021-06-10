@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 
 namespace blendnet.common.dto.Incentive
 {
@@ -17,19 +15,16 @@ namespace blendnet.common.dto.Incentive
         public AudienceType AudienceType { get; set; }
 
         /// <summary>
-        /// "Nil GUID" for Consumer, Selected RetailerProvider GUID in case of Retailer
+        /// "Consumer" for Consumer, Selected Retailer partner code in case of Retailer
         /// </summary>
-        public Guid SubTypeId { get; set; }
-
-        /// <summary>
-        /// "All" for Consumer, Selected RP Name in case of Retailer
-        /// </summary>
+        //[JsonProperty(PropertyName = "/audience/subTypeName")]
         public string SubTypeName { get; set; }
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum AudienceType
     {
-        CONSUMER = 0,
-        RETAILER = 1
+        CONSUMER,
+        RETAILER
     }
 }

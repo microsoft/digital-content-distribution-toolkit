@@ -210,7 +210,13 @@ namespace blendnet.common.dto
             public const int OrderComplete = 1;
 
             public const int NewArrival = 2;
+        }
 
+        public struct Common
+        {
+            public static readonly Guid NIL_GUID = Guid.Empty;
+
+            public const string CONSUMER = "CONSUMER";
         }
     }
 }

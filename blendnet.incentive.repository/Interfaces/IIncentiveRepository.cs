@@ -13,14 +13,37 @@ namespace blendnet.incentive.repository.Interfaces
         /// Create incentive plan
         /// </summary>
         /// <param name="incentivePlan"></param>
-        /// <returns>Status</returns>
-        public Task<int> CreateIncentivePlan(IncentivePlan incentivePlan);
+        /// <returns>Plan id</returns>
+        public Task<Guid> CreateIncentivePlan(IncentivePlan incentivePlan);
 
         /// <summary>
-        /// Adds event to repository
+        /// Update incentive plan
         /// </summary>
-        /// <param name="incentiveEvent"></param>
-        /// <returns>Status</returns>
-        public Task<int> AddEvent(Event incentiveEvent);
+        /// <param name="incentivePlan"></param>
+        /// <returns></returns>
+        public Task<int> UpdateIncentivePlan(IncentivePlan incentivePlan);
+
+        /// <summary>
+        /// Retrieve current active plan for consumer audience type
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetCurrentConsumerActivePlan(PlanType planType);
+
+        /// <summary>
+        /// Retrieve current active plan for retailer with given subtype name
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetCurrentRetailerActivePlan(PlanType planType, string audienceSubTypeName);
+
+        /// <summary>
+        /// Gets plan with given plan id
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetPlan(Guid planId, string subtypeName);
+
     }
 }

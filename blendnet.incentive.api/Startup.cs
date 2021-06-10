@@ -1,7 +1,10 @@
 using blendnet.api.proxy.KaizalaIdentity;
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.incentive.repository.IncentiveRepository;
+using blendnet.incentive.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -148,7 +151,9 @@ namespace blendnet.incentive.api
             //Configure health check
             services.AddHealthChecks();
 
+            services.AddTransient<IIncentiveRepository, IncentiveRepository>();
             services.AddTransient<KaizalaIdentityProxy>();
+            services.AddTransient<RetailerProviderProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -224,6 +229,14 @@ namespace blendnet.incentive.api
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 
+            //Configure Http Clients
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.RETAILER_HTTP_CLIENT, c =>
+            {
+                string retailerBaseUrl = Configuration.GetValue<string>("RetailerBaseUrl");
+                c.BaseAddress = new Uri(retailerBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
         }
 
         /// <summary>
@@ -250,7 +263,7 @@ namespace blendnet.incentive.api
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
-                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.IncentivePlan, "/planId").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.IncentivePlan, "/audience/subTypeName").Result;
 
                 containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Event, "/eventGeneratorId").Result;
 

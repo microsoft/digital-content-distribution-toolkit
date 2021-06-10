@@ -44,5 +44,22 @@ namespace blendnet.api.proxy.Retailer
             
             return retailerProvider;
         }
+
+        public async Task<RetailerProviderDto> GetRetailerProviderByPartnerCode(string partnerCode)
+        {
+            string url = $"RetailerProvider/byPartnerCode/{partnerCode}";
+            string accessToken = await base.GetServiceAccessToken();
+
+            RetailerProviderDto retailerProvider = null;
+
+            try
+            {
+                retailerProvider = await _rmsHttpClient.Get<RetailerProviderDto>(url, accessToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { }
+
+            return retailerProvider;
+        }
     }
 }

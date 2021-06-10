@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.common.dto.Incentive
 {
@@ -9,28 +12,37 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// Unique id associated with detail
         /// </summary>
-        public Guid DetailId { get; set; }
+        public Guid? DetailId { get; set; }
 
         /// <summary>
         /// Type of event
         /// </summary>
+        [Required]
+        public EventGroupType EventGroupType { get; set; }
+
+        /// <summary>
+        /// Sub type of event
+        /// </summary>
+        [Required]
         public EventType EventType { get; set; }
 
         /// <summary>
         /// Title of event
         /// </summary>
+        [Required]
         public string EventTitle { get; set; }
-        
+
         /// <summary>
         /// Rule type indicating whether it is a sum or count event
         /// </summary>
+        [Required]
         public RuleType RuleType { get; set; }
 
         /// <summary>
         /// Formula associated with the event
         /// </summary>
+        [Required]
         public Formula Formula { get; set; }
-
     }
 
     public class Formula
@@ -38,6 +50,7 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// Formula type
         /// </summary>
+        [Required]
         public FormulaType FormulaType { get; set; }
 
         /// <summary>
@@ -48,14 +61,13 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// Right operand to use during calculation of summary
         /// </summary>
+        [Required]
         public double RightOperand { get; set; }
 
         /// <summary>
         /// List of ranges to decide the value
         /// </summary>
         public List<RangeValue> RangeOperand { get; set; }
-
-
     }
 
 
@@ -77,6 +89,7 @@ namespace blendnet.common.dto.Incentive
         public int Output { get; set; }
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum FormulaType
     {
         PLUS = 0,
@@ -87,9 +100,27 @@ namespace blendnet.common.dto.Incentive
         RANGE_AND_MULTIPLY = 5
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum RuleType
     {
         SUM,
         COUNT
+    }
+
+    public class PlanDetailComparer : IEqualityComparer<PlanDetail>
+    {
+        public bool Equals(PlanDetail planDetailLeft, PlanDetail planDetailRight)
+        {
+            return planDetailLeft.EventGroupType == planDetailRight.EventGroupType &&
+                   planDetailLeft.EventType == planDetailRight.EventType &&
+                   planDetailLeft.Formula.FormulaType == planDetailRight.Formula.FormulaType;
+
+        }
+
+        public int GetHashCode(PlanDetail item)
+        {
+            return HashCode.Combine(item.EventGroupType, item.EventType, item.Formula.FormulaType);
+
+        }
     }
 }
