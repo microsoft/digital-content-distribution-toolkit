@@ -87,7 +87,7 @@ namespace blendnet.incentive.api.Controllers
 
             if(incentivePlanRequest.Audience.AudienceType == AudienceType.RETAILER)
             {
-                retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(incentivePlanRequest.Audience.SubTypeId);
+                retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(incentivePlanRequest.Audience.SubTypeName);
 
                 if(retailerProviderDto == null)
                 {
@@ -95,29 +95,21 @@ namespace blendnet.incentive.api.Controllers
                     return BadRequest(errorInfo);
                 }
             }
-            else
-            {
-                if(!Common.NIL_GUID.ToString().Equals(incentivePlanRequest.Audience.SubTypeId.ToString()))
-                {
-                    errorInfo.Add(_stringLocalizer["INC_ERR_0006"]);
-                    return BadRequest(errorInfo);
-                }
-            }
 
             IncentivePlan incentivePlan = CreatePlan(incentivePlanRequest, retailerProviderDto);
 
-            Guid planId = await _incentiveRepository.CreateIncentivePlan(incentivePlan);
+            Guid id = await _incentiveRepository.CreateIncentivePlan(incentivePlan);
 
-            return Ok(planId);
+            return Ok(id);
         }
 
 
         [HttpGet("{planId:guid}", Name = nameof(GetIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
 
-        public async Task<ActionResult<IncentivePlan>> GetIncentivePlan(Guid planId)
+        public async Task<ActionResult<IncentivePlan>> GetIncentivePlan(Guid planId, string subType)
         {
-            IncentivePlan plan = await _incentiveRepository.GetPlan(planId);
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subType);
 
             if(plan == null)
             {
@@ -147,11 +139,20 @@ namespace blendnet.incentive.api.Controllers
 
             // check if active plan exists for given plan type and audience type
 
-            List<IncentivePlan> activePlans = await _incentiveRepository.GetCurrentActivePlan(incentivePlanRequest.PlanType, incentivePlanRequest.Audience.AudienceType);
+            List<IncentivePlan> activePlans;
 
+            if(incentivePlanRequest.Audience.AudienceType == AudienceType.CONSUMER)
+            {
+                activePlans = await _incentiveRepository.GetCurrentConsumerActivePlan(incentivePlanRequest.PlanType);
+            }
+            else
+            {
+                activePlans = await _incentiveRepository.GetCurrentRetailerActivePlan(incentivePlanRequest.PlanType, incentivePlanRequest.Audience.SubTypeName);
+            }
+                
             if(activePlans.Count > 1)
             {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0007"]);
+                errorInfo.Add(_stringLocalizer["INC_ERR_0006"]);
             }
             else if(activePlans.Count == 1)
             {
@@ -159,7 +160,7 @@ namespace blendnet.incentive.api.Controllers
 
                 if(incentivePlanRequest.StartDate < currentPlan.EndDate)
                 {
-                    errorInfo.Add(_stringLocalizer["INC_ERR_0008"]);
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0007"]);
                 }
             }
 
@@ -198,13 +199,13 @@ namespace blendnet.incentive.api.Controllers
 
                 if(!isRuleTypeValid(planDetail.RuleType, incentivePlanRequest.PlanType))
                 {
-                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0009"], planDetail.EventType.ToString(), audienceType));
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0008"], planDetail.EventType.ToString(), audienceType));
                     return errorInfo;
                 }
 
                 if(!isFormulaTypeValid(planDetail.Formula.FormulaType, incentivePlanRequest.PlanType))
                 {
-                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0010"], planDetail.EventType.ToString(), audienceType));
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0009"], planDetail.EventType.ToString(), audienceType));
                     return errorInfo;
                 }
 
@@ -222,8 +223,9 @@ namespace blendnet.incentive.api.Controllers
         private IncentivePlan CreatePlan(IncentivePlanRequest incentivePlanRequest, RetailerProviderDto retailerProviderDto)
         {
             IncentivePlan incentivePlan = new IncentivePlan();
-            incentivePlan.PlanId = incentivePlan.Id = Guid.NewGuid();
+            incentivePlan.Id = Guid.NewGuid();
             incentivePlan.PlanName = incentivePlanRequest.PlanName;
+            incentivePlan.PlanType = incentivePlanRequest.PlanType;
             incentivePlan.StartDate = incentivePlanRequest.StartDate;
             incentivePlan.EndDate = incentivePlanRequest.EndDate;
 
@@ -232,13 +234,11 @@ namespace blendnet.incentive.api.Controllers
 
             if (incentivePlan.Audience.AudienceType == AudienceType.CONSUMER)
             {
-                incentivePlan.Audience.SubTypeId = new Guid(Common.NIL_GUID.ToString());
-                incentivePlan.Audience.SubTypeName = Common.ALL;
+                incentivePlan.Audience.SubTypeName = Common.CONSUMER;
             }
             else
             {
-                incentivePlan.Audience.SubTypeId = retailerProviderDto.ServiceAccountId;
-                incentivePlan.Audience.SubTypeName = retailerProviderDto.Name;
+                incentivePlan.Audience.SubTypeName = retailerProviderDto.PartnerCode;
             }
 
             incentivePlan.PlanDetails = incentivePlanRequest.PlanDetails;

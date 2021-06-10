@@ -35,23 +35,12 @@ namespace blendnet.incentive.api.Model
         /// Target audience of the plan
         /// </summary>
         [Required]
-        public AudienceRequest Audience { get; set; }
+        public Audience Audience { get; set; }
 
         /// <summary>
         /// List of events and corresponding formula associated with plan
         /// </summary>
         [Required]
         public List<PlanDetail> PlanDetails { get; set; }
-    }
-
-    public class AudienceRequest
-    {
-        /// <summary>
-        /// Audience type
-        /// </summary>
-        [Required]
-        public AudienceType AudienceType { get; set; }
-
-        public Guid SubTypeId { get; set; }
     }
 }

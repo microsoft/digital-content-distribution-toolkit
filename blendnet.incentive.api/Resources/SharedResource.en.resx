@@ -133,18 +133,15 @@
     <value>INC_ERR_0005-Duplicate event type {0} for given plan</value>
   </data>
   <data name="INC_ERR_0006" xml:space="preserve">
-    <value>INC_ERR_0006-Consumer event should have audience subtype as null or empty guid (00000000-0000-0000-0000-000000000000)</value>
+    <value>INC_ERR_0006-More than one active plan exists</value>
   </data>
   <data name="INC_ERR_0007" xml:space="preserve">
-    <value>INC_ERR_0007-More than one active plan exists</value>
+    <value>INC_ERR_0007-Plan start date is overlapping with current active plan</value>
   </data>
   <data name="INC_ERR_0008" xml:space="preserve">
-    <value>INC_ERR_0008-Plan start date is overlapping with current active plan</value>
+    <value>INC_ERR_0008-Invalid Rule type</value>
   </data>
   <data name="INC_ERR_0009" xml:space="preserve">
-    <value>INC_ERR_0009-Invalid Rule type</value>
-  </data>
-  <data name="INC_ERR_0010" xml:space="preserve">
-    <value>INC_ERR_0010-Invalid Formula type</value>
+    <value>INC_ERR_0009-Invalid Formula type</value>
   </data>
 </root>

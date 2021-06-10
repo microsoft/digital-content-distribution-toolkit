@@ -18,12 +18,6 @@ namespace blendnet.common.dto.Incentive
         public Guid? Id { get; set; }
 
         /// <summary>
-        /// Unique id of the plan
-        /// </summary>
-        [JsonProperty(PropertyName = "planId")]
-        public Guid? PlanId { get; set; }
-
-        /// <summary>
         /// Name given to plan
         /// </summary>
         public string PlanName { get; set; }

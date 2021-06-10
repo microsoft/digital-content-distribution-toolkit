@@ -31,8 +31,8 @@ namespace blendnet.incentive.repository.IncentiveRepository
 
         public async Task<Guid> CreateIncentivePlan(IncentivePlan incentivePlan)
         {
-            await this._container.CreateItemAsync<IncentivePlan>(incentivePlan, new PartitionKey(incentivePlan.PlanId.ToString()));
-            return incentivePlan.PlanId.Value;
+            await this._container.CreateItemAsync<IncentivePlan>(incentivePlan, new PartitionKey(incentivePlan.Audience.SubTypeName));
+            return incentivePlan.Id.Value;
         }
 
         public async Task<int> UpdateIncentivePlan(IncentivePlan incentivePlan)
@@ -40,8 +40,8 @@ namespace blendnet.incentive.repository.IncentiveRepository
             try
             {
                 var response = await this._container.ReplaceItemAsync<IncentivePlan>(incentivePlan,
-                                                                                        incentivePlan.PlanId.Value.ToString(),
-                                                                                        new PartitionKey(incentivePlan.PlanId.ToString()));
+                                                                                        incentivePlan.Id.Value.ToString(),
+                                                                                        new PartitionKey(incentivePlan.Audience.SubTypeName));
 
                 return (int)response.StatusCode;
             }
@@ -51,11 +51,11 @@ namespace blendnet.incentive.repository.IncentiveRepository
             }
         }
 
-        public async Task<IncentivePlan> GetPlan(Guid planId)
+        public async Task<IncentivePlan> GetPlan(Guid planId, string subtype)
         {
             try
             {
-                ItemResponse<IncentivePlan> response = await _container.ReadItemAsync<IncentivePlan>(planId.ToString(), new PartitionKey(planId.ToString()));
+                ItemResponse<IncentivePlan> response = await _container.ReadItemAsync<IncentivePlan>(planId.ToString(), new PartitionKey(subtype));
                 return response.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -64,22 +64,46 @@ namespace blendnet.incentive.repository.IncentiveRepository
             }
         }
 
-        public async Task<List<IncentivePlan>> GetCurrentActivePlan(PlanType planType, AudienceType audienceType)
+        public Task<List<IncentivePlan>> GetCurrentConsumerActivePlan(PlanType planType)
+        {
+            var curDate = DateTime.UtcNow;
+
+            var queryString = "select * from c where c.planType = @planType " +
+                "and c.audience.audienceType = @audienceType " +
+                "and c.startDate <= @now and c.endDate >= @now";
+
+            var queryDef = new QueryDefinition(queryString)
+                .WithParameter("@planType", planType)
+                .WithParameter("@audienceType", AudienceType.CONSUMER)
+                .WithParameter("@now", curDate);
+
+            return GetCurrentActivePlan(queryDef);
+
+        }
+
+        public Task<List<IncentivePlan>> GetCurrentRetailerActivePlan(PlanType planType, string audienceSubTypeName)
+        {
+            var curDate = DateTime.UtcNow;
+
+            var queryString = "select * from c where c.planType = @planType " +
+                "and c.audience.audienceType = @audienceType " +
+                "and c.audience.subTypeName = @audienceSubTypeName " +
+                "and c.startDate <= @now and c.endDate >= @now";
+
+            var queryDef = new QueryDefinition(queryString)
+                .WithParameter("@planType", planType)
+                .WithParameter("@audienceType", AudienceType.CONSUMER)
+                .WithParameter("@audienceSubTypeName", audienceSubTypeName)
+                .WithParameter("@now", curDate);
+
+            return GetCurrentActivePlan(queryDef);
+        }
+
+        private async Task<List<IncentivePlan>> GetCurrentActivePlan(QueryDefinition queryDefinition)
         {
             try
             {
-                var curDate = DateTime.UtcNow;
-
-                var queryString = "select * from c where c.planType = @planType " +
-                    "and c.audience.audienceType = @audienceType " +
-                    "and c.startDate <= @now and c.endDate >= @now";
-
-                var queryDef = new QueryDefinition(queryString)
-                    .WithParameter("@planType", planType)
-                    .WithParameter("@audienceType", audienceType)
-                    .WithParameter("@now", curDate);
-
-                var activePlans = await _container.ExtractDataFromQueryIterator<IncentivePlan>(queryDef);
+                var activePlans = await _container.ExtractDataFromQueryIterator<IncentivePlan>(queryDefinition);
                 return activePlans;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)

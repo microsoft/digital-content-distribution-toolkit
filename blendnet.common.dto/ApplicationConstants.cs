@@ -208,7 +208,7 @@ namespace blendnet.common.dto
         {
             public static readonly Guid NIL_GUID = Guid.Empty;
 
-            public const string ALL = "All";
+            public const string CONSUMER = "CONSUMER";
         }
     }
 }

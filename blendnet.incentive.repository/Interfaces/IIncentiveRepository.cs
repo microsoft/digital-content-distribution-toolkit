@@ -24,19 +24,26 @@ namespace blendnet.incentive.repository.Interfaces
         public Task<int> UpdateIncentivePlan(IncentivePlan incentivePlan);
 
         /// <summary>
-        /// Retrive current active plans for given plan type and audience type
+        /// Retrieve current active plan for consumer audience type
         /// </summary>
         /// <param name="planType"></param>
-        /// <param name="audienceType"></param>
         /// <returns></returns>
-        public Task<List<IncentivePlan>> GetCurrentActivePlan(PlanType planType, AudienceType audienceType);
+        public Task<List<IncentivePlan>> GetCurrentConsumerActivePlan(PlanType planType);
+
+        /// <summary>
+        /// Retrieve current active plan for retailer with given subtype name
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetCurrentRetailerActivePlan(PlanType planType, string audienceSubTypeName);
 
         /// <summary>
         /// Gets plan with given plan id
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetPlan(Guid planId);
+        public Task<IncentivePlan> GetPlan(Guid planId, string subtype);
 
     }
 }
