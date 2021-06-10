@@ -41,7 +41,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 using (_telemetryClient.StartOperation<RequestTelemetry>("AddEventIntegrationEventHandler.Handle"))
                 {
                     _logger.LogInformation($"Ading event");
-                    await _incentiveRepository.AddEvent(integrationEvent.Event);
+                   // await _incentiveRepository.AddEvent(integrationEvent.Event);
                     _logger.LogInformation($"Done adding event");
                 }
             }
