@@ -43,7 +43,7 @@ namespace blendnet.incentive.repository.Interfaces
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetPlan(Guid planId, string subtype);
+        public Task<IncentivePlan> GetPlan(Guid planId, string subtypeName);
 
     }
 }

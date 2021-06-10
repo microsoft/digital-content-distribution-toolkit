@@ -92,7 +92,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
 
             var queryDef = new QueryDefinition(queryString)
                 .WithParameter("@planType", planType)
-                .WithParameter("@audienceType", AudienceType.CONSUMER)
+                .WithParameter("@audienceType", AudienceType.RETAILER)
                 .WithParameter("@audienceSubTypeName", audienceSubTypeName)
                 .WithParameter("@now", curDate);
 

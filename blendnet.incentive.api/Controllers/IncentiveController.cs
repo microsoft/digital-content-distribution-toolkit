@@ -191,19 +191,19 @@ namespace blendnet.incentive.api.Controllers
                     return errorInfo;
                 }
 
-                if (!isEventForAudience(audienceType, planDetail.EventType))
+                if (!IsEventForAudience(audienceType, planDetail.EventType))
                 {
                     errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0004"], planDetail.EventType.ToString(), audienceType));
                     return errorInfo;
                 }
 
-                if(!isRuleTypeValid(planDetail.RuleType, incentivePlanRequest.PlanType))
+                if(!IsRuleTypeValid(planDetail.RuleType, incentivePlanRequest.PlanType))
                 {
                     errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0008"], planDetail.EventType.ToString(), audienceType));
                     return errorInfo;
                 }
 
-                if(!isFormulaTypeValid(planDetail.Formula.FormulaType, incentivePlanRequest.PlanType))
+                if(!IsFormulaTypeValid(planDetail.Formula.FormulaType, incentivePlanRequest.PlanType))
                 {
                     errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0009"], planDetail.EventType.ToString(), audienceType));
                     return errorInfo;
@@ -249,7 +249,7 @@ namespace blendnet.incentive.api.Controllers
             return incentivePlan;
         }
 
-        private bool isEventForAudience(AudienceType audienceType, EventType eventSubType)
+        private bool IsEventForAudience(AudienceType audienceType, EventType eventSubType)
         {
             if(audienceType == AudienceType.CONSUMER)
             {
@@ -259,7 +259,7 @@ namespace blendnet.incentive.api.Controllers
             return eventSubType.ToString().StartsWith("RTLR");
         }
 
-        private bool isFormulaTypeValid(FormulaType formulaType, PlanType planType)
+        private bool IsFormulaTypeValid(FormulaType formulaType, PlanType planType)
         {
             if(planType == PlanType.REGULAR)
             {
@@ -272,7 +272,7 @@ namespace blendnet.incentive.api.Controllers
             return true;
         }
 
-        private bool isRuleTypeValid(RuleType ruleType, PlanType planType)
+        private bool IsRuleTypeValid(RuleType ruleType, PlanType planType)
         {
             if (planType == PlanType.REGULAR)
             {
