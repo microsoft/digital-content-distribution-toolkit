@@ -44,6 +44,8 @@ apt-get update && apt-get install curl
 
 kubectl --namespace kube-system exec --stdin --tty ingress-appgw-deployment-64ff84b8d9-jnwf9 -- /bin/bash
 
+kubectl exec -it blendnet-cms-api-7d9cbb448-drfwn -- /bin/bash
+
 
 
 ---------Test URL
