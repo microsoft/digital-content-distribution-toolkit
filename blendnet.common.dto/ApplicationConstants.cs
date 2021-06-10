@@ -203,12 +203,14 @@ namespace blendnet.common.dto
         {
             public const string FormatYYYYMMDD = "yyyyMMdd";
         }
-        }
+        
 
         public struct PushNotificationType
         {
             public const int OrderComplete = 1;
 
             public const int NewArrival = 2;
+
+        }
     }
 }
