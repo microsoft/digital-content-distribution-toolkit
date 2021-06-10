@@ -104,12 +104,12 @@ namespace blendnet.incentive.api.Controllers
         }
 
 
-        [HttpGet("{planId:guid}", Name = nameof(GetIncentivePlan))]
+        [HttpGet("{planId:guid}/{subtypeName}", Name = nameof(GetIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
 
-        public async Task<ActionResult<IncentivePlan>> GetIncentivePlan(Guid planId, string subType)
+        public async Task<ActionResult<IncentivePlan>> GetIncentivePlan(Guid planId, string subtypeName)
         {
-            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subType);
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subtypeName);
 
             if(plan == null)
             {

@@ -51,11 +51,11 @@ namespace blendnet.incentive.repository.IncentiveRepository
             }
         }
 
-        public async Task<IncentivePlan> GetPlan(Guid planId, string subtype)
+        public async Task<IncentivePlan> GetPlan(Guid planId, string subtypeName)
         {
             try
             {
-                ItemResponse<IncentivePlan> response = await _container.ReadItemAsync<IncentivePlan>(planId.ToString(), new PartitionKey(subtype));
+                ItemResponse<IncentivePlan> response = await _container.ReadItemAsync<IncentivePlan>(planId.ToString(), new PartitionKey(subtypeName));
                 return response.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
