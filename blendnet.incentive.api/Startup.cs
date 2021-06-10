@@ -3,6 +3,7 @@ using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.incentive.repository.IncentiveRepository;
 using blendnet.incentive.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -176,7 +177,13 @@ namespace blendnet.incentive.api
             }
             else
             {
-                app.UseExceptionHandler("/error");
+                app.UseExceptionHandler(errorApp =>
+                {
+                    ILogger<Startup> logger = app.ApplicationServices.GetService<ILogger<Startup>>();
+
+                    errorApp.RunCustomGlobalExceptionHandler(logger);
+                });
+
                 app.UseForwardedHeaders();
             }
 

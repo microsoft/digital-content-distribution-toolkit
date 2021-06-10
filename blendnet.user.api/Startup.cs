@@ -28,6 +28,7 @@ using blendnet.common.infrastructure;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.user.api
 {
@@ -182,7 +183,13 @@ namespace blendnet.user.api
             }
             else
             {
-                app.UseExceptionHandler("/error");
+                app.UseExceptionHandler(errorApp =>
+                {
+                    ILogger<Startup> logger = app.ApplicationServices.GetService<ILogger<Startup>>();
+
+                    errorApp.RunCustomGlobalExceptionHandler(logger);
+                });
+
                 app.UseForwardedHeaders();
             }
 

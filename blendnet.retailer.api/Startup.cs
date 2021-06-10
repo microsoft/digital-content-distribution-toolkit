@@ -176,7 +176,13 @@ namespace blendnet.retailer.api
             }
             else
             {
-                app.UseExceptionHandler("/error");
+                app.UseExceptionHandler(errorApp =>
+                {
+                    ILogger<Startup> logger = app.ApplicationServices.GetService<ILogger<Startup>>();
+
+                    errorApp.RunCustomGlobalExceptionHandler(logger);
+                });
+
                 app.UseForwardedHeaders();
             }
 
