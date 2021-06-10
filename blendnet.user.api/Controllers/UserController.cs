@@ -1,21 +1,22 @@
-﻿using blendnet.api.proxy.Retailer;
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.user.api.Models;
 using blendnet.user.repository.Interfaces;
+using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Localization;
-using Microsoft.ApplicationInsights;
 
 namespace blendnet.user.api.Controllers
 {
@@ -99,7 +100,7 @@ namespace blendnet.user.api.Controllers
                 ChannelId = request.ChannelId,
             };
 
-            _telemetryClient.TrackEvent(createUserAIEvent.GetAIEventName(), createUserAIEvent.ToDictionary());
+            _telemetryClient.TrackEvent(createUserAIEvent);
 
             return Ok(user.Id);
         }
@@ -364,6 +365,18 @@ namespace blendnet.user.api.Controllers
             };
 
             await _eventBus.Publish(retailerCreatedIntegrationEvent);
+
+            //Track the Retailer created event to Application Insights
+            CreateRetailerAIEvent createRetailerAIEvent = new CreateRetailerAIEvent()
+            {
+                Name = retailer.UserName,
+                PartnerCode = retailer.PartnerCode,
+                PartnerProvidedId = retailer.PartnerProvidedId,
+                RetailerPartnerId = retailer.PartnerId,
+                AdditionalAttributes = retailer.AdditionalAttibutes,
+            };
+
+            _telemetryClient.TrackEvent(createRetailerAIEvent);
 
             return Ok(retailerRequest.RetailerId);
         }

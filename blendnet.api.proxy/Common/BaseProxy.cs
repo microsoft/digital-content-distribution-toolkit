@@ -40,7 +40,7 @@ namespace blendnet.api.proxy.Common
         {
             _configuration = configuration;
 
-            _kaizalaIdentityHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT);
+            _kaizalaIdentityHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT);
 
             _logger = logger;
 
@@ -77,7 +77,7 @@ namespace blendnet.api.proxy.Common
             {
                 Uri keyVaultUrl = new Uri($"https://{_configuration["KeyVaultName"]}.vault.azure.net/");
 
-                string kaizalaIdentityBaseUrl = _configuration["KaizalaIdentityBaseUrl"];
+                string kaizalaIdentityBaseUrl = string.Format(_configuration["KaizalaIdentityBaseUrl"], ""); // base url do not require SU information
 
                 string certificateName = _configuration["CloudApiServiceAccountCertName"];
 
@@ -124,5 +124,40 @@ namespace blendnet.api.proxy.Common
             return accessTokenToReturn;
 
         }
-    }
+
+        /// <summary>
+        /// Returns the Kaizala Base Url by Phone Number Last Digit
+        /// Mainly for lower environments.
+        /// For production set the same URL fro all the digits
+        /// </summary>
+        /// <param name="lastDigit"></param>
+        /// <returns></returns>
+        public string GetBaseUrlByPhoneDigit(string lastDigit)
+        {
+            Dictionary<string, string> settings = new Dictionary<string, string>();
+
+            string baseUrl = _configuration["KaizalaIdentityBaseUrl"];
+            _configuration.GetSection("KaizalaIdentity").Bind(settings);
+
+            string scaleUnit = GetScaleUnit(settings[lastDigit.ToString()]);
+
+            string baseUrlWithSu = string.Format(baseUrl, scaleUnit);
+
+            return baseUrlWithSu;
+        }
+
+        public string GetUserScaleUnitByPhoneDigit(string lastDigit)
+        {
+            Dictionary<string, string> settings = new Dictionary<string, string>();
+
+            _configuration.GetSection("KaizalaIdentity").Bind(settings);
+
+            return GetScaleUnit(settings[lastDigit.ToString()]);
+        }
+
+        private string GetScaleUnit(string scaleUnit)
+        {
+            return "0".Equals(scaleUnit) ? "" : scaleUnit;
+        }
+    } 
 }

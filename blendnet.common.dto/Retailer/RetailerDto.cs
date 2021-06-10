@@ -17,17 +17,7 @@ namespace blendnet.common.dto.Retailer
         /// Globally Unique ID for the retailer
         /// This is a combination of Partner Code and partner-provided ID
         /// </summary>
-        public string PartnerId
-        {
-            get
-            {
-                return CreatePartnerId(PartnerCode, PartnerProvidedId);
-            }
-            set
-            {
-                // No-op
-            }
-        }
+        public string PartnerId => CreatePartnerId(PartnerCode, PartnerProvidedId);
 
         /// <summary>
         /// Partner who onboarded this retailer
@@ -65,17 +55,7 @@ namespace blendnet.common.dto.Retailer
         [Required]
         public DateTime EndDate { get; set; }
 
-        public new RetailerContainerType Type
-        {
-            get
-            {
-                return RetailerContainerType.Retailer;
-            }
-            set
-            {
-                // No-Op
-            }
-        }
+        public new RetailerContainerType Type => RetailerContainerType.Retailer;
 
         /// <summary>
         /// Additional attributes as a property bag

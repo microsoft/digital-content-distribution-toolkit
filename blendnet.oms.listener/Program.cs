@@ -1,25 +1,21 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using blendnet.api.proxy.KaizalaIdentity;
-using blendnet.common.dto;
-using blendnet.common.dto.Retailer;
+using System;
 using blendnet.common.infrastructure;
-using blendnet.common.infrastructure.KeyVault;
 using blendnet.common.infrastructure.ServiceBus;
-using blendnet.retailer.listener.IntegrationEventHandling;
-using blendnet.retailer.repository.CosmosRepository;
-using blendnet.retailer.repository.Interfaces;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Fluent;
-using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
+using blendnet.common.infrastructure.KeyVault;
+using Microsoft.Extensions.Azure;
+using blendnet.common.dto;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using blendnet.api.proxy.Kaizala;
+using blendnet.oms.listener.IntegrationEventHandling;
+using blendnet.common.dto.Oms;
 
-namespace blendnet.retailer.listener
+namespace blendnet.oms.listener
 {
     public class Program
     {
@@ -70,7 +66,7 @@ namespace blendnet.retailer.listener
                 .ConfigureServices((hostContext, services) =>
                 {
                     //Configure Application Settings
-                    services.Configure<RetailerAppSettings>(hostContext.Configuration);
+                    services.Configure<OmsAppSettings>(hostContext.Configuration);
 
                     services.AddLogging();
 
@@ -90,22 +86,15 @@ namespace blendnet.retailer.listener
                     //Configure Event 
                     ConfigureEventBus(hostContext, services);
 
-                    //Configure the Cosmos DB
-                    ConfigureCosmosDB(hostContext, services);
-
                     //Configure Http Clients
                     ConfigureHttpClients(services);
 
                     //Configure Distribute Cache
                     ConfigureDistributedCache(hostContext, services);
 
-                    //Configure Repository
-                    services.AddTransient<IRetailerRepository, RetailerRepository>();
-
-                    //Configure Kaizala Identity Proxy
-                    services.AddTransient<KaizalaIdentityProxy>();
+                    //Configure Kaizala Notification Proxy
+                    services.AddTransient<NotificationProxy>();
                 });
-
 
         /// <summary>
         /// Configure Event Bus
@@ -139,34 +128,8 @@ namespace blendnet.retailer.listener
 
             services.AddSingleton<IEventBus, EventServiceBus>();
 
-            services.AddTransient<RetailerCreatedIntegrationEventHandler>();
+            services.AddTransient<OrderCompleteEventHandler>();
 
-        }
-
-        /// <summary>
-        /// Set up Cosmos DB
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="services"></param>
-        private static void ConfigureCosmosDB(HostBuilderContext context, IServiceCollection services)
-        {
-            string account = context.Configuration.GetValue<string>("AccountEndPoint");
-
-            string databaseName = context.Configuration.GetValue<string>("DatabaseName");
-
-            string key = context.Configuration.GetValue<string>("AccountKey");
-
-            services.AddSingleton<CosmosClient>((cc) => {
-
-                CosmosClient client = new CosmosClientBuilder(account, key)
-                           .WithSerializerOptions(new CosmosSerializationOptions()
-                           {
-                               PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                           })
-                           .Build();
-
-                return client;
-            });
         }
 
         /// <summary>
@@ -195,6 +158,5 @@ namespace blendnet.retailer.listener
             });
 
         }
-
     }
 }

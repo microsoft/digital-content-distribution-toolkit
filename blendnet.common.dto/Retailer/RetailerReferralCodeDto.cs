@@ -13,26 +13,9 @@ namespace blendnet.common.dto.Retailer
         /// Same as Referral Code 
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public string Id
-        { 
-            get
-            {
-                return ReferralCode;
-            }
-            set { }
-        }
+        public string Id => ReferralCode;
 
-        public RetailerContainerType Type
-        {
-            get
-            {
-                return RetailerContainerType.RetailerReferralCode;
-            }
-            set
-            {
-                // No-op
-            }
-        }
+        public RetailerContainerType Type => RetailerContainerType.RetailerReferralCode;
 
         public string ReferralCode { get; set; }
 

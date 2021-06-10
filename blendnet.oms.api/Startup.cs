@@ -4,7 +4,9 @@ using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Oms;
+using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.ServiceBus;
 using blendnet.oms.repository.CosmosRepository;
 using blendnet.oms.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -159,6 +162,10 @@ namespace blendnet.oms.api
             services.AddTransient<UserProxy>();
             services.AddTransient<KaizalaIdentityProxy>();
 
+            //Configure Service Bus
+            string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
+
+            ConfigureEventBus(services);
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -237,7 +244,7 @@ namespace blendnet.oms.api
             });
 
             //Configure Http Clients
-            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALAIDENTITY_HTTP_CLIENT, c =>
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
             {
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
@@ -296,7 +303,35 @@ namespace blendnet.oms.api
 
         }
 
+        /// <summary>
+        /// Configure Event Bus
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureEventBus(IServiceCollection services)
+        {
+            //event bus related registrations
+            string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
 
+            string serviceBusTopicName = Configuration.GetValue<string>("ServiceBusTopicName");
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddServiceBusClient(serviceBusConnectionString);
+            });
+
+            services.AddSingleton<EventBusConnectionData>(ebcd =>
+            {
+                EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
+
+                eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
+
+                eventBusConnectionData.TopicName = serviceBusTopicName;
+
+                return eventBusConnectionData;
+            });
+
+            services.AddSingleton<IEventBus, EventServiceBus>();
+        }
 
         private void ConfigureLocalization(IServiceCollection services)
         {

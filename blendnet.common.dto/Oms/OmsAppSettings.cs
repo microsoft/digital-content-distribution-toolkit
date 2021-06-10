@@ -40,5 +40,7 @@ namespace blendnet.common.dto.Oms
         public int AmsTokenExpiryInMts { get; set; }
 
         public string AmsTokenSigningKey { get; set; }
+        public string KaizalaIdentityAppName { get; set; }
+
     }
 }

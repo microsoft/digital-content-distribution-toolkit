@@ -19,7 +19,7 @@ namespace blendnet.common.dto.AIEvents
         public virtual string GetAIEventName()
         {
             return this.GetType().Name;
-            
+
         }
 
         /// <summary>
@@ -39,7 +39,23 @@ namespace blendnet.common.dto.AIEvents
 
                 if (val != null)
                 {
-                    ret.Add(propName, val.ToString());
+                    // flatten dictionary
+                    if (val is Dictionary<string, string> valDict)
+                    {
+                        valDict.Select(kv =>
+                        {
+                            string newKey = $"{propName}_{kv.Key}";
+                            return new KeyValuePair<string, string>(newKey, kv.Value);
+                        }).Aggregate(ret, (dict, kv) =>
+                        {
+                            dict.Add(kv.Key, kv.Value);
+                            return dict;
+                        });
+                    }
+                    else // simple value
+                    {
+                        ret.Add(propName, val.ToString());
+                    }
                 }
                 else
                 {
