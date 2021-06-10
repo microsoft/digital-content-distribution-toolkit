@@ -68,9 +68,9 @@ namespace blendnet.incentive.repository.IncentiveRepository
         {
             var curDate = DateTime.UtcNow;
 
-            var queryString = "select * from c where c.planType = @planType " +
-                "and c.audience.audienceType = @audienceType " +
-                "and c.startDate <= @now and c.endDate >= @now";
+            const string queryString = @"select * from c where c.planType = @planType 
+                and c.audience.audienceType = @audienceType 
+                and c.startDate <= @now and c.endDate >= @now";
 
             var queryDef = new QueryDefinition(queryString)
                 .WithParameter("@planType", planType)
@@ -85,10 +85,10 @@ namespace blendnet.incentive.repository.IncentiveRepository
         {
             var curDate = DateTime.UtcNow;
 
-            var queryString = "select * from c where c.planType = @planType " +
-                "and c.audience.audienceType = @audienceType " +
-                "and c.audience.subTypeName = @audienceSubTypeName " +
-                "and c.startDate <= @now and c.endDate >= @now";
+            const string queryString = @"select * from c where c.planType = @planType 
+                and c.audience.audienceType = @audienceType 
+                and c.audience.subTypeName = @audienceSubTypeName 
+                and c.startDate <= @now and c.endDate >= @now";
 
             var queryDef = new QueryDefinition(queryString)
                 .WithParameter("@planType", planType)
