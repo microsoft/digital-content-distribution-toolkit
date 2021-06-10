@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.2" />
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.1.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.16.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="5.0.5" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.17.0" />
