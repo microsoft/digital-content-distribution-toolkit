@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Azure.Storage.Blobs;
@@ -13,9 +15,12 @@ using blendnet.common.dto.cms;
 using blendnet.common.dto.Cms;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.ServiceBus;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
@@ -26,6 +31,7 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
@@ -205,7 +211,13 @@ namespace blendnet.cms.api
             }
             else
             {
-                app.UseExceptionHandler("/error");
+                app.UseExceptionHandler(errorApp =>
+                {
+                    ILogger<Startup> logger = app.ApplicationServices.GetService<ILogger<Startup>>();
+
+                    errorApp.RunCustomGlobalExceptionHandler(logger);
+                });
+
                 app.UseForwardedHeaders();
             }
 
