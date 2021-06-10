@@ -25,6 +25,7 @@ using blendnet.api.proxy.KaizalaIdentity;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.retailer.api
 {
