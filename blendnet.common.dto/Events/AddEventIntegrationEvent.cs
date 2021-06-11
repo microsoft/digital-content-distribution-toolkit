@@ -5,6 +5,6 @@ namespace blendnet.common.dto.Events
 {
     public class AddEventIntegrationEvent: IntegrationEvent
     {
-        public Event Event { get; set; }
+        public IncentiveEvent IncentiveEvent { get; set; }
     }
 }

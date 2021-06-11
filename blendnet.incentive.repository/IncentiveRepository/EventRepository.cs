@@ -26,16 +26,16 @@ namespace blendnet.incentive.repository.IncentiveRepository
 
             _logger = logger;
 
-            this._container = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.Event);
+            this._container = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.IncentiveEvent);
         }
 
-        public async Task<Guid> StoreEvent(Event eventItem)
+        public async Task<Guid> StoreEvent(IncentiveEvent eventItem)
         {
-            await this._container.CreateItemAsync<Event>(eventItem, new PartitionKey(eventItem.EventGeneratorId));
+            await this._container.CreateItemAsync<IncentiveEvent>(eventItem, new PartitionKey(eventItem.EventGeneratorId));
             return eventItem.EventId.Value;
         }
 
-        public List<Event> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate)
+        public List<IncentiveEvent> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate)
         {
             throw new NotImplementedException();
         }

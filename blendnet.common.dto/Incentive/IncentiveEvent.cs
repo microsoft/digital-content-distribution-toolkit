@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace blendnet.common.dto.Incentive
 {
-    public class Event : BaseDto
+    public class IncentiveEvent : BaseDto
     {
         /// <summary>
         /// Unique event id
@@ -17,6 +17,11 @@ namespace blendnet.common.dto.Incentive
         /// User id of consumer or Partner id of retailer
         /// </summary>
         public string EventGeneratorId { get; set; }
+
+        /// <summary>
+        /// Event group type
+        /// </summary>
+        public EventGroupType EventGroupType { get; set; }
 
         /// <summary>
         /// Event type of the event
@@ -39,9 +44,14 @@ namespace blendnet.common.dto.Incentive
         public int EventDate { get; set; }
 
         /// <summary>
-        /// Value of the event which is later used for computation
+        /// Computed Value of the event which is later used for computation
         /// </summary>
         public double Value { get; set; }
+
+        /// <summary>
+        /// Original Value of the event which is later used for reference
+        /// </summary>
+        public double OriginalValue { get; set; }
 
         /// <summary>
         /// Category of the event indicating whether it is an income event or expense event

@@ -8,7 +8,8 @@ namespace blendnet.common.dto.Incentive
     public enum EventGroupType
     {
         COMMISSION,
-        REFERRAL
+        REFERRAL,
+        CONSUMER
     }
 
     [JsonConverter(typeof(StringEnumConverter))]

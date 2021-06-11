@@ -272,7 +272,7 @@ namespace blendnet.incentive.api
 
                 ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.IncentivePlan, "/audience/subTypeName").Result;
 
-                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Event, "/eventGeneratorId").Result;
+                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.IncentiveEvent, "/eventGeneratorId").Result;
 
                 return client;
             });

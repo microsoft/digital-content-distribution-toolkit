@@ -44,6 +44,8 @@ namespace blendnet.incentive.listener
 
             _eventBus.Subscribe<AddEventIntegrationEvent, AddEventIntegrationEventHandler>();
 
+            _eventBus.Subscribe<OrderCompletedIntegrationEvent, OrderCompletedEventIntegrationEventHandler>();
+
             await _eventBus.StartProcessing();
 
             _logger.LogInformation("Subscribe complete by blendnet.incentive.listener");
