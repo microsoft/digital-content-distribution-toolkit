@@ -12,9 +12,9 @@ namespace blendnet.incentive.repository.Interfaces
         /// <summary>
         /// Stores the event in container
         /// </summary>
-        /// <param name="eventItem"></param>
+        /// <param name="incentiveEvent"></param>
         /// <returns></returns>
-        public Task<Guid> StoreEvent(IncentiveEvent eventItem);
+        public Task<Guid> CreateIncentiveEvent(IncentiveEvent incentiveEvent);
 
         public List<IncentiveEvent> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate);
 

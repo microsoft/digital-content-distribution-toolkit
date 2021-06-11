@@ -46,7 +46,7 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// Computed Value of the event which is later used for computation
         /// </summary>
-        public double Value { get; set; }
+        public double CalculatedValue { get; set; }
 
         /// <summary>
         /// Original Value of the event which is later used for reference

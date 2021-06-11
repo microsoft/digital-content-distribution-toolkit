@@ -29,7 +29,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
             this._container = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.IncentiveEvent);
         }
 
-        public async Task<Guid> StoreEvent(IncentiveEvent eventItem)
+        public async Task<Guid> CreateIncentiveEvent(IncentiveEvent eventItem)
         {
             await this._container.CreateItemAsync<IncentiveEvent>(eventItem, new PartitionKey(eventItem.EventGeneratorId));
             return eventItem.EventId.Value;
