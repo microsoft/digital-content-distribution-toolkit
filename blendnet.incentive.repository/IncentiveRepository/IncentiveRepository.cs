@@ -64,7 +64,12 @@ namespace blendnet.incentive.repository.IncentiveRepository
             }
         }
 
-        public Task<List<IncentivePlan>> GetCurrentConsumerActivePlan(PlanType planType)
+        /// <summary>
+        /// Returns the current active plan for Consumer audience
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetCurrentConsumerActivePlan(PlanType planType)
         {
             var curDate = DateTime.UtcNow;
 
@@ -81,7 +86,13 @@ namespace blendnet.incentive.repository.IncentiveRepository
 
         }
 
-        public Task<List<IncentivePlan>> GetCurrentRetailerActivePlan(PlanType planType, string audienceSubTypeName)
+        /// <summary>
+        /// Returns the current active plan for Retailer audience
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetCurrentRetailerActivePlan(PlanType planType, string audienceSubTypeName)
         {
             var curDate = DateTime.UtcNow;
 
@@ -99,12 +110,13 @@ namespace blendnet.incentive.repository.IncentiveRepository
             return GetCurrentActivePlan(queryDef);
         }
 
-        private async Task<List<IncentivePlan>> GetCurrentActivePlan(QueryDefinition queryDefinition)
+        private async Task<IncentivePlan> GetCurrentActivePlan(QueryDefinition queryDefinition)
         {
             try
             {
                 var activePlans = await _container.ExtractDataFromQueryIterator<IncentivePlan>(queryDefinition);
-                return activePlans;
+
+                return activePlans.FirstOrDefault();
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {

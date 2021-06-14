@@ -4,6 +4,7 @@ using blendnet.common.dto.Incentive;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.incentive.api.Common;
 using blendnet.incentive.api.Model;
 using blendnet.incentive.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace blendnet.incentive.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
+    //[AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
     public class IncentiveController : ControllerBase
     {
         private const string C_CONSUMER = "CONSUMER";
@@ -38,12 +39,14 @@ namespace blendnet.incentive.api.Controllers
 
         private RetailerProviderProxy _retailerProviderProxy;
 
+        private IncentiveCalculationHelper _incentiveCalculationHelper;
+
         public IncentiveController(IIncentiveRepository incentiveRepository,
                                 ILogger<IncentiveController> logger,
                                 IOptionsMonitor<IncentiveAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
-                                RetailerProviderProxy retailerProviderProxy
-                                )
+                                RetailerProviderProxy retailerProviderProxy,
+                                IncentiveCalculationHelper incentiveCalculationHelper)
         {
             _incentiveRepository = incentiveRepository;
 
@@ -54,6 +57,8 @@ namespace blendnet.incentive.api.Controllers
             _stringLocalizer = stringLocalizer;
 
             _retailerProviderProxy = retailerProviderProxy;
+
+            _incentiveCalculationHelper = incentiveCalculationHelper;
         }
 
         #region Incentive management methods
@@ -109,7 +114,6 @@ namespace blendnet.incentive.api.Controllers
 
         [HttpGet("{planId:guid}/{subtypeName}", Name = nameof(GetIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-
         public async Task<ActionResult<IncentivePlan>> GetIncentivePlan(Guid planId, string subtypeName)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subtypeName);
@@ -142,30 +146,39 @@ namespace blendnet.incentive.api.Controllers
 
             // check if active plan exists for given plan type and audience type
 
-            List<IncentivePlan> activePlans;
+            IncentivePlan activePlan;
 
             if(incentivePlanRequest.Audience.AudienceType == AudienceType.CONSUMER)
             {
-                activePlans = await _incentiveRepository.GetCurrentConsumerActivePlan(incentivePlanRequest.PlanType);
+                activePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(incentivePlanRequest.PlanType);
             }
             else
             {
-                activePlans = await _incentiveRepository.GetCurrentRetailerActivePlan(incentivePlanRequest.PlanType, incentivePlanRequest.Audience.SubTypeName);
+                activePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(incentivePlanRequest.PlanType, incentivePlanRequest.Audience.SubTypeName);
             }
-                
-            if(activePlans.Count > 1)
-            {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0006"]);
-            }
-            else if(activePlans.Count == 1)
-            {
-                IncentivePlan currentPlan = activePlans[0];
 
-                if(incentivePlanRequest.StartDate < currentPlan.EndDate)
+            if (activePlan != null)
+            {
+                if (incentivePlanRequest.StartDate < activePlan.EndDate)
                 {
                     errorInfo.Add(_stringLocalizer["INC_ERR_0007"]);
                 }
             }
+            
+
+            //if(activePlan != null)
+            //{
+            //    errorInfo.Add(_stringLocalizer["INC_ERR_0006"]);
+            //}
+            //else if(activePlans.Count == 1)
+            //{
+            //    IncentivePlan currentPlan = activePlans[0];
+
+            //    if(incentivePlanRequest.StartDate < currentPlan.EndDate)
+            //    {
+            //        errorInfo.Add(_stringLocalizer["INC_ERR_0007"]);
+            //    }
+            //}
 
             return errorInfo;
         }
@@ -243,7 +256,7 @@ namespace blendnet.incentive.api.Controllers
 
             if (incentivePlan.Audience.AudienceType == AudienceType.CONSUMER)
             {
-                incentivePlan.Audience.SubTypeName = Common.CONSUMER;
+                //incentivePlan.Audience.SubTypeName = Common.CONSUMER;
             }
             else
             {

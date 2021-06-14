@@ -1,4 +1,5 @@
 ﻿using blendnet.common.dto.Incentive;
+using blendnet.incentive.repository.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,14 @@ namespace blendnet.incentive.repository.Interfaces
         /// <returns></returns>
         public List<IncentiveEvent> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate);
 
-        
+        /// <summary>
+        /// Returns the COUNT or SUM aggregrate for the given list of events.
+        /// It does the group based on EVENT and EVENT SUB TYPE 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public Task<List<EventAggregrateResponse>> GetEventAggregrates(EventAggregrateRequest request);
+
     }
+
 }

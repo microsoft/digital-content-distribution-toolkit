@@ -48,6 +48,19 @@ namespace blendnet.common.dto.Incentive
         /// </summary>
         [Required]
         public Formula Formula { get; set; }
+
+        /// <summary>
+        /// Result after application of Rule Type and Formula
+        /// </summary>
+        public Result Result { get; set; }
+
+    }
+
+    public class Result
+    {
+        public double Value { get; set; }
+
+        public double Value1 { get; set; }
     }
 
     public class Formula
@@ -81,17 +94,17 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// Start number of range
         /// </summary>
-        public int StartRange { get; set; }
+        public double StartRange { get; set; }
 
         /// <summary>
         /// End number of the range
         /// </summary>
-        public int EndRange { get; set; }
+        public double EndRange { get; set; }
 
         /// <summary>
         /// Value associated with the range
         /// </summary>
-        public int Output { get; set; }
+        public double Output { get; set; }
     }
 
     [JsonConverter(typeof(StringEnumConverter))]

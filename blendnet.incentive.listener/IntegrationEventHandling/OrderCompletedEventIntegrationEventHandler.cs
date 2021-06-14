@@ -57,19 +57,21 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 using (_telemetryClient.StartOperation<RequestTelemetry>("OrderCompletedEventIntegrationEventHandler.Handle"))
                 {
                     _logger.LogInformation($"Adding events of order completion");
-                    Order order = integrationEvent.Order;
-                    List<IncentivePlan> activeRetailerRegularPlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, order.RetailerPartnerCode);
 
-                    List<IncentiveEvent> retailerEvents = GetRetailerEventsForOrderCompletion(order, activeRetailerRegularPlan.Count > 0 ? activeRetailerRegularPlan[0] : null);
+                    Order order = integrationEvent.Order;
+
+                    IncentivePlan activeRetailerRegularPlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, order.RetailerPartnerCode);
+
+                    List<IncentiveEvent> retailerEvents = GetRetailerEventsForOrderCompletion(order, activeRetailerRegularPlan);
 
                     foreach (var retailerEvent in retailerEvents)
                     {
                         await _eventRepository.CreateIncentiveEvent(retailerEvent);
                     }
 
-                    List<IncentivePlan> activeConsumerRegularPlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
+                    IncentivePlan activeConsumerRegularPlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
 
-                    List<IncentiveEvent> consumerEvents = GetConsumerEventsForOrderCompletion(order, activeConsumerRegularPlan.Count > 0 ? activeConsumerRegularPlan[0] : null);
+                    List<IncentiveEvent> consumerEvents = GetConsumerEventsForOrderCompletion(order, activeConsumerRegularPlan);
 
                     foreach (var consumerEvent in consumerEvents)
                     {

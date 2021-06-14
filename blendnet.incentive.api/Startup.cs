@@ -4,6 +4,7 @@ using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
+using blendnet.incentive.api.Common;
 using blendnet.incentive.repository.IncentiveRepository;
 using blendnet.incentive.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -152,9 +153,12 @@ namespace blendnet.incentive.api
             //Configure health check
             services.AddHealthChecks();
 
+            //Configure Services
             services.AddTransient<IIncentiveRepository, IncentiveRepository>();
+            services.AddTransient<IEventRepository, EventRepository>();
             services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<RetailerProviderProxy>();
+            services.AddTransient<IncentiveCalculationHelper>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
