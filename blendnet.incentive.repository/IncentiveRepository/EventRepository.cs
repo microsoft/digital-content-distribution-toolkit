@@ -66,10 +66,10 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <returns></returns>
         public async Task<List<EventAggregrateResponse>> GetEventAggregrates( EventAggregrateRequest request)
         {
-            string queryString = @"   SELECT {0} as aggregratedValue,c.eventType,c.eventSubType
+            string queryString = @"   SELECT {0} as aggregratedValue,c.eventType,c.eventSubType, '{1}' AS ruleType
                                             FROM c 
                                             WHERE c.eventGeneratorId = @eventGeneratorId
-                                            AND c.eventType IN ({1})
+                                            AND c.eventType IN ({2})
                                             AND c.audience.audienceType = @audienceType
                                             AND (c.eventDateTime >= @startDate AND c.eventDateTime <= @endDate )
                                             GROUP BY c.eventType, c.eventSubType ";
@@ -78,11 +78,11 @@ namespace blendnet.incentive.repository.IncentiveRepository
 
             if (request.AggregrateType == RuleType.COUNT)
             {
-                queryString = string.Format(queryString, "COUNT(c)", request.EventTypes);
+                queryString = string.Format(queryString, "COUNT(c)",RuleType.COUNT.ToString(), request.EventTypes);
 
             }else if (request.AggregrateType == RuleType.SUM)
             {
-                queryString = string.Format(queryString, "SUM(c.calculatedValue)", eventTypesStringValue);
+                queryString = string.Format(queryString, "SUM(c.calculatedValue)",RuleType.SUM.ToString(), eventTypesStringValue);
             }
             
             var queryDefinition = new QueryDefinition(queryString)

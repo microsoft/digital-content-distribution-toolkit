@@ -138,7 +138,8 @@ namespace blendnet.incentive.api.Common
                 foreach (PlanDetail planDetail in planDetails)
                 {
                     EventAggregrateResponse eventAggregrate = eventAggregrates.Where(ea => (ea.EventType == planDetail.EventType
-                                                                                            && ea.EventSubType == planDetail.EventSubType)).FirstOrDefault();
+                                                                                            && ea.EventSubType == planDetail.EventSubType
+                                                                                            && ea.RuleType == planDetail.RuleType)).FirstOrDefault();
                     if (eventAggregrate != default(EventAggregrateResponse))
                     {
                         //Formula is applied at the time of insertion hence formula is not required to be applied here.

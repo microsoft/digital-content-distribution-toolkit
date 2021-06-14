@@ -44,5 +44,10 @@ namespace blendnet.incentive.repository.Model
         /// Event Sub Type
         /// </summary>
         public string EventSubType { get; set; }
+
+        /// <summary>
+        /// Rule Type for which value is obtained
+        /// </summary>
+        public RuleType RuleType { get; set; }
     }
 }
