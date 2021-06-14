@@ -10,7 +10,7 @@ namespace blendnet.incentive.repository.Interfaces
     public interface IEventRepository
     {
         /// <summary>
-        /// Stores the event in container
+        /// Creates the incentive event in container
         /// </summary>
         /// <param name="incentiveEvent"></param>
         /// <returns></returns>

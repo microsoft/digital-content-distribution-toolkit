@@ -79,6 +79,12 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             }
         }
 
+        /// <summary>
+        /// Creates retailer event for order completion which is used for retailer incentive
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="activeRetailerRegularPlan"></param>
+        /// <returns></returns>
         private IncentiveEvent GetRetailerEventForOrderCompletion(Order order, IncentivePlan activeRetailerRegularPlan)
         {
             
@@ -91,8 +97,6 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             };
 
             incentiveEvent.EventGeneratorId = order.RetailerPartnerId;
-            incentiveEvent.EventGroupType = EventGroupType.COMMISSION;
-            
             incentiveEvent.EventType = EventType.RTLR_INCM_ORDER_COMPLTD;
             incentiveEvent.OriginalValue = (double)order.TotalAmountCollected;
             
@@ -113,6 +117,12 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             return incentiveEvent;
         }
 
+        /// <summary>
+        /// Creates consumer event for order completion which is used for coins incentive
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="activeRetailerRegularPlan"></param>
+        /// <returns></returns>
         private IncentiveEvent GetConsumerEventForOrderCompletion(Order order, IncentivePlan activeConsumerRegularPlan)
         {
             IncentiveEvent incentiveEvent = CreateIncentiveEvent();
@@ -124,7 +134,6 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             };
 
             incentiveEvent.EventGeneratorId = order.UserId.ToString();
-            incentiveEvent.EventGroupType = EventGroupType.CONSUMER;
             incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
             incentiveEvent.EventType = EventType.CNSR_INCM_ORDER_COMPLTD;
             incentiveEvent.OriginalValue = 1;
@@ -147,6 +156,10 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
         }
 
+        /// <summary>
+        /// Creates basic incentive event 
+        /// </summary>
+        /// <returns></returns>
         private IncentiveEvent CreateIncentiveEvent()
         {
             var curDate = DateTime.UtcNow;
@@ -159,6 +172,11 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             return incentiveEvent;
         }
 
+        /// <summary>
+        /// Adds all order related details in the properties which can be used on client side for further tracking or processing
+        /// </summary>
+        /// <param name="incentiveEvent"></param>
+        /// <param name="order"></param>
         private void AddProperties(IncentiveEvent incentiveEvent, Order order)
         {
             incentiveEvent.Properties = new List<Property>();

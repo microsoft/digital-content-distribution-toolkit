@@ -19,11 +19,6 @@ namespace blendnet.common.dto.Incentive
         public string EventGeneratorId { get; set; }
 
         /// <summary>
-        /// Event group type
-        /// </summary>
-        public EventGroupType EventGroupType { get; set; }
-
-        /// <summary>
         /// Event type of the event
         /// </summary>
         public EventType EventType { get; set; }
