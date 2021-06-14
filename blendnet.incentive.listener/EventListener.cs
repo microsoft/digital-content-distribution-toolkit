@@ -42,7 +42,7 @@ namespace blendnet.incentive.listener
         {
             _logger.LogInformation("Starting Eventlistner of blendnet.incentive.listener");
 
-            _eventBus.Subscribe<AddEventIntegrationEvent, AddEventIntegrationEventHandler>();
+            _eventBus.Subscribe<OrderCompletedIntegrationEvent, OrderCompletedEventIntegrationEventHandler>();
 
             await _eventBus.StartProcessing();
 

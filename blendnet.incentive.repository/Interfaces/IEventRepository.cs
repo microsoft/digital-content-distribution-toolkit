@@ -10,13 +10,21 @@ namespace blendnet.incentive.repository.Interfaces
     public interface IEventRepository
     {
         /// <summary>
-        /// Stores the event in container
+        /// Creates the incentive event in container
         /// </summary>
-        /// <param name="eventItem"></param>
+        /// <param name="incentiveEvent"></param>
         /// <returns></returns>
-        public Task<Guid> StoreEvent(Event eventItem);
+        public Task<Guid> CreateIncentiveEvent(IncentiveEvent incentiveEvent);
 
-        public List<Event> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate);
+        /// <summary>
+        /// Retreives events for given audience in selected date range
+        /// </summary>
+        /// <param name="eventGeneratorId"></param>
+        /// <param name="audience"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        public List<IncentiveEvent> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate);
 
         
     }

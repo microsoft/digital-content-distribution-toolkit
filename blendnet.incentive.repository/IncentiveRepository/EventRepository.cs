@@ -26,16 +26,29 @@ namespace blendnet.incentive.repository.IncentiveRepository
 
             _logger = logger;
 
-            this._container = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.Event);
+            this._container = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.IncentiveEvent);
         }
 
-        public async Task<Guid> StoreEvent(Event eventItem)
+        /// <summary>
+        /// Creates the incentive event in container
+        /// </summary>
+        /// <param name="eventItem"></param>
+        /// <returns></returns>
+        public async Task<Guid> CreateIncentiveEvent(IncentiveEvent eventItem)
         {
-            await this._container.CreateItemAsync<Event>(eventItem, new PartitionKey(eventItem.EventGeneratorId));
+            await this._container.CreateItemAsync<IncentiveEvent>(eventItem, new PartitionKey(eventItem.EventGeneratorId));
             return eventItem.EventId.Value;
         }
 
-        public List<Event> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate)
+        /// <summary>
+        /// Retreives events for given audience in selected date range
+        /// </summary>
+        /// <param name="eventGeneratorId"></param>
+        /// <param name="audience"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        public List<IncentiveEvent> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate)
         {
             throw new NotImplementedException();
         }

@@ -598,6 +598,7 @@ namespace blendnet.oms.api.Controllers
 
             order.RetailerId = retailer.Id;
             order.RetailerPartnerId = retailer.PartnerId;
+            order.RetailerPartnerCode = retailer.PartnerCode;
             order.PaymentDepositDate = currentDate.Year * 10000 + currentDate.Month * 100 + currentDate.Day;
             order.DepositDate = completeOrderRequest.DepositDate;
 

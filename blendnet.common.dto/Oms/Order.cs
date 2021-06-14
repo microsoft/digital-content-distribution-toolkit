@@ -37,6 +37,11 @@ namespace blendnet.common.dto.Oms
         public string RetailerPartnerId { get; set; }
 
         /// <summary>
+        /// Retailer partner code
+        /// </summary>
+        public string RetailerPartnerCode { get; set; }
+
+        /// <summary>
         /// Order Items
         /// </summary>
         public List<OrderItem> OrderItems { get; set; }

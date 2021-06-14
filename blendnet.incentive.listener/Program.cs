@@ -103,6 +103,8 @@ namespace blendnet.incentive.listener
                     //Configure Repository
                     services.AddTransient<IIncentiveRepository, IncentiveRepository>();
 
+                    services.AddTransient<IEventRepository, EventRepository>();
+
                     //Configure Kaizala Identity Proxy
                     services.AddTransient<KaizalaIdentityProxy>();
                 });
@@ -140,7 +142,7 @@ namespace blendnet.incentive.listener
 
             services.AddSingleton<IEventBus, EventServiceBus>();
 
-            services.AddTransient<AddEventIntegrationEventHandler>();
+            services.AddTransient<OrderCompletedEventIntegrationEventHandler>();
 
         }
 
