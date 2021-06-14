@@ -268,11 +268,11 @@ namespace blendnet.incentive.api.Common
                     }
                 case FormulaType.RANGE_AND_MULTIPLY:
                     {
-                        RangeValue rangeValue = formula.RangeOperand.Where(rv => value >= rv.StartRange && value <= rv.EndRange).FirstOrDefault();
+                        RangeValue rangeValue = formula.RangeOperand.Where(rv => (value >= rv.StartRange && value <= rv.EndRange)).FirstOrDefault();
 
                         if(rangeValue != default(RangeValue))
                         {
-                            result.Value = rangeValue.Output;
+                            result.Value = rangeValue.Output * formula.LeftOperand.Value;
                         }
 
                         break;
