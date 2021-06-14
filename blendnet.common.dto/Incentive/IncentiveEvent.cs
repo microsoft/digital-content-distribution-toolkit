@@ -24,6 +24,11 @@ namespace blendnet.common.dto.Incentive
         public EventType EventType { get; set; }
 
         /// <summary>
+        /// Content provider id in case of order completed event
+        /// </summary>
+        public string EventSubType { get; set; }
+
+        /// <summary>
         /// List of additional parameters that can be sent
         /// </summary>
         public List<Property> Properties { get; set; }

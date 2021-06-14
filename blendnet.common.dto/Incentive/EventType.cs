@@ -14,11 +14,11 @@ namespace blendnet.common.dto.Incentive
     [JsonConverter(typeof(StringEnumConverter))]
     public enum EventType
     {
-        CNSR_INCM_FIRST_SIGNIN,
-        CNSR_INCM_APP_ONCE_OPEN,
-        CNSR_INCM_ORDER_COMPLTD,
-        RTLR_INCM_ORDER_COMPLTD,
-        RTLR_INCM_REFFRAL_COMPLTD,
-        CNSR_EXPN_SUBS_REDEEM
+        CONSUMER_INCOME_FIRST_SIGNIN,
+        CONSUMER_INCOME_APP_ONCE_OPEN,
+        CONSUMER_INCOME_ORDER_COMPLETED,
+        CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM,
+        RETAILER_INCOME_ORDER_COMPLETED,
+        RETAILER_INCOME_REFFRAL_COMPLETED
     }
 }

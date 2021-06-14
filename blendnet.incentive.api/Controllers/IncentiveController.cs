@@ -24,6 +24,10 @@ namespace blendnet.incentive.api.Controllers
     [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
     public class IncentiveController : ControllerBase
     {
+        private const string C_CONSUMER = "CONSUMER";
+
+        private const string C_RETAILER = "RETAILER";
+
         private readonly ILogger _logger;
 
         private IIncentiveRepository _incentiveRepository;
@@ -102,7 +106,6 @@ namespace blendnet.incentive.api.Controllers
 
             return Ok(id);
         }
-
 
         [HttpGet("{planId:guid}/{subtypeName}", Name = nameof(GetIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -191,6 +194,12 @@ namespace blendnet.incentive.api.Controllers
                     return errorInfo;
                 }
 
+                if((planDetail.EventType == EventType.RETAILER_INCOME_ORDER_COMPLETED || planDetail.EventType == EventType.CONSUMER_INCOME_ORDER_COMPLETED) && string.IsNullOrEmpty(planDetail.EventSubType))
+                {
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0010"]);
+                    return errorInfo;
+                }
+
                 if (!IsEventForAudience(audienceType, planDetail.EventType))
                 {
                     errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0004"], planDetail.EventType.ToString(), audienceType));
@@ -253,10 +262,10 @@ namespace blendnet.incentive.api.Controllers
         {
             if(audienceType == AudienceType.CONSUMER)
             {
-                return eventSubType.ToString().StartsWith("CNSR");
+                return eventSubType.ToString().StartsWith(C_CONSUMER);
             }
 
-            return eventSubType.ToString().StartsWith("RTLR");
+            return eventSubType.ToString().StartsWith(C_RETAILER);
         }
 
         private bool IsFormulaTypeValid(FormulaType formulaType, PlanType planType)

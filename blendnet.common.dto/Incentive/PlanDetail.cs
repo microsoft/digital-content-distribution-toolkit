@@ -27,6 +27,11 @@ namespace blendnet.common.dto.Incentive
         public EventType EventType { get; set; }
 
         /// <summary>
+        /// Content provider id in case of order completed event
+        /// </summary>
+        public string EventSubType { get; set; }
+
+        /// <summary>
         /// Title of event
         /// </summary>
         [Required]
@@ -111,10 +116,7 @@ namespace blendnet.common.dto.Incentive
     {
         public bool Equals(PlanDetail planDetailLeft, PlanDetail planDetailRight)
         {
-            return planDetailLeft.EventGroupType == planDetailRight.EventGroupType &&
-                   planDetailLeft.EventType == planDetailRight.EventType &&
-                   planDetailLeft.Formula.FormulaType == planDetailRight.Formula.FormulaType;
-
+            return planDetailLeft.EventType == planDetailRight.EventType && string.Equals(planDetailLeft.EventSubType, planDetailRight.EventSubType);
         }
 
         public int GetHashCode(PlanDetail item)

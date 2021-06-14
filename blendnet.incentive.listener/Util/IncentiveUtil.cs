@@ -9,11 +9,11 @@ namespace blendnet.incentive.listener.Util
 {
     public class IncentiveUtil
     {
-        public static PlanDetail GetPlanDetailForEvent(IncentivePlan incentivePlan, EventType eventType)
+        public static PlanDetail GetPlanDetailForEvent(IncentivePlan incentivePlan, EventType eventType, string eventSubType)
         {
             if (incentivePlan == null) return null;
 
-            List<PlanDetail> planDetails = incentivePlan.PlanDetails.Where(plan => plan.EventType == eventType).ToList();
+            List<PlanDetail> planDetails = incentivePlan.PlanDetails.Where(plan => plan.EventType == eventType && plan.EventSubType == eventSubType).ToList();
 
             if (planDetails.Count == 0)
             {

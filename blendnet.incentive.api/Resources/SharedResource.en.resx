@@ -144,4 +144,7 @@
   <data name="INC_ERR_0009" xml:space="preserve">
     <value>INC_ERR_0009-Invalid Formula type</value>
   </data>
+  <data name="INC_ERR_0010" xml:space="preserve">
+    <value>INC_ERR_0010-Order completed event should have event sub type with content provider id</value>
+  </data>
 </root>

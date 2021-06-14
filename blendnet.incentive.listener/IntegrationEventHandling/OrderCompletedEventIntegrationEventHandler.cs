@@ -60,15 +60,21 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                     Order order = integrationEvent.Order;
                     List<IncentivePlan> activeRetailerRegularPlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, order.RetailerPartnerCode);
 
-                    IncentiveEvent retailerEvent = GetRetailerEventForOrderCompletion(order, activeRetailerRegularPlan.Count > 0 ? activeRetailerRegularPlan[0] : null);
+                    List<IncentiveEvent> retailerEvents = GetRetailerEventsForOrderCompletion(order, activeRetailerRegularPlan.Count > 0 ? activeRetailerRegularPlan[0] : null);
 
-                    await _eventRepository.CreateIncentiveEvent(retailerEvent);
+                    foreach (var retailerEvent in retailerEvents)
+                    {
+                        await _eventRepository.CreateIncentiveEvent(retailerEvent);
+                    }
 
                     List<IncentivePlan> activeConsumerRegularPlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
 
-                    IncentiveEvent consumerEvent = GetConsumerEventForOrderCompletion(order, activeConsumerRegularPlan.Count > 0 ? activeConsumerRegularPlan[0] : null);
+                    List<IncentiveEvent> consumerEvents = GetConsumerEventsForOrderCompletion(order, activeConsumerRegularPlan.Count > 0 ? activeConsumerRegularPlan[0] : null);
 
-                    await _eventRepository.CreateIncentiveEvent(consumerEvent);
+                    foreach (var consumerEvent in consumerEvents)
+                    {
+                        await _eventRepository.CreateIncentiveEvent(consumerEvent);
+                    }
 
                     _logger.LogInformation($"Done adding event");
                 }
@@ -85,36 +91,43 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
         /// <param name="order"></param>
         /// <param name="activeRetailerRegularPlan"></param>
         /// <returns></returns>
-        private IncentiveEvent GetRetailerEventForOrderCompletion(Order order, IncentivePlan activeRetailerRegularPlan)
+        private List<IncentiveEvent> GetRetailerEventsForOrderCompletion(Order order, IncentivePlan activeRetailerRegularPlan)
         {
-            
-            IncentiveEvent incentiveEvent = CreateIncentiveEvent();
+            List<IncentiveEvent> incentiveEvents = new List<IncentiveEvent>();
 
-            incentiveEvent.Audience = new Audience()
+            foreach (var orderItem in order.OrderItems)
             {
-                AudienceType = AudienceType.RETAILER,
-                SubTypeName = order.RetailerPartnerCode
-            };
+                IncentiveEvent incentiveEvent = CreateIncentiveEvent();
 
-            incentiveEvent.EventGeneratorId = order.RetailerPartnerId;
-            incentiveEvent.EventType = EventType.RTLR_INCM_ORDER_COMPLTD;
-            incentiveEvent.OriginalValue = (double)order.TotalAmountCollected;
-            
-            PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeRetailerRegularPlan, EventType.RTLR_INCM_ORDER_COMPLTD);
+                incentiveEvent.Audience = new Audience()
+                {
+                    AudienceType = AudienceType.RETAILER,
+                    SubTypeName = order.RetailerPartnerCode
+                };
 
-            if (planDetail == null)
-            {
-                _logger.LogWarning($"Storing orphan event as no active plan exists for retailer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventGeneratorId} and order id {order.Id}");
-                incentiveEvent.CalculatedValue = 0;
+                incentiveEvent.EventGeneratorId = order.RetailerPartnerId;
+                incentiveEvent.EventType = EventType.RETAILER_INCOME_ORDER_COMPLETED;
+                incentiveEvent.EventSubType = orderItem.Subscription.ContentProviderId.ToString();
+                incentiveEvent.OriginalValue = (double)order.TotalAmountCollected;
+
+                PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeRetailerRegularPlan, EventType.RETAILER_INCOME_ORDER_COMPLETED, incentiveEvent.EventSubType);
+
+                if (planDetail == null)
+                {
+                    _logger.LogWarning($"Storing orphan event as no active plan exists for retailer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventGeneratorId} and order id {order.Id}");
+                    incentiveEvent.CalculatedValue = 0;
+                }
+                else
+                {
+                    incentiveEvent.CalculatedValue = IncentiveUtil.GetComputedValue(incentiveEvent.OriginalValue, planDetail.Formula);
+                }
+
+                AddProperties(incentiveEvent, order, orderItem);
+
+                incentiveEvents.Add(incentiveEvent);
             }
-            else
-            {
-                incentiveEvent.CalculatedValue = IncentiveUtil.GetComputedValue(incentiveEvent.OriginalValue, planDetail.Formula);
-            }
 
-            AddProperties(incentiveEvent, order);
-
-            return incentiveEvent;
+            return incentiveEvents;
         }
 
         /// <summary>
@@ -123,36 +136,44 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
         /// <param name="order"></param>
         /// <param name="activeRetailerRegularPlan"></param>
         /// <returns></returns>
-        private IncentiveEvent GetConsumerEventForOrderCompletion(Order order, IncentivePlan activeConsumerRegularPlan)
+        private List<IncentiveEvent> GetConsumerEventsForOrderCompletion(Order order, IncentivePlan activeConsumerRegularPlan)
         {
-            IncentiveEvent incentiveEvent = CreateIncentiveEvent();
+            List<IncentiveEvent> incentiveEvents = new List<IncentiveEvent>();
 
-            incentiveEvent.Audience = new Audience()
+            foreach (var orderItem in order.OrderItems)
             {
-                AudienceType = AudienceType.CONSUMER,
-                SubTypeName = ApplicationConstants.Common.CONSUMER
-            };
+                IncentiveEvent incentiveEvent = CreateIncentiveEvent();
 
-            incentiveEvent.EventGeneratorId = order.UserId.ToString();
-            incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
-            incentiveEvent.EventType = EventType.CNSR_INCM_ORDER_COMPLTD;
-            incentiveEvent.OriginalValue = 1;
+                incentiveEvent.Audience = new Audience()
+                {
+                    AudienceType = AudienceType.CONSUMER,
+                    SubTypeName = ApplicationConstants.Common.CONSUMER
+                };
 
-            PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeConsumerRegularPlan, EventType.CNSR_INCM_ORDER_COMPLTD);
+                incentiveEvent.EventGeneratorId = order.UserId.ToString();
+                incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
+                incentiveEvent.EventType = EventType.CONSUMER_INCOME_ORDER_COMPLETED;
+                incentiveEvent.EventSubType = orderItem.Subscription.ContentProviderId.ToString();
+                incentiveEvent.OriginalValue = 1;
 
-            if(planDetail == null)
-            {
-                _logger.LogWarning($"Storing orphan event as no active plan exists for consumer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventGeneratorId} and order id {order.Id}");
-                incentiveEvent.CalculatedValue = 0;
+                PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeConsumerRegularPlan, EventType.CONSUMER_INCOME_ORDER_COMPLETED, incentiveEvent.EventSubType);
+
+                if (planDetail == null)
+                {
+                    _logger.LogWarning($"Storing orphan event as no active plan exists for consumer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventGeneratorId} and order id {order.Id}");
+                    incentiveEvent.CalculatedValue = 0;
+                }
+                else
+                {
+                    incentiveEvent.CalculatedValue = IncentiveUtil.GetComputedValue(incentiveEvent.OriginalValue, planDetail.Formula);
+                }
+
+                AddProperties(incentiveEvent, order, orderItem);
+
+                incentiveEvents.Add(incentiveEvent);
             }
-            else
-            {
-                incentiveEvent.CalculatedValue = IncentiveUtil.GetComputedValue(incentiveEvent.OriginalValue, planDetail.Formula);
-            }
 
-            AddProperties(incentiveEvent, order);
-
-            return incentiveEvent;
+            return incentiveEvents;
 
         }
 
@@ -177,7 +198,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
         /// </summary>
         /// <param name="incentiveEvent"></param>
         /// <param name="order"></param>
-        private void AddProperties(IncentiveEvent incentiveEvent, Order order)
+        private void AddProperties(IncentiveEvent incentiveEvent, Order order, OrderItem orderItem)
         {
             incentiveEvent.Properties = new List<Property>();
 
@@ -188,22 +209,19 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             };
             incentiveEvent.Properties.Add(orderData);
 
+            dynamic value = new JObject();
+            value.subscriptionId = orderItem.Subscription.Id;
+            value.transactionId = orderItem.PartnerReferenceNumber;
+            value.subscriptionTitle = orderItem.Subscription.Title;
+            value.contentProviderId = orderItem.Subscription.ContentProviderId;
 
-            foreach (var orderItem in order.OrderItems)
+            Property transactionData = new Property()
             {
-                dynamic value = new JObject();
-                value.subscriptionId = orderItem.Subscription.Id;
-                value.transactionId = orderItem.PartnerReferenceNumber;
-                value.subscriptionTitle = orderItem.Subscription.Title;
+                Name = C_OrderItem,
+                Value = JsonConvert.SerializeObject(value)
 
-                Property transactionData = new Property()
-                {
-                    Name = C_OrderItem,
-                    Value = JsonConvert.SerializeObject(value)
-
-                };
-                incentiveEvent.Properties.Add(transactionData);
-            }
+            };
+            incentiveEvent.Properties.Add(transactionData);
 
             Property userData = new Property()
             {
