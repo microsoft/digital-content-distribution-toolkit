@@ -1,0 +1,83 @@
+variables:
+  RunNumber: '$(Build.BuildNumber)'
+
+parameters:
+  - name: onlyDeploy
+    default: false
+    type: boolean
+
+  - name: environment
+    displayName: Environment
+    type: string
+    default: dev
+
+  - name: deployBuildNumber
+    default: latest
+    type: string
+
+  - name: podCount
+    displayName: Number of Pods
+    default: 1
+    type: string
+
+trigger:
+- manual
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: Build
+  condition: eq('${{ parameters.onlyDeploy }}', false)
+  jobs:
+  - job: Build
+    steps:
+    - task: Docker@2
+      displayName: Login to ACR
+      inputs:
+        command: login
+        containerRegistry: 'acrblendnet${{ parameters.environment }}'
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|kv-blendnet-dev|kv-blendnet-${{ parameters.environment }}|g'' blendnet.oms.listener/appsettings.json'
+    - task: CmdLine@2
+      displayName: "Building docker image"
+      inputs:
+        script: "docker build -t acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.oms.listener:$(RunNumber) -f ./blendnet.oms.listener/Dockerfile ."
+
+    - task: CmdLine@2
+      displayName: "Pushing image to ACR"
+      inputs:
+        script: "docker push acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.oms.listener:$(RunNumber)"
+
+    - task: Docker@2
+      displayName: Logout of ACR
+      inputs:
+        command: logout
+        containerRegistry: 'acrblendnet${{ parameters.environment }}'
+
+- stage: Deploy
+  dependsOn: Build
+  condition: or(succeeded(), eq('${{ parameters.onlyDeploy }}', true))
+  jobs:
+  - job: Deploy
+    steps:
+    - task: CmdLine@2
+      condition: eq('${{ parameters.onlyDeploy }}', false)
+      inputs:
+        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.oms.listener:$(RunNumber)|g'' blendnet.oms.listener/blendnet.oms.listener.yaml'
+    - task: CmdLine@2
+      condition: eq('${{ parameters.onlyDeploy }}', true)
+      inputs:
+        script: 'sed -i ''s|image_name|acrblendnet${{ parameters.environment }}.azurecr.io/blendnet.oms.listener:${{ parameters.deployBuildNumber }}|g'' blendnet.oms.listener/blendnet.oms.listener.yaml'
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|pod_identity_name|blendnet-${{ parameters.environment }}-pod-identity|g'' blendnet.oms.listener/blendnet.oms.listener.yaml'
+    - task: CmdLine@2
+      inputs:
+        script: 'sed -i ''s|pod_count|${{ parameters.podCount }}|g'' blendnet.oms.listener/blendnet.oms.listener.yaml'
+    - task: KubernetesManifest@0
+      inputs:
+        action: 'deploy'
+        kubernetesServiceConnection: 'aks-blendnet-${{ parameters.environment }}-default'
+        manifests: 'blendnet.oms.listener/blendnet.oms.listener.yaml'

@@ -1,0 +1,22 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blendnet-oms-listener
+  labels:
+    app: blendnet-oms-listener
+spec:
+  replicas: pod_count
+  selector:
+    matchLabels:
+      app: blendnet-oms-listener
+  template:
+    metadata:
+      labels:
+        app: blendnet-oms-listener
+        aadpodidbinding: pod_identity_name
+    spec:
+      containers:
+      - name: blendnet-oms-listener
+        image: image_name
+        ports:
+        - containerPort: 80
