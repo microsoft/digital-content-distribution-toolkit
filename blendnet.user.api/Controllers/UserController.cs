@@ -194,6 +194,7 @@ namespace blendnet.user.api.Controllers
             user.ReferralInfo = new ReferralDto
             {
                 RetailerId = retailerDto.Id,
+                RetailerPartnerCode = retailerDto.PartnerCode,
                 RetailerPartnerId = retailerDto.PartnerId,
                 RetailerReferralCode = retailerDto.ReferralCode,
                 ReferralDate = Int32.Parse(currentDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYMMDD)),
@@ -206,6 +207,13 @@ namespace blendnet.user.api.Controllers
             int statusCode = await _userRepository.UpdateUser(user);
             if (statusCode == (int)System.Net.HttpStatusCode.OK)
             {
+                RetailerAssignedIntegrationEvent retailerAssignedIntegrationEvent = new RetailerAssignedIntegrationEvent()
+                {
+                    User = user,
+                };
+
+                await _eventBus.Publish(retailerAssignedIntegrationEvent);
+
                 return NoContent();
             }
             else

@@ -99,7 +99,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
             foreach (var orderItem in order.OrderItems)
             {
-                IncentiveEvent incentiveEvent = CreateIncentiveEvent();
+                IncentiveEvent incentiveEvent = IncentiveUtil.CreateIncentiveEvent();
 
                 incentiveEvent.Audience = new Audience()
                 {
@@ -144,7 +144,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
             foreach (var orderItem in order.OrderItems)
             {
-                IncentiveEvent incentiveEvent = CreateIncentiveEvent();
+                IncentiveEvent incentiveEvent = IncentiveUtil.CreateIncentiveEvent();
 
                 incentiveEvent.Audience = new Audience()
                 {
@@ -179,21 +179,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
         }
 
-        /// <summary>
-        /// Creates basic incentive event 
-        /// </summary>
-        /// <returns></returns>
-        private IncentiveEvent CreateIncentiveEvent()
-        {
-            var curDate = DateTime.UtcNow;
-            IncentiveEvent incentiveEvent = new IncentiveEvent();
-            incentiveEvent.EventId = Guid.NewGuid();
-            incentiveEvent.EventDateTime = curDate;
-            incentiveEvent.EventDate = Int32.Parse(curDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYMMDD));
-            incentiveEvent.CreatedDate = curDate;
-            incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
-            return incentiveEvent;
-        }
+        
 
         /// <summary>
         /// Adds all order related details in the properties which can be used on client side for further tracking or processing

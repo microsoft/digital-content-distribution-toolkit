@@ -143,7 +143,7 @@ namespace blendnet.incentive.listener
             services.AddSingleton<IEventBus, EventServiceBus>();
 
             services.AddTransient<OrderCompletedEventIntegrationEventHandler>();
-
+            services.AddTransient<RetailerAssignedIntegrationEventHandler>();
         }
 
         /// <summary>

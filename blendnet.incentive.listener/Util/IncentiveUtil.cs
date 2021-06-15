@@ -1,4 +1,5 @@
-﻿using blendnet.common.dto.Incentive;
+﻿using blendnet.common.dto;
+using blendnet.common.dto.Incentive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,22 @@ namespace blendnet.incentive.listener.Util
             }
 
             return 0;
+        }
+
+        /// <summary>
+        /// Creates basic incentive event 
+        /// </summary>
+        /// <returns></returns>
+        public static IncentiveEvent CreateIncentiveEvent()
+        {
+            var curDate = DateTime.UtcNow;
+            IncentiveEvent incentiveEvent = new IncentiveEvent();
+            incentiveEvent.EventId = Guid.NewGuid();
+            incentiveEvent.EventDateTime = curDate;
+            incentiveEvent.EventDate = Int32.Parse(curDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYMMDD));
+            incentiveEvent.CreatedDate = curDate;
+            incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
+            return incentiveEvent;
         }
     }
 }
