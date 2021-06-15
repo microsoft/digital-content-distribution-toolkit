@@ -20,9 +20,9 @@ namespace blendnet.common.dto.Incentive
 
         public AudienceType AudienceType { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 
     /// <summary>

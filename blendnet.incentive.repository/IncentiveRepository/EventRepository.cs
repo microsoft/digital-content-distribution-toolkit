@@ -68,13 +68,16 @@ namespace blendnet.incentive.repository.IncentiveRepository
             string queryString = @"   SELECT {0} as aggregratedValue,c.eventType,c.eventSubType, '{1}' AS ruleType
                                             FROM c 
                                             WHERE c.eventGeneratorId = @eventGeneratorId
-                                            {2}
                                             AND c.audience.audienceType = @audienceType
-                                            AND (c.eventDateTime >= @startDate AND c.eventDateTime <= @endDate )
+                                            {2}
+                                            {3}
                                             GROUP BY c.eventType, c.eventSubType ";
             
             string eventTypeAndCondition = string.Empty;
 
+            string eventDateTimeCondition = string.Empty;
+
+            //if event types are provided
             if (request.EventTypes != null && request.EventTypes.Count > 0)
             {
                 string eventTypesStringValue = string.Join(",", request.EventTypes.Select(item => "'" + item + "'"));
@@ -82,20 +85,31 @@ namespace blendnet.incentive.repository.IncentiveRepository
                 eventTypeAndCondition = $"AND c.eventType IN ({eventTypesStringValue})";
             }
 
+            //if the date time is provided then add the add condition
+            if (request.StartDate.HasValue && request.EndDate.HasValue)
+            {
+                eventDateTimeCondition = "AND (c.eventDateTime >= @startDate AND c.eventDateTime <= @endDate )";
+            }
+
             if (request.AggregrateType == RuleType.COUNT)
             {
-                queryString = string.Format(queryString, "COUNT(c)",RuleType.COUNT.ToString(), eventTypeAndCondition);
+                queryString = string.Format(queryString, "COUNT(c)",RuleType.COUNT.ToString(), eventTypeAndCondition, eventDateTimeCondition);
 
             }else if (request.AggregrateType == RuleType.SUM)
             {
-                queryString = string.Format(queryString, "SUM(c.calculatedValue)",RuleType.SUM.ToString(), eventTypeAndCondition);
+                queryString = string.Format(queryString, "SUM(c.calculatedValue)",RuleType.SUM.ToString(), eventTypeAndCondition, eventDateTimeCondition);
             }
-            
+
             var queryDefinition = new QueryDefinition(queryString)
                 .WithParameter("@eventGeneratorId", request.EventGeneratorId)
-                .WithParameter("@audienceType", request.AudienceType)
-                .WithParameter("@startDate", request.StartDate)
-                .WithParameter("@endDate", request.EndDate);
+                .WithParameter("@audienceType", request.AudienceType);
+
+            //if the date time is provided then add the parameters
+            if (request.StartDate.HasValue && request.EndDate.HasValue)
+            {
+                queryDefinition.WithParameter("@startDate", request.StartDate);
+                queryDefinition.WithParameter("@endDate", request.EndDate);
+            }
 
             var eventAggregrates = await _container.ExtractDataFromQueryIterator<EventAggregrateResponse>(queryDefinition);
 

@@ -40,7 +40,7 @@ namespace blendnet.incentive.api.Common
             //Get the current active plan for retailer
             IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, retailerProviderCode);
 
-            await CalculateIncentivePlanForRetailer(incentivePlan, retailerPartnerId);
+            await CalculateIncentivePlan(incentivePlan, retailerPartnerId);
             
             return incentivePlan;
 
@@ -56,36 +56,9 @@ namespace blendnet.incentive.api.Common
         {
             IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.MILESTONE, retailerProviderCode);
 
-            await CalculateIncentivePlanForRetailer(incentivePlan, retailerPartnerId);
+            await CalculateIncentivePlan(incentivePlan, retailerPartnerId);
 
             return incentivePlan;
-        }
-
-        /// <summary>
-        /// Calculates incentives for the given date range
-        /// </summary>
-        /// <param name="retailerProviderCode"></param>
-        /// <param name="retailerPartnerId"></param>
-        /// <param name="startDate"></param>
-        /// <param name="dateTime"></param>
-        /// <returns></returns>
-        public async Task CalculateRandomIncentiveForRetailer(  string retailerProviderCode, 
-                                                                string retailerPartnerId, 
-                                                                DateTime startDate, DateTime dateTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Calculates the Milestone for Consumer
-        /// Question : Do we have milestone for Consumer. 
-        /// Question : If Yes, then do we need to apply the milestone calculation over all the past plans? - I think not possible, it has to be over active only
-        /// </summary>
-        /// <param name="phoneNumber"></param>
-        /// <returns></returns>
-        public async Task<IncentivePlan> CalculateActiveMilestoneForConsumer(string phoneNumber)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -94,35 +67,112 @@ namespace blendnet.incentive.api.Common
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> CalculateActiveIncentivePlanForConsumer(string phoneNumber)
+        public async Task<IncentivePlan> CalculateActiveIncentivePlanForConsumer(string phoneNumber)
         {
-            throw new NotImplementedException();
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
+
+            await CalculateIncentivePlan(incentivePlan, phoneNumber);
+
+            return incentivePlan;
         }
 
         /// <summary>
-        /// 
+        /// Calculates the Milestone for Consumer
+        /// Milestone is always calculated on active plan.
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        public async Task<IncentivePlan> CalculateActiveMilestoneForConsumer(string phoneNumber)
+        {
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.MILESTONE);
+
+            await CalculateIncentivePlan(incentivePlan, phoneNumber);
+
+            return incentivePlan;
+        }
+
+        /// <summary>
+        /// Calculates Retailer incentives for the given date range
+        /// </summary>
+        /// <param name="retailerPartnerId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public async Task<List<EventAggregrateResponse>> CalculateRandomIncentiveForRetailer(string retailerPartnerId,
+                                                                DateTime startDate,
+                                                                DateTime endDate)
+        {
+            EventAggregrateRequest eventAggregrateRequest = new EventAggregrateRequest()
+            {
+                AggregrateType = RuleType.SUM,
+                AudienceType = AudienceType.RETAILER,
+                EventGeneratorId = retailerPartnerId,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            List<EventAggregrateResponse> response = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
+
+            return response;
+        }
+
+
+        /// <summary>
+        /// Calculates Consumer incentives for the given date range 
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <param name="startDate"></param>
         /// <param name="dateTime"></param>
         /// <returns></returns>
-        public async Task CalculateRandomIncentiveForConsumer(string phoneNumber,
-                                                              DateTime startDate, DateTime dateTime)
+        public async Task<List<EventAggregrateResponse>> CalculateRandomIncentiveForConsumer(string phoneNumber,
+                                                              DateTime startDate, 
+                                                              DateTime endDate)
         {
-            throw new NotImplementedException();
+            EventAggregrateRequest eventAggregrateRequest = new EventAggregrateRequest()
+            {
+                AggregrateType = RuleType.SUM,
+                AudienceType = AudienceType.CONSUMER,
+                EventGeneratorId = phoneNumber,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            List<EventAggregrateResponse> response = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
+
+            return response;
         }
 
         /// <summary>
-        /// Calculates Incentive Plan for Retailer
+        /// Sets the start date time to datetime to
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        public async Task<List<EventAggregrateResponse>> CalculateRandomIncentiveForConsumer(string phoneNumber)
+        {
+            EventAggregrateRequest eventAggregrateRequest = new EventAggregrateRequest()
+            {
+                AggregrateType = RuleType.SUM,
+                AudienceType = AudienceType.CONSUMER,
+                EventGeneratorId = phoneNumber
+            };
+
+            List<EventAggregrateResponse> response = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
+
+            return response;
+        }
+
+        #region Private Methods
+        /// <summary>
+        /// Calculates Incentive Plan
         /// </summary>
         /// <param name="incentivePlan"></param>
-        /// <param name="retailerPartnerId"></param>
+        /// <param name="eventGeneratorId"></param>
         /// <returns></returns>
-        private async Task CalculateIncentivePlanForRetailer (IncentivePlan incentivePlan, string retailerPartnerId)
+        private async Task CalculateIncentivePlan(IncentivePlan incentivePlan, string eventGeneratorId)
         {
             //one active incentive plan has to exists and it should have plan details
-            if (incentivePlan != null && 
-                incentivePlan.PlanDetails != null && 
+            if (incentivePlan != null &&
+                incentivePlan.PlanDetails != null &&
                 incentivePlan.PlanDetails.Count > 0)
             {
                 await CalculatePlanDetails(incentivePlan.PlanType,
@@ -130,7 +180,7 @@ namespace blendnet.incentive.api.Common
                                             incentivePlan.PlanDetails,
                                             incentivePlan.StartDate,
                                             incentivePlan.EndDate,
-                                            retailerPartnerId);
+                                            eventGeneratorId);
             }
         }
 
@@ -146,16 +196,16 @@ namespace blendnet.incentive.api.Common
                                                 List<PlanDetail> planDetails,
                                                 DateTime startDate,
                                                 DateTime endDate,
-                                                string eventGeneratorId )
+                                                string eventGeneratorId)
         {
             //Get the unique Rules with assosiated events
             Dictionary<RuleType, List<EventType>> uniqueRuleWithEvents = GetUniqueRuleWithEvents(planDetails);
 
             //Get the COUNT / SUM from actual event data EACH UNIQUE EVENT TYPE and EVENT SUBTYPE
-            List<EventAggregrateResponse> eventAggregrates = await GetEventAggregrates( audienceType,
+            List<EventAggregrateResponse> eventAggregrates = await GetEventAggregrates(audienceType,
                                                                                         startDate,
                                                                                         endDate,
-                                                                                        eventGeneratorId, 
+                                                                                        eventGeneratorId,
                                                                                         uniqueRuleWithEvents);
 
             //check if there is sum data / events recorded in database for any of the events mentioned in incentive plan
@@ -193,7 +243,7 @@ namespace blendnet.incentive.api.Common
         {
             Dictionary<RuleType, List<EventType>> ruleEventCombinations = new Dictionary<RuleType, List<EventType>>();
 
-            foreach(PlanDetail planDetail in planDetails)
+            foreach (PlanDetail planDetail in planDetails)
             {
                 if (ruleEventCombinations.ContainsKey(planDetail.RuleType))
                 {
@@ -225,14 +275,14 @@ namespace blendnet.incentive.api.Common
         /// <param name="eventGeneratorId"></param>
         /// <param name="uniqueRuleWithEvents"></param>
         /// <returns></returns>
-        private async Task<List<EventAggregrateResponse>> GetEventAggregrates(  AudienceType audienceType,
+        private async Task<List<EventAggregrateResponse>> GetEventAggregrates(AudienceType audienceType,
                                                                                 DateTime startDate,
                                                                                 DateTime endDate,
                                                                                 string eventGeneratorId,
                                                                                 Dictionary<RuleType, List<EventType>> uniqueRuleWithEvents)
         {
             List<EventAggregrateResponse> eventAggregrates = new List<EventAggregrateResponse>();
-            
+
             EventAggregrateRequest eventAggregrateRequest = null;
 
             foreach (KeyValuePair<RuleType, List<EventType>> rule in uniqueRuleWithEvents)
@@ -259,7 +309,7 @@ namespace blendnet.incentive.api.Common
         /// <param name="formula"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        private Result ApplyFormula(Formula formula , double value)
+        private Result ApplyFormula(Formula formula, double value)
         {
             Result result = new Result();
 
@@ -290,14 +340,14 @@ namespace blendnet.incentive.api.Common
                         result.Value = Math.Floor(value / formula.RightOperand) * formula.LeftOperand.Value;
 
                         result.Value1 = value % formula.RightOperand;
-                        
+
                         break;
                     }
                 case FormulaType.RANGE_AND_MULTIPLY:
                     {
                         RangeValue rangeValue = formula.RangeOperand.Where(rv => (value >= rv.StartRange && value <= rv.EndRange)).FirstOrDefault();
 
-                        if(rangeValue != default(RangeValue))
+                        if (rangeValue != default(RangeValue))
                         {
                             result.Value = rangeValue.Output * formula.LeftOperand.Value;
                         }
@@ -308,5 +358,8 @@ namespace blendnet.incentive.api.Common
 
             return result;
         }
+
+        #endregion
+
     }
 }
