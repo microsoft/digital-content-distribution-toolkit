@@ -83,18 +83,18 @@ export class LoginComponent implements OnInit {
   }
 
   getContactErrorMessage() {
-    if (this.contact.hasError('required')) {
-      return 'You must enter a value';
+    this.otpSendErrorMessage= "";
+    if (this.contact.hasError('required') || this.contact.invalid) {
+      return 'Please enter a valid Phone Number';
     }
-    return this.contact.invalid ? 'Not a valid Phone Number' : '';
   }
 
   getOTPErrorMessage() {
-    if (this.otp.hasError('required')) {
-      return 'You must enter a value';
+    this.otpVerifyErrorMessage = "";
+    if (this.otp.hasError('required') || this.otp.invalid) {
+      return 'Please enter a valid OTP received on the phone';
     }
 
-    return this.otp.hasError('contact') ? 'Not a valid OTP' : '';
   }
 
   // setLoginDisplay() {

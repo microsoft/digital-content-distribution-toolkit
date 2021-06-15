@@ -9,19 +9,42 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { KaizalaService } from '../services/kaizala.service';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
 
-    constructor(private kaizalaService: KaizalaService) { }
+  urlsToNotUse: Array<string>;
+
+    constructor(private kaizalaService: KaizalaService) {
+      this.urlsToNotUse= [
+        environment.kaizalaApi0,
+        environment.kaizalaApi1,
+        environment.kaizalaApi2
+      ];
+     }
+
+    private isValidRequestForInterceptor(requestUrl: string): boolean {
+      // let positionIndicator: string = 'api/';
+      // let position = requestUrl.indexOf(positionIndicator);
+      // if (position > 0) {
+        // let destination: string = requestUrl.substr(position + positionIndicator.length);
+        for (let address of this.urlsToNotUse) {
+          if (new RegExp(address).test(requestUrl)) {
+            return false;
+          }
+        // }
+      }
+      return true;
+    }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
       return next.handle(request)
         .pipe(
           retry(1),
           catchError((error: HttpErrorResponse) => {
-            if ([401, 403].indexOf(error.status) !== -1) {
+            if (this.isValidRequestForInterceptor(request.url) && [401, 403].indexOf(error.status) !== -1) {
               // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
               this.kaizalaService.logout();
               location.reload(true);

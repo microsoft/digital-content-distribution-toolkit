@@ -13,3 +13,9 @@
 .cms-login-form {
     margin-left: 10%;
 }
+.cms-resend-otp {
+    color: grey;
+}
+.cms-login-validation-errors {
+    font-size: smaller;
+}

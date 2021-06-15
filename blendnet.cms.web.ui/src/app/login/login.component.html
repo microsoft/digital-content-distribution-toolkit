@@ -1,28 +1,8 @@
 <div class="content-home">
     <div >
             <mat-card class="cms-login">
-                <!-- <div *ngIf="isContactOnlySection">
-                    <div class="cms-login-form">
-                        <h3><b>Sign up or Sign in</b></h3>
-                    
-                        <mat-form-field appearance="outline" class="cms-login-contact">
-                            <mat-label>Phone Number</mat-label>
-                            <input matInput [formControl]="contact" required>
-                            <mat-icon matSuffix>phone</mat-icon>
-                            <mat-error *ngIf="contact.invalid">{{getContactErrorMessage()}}</mat-error>
-                        </mat-form-field>
-                        <br>
-                        <div>
-                            <button mat-raised-button color="primary" [disabled]="contact.invalid"
-                            (click)="showCountryCodeSection()">Continue</button>
-                        </div>
-                    </div>
-                </div> -->
+
                 <div *ngIf="isCountryCodeSection">
-                    <!-- <div>
-                        <button mat-button (click)="showContactOnlySection()"><mat-icon>arrow_left</mat-icon>Cancel</button>
-                    </div>
-                    <br><br> -->
                     <div class="cms-login-form">
                         <h3><b>Sign up or Sign in</b></h3>
                         <div>
@@ -40,10 +20,12 @@
                                 <mat-label>Phone Number</mat-label>
                                 <input matInput  [formControl]="contact" required>
                                 <mat-icon matSuffix>phone</mat-icon>
-                                <mat-error *ngIf="contact.invalid">{{getContactErrorMessage()}}</mat-error>
                             </mat-form-field>
                         </div>
-                        <div *ngIf="otpSendErrorMessage">
+                        <div *ngIf="contact.invalid && (contact.touched || contact.dirty)" class="cms-login-validation-errors">
+                            <mat-error>{{getContactErrorMessage()}}</mat-error>
+                        </div>
+                        <div *ngIf="otpSendErrorMessage && !contact.invalid" class="cms-login-validation-errors">
                              <mat-error> {{otpSendErrorMessage}}</mat-error>   
                         </div>
                         <br>
@@ -68,14 +50,21 @@
                             <mat-label>Verification Code</mat-label>
                             <input matInput [formControl]="otp" type="password" required>
                             <mat-icon matSuffix>otp</mat-icon>
-                            <mat-error *ngIf="otp.invalid">{{getOTPErrorMessage()}}</mat-error>
                         </mat-form-field>
-                        <div *ngIf="otpVerifyErrorMessage">
+                        <div  *ngIf="otp.invalid && (otp.dirty || otp.touched)" class="cms-login-validation-errors">
+                            <mat-error>{{getOTPErrorMessage()}}</mat-error>
+                        </div>
+                        <div *ngIf="otpVerifyErrorMessage && !otp.invalid" class="cms-login-validation-errors">
                             <mat-error> {{otpVerifyErrorMessage}}</mat-error>   
                        </div>
+                       <br>
                         <div>
                             <button mat-raised-button color="primary" (click)="verifyOTP()"
-                            [disabled]="!otp.value">Verify OTP</button>
+                            [disabled]="otp.invalid">Verify OTP</button>
+                        </div>
+                        <br>
+                        <div class="cms-resend-otp">
+                            Didn't receive the OTP? <a href="#" (click)="showOTPSection()">Resend OTP</a>
                         </div>
                     </div>
                        
