@@ -28,6 +28,7 @@ using blendnet.common.infrastructure;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using blendnet.api.proxy.Kaizala;
 using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.user.api
@@ -159,7 +160,7 @@ namespace blendnet.user.api
             services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<RetailerProxy>();
             services.AddTransient<RetailerProviderProxy>();
-
+            services.AddTransient<NotificationProxy>();
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
 

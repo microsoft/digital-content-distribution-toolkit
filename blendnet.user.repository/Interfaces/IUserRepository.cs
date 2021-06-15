@@ -37,6 +37,13 @@ namespace blendnet.user.repository.Interfaces
         public Task<common.dto.User.User> GetUserById(string Id);
 
         /// <summary>
+        /// Returns the BlendNet User By channel id
+        /// </summary>
+        /// <param name="channelId"></param>
+        /// <returns>List<UserData></returns>
+        public Task<List<common.dto.Notification.UserData>> GetUsersDataByChannelId(Channel channelId);
+
+        /// <summary>
         /// Get Referral data based on retailer partner id and given date range
         /// </summary>
         /// <param name="retailerPartnerId"></param>

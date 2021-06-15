@@ -1,11 +1,14 @@
+using blendnet.api.proxy.Kaizala;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
+using blendnet.common.dto.Notification;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
+using blendnet.common.infrastructure.Notification;
 using blendnet.user.api.Models;
 using blendnet.user.repository.Interfaces;
 using Microsoft.ApplicationInsights;
@@ -14,9 +17,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static blendnet.common.dto.ApplicationConstants;
 
 namespace blendnet.user.api.Controllers
 {
@@ -33,6 +39,8 @@ namespace blendnet.user.api.Controllers
 
         private RetailerProviderProxy _retailerProviderProxy;
 
+        private NotificationProxy _notificationProxy;
+
         private IEventBus _eventBus;
 
         private UserAppSettings _appSettings;
@@ -45,6 +53,7 @@ namespace blendnet.user.api.Controllers
                               ILogger<UserController> logger,
                               RetailerProxy retailerProxy,
                               RetailerProviderProxy retailerProviderProxy,
+                              NotificationProxy notificationProxy,
                               IEventBus eventBus,
                               IOptionsMonitor<UserAppSettings> optionsMonitor,
                               IStringLocalizer<SharedResource> stringLocalizer,
@@ -54,6 +63,7 @@ namespace blendnet.user.api.Controllers
             _userRepository = userRepository;
             _retailerProxy = retailerProxy;
             _retailerProviderProxy = retailerProviderProxy;
+            _notificationProxy = notificationProxy;
             _eventBus = eventBus;
             _appSettings = optionsMonitor.CurrentValue;
             _stringLocalizer = stringLocalizer;
@@ -136,6 +146,41 @@ namespace blendnet.user.api.Controllers
             else
             {
                 return Ok(user);
+            }
+        }
+
+        /// <summary>
+        /// Send notification to all users
+        /// </summary>
+        /// <param name="Notification"></param>
+        /// <returns></returns>
+        [HttpPost("notification", Name = nameof(SendNotification))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult> SendNotification(SendNotificationRequest request)
+        {
+            List<string> errorInfo = new List<string>();
+            List<UserData> userData = await _userRepository.GetUsersDataByChannelId(Channel.ConsumerApp);
+            string payload = NotificationUtilities.GetNotificationPayload(request.Title, request.Body, request.AttachmentUrl, null, request.Type, _appSettings.KaizalaIdentityAppName);
+            if((payload.Length * sizeof(Char)) > 4096)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["USR_ERR_014"]));
+                return BadRequest(errorInfo);
+            } 
+            NotificationRequest notificationRequest = new NotificationRequest
+            {
+                Payload = payload,
+                UserData = userData
+            };
+            try
+            {
+                await _notificationProxy.SendNotification(notificationRequest);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["USR_ERR_015"], ex));
+                return BadRequest(errorInfo);
             }
         }
 

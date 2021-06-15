@@ -4,6 +4,7 @@ using blendnet.common.dto.Events;
 using blendnet.common.dto.Notification;
 using blendnet.common.dto.Oms;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.Notification;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;
@@ -73,7 +74,6 @@ namespace blendnet.oms.listener.IntegrationEventHandling
                 Payload = payload,
                 UserData = userdata
             };
-
             try
             {
                 await _notificationProxy.SendNotification(notificationRequest);
@@ -87,35 +87,9 @@ namespace blendnet.oms.listener.IntegrationEventHandling
 
         private string GetOrderCompletePayload(Order order)
         {
-            dynamic message = new JObject();
-
-            dynamic android = new JObject();
-
-            dynamic notification = new JObject();
-
-            notification.body = "Your order has been completed";
-            notification.title = "Order Completed";
-
-            android.notification = notification;
-
-            message.android = android;
-
-            dynamic gcmObject = new JObject();
-
-            dynamic gcm = new JObject();
-            dynamic data = new JObject();
-            gcm.pushNotificationKey = "newMsgPushNotification";
-            gcm.appname = _appSettings.KaizalaIdentityAppName;
-
-            data.message = gcm;
-            data.type = PushNotificationType.OrderComplete;
-            data.orderId = order.Id;
-            gcmObject.priority = "high";
-
-            gcmObject.data = data;
-            gcmObject.message = message;
-            string msg = JsonConvert.SerializeObject(gcmObject);
-            return msg;
+            string body = "Your order has been completed";
+            string title = "Order Completed";
+            return NotificationUtilities.GetNotificationPayload(title, body, null, order.Id, PushNotificationType.OrderComplete, _appSettings.KaizalaIdentityAppName);
         }
 
     }
