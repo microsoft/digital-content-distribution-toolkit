@@ -23,7 +23,7 @@ namespace blendnet.common.dto.Notification
 
         public List<Guid> UserIds { get; set; }
 
-        public string ScaleUnit { get; set; }
+        public int ScaleUnit { get; set; }
     }
 
     public class UserData

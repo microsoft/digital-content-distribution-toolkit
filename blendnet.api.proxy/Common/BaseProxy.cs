@@ -146,13 +146,15 @@ namespace blendnet.api.proxy.Common
             return baseUrlWithSu;
         }
 
-        public string GetUserScaleUnitByPhoneDigit(string lastDigit)
+        public int GetUserScaleUnitByPhoneDigit(string lastDigit)
         {
             Dictionary<string, string> settings = new Dictionary<string, string>();
 
             _configuration.GetSection("KaizalaIdentity").Bind(settings);
 
-            return GetScaleUnit(settings[lastDigit.ToString()]);
+            string scaleUnit = settings[lastDigit.ToString()];
+
+            return int.Parse(scaleUnit);
         }
 
         private string GetScaleUnit(string scaleUnit)
