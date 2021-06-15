@@ -15,12 +15,6 @@ namespace blendnet.common.dto.Incentive
         public Guid? DetailId { get; set; }
 
         /// <summary>
-        /// Type of event
-        /// </summary>
-        [Required]
-        public EventGroupType EventGroupType { get; set; }
-
-        /// <summary>
         /// Sub type of event
         /// </summary>
         [Required]
@@ -134,7 +128,7 @@ namespace blendnet.common.dto.Incentive
 
         public int GetHashCode(PlanDetail item)
         {
-            return HashCode.Combine(item.EventGroupType, item.EventType, item.Formula.FormulaType);
+            return HashCode.Combine(item.EventType, item.EventSubType);
 
         }
     }

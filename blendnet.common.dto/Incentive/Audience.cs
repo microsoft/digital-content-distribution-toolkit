@@ -17,7 +17,6 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// "Consumer" for Consumer, Selected Retailer partner code in case of Retailer
         /// </summary>
-        //[JsonProperty(PropertyName = "/audience/subTypeName")]
         public string SubTypeName { get; set; }
     }
 
