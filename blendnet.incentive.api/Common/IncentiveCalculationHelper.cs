@@ -35,7 +35,7 @@ namespace blendnet.incentive.api.Common
         /// <param name="retailerPartnerId"></param>
         /// <param name="retailerProviderCode"></param>
         /// <returns></returns>
-        public async Task<IncentivePlan> CalculateIncentiveForRetailer(string retailerProviderCode,string retailerPartnerId)
+        public async Task<IncentivePlan> CalculateActiveIncentivePlanForRetailer(string retailerProviderCode,string retailerPartnerId)
         {
             //Get the current active plan for retailer
             IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, retailerProviderCode);
@@ -52,7 +52,7 @@ namespace blendnet.incentive.api.Common
         /// <param name="retailerPartnerId"></param>
         /// <param name="retailerProviderCode"></param>
         /// <returns></returns>
-        public async Task<IncentivePlan> CalculateMiletoneForRetailer(string retailerProviderCode, string retailerPartnerId)
+        public async Task<IncentivePlan> CalculateActiveMiletoneForRetailer(string retailerProviderCode, string retailerPartnerId)
         {
             IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.MILESTONE, retailerProviderCode);
 
@@ -62,13 +62,28 @@ namespace blendnet.incentive.api.Common
         }
 
         /// <summary>
+        /// Calculates incentives for the given date range
+        /// </summary>
+        /// <param name="retailerProviderCode"></param>
+        /// <param name="retailerPartnerId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public async Task CalculateRandomIncentiveForRetailer(  string retailerProviderCode, 
+                                                                string retailerPartnerId, 
+                                                                DateTime startDate, DateTime dateTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Calculates the Milestone for Consumer
         /// Question : Do we have milestone for Consumer. 
-        /// Question : If Yes, then do we need to apply the milestone calculation over all the past plans?
+        /// Question : If Yes, then do we need to apply the milestone calculation over all the past plans? - I think not possible, it has to be over active only
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public async Task<IncentivePlan> CalculateMilestoneForConsumer(string phoneNumber)
+        public async Task<IncentivePlan> CalculateActiveMilestoneForConsumer(string phoneNumber)
         {
             throw new NotImplementedException();
         }
@@ -79,7 +94,20 @@ namespace blendnet.incentive.api.Common
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> CalculateIncentiveForConsumer(string phoneNumber)
+        public Task<IncentivePlan> CalculateActiveIncentivePlanForConsumer(string phoneNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <param name="startDate"></param>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public async Task CalculateRandomIncentiveForConsumer(string phoneNumber,
+                                                              DateTime startDate, DateTime dateTime)
         {
             throw new NotImplementedException();
         }
@@ -113,7 +141,6 @@ namespace blendnet.incentive.api.Common
         /// <param name="planDetails"></param>
         /// <param name="eventGeneratorId"></param>
         /// <returns></returns>
-
         private async Task CalculatePlanDetails(PlanType planType,
                                                 AudienceType audienceType,
                                                 List<PlanDetail> planDetails,

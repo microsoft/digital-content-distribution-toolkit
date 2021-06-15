@@ -68,20 +68,27 @@ namespace blendnet.incentive.repository.IncentiveRepository
             string queryString = @"   SELECT {0} as aggregratedValue,c.eventType,c.eventSubType, '{1}' AS ruleType
                                             FROM c 
                                             WHERE c.eventGeneratorId = @eventGeneratorId
-                                            AND c.eventType IN ({2})
+                                            {2}
                                             AND c.audience.audienceType = @audienceType
                                             AND (c.eventDateTime >= @startDate AND c.eventDateTime <= @endDate )
                                             GROUP BY c.eventType, c.eventSubType ";
+            
+            string eventTypeAndCondition = string.Empty;
 
-            string eventTypesStringValue = string.Join(",", request.EventTypes.Select(item => "'" + item + "'"));
+            if (request.EventTypes != null && request.EventTypes.Count > 0)
+            {
+                string eventTypesStringValue = string.Join(",", request.EventTypes.Select(item => "'" + item + "'"));
+
+                eventTypeAndCondition = $"AND c.eventType IN ({eventTypesStringValue})";
+            }
 
             if (request.AggregrateType == RuleType.COUNT)
             {
-                queryString = string.Format(queryString, "COUNT(c)",RuleType.COUNT.ToString(), request.EventTypes);
+                queryString = string.Format(queryString, "COUNT(c)",RuleType.COUNT.ToString(), eventTypeAndCondition);
 
             }else if (request.AggregrateType == RuleType.SUM)
             {
-                queryString = string.Format(queryString, "SUM(c.calculatedValue)",RuleType.SUM.ToString(), eventTypesStringValue);
+                queryString = string.Format(queryString, "SUM(c.calculatedValue)",RuleType.SUM.ToString(), eventTypeAndCondition);
             }
             
             var queryDefinition = new QueryDefinition(queryString)
