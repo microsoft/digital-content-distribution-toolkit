@@ -44,11 +44,11 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         .pipe(
           retry(1),
           catchError((error: HttpErrorResponse) => {
-            if (this.isValidRequestForInterceptor(request.url) && [401, 403].indexOf(error.status) !== -1) {
-              // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-              this.kaizalaService.logout();
-              location.reload(true);
-            }
+            // if (this.isValidRequestForInterceptor(request.url) && [401, 403].indexOf(error.status) !== -1) {
+            //   // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+            //   this.kaizalaService.logout();
+            //   location.reload(true);
+            // }
             let errorMessage = '';
             if (error.error instanceof ErrorEvent) {
               // client-side error
