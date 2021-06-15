@@ -2,7 +2,6 @@
 using blendnet.common.dto.Incentive;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.incentive.repository.Interfaces;
-using blendnet.incentive.repository.Model;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

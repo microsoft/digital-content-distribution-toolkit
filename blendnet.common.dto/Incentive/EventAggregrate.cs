@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blendnet.incentive.repository.Model
+namespace blendnet.common.dto.Incentive
 {
     /// <summary>
     /// EventAggregrateReqest

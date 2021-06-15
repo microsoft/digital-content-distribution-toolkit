@@ -1,5 +1,4 @@
 ﻿using blendnet.common.dto.Incentive;
-using blendnet.incentive.repository.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

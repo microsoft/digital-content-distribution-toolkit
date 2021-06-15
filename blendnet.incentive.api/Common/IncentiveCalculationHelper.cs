@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using blendnet.common.dto.Incentive;
-using blendnet.incentive.repository.Model;
 
 namespace blendnet.incentive.api.Common
 {
