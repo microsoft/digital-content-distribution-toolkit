@@ -32,4 +32,18 @@ mat-form-field {
       margin-right: 1rem !important;
     }
   }
+
+.cms-validation {
+  font-size: smaller;
+}
+
+.cms-success {
+  font-size: smaller;
+  color: green;
+}
+
+.cms-warn {
+  font-size: smaller;
+  color: orange;
+}
   

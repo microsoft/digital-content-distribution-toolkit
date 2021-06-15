@@ -64,6 +64,8 @@ export class AppComponent {
         
     }
 
+
+
     ngDoCheck() {
       this.hasMenuAccess = localStorage.getItem("roles")?.includes(environment.roles.SuperAdmin) ||
       localStorage.getItem("roles")?.includes(environment.roles.ContentAdmin);
@@ -73,8 +75,10 @@ export class AppComponent {
         localStorage.getItem("contentProviderName") ? 
         localStorage.getItem("contentProviderName") :"Not Selected";      
       });
+      this.kaizalaService.currentUserName.subscribe(userName => {
+        this.currentUserName = userName});
       this.kaizalaService.currentUser.subscribe(user => {
-        this.currentUser = user});
+        this.currentUser = user });
     }
 
     logout() {

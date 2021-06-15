@@ -105,7 +105,8 @@ export class ContentProviderComponent implements OnInit {
   openEditConfirmModal(selectedCp, edit = true): void {
     const heading = edit ? 'Edit ': 'Add '
     const dialogRef = this.dialog.open(AddContentProviderComponent, {
-      width: '60%',disableClose: true,
+      width: '60%',
+      disableClose: true,
       data: {cp: selectedCp, heading: heading + 'Content Provider'}
     });
   

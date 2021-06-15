@@ -4,10 +4,17 @@
       <mat-form-field>
         <input matInput placeholder="Name" 
         formControlName="cpname" required>
-        <mat-error *ngIf="errorHandling('cpname', 'required')">
+        
+        <!-- <mat-error *ngIf="errorHandling('cpname', 'required')">
           You must provide a <strong>name</strong>
-       </mat-error>
+       </mat-error> -->
       </mat-form-field>
+      <div class="cms-validation"
+      *ngIf="f.cpname.invalid && (f.cpname.dirty || f.cpname.touched)">
+        <mat-error>
+          You must provide a name (max length 10)
+        </mat-error>
+      </div>
       <mat-form-field>
         <input matInput placeholder="Logo URL address"  
         formControlName="logoUrl">
@@ -15,14 +22,28 @@
       <mat-form-field >
         <input matInput placeholder="Admin" 
         formControlName="adminUpn">
-        <button mat-icon-button matSuffix
+        <button mat-icon-button matSuffix [disabled]="f.adminUpn.invalid || !f.adminUpn.value"
        (click)="searchAndAddAdmin()"><mat-icon>search</mat-icon></button>
       </mat-form-field>
-      <mat-error >
-       {{adminSearchError}}
-     </mat-error>
+      <div class="cms-validation" *ngIf="f.adminUpn.invalid && (f.adminUpn.touched || f.adminUpn.dirty)">
+        <mat-error>
+          {{getAdminSearchError()}}
+        </mat-error>
+      </div>
+      <div class="cms-validation" *ngIf="!f.adminUpn.invalid">
+        <mat-error>
+          {{adminNotFoundError}}
+        </mat-error>
+      </div>
+      <div class="cms-success" *ngIf="!f.adminUpn.invalid">
+          {{adminFoundSuccessMsg}}
+      </div>
+      <div class="cms-warn" *ngIf="!f.adminUpn.invalid">
+        {{adminWarnMsg}}
+    </div>
       
       
+      <br>
        <mat-chip-list #chipList>
         <mat-chip *ngFor="let admin of contentAdministrators" [selectable]="selectable" 
         [removable]="removable"
@@ -31,49 +52,6 @@
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
       </mat-chip-list>
-<!-- 
-       <mat-grid-list cols="2" rowHeight="85px" >
-           <mat-grid-tile>
-              <mat-form-field>
-                <input matInput placeholder="Name" 
-                formControlName="cpname" required>
-                <mat-error *ngIf="errorHandling('cpname', 'required')">
-                  You must provide a <strong>name</strong>
-               </mat-error>
-              </mat-form-field>
-          </mat-grid-tile>
-          <mat-grid-tile>
-              <mat-form-field>
-                <input matInput placeholder="Logo URL address"  
-                formControlName="logoUrl">
-              </mat-form-field>
-          </mat-grid-tile>
-        
-          <mat-grid-tile>
-              <mat-form-field >
-                <input matInput placeholder="Admin" 
-                formControlName="adminUpn">
-              </mat-form-field>
-              <mat-error >
-               {{adminSearchError}}
-             </mat-error>
-              <button mat-icon-button 
-               (click)="searchAndAddAdmin()"><mat-icon>search</mat-icon></button>
-              
-          </mat-grid-tile>
-          <mat-grid-tile></mat-grid-tile>
-          
-          <mat-grid-tile>
-              <mat-chip-list #chipList>
-                <mat-chip *ngFor="let admin of contentAdministrators" [selectable]="selectable" 
-                [removable]="removable"
-                  (removed)="remove(admin)">
-                  {{admin.firstName}}
-                  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                </mat-chip>
-              </mat-chip-list>
-          </mat-grid-tile>
-        </mat-grid-list> -->
 
 
         <div class="btn-sec">

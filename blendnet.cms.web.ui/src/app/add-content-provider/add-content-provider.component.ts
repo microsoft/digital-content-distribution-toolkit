@@ -17,20 +17,22 @@ export class AddContentProviderComponent implements OnInit {
   contentAdministrators: ContentproviderAdmin[] = [];
   selectable = true;
   removable = true;
-  adminSearchError:string="";
+  adminNotFoundError: string="";
+  adminFoundSuccessMsg: string = "";
+  adminWarnMsg: string ="";
   cp: Contentprovider;
   @Output() onCPUpdateOrCreate = new EventEmitter<any>();
 
 
   cpForm = new FormGroup({
-    cpname :  new FormControl(' ', [Validators.required]),
+    cpname :  new FormControl(' ', [Validators.required, Validators.maxLength(10)]),
     logoUrl : new FormControl(' '),
     admins: new FormControl(''),
     // isActive : new FormControl("inactive", [Validators.required]),
     // activationDate : new FormControl(null, [Validators.required]),
     // deactivationDate : new FormControl(null, [Validators.required]),
     contentAdministrators : new FormControl(this.contentAdministrators),
-    adminUpn: new FormControl('')
+    adminUpn: new FormControl('',  [Validators.maxLength(10), Validators.minLength(10), Validators.pattern(/^-?(0|[1-9]\d*)?$/)])
   });
 
 
@@ -66,10 +68,24 @@ export class AddContentProviderComponent implements OnInit {
     this.cpForm.get("admins").setValue(this.contentAdministrators);
   }
 
+  // convenience getter for easy access to form fields
+  get f() { 
+    return this.cpForm.controls; 
+  }
+
+
+  getAdminSearchError() {
+    this.adminNotFoundError= "";
+    this.adminFoundSuccessMsg="";
+    this.adminWarnMsg = "";
+    if (this.cpForm.get("adminUpn").invalid) {
+      return 'Please enter a valid Phone Number';
+    }
+  }
   searchAndAddAdmin() {
     var upn = this.cpForm.get("adminUpn").value;
     if(this.contentAdministrators.some(admin => admin.phoneNumber ===  upn)) {
-      this.toastr.warning("Provided user is already an admin");
+      this.adminWarnMsg="This user is already added!";
     } else {
       this.userService.getUserDetails(upn).subscribe(res => {
           var newAdmin = {
@@ -78,11 +94,16 @@ export class AddContentProviderComponent implements OnInit {
             userId: res.id
           }
           this.contentAdministrators.push(newAdmin);
-          this.toastr.success("Please click save to add the user as admin");
+          this.adminFoundSuccessMsg="Please click save to add the user as admin";
           this.cpForm.get("adminUpn").setValue("");
       },
       err => {
-         this.toastr.error(err);
+        if(err === "Not Found") {
+          this.adminNotFoundError = "This is not a registered user!";
+        } else {
+          this.toastr.error(err);
+        }
+         
       })
     }
   }
@@ -94,9 +115,9 @@ export class AddContentProviderComponent implements OnInit {
     }
   }
 
-  public errorHandling = (control: string, error: string) => {
-    return this.cpForm.controls[control].hasError(error);
-  }
+  // public errorHandling = (control: string, error: string) => {
+  //   return this.cpForm.controls[control].hasError(error);
+  // }
 
   saveOrUpdate() {
     var newUpdatedCP = {
