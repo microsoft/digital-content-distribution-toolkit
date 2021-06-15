@@ -63,8 +63,8 @@ export class UnprocessedComponent {
         ContentStatus.TRANSFORM_SUBMITTED,
         ContentStatus.TRANSFORM_INPROGRESS,
         ContentStatus.TRANSFORM_AMS_JOB_INPROGRESS,
-        ContentStatus.TRANSFORM_DOWNLOAD_INPROGRESS
-        // ContentStatus.TRANSFORM_DOWNLOAD_COMPLETE
+        ContentStatus.TRANSFORM_DOWNLOAD_INPROGRESS,
+        ContentStatus.TRANSFORM_FAILED
       ],
       "contentBroadcastStatuses": [
          ContentStatus.BROADCAST_NOT_INITIALIZED
