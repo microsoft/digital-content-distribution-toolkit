@@ -30,7 +30,7 @@
             <input matInput type="number" placeholder="Duration (in days)"  
             formControlName="durationDays" required min="1" max="365">
             <mat-error *ngIf="errorHandling('durationDays', 'required') || errorHandling('durationDays', 'min') || errorHandling('durationDays', 'max')"> 
-              Invalid duration, should be between [0 - 365]
+              Invalid duration, should be between [1 - 365]
              </mat-error>    
             </mat-form-field>
         </td>

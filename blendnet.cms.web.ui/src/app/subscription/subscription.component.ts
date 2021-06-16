@@ -59,8 +59,8 @@ export class SubscriptionComponent {
 
 
   disableSaveBtn(sub) {
-    return (!sub.price || sub.price?.value < 0 || 
-      !sub.durationDays || sub.durationDays.value < 1 || sub.durationDays.value > 365);
+    return (!sub.price || sub.price < 0 || 
+      !sub.durationDays || sub.durationDays < 1 || sub.durationDays > 365);
 
   }
  
