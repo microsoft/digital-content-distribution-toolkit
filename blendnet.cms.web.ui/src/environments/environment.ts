@@ -33,12 +33,12 @@ export const environment = {
     {
       "filterName" : "Region",
       "filterValues" : [
-        "Central India", "West India", "North India", "South India"]
+        "Central_India", "West_India", "North_India", "South_India"]
     },
     // {
     //   "filterName" : "Device Types",
     //   "filterValues" : [
-    //     "MAP 100", "MAP 500", "MAP 200"]
+    //     "MAP_100", "MAP_500", "MAP_200"]
     // },
     {
       "filterName" : "Content Types",

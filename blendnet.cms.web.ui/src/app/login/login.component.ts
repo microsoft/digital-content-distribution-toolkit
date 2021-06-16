@@ -130,8 +130,12 @@ export class LoginComponent implements OnInit {
     this.otp.setValue("");
   }
 
-  showOTPSection() {
+  resendOTP() {
     this.otpSendErrorMessage = "";
+    this.otpVerifyErrorMessage = "";
+    this.showOTPSection();
+  }
+  showOTPSection() {
     //this.kaizalaService.getOTP(this.selectedCountryCodeValue.concat(this.contact.value));
     this.kaizalaService.getOTP(this.selectedCountryCodeValue.concat(this.contact.value)).subscribe(
       res => {

@@ -63,8 +63,8 @@ export class UnprocessedComponent {
         ContentStatus.TRANSFORM_SUBMITTED,
         ContentStatus.TRANSFORM_INPROGRESS,
         ContentStatus.TRANSFORM_AMS_JOB_INPROGRESS,
-        ContentStatus.TRANSFORM_DOWNLOAD_INPROGRESS
-        // ContentStatus.TRANSFORM_DOWNLOAD_COMPLETE
+        ContentStatus.TRANSFORM_DOWNLOAD_INPROGRESS,
+        ContentStatus.TRANSFORM_FAILED
       ],
       "contentBroadcastStatuses": [
          ContentStatus.BROADCAST_NOT_INITIALIZED
@@ -120,7 +120,8 @@ export class UnprocessedComponent {
   }
 
   isContentNotDeletable(row) {
-    return row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
+    return (row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
+    && row.contentUploadStatus !== ContentStatus.UPLOAD_FAILED)
     || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED
     && row.contentTransformStatus !== ContentStatus.TRANSFORM_FAILED);  
   }

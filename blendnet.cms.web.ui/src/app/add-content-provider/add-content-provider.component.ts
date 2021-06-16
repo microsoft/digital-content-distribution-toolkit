@@ -6,6 +6,7 @@ import { Contentprovider } from '../models/contentprovider.model';
 import { ContentProviderService } from '../services/content-provider.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../services/user.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -16,12 +17,14 @@ import { UserService } from '../services/user.service';
 export class AddContentProviderComponent implements OnInit {
   contentAdministrators: ContentproviderAdmin[] = [];
   selectable = true;
-  removable = true;
+  removable = false;
   adminNotFoundError: string="";
   adminFoundSuccessMsg: string = "";
   adminWarnMsg: string ="";
   cp: Contentprovider;
   @Output() onCPUpdateOrCreate = new EventEmitter<any>();
+  isSuperAdmin: boolean = false;
+
 
 
   cpForm = new FormGroup({
@@ -55,6 +58,13 @@ export class AddContentProviderComponent implements OnInit {
     // this.amaxDate = new Date(currentYear , currentMonth, currentDate+10);
     // this.dminDate = new Date(currentYear, currentMonth, currentDate+1);
     // this.dmaxDate = new Date(currentYear+1, 11, 31);
+    this.isSuperAdmin = localStorage.getItem("roles")?.includes(environment.roles.SuperAdmin);
+    if(this.isSuperAdmin) {
+      this.removable = true;
+    } else{
+      this.cpForm.disable();
+    }
+    
   }
 
   ngOnInit(): void {

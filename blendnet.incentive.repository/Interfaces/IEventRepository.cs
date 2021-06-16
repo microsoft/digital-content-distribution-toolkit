@@ -19,12 +19,9 @@ namespace blendnet.incentive.repository.Interfaces
         /// <summary>
         /// Retreives events for given audience in selected date range
         /// </summary>
-        /// <param name="eventCreatedFor"></param>
-        /// <param name="audience"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
+        /// <param name=""></param>
         /// <returns></returns>
-        public List<IncentiveEvent> GetEvents(string eventCreatedFor, Audience audience, DateTime? startDate, DateTime? endDate);
+        public Task<List<IncentiveEvent>> GetEvents(EventCriteriaRequest eventCriteria);
 
         /// <summary>
         /// Returns the COUNT or SUM aggregrate for the given list of events.

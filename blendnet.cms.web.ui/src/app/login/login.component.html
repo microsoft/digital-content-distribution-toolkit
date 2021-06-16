@@ -20,10 +20,8 @@
                                 <mat-label>Phone Number</mat-label>
                                 <input matInput  [formControl]="contact" required>
                                 <mat-icon matSuffix>phone</mat-icon>
+                                <mat-error *ngIf="contact.invalid">{{getContactErrorMessage()}}</mat-error>
                             </mat-form-field>
-                        </div>
-                        <div *ngIf="contact.invalid && (contact.touched || contact.dirty)" class="cms-login-validation-errors">
-                            <mat-error>{{getContactErrorMessage()}}</mat-error>
                         </div>
                         <div *ngIf="otpSendErrorMessage && !contact.invalid" class="cms-login-validation-errors">
                              <mat-error> {{otpSendErrorMessage}}</mat-error>   
@@ -50,10 +48,8 @@
                             <mat-label>Verification Code</mat-label>
                             <input matInput [formControl]="otp" type="password" required>
                             <mat-icon matSuffix>otp</mat-icon>
+                            <mat-error *ngIf="otp.invalid">{{getOTPErrorMessage()}}</mat-error>
                         </mat-form-field>
-                        <div  *ngIf="otp.invalid && (otp.dirty || otp.touched)" class="cms-login-validation-errors">
-                            <mat-error>{{getOTPErrorMessage()}}</mat-error>
-                        </div>
                         <div *ngIf="otpVerifyErrorMessage && !otp.invalid" class="cms-login-validation-errors">
                             <mat-error> {{otpVerifyErrorMessage}}</mat-error>   
                        </div>
@@ -64,7 +60,7 @@
                         </div>
                         <br>
                         <div class="cms-resend-otp">
-                            Didn't receive the OTP? <a href="#" (click)="showOTPSection()">Resend OTP</a>
+                            Didn't receive the OTP? <a href="#" (click)="resendOTP()">Resend OTP</a>
                         </div>
                     </div>
                        
