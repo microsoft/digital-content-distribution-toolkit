@@ -38,7 +38,7 @@ namespace blendnet.incentive.api.Common
         public async Task<IncentivePlan> CalculateActiveIncentivePlanForRetailer(string retailerProviderCode,string retailerPartnerId)
         {
             //Get the current active plan for retailer
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerPublishedPlan(PlanType.REGULAR, retailerProviderCode, null);
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, retailerProviderCode);
 
             await CalculateIncentivePlan(incentivePlan, retailerPartnerId);
             
@@ -54,7 +54,7 @@ namespace blendnet.incentive.api.Common
         /// <returns></returns>
         public async Task<IncentivePlan> CalculateActiveMiletoneForRetailer(string retailerProviderCode, string retailerPartnerId)
         {
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerPublishedPlan(PlanType.MILESTONE, retailerProviderCode, null);
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.MILESTONE, retailerProviderCode);
 
             await CalculateIncentivePlan(incentivePlan, retailerPartnerId);
 
@@ -69,7 +69,7 @@ namespace blendnet.incentive.api.Common
         /// <returns></returns>
         public async Task<IncentivePlan> CalculateActiveIncentivePlanForConsumer(string phoneNumber)
         {
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerPublishedPlan(PlanType.REGULAR, null);
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
 
             await CalculateIncentivePlan(incentivePlan, phoneNumber);
 
@@ -84,7 +84,7 @@ namespace blendnet.incentive.api.Common
         /// <returns></returns>
         public async Task<IncentivePlan> CalculateActiveMilestoneForConsumer(string phoneNumber)
         {
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerPublishedPlan(PlanType.MILESTONE, null);
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.MILESTONE);
 
             await CalculateIncentivePlan(incentivePlan, phoneNumber);
 

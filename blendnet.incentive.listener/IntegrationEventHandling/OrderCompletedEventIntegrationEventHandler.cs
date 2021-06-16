@@ -60,7 +60,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
                     Order order = integrationEvent.Order;
 
-                    IncentivePlan activeRetailerRegularPlan = await _incentiveRepository.GetCurrentRetailerPublishedPlan(PlanType.REGULAR, order.RetailerPartnerCode, null);
+                    IncentivePlan activeRetailerRegularPlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, order.RetailerPartnerCode);
 
                     List<IncentiveEvent> retailerEvents = GetRetailerEventsForOrderCompletion(order, activeRetailerRegularPlan);
 
@@ -69,7 +69,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                         await _eventRepository.CreateIncentiveEvent(retailerEvent);
                     }
 
-                    IncentivePlan activeConsumerRegularPlan = await _incentiveRepository.GetCurrentConsumerPublishedPlan(PlanType.REGULAR, null);
+                    IncentivePlan activeConsumerRegularPlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
 
                     List<IncentiveEvent> consumerEvents = GetConsumerEventsForOrderCompletion(order, activeConsumerRegularPlan);
 
