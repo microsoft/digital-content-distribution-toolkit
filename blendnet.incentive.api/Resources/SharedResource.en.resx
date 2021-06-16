@@ -165,4 +165,10 @@
   <data name="INC_ERR_0016" xml:space="preserve">
     <value>INC_ERR_0016-Something went wrong while publishing plan</value>
   </data>
+  <data name="INC_ERR_0017" xml:space="preserve">
+    <value>INC_ERR_0017-Only one draft plan can exist in the system</value>
+  </data>
+  <data name="INC_ERR_0018" xml:space="preserve">
+    <value>INC_ERR_0018-Given audience type does  not match with api</value>
+  </data>
 </root>
