@@ -120,7 +120,8 @@ export class UnprocessedComponent {
   }
 
   isContentNotDeletable(row) {
-    return row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
+    return (row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
+    && row.contentUploadStatus !== ContentStatus.UPLOAD_FAILED)
     || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED
     && row.contentTransformStatus !== ContentStatus.TRANSFORM_FAILED);  
   }
