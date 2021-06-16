@@ -51,7 +51,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
         {
             string queryString = @"   SELECT *
                                       FROM c 
-                                      WHERE c.eventGeneratorId = @eventGeneratorId
+                                      WHERE c.eventCreatedFor = @eventCreatedFor
                                       AND c.audience.audienceType = @audienceType
                                       {0}
                                       {1} ";
@@ -77,7 +77,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
             queryString = string.Format(queryString, eventTypeAndCondition, eventDateTimeCondition);
 
             var queryDefinition = new QueryDefinition(queryString)
-                .WithParameter("@eventGeneratorId", eventCriteria.EventGeneratorId)
+                .WithParameter("@eventCreatedFor", eventCriteria.EventCreatedFor)
                 .WithParameter("@audienceType", eventCriteria.AudienceType);
 
             //if the date time is provided then add the parameters

@@ -166,9 +166,9 @@ namespace blendnet.incentive.api.Common
         /// Calculates Incentive Plan
         /// </summary>
         /// <param name="incentivePlan"></param>
-        /// <param name="eventGeneratorId"></param>
+        /// <param name="eventCreatedFor"></param>
         /// <returns></returns>
-        private async Task CalculateIncentivePlan(IncentivePlan incentivePlan, string eventGeneratorId)
+        private async Task CalculateIncentivePlan(IncentivePlan incentivePlan, string eventCreatedFor)
         {
             //one active incentive plan has to exists and it should have plan details
             if (incentivePlan != null &&
@@ -180,7 +180,7 @@ namespace blendnet.incentive.api.Common
                                             incentivePlan.PlanDetails,
                                             incentivePlan.StartDate,
                                             incentivePlan.EndDate,
-                                            eventGeneratorId);
+                                            eventCreatedFor);
             }
         }
 
@@ -189,14 +189,14 @@ namespace blendnet.incentive.api.Common
         /// Calculates Incentive Plan
         /// </summary>
         /// <param name="planDetails"></param>
-        /// <param name="eventGeneratorId"></param>
+        /// <param name="eventCreatedFor"></param>
         /// <returns></returns>
         private async Task CalculatePlanDetails(PlanType planType,
                                                 AudienceType audienceType,
                                                 List<PlanDetail> planDetails,
                                                 DateTime startDate,
                                                 DateTime endDate,
-                                                string eventGeneratorId)
+                                                string eventCreatedFor)
         {
             //Get the unique Rules with assosiated events
             Dictionary<RuleType, List<EventType>> uniqueRuleWithEvents = GetUniqueRuleWithEvents(planDetails);
@@ -205,7 +205,7 @@ namespace blendnet.incentive.api.Common
             List<EventAggregrateResponse> eventAggregrates = await GetEventAggregrates(audienceType,
                                                                                         startDate,
                                                                                         endDate,
-                                                                                        eventGeneratorId,
+                                                                                        eventCreatedFor,
                                                                                         uniqueRuleWithEvents);
 
             //check if there is sum data / events recorded in database for any of the events mentioned in incentive plan
@@ -272,13 +272,13 @@ namespace blendnet.incentive.api.Common
         /// This makes the call to  repository hence can be costly but the call is on partition key
         /// </summary>
         /// <param name="incentivePlan"></param>
-        /// <param name="eventGeneratorId"></param>
+        /// <param name="eventCreatedFor"></param>
         /// <param name="uniqueRuleWithEvents"></param>
         /// <returns></returns>
         private async Task<List<EventAggregrateResponse>> GetEventAggregrates(AudienceType audienceType,
                                                                                 DateTime startDate,
                                                                                 DateTime endDate,
-                                                                                string eventGeneratorId,
+                                                                                string eventCreatedFor,
                                                                                 Dictionary<RuleType, List<EventType>> uniqueRuleWithEvents)
         {
             List<EventAggregrateResponse> eventAggregrates = new List<EventAggregrateResponse>();
@@ -292,7 +292,7 @@ namespace blendnet.incentive.api.Common
                     AggregrateType = rule.Key,
                     EventTypes = rule.Value,
                     AudienceType = audienceType,
-                    EventCreatedFor = eventGeneratorId,
+                    EventCreatedFor = eventCreatedFor,
                     StartDate = startDate,
                     EndDate = endDate
                 };

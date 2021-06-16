@@ -14,7 +14,7 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// Event generator id . It is must to pass
         /// </summary>
-        public string EventGeneratorId { get; set; }
+        public string EventCreatedFor { get; set; }
 
         /// <summary>
         /// Audience Type. It is must to pass
