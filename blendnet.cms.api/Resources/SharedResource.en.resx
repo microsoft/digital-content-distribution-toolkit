@@ -186,4 +186,7 @@
   <data name="CMS_ERR_0023" xml:space="preserve">
     <value>CMS_ERR_0023-Price should be minimum 1</value>
   </data>
+  <data name="CMS_ERR_0024" xml:space="preserve">
+    <value>CMS_ERR_0024-Invalid json schema - {0}</value>
+  </data>
 </root>

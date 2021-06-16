@@ -559,7 +559,7 @@ namespace blendnet.cms.api.Controllers
             }
             catch (Exception ex)
             {
-                errorDetails.Add(ex.Message);
+                errorDetails.Add(string.Format(_stringLocalizer["CMS_ERR_0024"], ex.Message));
 
                 return null;
             }
