@@ -89,8 +89,17 @@ namespace blendnet.oms.listener.IntegrationEventHandling
         {
             string body = "Your order has been completed";
             string title = "Order Completed";
-            return NotificationUtilities.GetNotificationPayload(title, body, null, order.Id, PushNotificationType.OrderComplete, _appSettings.KaizalaIdentityAppName);
+            NotificationData notificationData = new NotificationData
+            {
+                Body = body,
+                Title = title,
+                Type = PushNotificationType.OrderComplete
+            };
+            dynamic payloadObject =  NotificationUtilities.GetNotificationPayload(notificationData);
+            payloadObject.data.messsage.appname = _appSettings.KaizalaIdentityAppName;
+            payloadObject.data.orderId = order.Id;   
+            string payload = JsonConvert.SerializeObject(payloadObject);
+            return payload;
         }
-
     }
 }

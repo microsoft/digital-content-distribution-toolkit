@@ -157,16 +157,18 @@ namespace blendnet.user.api.Controllers
         [HttpPost("notification", Name = nameof(SendNotification))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult> SendNotification(SendNotificationRequest request)
+        public async Task<ActionResult> SendNotification(NotificationData request)
         {
             List<string> errorInfo = new List<string>();
-            List<UserData> userData = await _userRepository.GetUsersDataByChannelId(Channel.ConsumerApp);
-            string payload = NotificationUtilities.GetNotificationPayload(request.Title, request.Body, request.AttachmentUrl, null, request.Type, _appSettings.KaizalaIdentityAppName);
-            if((payload.Length * sizeof(Char)) > 4096)
+            if (request.Title.Length > 50 || request.Body.Length > 150)
             {
                 errorInfo.Add(String.Format(_stringLocalizer["USR_ERR_014"]));
                 return BadRequest(errorInfo);
-            } 
+            }
+            List<UserData> userData = await _userRepository.GetUsersDataByChannelId(Channel.ConsumerApp);
+            dynamic payloadObject = NotificationUtilities.GetNotificationPayload(request);
+            payloadObject.data.message.appname = _appSettings.KaizalaIdentityAppName;
+            string payload = JsonConvert.SerializeObject(payloadObject);
             NotificationRequest notificationRequest = new NotificationRequest
             {
                 Payload = payload,
