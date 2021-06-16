@@ -36,7 +36,7 @@ namespace blendnet.incentive.repository.Interfaces
         /// </summary>
         /// <param name="planType"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetCurrentConsumerActivePlan(PlanType planType);
+        public Task<IncentivePlan> GetCurrentConsumerPublishedPlan(PlanType planType, DateTime? startDate);
 
         /// <summary>
         /// Retrieve current active plan for retailer with given subtype name
@@ -44,7 +44,23 @@ namespace blendnet.incentive.repository.Interfaces
         /// <param name="planType"></param>
         /// <param name="audienceSubTypeName"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetCurrentRetailerActivePlan(PlanType planType, string audienceSubTypeName);
+        public Task<IncentivePlan> GetCurrentRetailerPublishedPlan(PlanType planType, string audienceSubTypeName, DateTime? startDate);
+
+
+        /// <summary>
+        /// Returns retailer draft plan
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetCurrentRetailerDraftPlan(PlanType planType, string audienceSubTypeName);
+
+        /// <summary>
+        /// Returns consumer draft plan
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetCurrentConsumerDraftPlan(PlanType planType);
 
         /// <summary>
         /// Gets plan with given plan id

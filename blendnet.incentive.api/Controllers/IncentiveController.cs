@@ -79,7 +79,7 @@ namespace blendnet.incentive.api.Controllers
                 retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(incentivePlanRequest.Audience.SubTypeName);
             }
             
-            List<string> errorInfo = await ValidatePlan(incentivePlanRequest, retailerProviderDto);
+            List<string> errorInfo = await ValidatePlan(null, incentivePlanRequest, retailerProviderDto);
             
             if(HasError(errorInfo))
             {
@@ -120,7 +120,7 @@ namespace blendnet.incentive.api.Controllers
                 retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(updatePlanRequest.Audience.SubTypeName);
             }
 
-            errorInfo = await ValidatePlan(updatePlanRequest, retailerProviderDto);
+            errorInfo = await ValidatePlan(planId, updatePlanRequest, retailerProviderDto);
 
             if (HasError(errorInfo))
             {
@@ -203,17 +203,17 @@ namespace blendnet.incentive.api.Controllers
             }
 
             IncentivePlan currentActivePlan = null;
+            DateTime startDate = plan.StartDate.Date;
 
             if (plan.Audience.AudienceType == AudienceType.RETAILER)
             {
-                currentActivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(plan.PlanType, plan.Audience.SubTypeName);
+                currentActivePlan = await _incentiveRepository.GetCurrentRetailerPublishedPlan(plan.PlanType, plan.Audience.SubTypeName, startDate);
             }
             else
             {
-                currentActivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(plan.PlanType);
+                currentActivePlan = await _incentiveRepository.GetCurrentConsumerPublishedPlan(plan.PlanType, startDate);
             }
 
-            DateTime startDate = plan.StartDate.Date;
             int statusCode;
             if (currentActivePlan != null && currentActivePlan.EndDate > plan.StartDate)
             {
@@ -261,9 +261,28 @@ namespace blendnet.incentive.api.Controllers
 
         #region private methods
 
-        private async Task<List<string>> ValidatePlan(IncentivePlanRequest incentivePlanRequest, RetailerProviderDto retailerProviderDto)
+        private async Task<List<string>> ValidatePlan(Guid? planId, IncentivePlanRequest incentivePlanRequest, RetailerProviderDto retailerProviderDto)
         {
-            List<string> errorInfo;
+            List<string> errorInfo = new List<string>();
+
+            // check if any other plan exists and is not same as current plan
+            IncentivePlan currentDraftPlan = null;
+
+            if (incentivePlanRequest.Audience.AudienceType == AudienceType.RETAILER)
+            {
+                currentDraftPlan = await _incentiveRepository.GetCurrentRetailerDraftPlan(incentivePlanRequest.PlanType, incentivePlanRequest.Audience.SubTypeName);
+            }
+            else
+            {
+                currentDraftPlan = await _incentiveRepository.GetCurrentConsumerDraftPlan(incentivePlanRequest.PlanType);
+            }
+
+            if(currentDraftPlan != null && !currentDraftPlan.Id.Equals(planId))
+            {
+                
+                errorInfo.Add(_stringLocalizer["INC_ERR_0017"]);
+                return errorInfo;
+            }
 
             //Validate PlanDetail
             errorInfo = ValidatePlanDetail(incentivePlanRequest);

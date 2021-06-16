@@ -61,7 +61,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
                     User user = integrationEvent.User;
 
-                    IncentivePlan activeRetailerRegularPlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, user.ReferralInfo.RetailerPartnerCode);
+                    IncentivePlan activeRetailerRegularPlan = await _incentiveRepository.GetCurrentRetailerPublishedPlan(PlanType.REGULAR, user.ReferralInfo.RetailerPartnerCode, null);
 
                     IncentiveEvent incentiveEvent = GetIncentiveEventForReferral(user, activeRetailerRegularPlan);
 
