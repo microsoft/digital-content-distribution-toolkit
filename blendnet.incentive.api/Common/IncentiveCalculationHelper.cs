@@ -106,7 +106,7 @@ namespace blendnet.incentive.api.Common
             {
                 AggregrateType = RuleType.SUM,
                 AudienceType = AudienceType.RETAILER,
-                EventGeneratorId = retailerPartnerId,
+                EventCreatedFor = retailerPartnerId,
                 StartDate = startDate,
                 EndDate = endDate
             };
@@ -132,7 +132,7 @@ namespace blendnet.incentive.api.Common
             {
                 AggregrateType = RuleType.SUM,
                 AudienceType = AudienceType.CONSUMER,
-                EventGeneratorId = phoneNumber,
+                EventCreatedFor = phoneNumber,
                 StartDate = startDate,
                 EndDate = endDate
             };
@@ -153,7 +153,7 @@ namespace blendnet.incentive.api.Common
             {
                 AggregrateType = RuleType.SUM,
                 AudienceType = AudienceType.CONSUMER,
-                EventGeneratorId = phoneNumber
+                EventCreatedFor = phoneNumber
             };
 
             List<EventAggregrateResponse> response = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
@@ -292,7 +292,7 @@ namespace blendnet.incentive.api.Common
                     AggregrateType = rule.Key,
                     EventTypes = rule.Value,
                     AudienceType = audienceType,
-                    EventGeneratorId = eventGeneratorId,
+                    EventCreatedFor = eventGeneratorId,
                     StartDate = startDate,
                     EndDate = endDate
                 };

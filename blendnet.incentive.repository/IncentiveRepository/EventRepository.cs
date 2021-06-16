@@ -44,12 +44,12 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <summary>
         /// Retreives events for given audience in selected date range
         /// </summary>
-        /// <param name="eventGeneratorId"></param>
+        /// <param name="eventCreatedFor"></param>
         /// <param name="audience"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public List<IncentiveEvent> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate)
+        public List<IncentiveEvent> GetEvents(string eventCreatedFor, Audience audience, DateTime? startDate, DateTime? endDate)
         {
             throw new NotImplementedException();
         }
@@ -67,7 +67,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
         {
             string queryString = @"   SELECT {0} as aggregratedValue,c.eventType,c.eventSubType, '{1}' AS ruleType
                                             FROM c 
-                                            WHERE c.eventGeneratorId = @eventGeneratorId
+                                            WHERE c.eventCreatedFor = @eventCreatedFor
                                             AND c.audience.audienceType = @audienceType
                                             {2}
                                             {3}
@@ -101,7 +101,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
             }
 
             var queryDefinition = new QueryDefinition(queryString)
-                .WithParameter("@eventGeneratorId", request.EventGeneratorId)
+                .WithParameter("@eventCreatedFor", request.EventCreatedFor)
                 .WithParameter("@audienceType", request.AudienceType);
 
             //if the date time is provided then add the parameters

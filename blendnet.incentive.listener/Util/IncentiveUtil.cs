@@ -50,7 +50,7 @@ namespace blendnet.incentive.listener.Util
             var curDate = DateTime.UtcNow;
             IncentiveEvent incentiveEvent = new IncentiveEvent();
             incentiveEvent.EventId = Guid.NewGuid();
-            incentiveEvent.EventDateTime = incentiveEvent.EventCreatedTime = curDate;
+            incentiveEvent.EventDateTime = incentiveEvent.EventOccuranceTime = curDate;
             incentiveEvent.EventDate = Int32.Parse(curDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYMMDD));
             incentiveEvent.CreatedDate = curDate;
             incentiveEvent.EventCategoryType = EventCategoryType.INCOME;

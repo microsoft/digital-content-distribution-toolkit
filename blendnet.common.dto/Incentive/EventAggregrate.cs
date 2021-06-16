@@ -16,7 +16,7 @@ namespace blendnet.common.dto.Incentive
 
         public List<EventType> EventTypes { get; set; }
 
-        public string EventGeneratorId { get; set; }
+        public string EventCreatedFor { get; set; }
 
         public AudienceType AudienceType { get; set; }
 

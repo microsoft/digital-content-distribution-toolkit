@@ -42,7 +42,7 @@ namespace blendnet.common.dto.Incentive
         /// Time during which event was created. Might differ than EventDateTime when event is 
         /// called from client and there are network delays
         /// </summary>
-        public DateTime EventCreatedTime { get; set; }
+        public DateTime EventOccuranceTime { get; set; }
 
         /// <summary>
         /// Date time represented in int format

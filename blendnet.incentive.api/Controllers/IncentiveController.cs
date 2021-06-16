@@ -68,18 +68,21 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="incentivePlanRequest"></param>
         /// <returns></returns>
-        [HttpPost("incentiveplan", Name = nameof(CreateIncentivePlan))]
+        [HttpPost("retailerincentiveplan", Name = nameof(CreateRetailerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
-        public async Task<ActionResult> CreateIncentivePlan(IncentivePlanRequest incentivePlanRequest)
+        public async Task<ActionResult> CreateRetailerIncentivePlan(IncentivePlanRequest incentivePlanRequest)
         {
+            List<string> errorInfo = new List<string>();
             RetailerProviderDto retailerProviderDto = null;
 
-            if (incentivePlanRequest.Audience.AudienceType == AudienceType.RETAILER)
+            if (incentivePlanRequest.Audience.AudienceType != AudienceType.RETAILER)
             {
-                retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(incentivePlanRequest.Audience.SubTypeName);
+                errorInfo.Add(_stringLocalizer["INC_ERR_0018"]);
+                return BadRequest(errorInfo);
             }
-            
-            List<string> errorInfo = await ValidatePlan(null, incentivePlanRequest, retailerProviderDto);
+
+            retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(incentivePlanRequest.Audience.SubTypeName);
+            errorInfo = await ValidatePlan(null, incentivePlanRequest, retailerProviderDto);
             
             if(HasError(errorInfo))
             {
@@ -93,7 +96,37 @@ namespace blendnet.incentive.api.Controllers
             return Ok(id);
         }
 
-        [HttpPut("update/{planId:guid}")]
+        /// <summary>
+        /// Create incentivePlan by a consumer
+        /// </summary>
+        /// <param name="incentivePlanRequest"></param>
+        /// <returns></returns>
+        [HttpPost("consumerincentiveplan", Name = nameof(CreateConsumerIncentivePlan))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        public async Task<ActionResult> CreateConsumerIncentivePlan(IncentivePlanRequest incentivePlanRequest)
+        {
+            List<string> errorInfo = new List<string>();
+            if (incentivePlanRequest.Audience.AudienceType != AudienceType.CONSUMER)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0018"]);
+                return BadRequest(errorInfo);
+            }
+
+            errorInfo = await ValidatePlan(null, incentivePlanRequest, null);
+
+            if (HasError(errorInfo))
+            {
+                return BadRequest(errorInfo);
+            }
+
+            IncentivePlan incentivePlan = CreatePlan(incentivePlanRequest, null);
+
+            Guid id = await _incentiveRepository.CreateIncentivePlan(incentivePlan);
+
+            return Ok(id);
+        }
+
+        [HttpPut("{planId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> UpdateIncentivePlan(Guid planId, IncentivePlanRequest updatePlanRequest)
         {
@@ -147,7 +180,7 @@ namespace blendnet.incentive.api.Controllers
 
         }
 
-        [HttpDelete("delete/{planId:guid}/{subtypeName}")]
+        [HttpDelete("{planId:guid}/{subtypeName}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<ActionResult> DeleteIncentivePlan(Guid planId, string subtypeName)
         {

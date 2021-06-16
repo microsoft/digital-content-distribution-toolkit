@@ -19,12 +19,12 @@ namespace blendnet.incentive.repository.Interfaces
         /// <summary>
         /// Retreives events for given audience in selected date range
         /// </summary>
-        /// <param name="eventGeneratorId"></param>
+        /// <param name="eventCreatedFor"></param>
         /// <param name="audience"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public List<IncentiveEvent> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate);
+        public List<IncentiveEvent> GetEvents(string eventCreatedFor, Audience audience, DateTime? startDate, DateTime? endDate);
 
         /// <summary>
         /// Returns the COUNT or SUM aggregrate for the given list of events.

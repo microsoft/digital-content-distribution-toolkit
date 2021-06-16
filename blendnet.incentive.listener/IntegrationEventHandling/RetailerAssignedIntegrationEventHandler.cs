@@ -57,7 +57,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             {
                 using (_telemetryClient.StartOperation<RequestTelemetry>("RetailerAssignedIntegrationEventHandler.Handle"))
                 {
-                    _logger.LogInformation($"Adding events of referral completion");
+                    _logger.LogInformation($"Adding events of referral completion for retailer {integrationEvent.User.ReferralInfo.RetailerId} and user {integrationEvent.User.Id} ");
 
                     User user = integrationEvent.User;
 
@@ -67,12 +67,12 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
                     await _eventRepository.CreateIncentiveEvent(incentiveEvent);
                     
-                    _logger.LogInformation($"Done adding event in RetailerAssignedIntegrationEventHandler");
+                    _logger.LogInformation($"Done adding event in RetailerAssignedIntegrationEventHandler for retailer {integrationEvent.User.ReferralInfo.RetailerId} and user {integrationEvent.User.Id} ");
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"RetailerAssignedIntegrationEventHandler.Handle failed ");
+                _logger.LogError(e, $"RetailerAssignedIntegrationEventHandler.Handle failed for retailer {integrationEvent.User.ReferralInfo.RetailerId} and user {integrationEvent.User.Id} ");
             }
         }
 
