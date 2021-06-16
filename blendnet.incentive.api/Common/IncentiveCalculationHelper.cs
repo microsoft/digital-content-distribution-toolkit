@@ -38,7 +38,7 @@ namespace blendnet.incentive.api.Common
         public async Task<IncentivePlan> CalculateActiveIncentivePlanForRetailer(string retailerProviderCode,string retailerPartnerId)
         {
             //Get the current active plan for retailer
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, retailerProviderCode);
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerPublishedPlan(PlanType.REGULAR, retailerProviderCode, null);
 
             await CalculateIncentivePlan(incentivePlan, retailerPartnerId);
             
@@ -54,7 +54,7 @@ namespace blendnet.incentive.api.Common
         /// <returns></returns>
         public async Task<IncentivePlan> CalculateActiveMiletoneForRetailer(string retailerProviderCode, string retailerPartnerId)
         {
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.MILESTONE, retailerProviderCode);
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerPublishedPlan(PlanType.MILESTONE, retailerProviderCode, null);
 
             await CalculateIncentivePlan(incentivePlan, retailerPartnerId);
 
@@ -69,7 +69,7 @@ namespace blendnet.incentive.api.Common
         /// <returns></returns>
         public async Task<IncentivePlan> CalculateActiveIncentivePlanForConsumer(string phoneNumber)
         {
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerPublishedPlan(PlanType.REGULAR, null);
 
             await CalculateIncentivePlan(incentivePlan, phoneNumber);
 
@@ -84,7 +84,7 @@ namespace blendnet.incentive.api.Common
         /// <returns></returns>
         public async Task<IncentivePlan> CalculateActiveMilestoneForConsumer(string phoneNumber)
         {
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.MILESTONE);
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerPublishedPlan(PlanType.MILESTONE, null);
 
             await CalculateIncentivePlan(incentivePlan, phoneNumber);
 
@@ -106,7 +106,7 @@ namespace blendnet.incentive.api.Common
             {
                 AggregrateType = RuleType.SUM,
                 AudienceType = AudienceType.RETAILER,
-                EventGeneratorId = retailerPartnerId,
+                EventCreatedFor = retailerPartnerId,
                 StartDate = startDate,
                 EndDate = endDate
             };
@@ -132,7 +132,7 @@ namespace blendnet.incentive.api.Common
             {
                 AggregrateType = RuleType.SUM,
                 AudienceType = AudienceType.CONSUMER,
-                EventGeneratorId = phoneNumber,
+                EventCreatedFor = phoneNumber,
                 StartDate = startDate,
                 EndDate = endDate
             };
@@ -153,7 +153,7 @@ namespace blendnet.incentive.api.Common
             {
                 AggregrateType = RuleType.SUM,
                 AudienceType = AudienceType.CONSUMER,
-                EventGeneratorId = phoneNumber
+                EventCreatedFor = phoneNumber
             };
 
             List<EventAggregrateResponse> response = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
@@ -292,7 +292,7 @@ namespace blendnet.incentive.api.Common
                     AggregrateType = rule.Key,
                     EventTypes = rule.Value,
                     AudienceType = audienceType,
-                    EventGeneratorId = eventGeneratorId,
+                    EventCreatedFor = eventGeneratorId,
                     StartDate = startDate,
                     EndDate = endDate
                 };
@@ -317,29 +317,29 @@ namespace blendnet.incentive.api.Common
             {
                 case FormulaType.PLUS:
                     {
-                        result.Value = value + formula.RightOperand;
+                        result.Value = value + formula.FirstOperand;
                         break;
                     }
                 case FormulaType.MINUS:
                     {
-                        result.Value = value - formula.RightOperand;
+                        result.Value = value - formula.FirstOperand;
                         break;
                     }
                 case FormulaType.MULTIPLY:
                     {
-                        result.Value = value * formula.RightOperand;
+                        result.Value = value * formula.FirstOperand;
                         break;
                     }
                 case FormulaType.PERCENTAGE:
                     {
-                        result.Value = (value * formula.RightOperand) / 100;
+                        result.Value = (value * formula.FirstOperand) / 100;
                         break;
                     }
                 case FormulaType.DIVIDE_AND_MULTIPLY:
                     {
-                        result.Value = Math.Floor(value / formula.RightOperand) * formula.LeftOperand.Value;
+                        result.Value = Math.Floor(value / formula.FirstOperand) * formula.SecondOperand.Value;
 
-                        result.Value1 = value % formula.RightOperand;
+                        result.Value1 = value % formula.FirstOperand;
 
                         break;
                     }
@@ -349,7 +349,7 @@ namespace blendnet.incentive.api.Common
 
                         if (rangeValue != default(RangeValue))
                         {
-                            result.Value = rangeValue.Output * formula.LeftOperand.Value;
+                            result.Value = rangeValue.Output * formula.SecondOperand.Value;
                         }
 
                         break;

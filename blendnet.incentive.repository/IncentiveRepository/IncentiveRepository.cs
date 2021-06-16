@@ -69,10 +69,9 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// </summary>
         /// <param name="planType"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetCurrentConsumerActivePlan(PlanType planType)
+        public Task<IncentivePlan> GetCurrentConsumerPublishedPlan(PlanType planType, DateTime? startDate)
         {
-            var curDate = DateTime.UtcNow;
-
+            DateTime validationDate = startDate == null ? DateTime.UtcNow : startDate.Value;
             const string queryString = @"select * from c where c.planType = @planType 
                 and c.audience.audienceType = @audienceType 
                 and c.startDate <= @now and c.endDate >= @now";
@@ -80,7 +79,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
             var queryDef = new QueryDefinition(queryString)
                 .WithParameter("@planType", planType)
                 .WithParameter("@audienceType", AudienceType.CONSUMER)
-                .WithParameter("@now", curDate);
+                .WithParameter("@now", validationDate);
 
             return GetCurrentActivePlan(queryDef);
 
@@ -92,10 +91,9 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <param name="planType"></param>
         /// <param name="audienceSubTypeName"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetCurrentRetailerActivePlan(PlanType planType, string audienceSubTypeName)
+        public Task<IncentivePlan> GetCurrentRetailerPublishedPlan(PlanType planType, string audienceSubTypeName, DateTime? startDate)
         {
-            var curDate = DateTime.UtcNow;
-
+            DateTime validationDate = startDate == null ? DateTime.UtcNow : startDate.Value;
             const string queryString = @"select * from c where c.planType = @planType 
                 and c.audience.audienceType = @audienceType 
                 and c.audience.subTypeName = @audienceSubTypeName 
@@ -105,7 +103,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
                 .WithParameter("@planType", planType)
                 .WithParameter("@audienceType", AudienceType.RETAILER)
                 .WithParameter("@audienceSubTypeName", audienceSubTypeName)
-                .WithParameter("@now", curDate);
+                .WithParameter("@now", validationDate);
 
             return GetCurrentActivePlan(queryDef);
         }
@@ -122,6 +120,48 @@ namespace blendnet.incentive.repository.IncentiveRepository
             {
                 return null;
             }
+        }
+
+        public async Task<int> DeleteIncentivePlan(Guid planId, string subtypeName)
+        {
+            try
+            {
+                var response = await this._container.DeleteItemAsync<IncentivePlan>(planId.ToString(), new PartitionKey(subtypeName));
+
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
+        }
+
+        public Task<IncentivePlan> GetCurrentRetailerDraftPlan(PlanType planType, string audienceSubTypeName)
+        {
+            const string queryString = @"select * from c where c.planType = @planType 
+                and c.audience.audienceType = @audienceType 
+                and c.audience.subTypeName = @audienceSubTypeName 
+                and c.publishMode = 'DRAFT'";
+
+            var queryDef = new QueryDefinition(queryString)
+                .WithParameter("@planType", planType)
+                .WithParameter("@audienceType", AudienceType.RETAILER)
+                .WithParameter("@audienceSubTypeName", audienceSubTypeName);
+
+            return GetCurrentActivePlan(queryDef);
+        }
+
+        public Task<IncentivePlan> GetCurrentConsumerDraftPlan(PlanType planType)
+        {
+            const string queryString = @"select * from c where c.planType = @planType 
+                and c.audience.audienceType = @audienceType 
+                and c.publishMode = 'DRAFT'";
+
+            var queryDef = new QueryDefinition(queryString)
+                .WithParameter("@planType", planType)
+                .WithParameter("@audienceType", AudienceType.CONSUMER);
+
+            return GetCurrentActivePlan(queryDef);
         }
     }
 }

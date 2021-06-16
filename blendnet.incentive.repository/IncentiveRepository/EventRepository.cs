@@ -37,7 +37,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <returns></returns>
         public async Task<Guid> CreateIncentiveEvent(IncentiveEvent eventItem)
         {
-            await this._container.CreateItemAsync<IncentiveEvent>(eventItem, new PartitionKey(eventItem.EventGeneratorId));
+            await this._container.CreateItemAsync<IncentiveEvent>(eventItem, new PartitionKey(eventItem.EventCreatedFor));
             return eventItem.EventId.Value;
         }
 
@@ -105,7 +105,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
         {
             string queryString = @"   SELECT {0} as aggregratedValue,c.eventType,c.eventSubType, '{1}' AS ruleType
                                             FROM c 
-                                            WHERE c.eventGeneratorId = @eventGeneratorId
+                                            WHERE c.eventCreatedFor = @eventCreatedFor
                                             AND c.audience.audienceType = @audienceType
                                             {2}
                                             {3}
@@ -139,7 +139,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
             }
 
             var queryDefinition = new QueryDefinition(queryString)
-                .WithParameter("@eventGeneratorId", request.EventGeneratorId)
+                .WithParameter("@eventCreatedFor", request.EventCreatedFor)
                 .WithParameter("@audienceType", request.AudienceType);
 
             //if the date time is provided then add the parameters
