@@ -123,5 +123,19 @@ namespace blendnet.incentive.repository.IncentiveRepository
                 return null;
             }
         }
+
+        public async Task<int> DeleteIncentivePlan(Guid planId, string subtypeName)
+        {
+            try
+            {
+                var response = await this._container.DeleteItemAsync<IncentivePlan>(planId.ToString(), new PartitionKey(subtypeName));
+
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
+        }
     }
 }

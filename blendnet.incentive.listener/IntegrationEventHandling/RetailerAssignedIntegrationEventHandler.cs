@@ -86,7 +86,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 SubTypeName = user.ReferralInfo.RetailerPartnerId
             };
 
-            incentiveEvent.EventGeneratorId = user.ReferralInfo.RetailerPartnerId;
+            incentiveEvent.EventCreatedFor = user.ReferralInfo.RetailerPartnerId;
             incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
             incentiveEvent.EventType = EventType.RETAILER_INCOME_REFFRAL_COMPLETED;
             incentiveEvent.OriginalValue = 1;
@@ -95,7 +95,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
             if (planDetail == null)
             {
-                _logger.LogWarning($"Storing orphan event as no active plan exists for retailer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventGeneratorId} and event type {EventType.RETAILER_INCOME_REFFRAL_COMPLETED}");
+                _logger.LogWarning($"Storing orphan event as no active plan exists for retailer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventCreatedFor} and event type {EventType.RETAILER_INCOME_REFFRAL_COMPLETED}");
                 incentiveEvent.CalculatedValue = 0;
             }
             else

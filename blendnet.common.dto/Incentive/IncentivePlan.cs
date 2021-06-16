@@ -46,6 +46,11 @@ namespace blendnet.common.dto.Incentive
         /// List of events and corresponding formula associated with plan
         /// </summary>
         public List<PlanDetail> PlanDetails { get; set; }
+
+        /// <summary>
+        /// Sets the publish mode of the plan
+        /// </summary>
+        public PublishMode PublishMode { get; set; }
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -53,5 +58,12 @@ namespace blendnet.common.dto.Incentive
     {
         REGULAR,
         MILESTONE
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum PublishMode
+    {
+        DRAFT,
+        PUBLISHED
     }
 }

@@ -24,6 +24,14 @@ namespace blendnet.incentive.repository.Interfaces
         public Task<int> UpdateIncentivePlan(IncentivePlan incentivePlan);
 
         /// <summary>
+        /// Deletes the plan 
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="subtypeName"></param>
+        /// <returns></returns>
+        public Task<int> DeleteIncentivePlan(Guid planId, string subtypeName);
+
+        /// <summary>
         /// Retrieve current active plan for consumer audience type
         /// </summary>
         /// <param name="planType"></param>

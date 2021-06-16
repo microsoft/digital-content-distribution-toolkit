@@ -147,4 +147,22 @@
   <data name="INC_ERR_0010" xml:space="preserve">
     <value>INC_ERR_0010-Order completed event should have event sub type with content provider id</value>
   </data>
+  <data name="INC_ERR_0011" xml:space="preserve">
+    <value>INC_ERR_0011-Start date must be greater than current date</value>
+  </data>
+  <data name="INC_ERR_0012" xml:space="preserve">
+    <value>INC_ERR_0012-Only draft mode plans can be updated</value>
+  </data>
+  <data name="INC_ERR_0013" xml:space="preserve">
+    <value>INC_ERR_0013-Error in updating plan</value>
+  </data>
+  <data name="INC_ERR_0014" xml:space="preserve">
+    <value>INC_ERR_0014-Only plans in draft mode can be deleted</value>
+  </data>
+  <data name="INC_ERR_0015" xml:space="preserve">
+    <value>INC_ERR_0015-Only plans in draft mode can be published</value>
+  </data>
+  <data name="INC_ERR_0016" xml:space="preserve">
+    <value>INC_ERR_0016-Something went wrong while publishing plan</value>
+  </data>
 </root>

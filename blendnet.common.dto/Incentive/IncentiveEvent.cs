@@ -14,9 +14,9 @@ namespace blendnet.common.dto.Incentive
         public Guid? EventId { get; set; }
 
         /// <summary>
-        /// User id of consumer or Partner id of retailer
+        /// User phone number of consumer or Partner id of retailer
         /// </summary>
-        public string EventGeneratorId { get; set; }
+        public string EventCreatedFor { get; set; }
 
         /// <summary>
         /// Event type of the event
@@ -37,6 +37,12 @@ namespace blendnet.common.dto.Incentive
         /// UTC Date time value of when the event is created
         /// </summary>
         public DateTime EventDateTime { get; set; }
+
+        /// <summary>
+        /// Time during which event was created. Might differ than EventDateTime when event is 
+        /// called from client and there are network delays
+        /// </summary>
+        public DateTime EventCreatedTime { get; set; }
 
         /// <summary>
         /// Date time represented in int format

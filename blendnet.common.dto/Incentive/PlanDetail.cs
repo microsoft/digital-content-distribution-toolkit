@@ -66,15 +66,15 @@ namespace blendnet.common.dto.Incentive
         public FormulaType FormulaType { get; set; }
 
         /// <summary>
-        /// Left operand to use during calculation of summary
-        /// </summary>
-        public double? LeftOperand { get; set; }
-
-        /// <summary>
-        /// Right operand to use during calculation of summary
+        /// First Operand to use during calculation of summary
         /// </summary>
         [Required]
-        public double RightOperand { get; set; }
+        public double FirstOperand { get; set; }
+
+        /// <summary>
+        /// Second Operand to use during calculation of summary
+        /// </summary>
+        public double? SecondOperand { get; set; }
 
         /// <summary>
         /// List of ranges to decide the value

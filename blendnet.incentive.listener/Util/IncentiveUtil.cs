@@ -29,13 +29,13 @@ namespace blendnet.incentive.listener.Util
             switch (formula.FormulaType)
             {
                 case FormulaType.PLUS:
-                    return originalValue + formula.RightOperand;
+                    return originalValue + formula.FirstOperand;
                 case FormulaType.MINUS:
-                    return originalValue - formula.RightOperand;
+                    return originalValue - formula.FirstOperand;
                 case FormulaType.MULTIPLY:
-                    return originalValue * formula.RightOperand;
+                    return originalValue * formula.FirstOperand;
                 case FormulaType.PERCENTAGE:
-                    return originalValue * formula.RightOperand / 100.0;
+                    return originalValue * formula.FirstOperand / 100.0;
             }
 
             return 0;
@@ -50,7 +50,7 @@ namespace blendnet.incentive.listener.Util
             var curDate = DateTime.UtcNow;
             IncentiveEvent incentiveEvent = new IncentiveEvent();
             incentiveEvent.EventId = Guid.NewGuid();
-            incentiveEvent.EventDateTime = curDate;
+            incentiveEvent.EventDateTime = incentiveEvent.EventCreatedTime = curDate;
             incentiveEvent.EventDate = Int32.Parse(curDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYMMDD));
             incentiveEvent.CreatedDate = curDate;
             incentiveEvent.EventCategoryType = EventCategoryType.INCOME;

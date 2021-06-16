@@ -317,29 +317,29 @@ namespace blendnet.incentive.api.Common
             {
                 case FormulaType.PLUS:
                     {
-                        result.Value = value + formula.RightOperand;
+                        result.Value = value + formula.FirstOperand;
                         break;
                     }
                 case FormulaType.MINUS:
                     {
-                        result.Value = value - formula.RightOperand;
+                        result.Value = value - formula.FirstOperand;
                         break;
                     }
                 case FormulaType.MULTIPLY:
                     {
-                        result.Value = value * formula.RightOperand;
+                        result.Value = value * formula.FirstOperand;
                         break;
                     }
                 case FormulaType.PERCENTAGE:
                     {
-                        result.Value = (value * formula.RightOperand) / 100;
+                        result.Value = (value * formula.FirstOperand) / 100;
                         break;
                     }
                 case FormulaType.DIVIDE_AND_MULTIPLY:
                     {
-                        result.Value = Math.Floor(value / formula.RightOperand) * formula.LeftOperand.Value;
+                        result.Value = Math.Floor(value / formula.FirstOperand) * formula.SecondOperand.Value;
 
-                        result.Value1 = value % formula.RightOperand;
+                        result.Value1 = value % formula.FirstOperand;
 
                         break;
                     }
@@ -349,7 +349,7 @@ namespace blendnet.incentive.api.Common
 
                         if (rangeValue != default(RangeValue))
                         {
-                            result.Value = rangeValue.Output * formula.LeftOperand.Value;
+                            result.Value = rangeValue.Output * formula.SecondOperand.Value;
                         }
 
                         break;

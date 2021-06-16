@@ -37,7 +37,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <returns></returns>
         public async Task<Guid> CreateIncentiveEvent(IncentiveEvent eventItem)
         {
-            await this._container.CreateItemAsync<IncentiveEvent>(eventItem, new PartitionKey(eventItem.EventGeneratorId));
+            await this._container.CreateItemAsync<IncentiveEvent>(eventItem, new PartitionKey(eventItem.EventCreatedFor));
             return eventItem.EventId.Value;
         }
 

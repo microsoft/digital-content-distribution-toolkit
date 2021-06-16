@@ -107,7 +107,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                     SubTypeName = order.RetailerPartnerCode
                 };
 
-                incentiveEvent.EventGeneratorId = order.RetailerPartnerId;
+                incentiveEvent.EventCreatedFor = order.RetailerPartnerId;
                 incentiveEvent.EventType = EventType.RETAILER_INCOME_ORDER_COMPLETED;
                 incentiveEvent.EventSubType = orderItem.Subscription.ContentProviderId.ToString();
                 incentiveEvent.OriginalValue = (double)order.TotalAmountCollected;
@@ -116,7 +116,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
                 if (planDetail == null)
                 {
-                    _logger.LogWarning($"Storing orphan event as no active plan exists for retailer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventGeneratorId} and order id {order.Id}");
+                    _logger.LogWarning($"Storing orphan event as no active plan exists for retailer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventCreatedFor} and order id {order.Id}");
                     incentiveEvent.CalculatedValue = 0;
                 }
                 else
@@ -152,7 +152,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                     SubTypeName = ApplicationConstants.Common.CONSUMER
                 };
 
-                incentiveEvent.EventGeneratorId = order.UserId.ToString();
+                incentiveEvent.EventCreatedFor = order.PhoneNumber;
                 incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
                 incentiveEvent.EventType = EventType.CONSUMER_INCOME_ORDER_COMPLETED;
                 incentiveEvent.EventSubType = orderItem.Subscription.ContentProviderId.ToString();
@@ -162,7 +162,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
                 if (planDetail == null)
                 {
-                    _logger.LogWarning($"Storing orphan event as no active plan exists for consumer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventGeneratorId} and order id {order.Id}");
+                    _logger.LogWarning($"Storing orphan event as no active plan exists for consumer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventCreatedFor} and order id {order.Id}");
                     incentiveEvent.CalculatedValue = 0;
                 }
                 else
