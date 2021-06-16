@@ -42,16 +42,54 @@ namespace blendnet.incentive.repository.IncentiveRepository
         }
 
         /// <summary>
-        /// Retreives events for given audience in selected date range
+        /// Retrieves the event based on criteria.
+        /// Event Generator id and Audience Type is mandatory. Rest all are optional
         /// </summary>
-        /// <param name="eventGeneratorId"></param>
-        /// <param name="audience"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
+        /// <param name="eventCriteria"></param>
         /// <returns></returns>
-        public List<IncentiveEvent> GetEvents(string eventGeneratorId, Audience audience, DateTime? startDate, DateTime? endDate)
+        public async Task<List<IncentiveEvent>> GetEvents(EventCriteriaRequest eventCriteria)
         {
-            throw new NotImplementedException();
+            string queryString = @"   SELECT *
+                                      FROM c 
+                                      WHERE c.eventGeneratorId = @eventGeneratorId
+                                      AND c.audience.audienceType = @audienceType
+                                      {0}
+                                      {1} ";
+
+            string eventTypeAndCondition = string.Empty;
+
+            string eventDateTimeCondition = string.Empty;
+
+            //if event types are provided
+            if (eventCriteria.EventTypes != null && eventCriteria.EventTypes.Count > 0)
+            {
+                string eventTypesStringValue = string.Join(",", eventCriteria.EventTypes.Select(item => "'" + item + "'"));
+
+                eventTypeAndCondition = $"AND c.eventType IN ({eventTypesStringValue})";
+            }
+
+            //if the date time is provided then add the add condition
+            if (eventCriteria.StartDate.HasValue && eventCriteria.EndDate.HasValue)
+            {
+                eventDateTimeCondition = "AND (c.eventDateTime >= @startDate AND c.eventDateTime <= @endDate )";
+            }
+
+            queryString = string.Format(queryString, eventTypeAndCondition, eventDateTimeCondition);
+
+            var queryDefinition = new QueryDefinition(queryString)
+                .WithParameter("@eventGeneratorId", eventCriteria.EventGeneratorId)
+                .WithParameter("@audienceType", eventCriteria.AudienceType);
+
+            //if the date time is provided then add the parameters
+            if (eventCriteria.StartDate.HasValue && eventCriteria.EndDate.HasValue)
+            {
+                queryDefinition.WithParameter("@startDate", eventCriteria.StartDate.Value);
+                queryDefinition.WithParameter("@endDate", eventCriteria.EndDate.Value);
+            }
+
+            var incentiveEvents = await _container.ExtractDataFromQueryIterator<IncentiveEvent>(queryDefinition);
+
+            return incentiveEvents;
         }
 
 
