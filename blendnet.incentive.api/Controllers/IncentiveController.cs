@@ -22,7 +22,7 @@ namespace blendnet.incentive.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    //[AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
+    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
     public class IncentiveController : ControllerBase
     {
         private const string C_CONSUMER = "CONSUMER";
@@ -83,8 +83,8 @@ namespace blendnet.incentive.api.Controllers
 
             retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(incentivePlanRequest.Audience.SubTypeName);
             errorInfo = await ValidatePlan(null, incentivePlanRequest, retailerProviderDto);
-            
-            if(HasError(errorInfo))
+
+            if (HasError(errorInfo))
             {
                 return BadRequest(errorInfo);
             }
@@ -126,6 +126,12 @@ namespace blendnet.incentive.api.Controllers
             return Ok(id);
         }
 
+        /// <summary>
+        /// Updates existing draft plan with given plan id and other details
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="updatePlanRequest"></param>
+        /// <returns></returns>
         [HttpPut("{planId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> UpdateIncentivePlan(Guid planId, IncentivePlanRequest updatePlanRequest)
@@ -180,6 +186,12 @@ namespace blendnet.incentive.api.Controllers
 
         }
 
+        /// <summary>
+        /// Deletes given plan id if it is in draft mode
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="subtypeName"></param>
+        /// <returns></returns>
         [HttpDelete("{planId:guid}/{subtypeName}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<ActionResult> DeleteIncentivePlan(Guid planId, string subtypeName)
@@ -209,11 +221,17 @@ namespace blendnet.incentive.api.Controllers
             return NotFound();
         }
 
-        [HttpPut("publish/{planId:guid}/{subtypeName}")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-        public async Task<ActionResult> PublishPlan(Guid planId, string subtypeName)
+        /// <summary>
+        /// Updates end date of published plan with given end date
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        [HttpPut("closeconsumer/{planId:guid}/{endDate}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult> CloseConsumerIncentivePlan(Guid planId, DateTime endDate)
         {
-            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subtypeName);
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
 
             if (plan == null)
             {
@@ -222,59 +240,107 @@ namespace blendnet.incentive.api.Controllers
 
             List<string> errorInfo = new List<string>();
 
-            if (plan.PublishMode != PublishMode.DRAFT)
+            errorInfo = await ValidateClosePlan(plan, endDate);
+
+            if(HasError(errorInfo))
             {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0014"]);
                 return BadRequest(errorInfo);
             }
 
-            errorInfo = ValidateDate(plan);
-           
+            plan.EndDate = endDate;
+
+            int status = await _incentiveRepository.UpdateIncentivePlan(plan);
+
+            if (status == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+
+            errorInfo.Add(_stringLocalizer["INC_ERR_0023"]);
+
+            return BadRequest(errorInfo);
+        }
+
+        /// <summary>
+        /// Updates end date of published plan with given end date
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        [HttpPut("closeretailer/{planId:guid}/{subTypeName}/{endDate}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult> CloseRetailerIncentivePlan(Guid planId, string subTypeName, DateTime endDate)
+        {
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subTypeName);
+
+            if (plan == null)
+            {
+                return NotFound();
+            }
+
+            List<string> errorInfo = new List<string>();
+
+            errorInfo = await ValidateClosePlan(plan, endDate);
+
             if (HasError(errorInfo))
             {
                 return BadRequest(errorInfo);
             }
 
-            IncentivePlan currentActivePlan = null;
-            DateTime startDate = plan.StartDate.Date;
+            plan.EndDate = endDate;
 
-            if (plan.Audience.AudienceType == AudienceType.RETAILER)
+            int status = await _incentiveRepository.UpdateIncentivePlan(plan);
+
+            if (status == (int)System.Net.HttpStatusCode.OK)
             {
-                currentActivePlan = await _incentiveRepository.GetCurrentRetailerPublishedPlan(plan.PlanType, plan.Audience.SubTypeName, startDate);
-            }
-            else
-            {
-                currentActivePlan = await _incentiveRepository.GetCurrentConsumerPublishedPlan(plan.PlanType, startDate);
+                return NoContent();
             }
 
-            int statusCode;
-            if (currentActivePlan != null && currentActivePlan.EndDate > plan.StartDate)
-            {
-                
-                currentActivePlan.EndDate = startDate.AddSeconds(-1); // sets date to previous date 11:59:59 pm
-                statusCode = await _incentiveRepository.UpdateIncentivePlan(currentActivePlan);
+            errorInfo.Add(_stringLocalizer["INC_ERR_0023"]);
 
-                if (statusCode != (int)System.Net.HttpStatusCode.OK)
-                {
-                    errorInfo.Add(_stringLocalizer["INC_ERR_0016"]);
-                    return BadRequest(errorInfo);
-                }
-            }
-
-            plan.StartDate = startDate; // setting startdate to 12:00 AM
-            plan.PublishMode = PublishMode.PUBLISHED;
-
-            statusCode = await _incentiveRepository.UpdateIncentivePlan(plan);
-
-            if (statusCode != (int)System.Net.HttpStatusCode.OK)
-            {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0016"]);
-                return BadRequest(errorInfo);
-            }
-
-            return NoContent();
+            return BadRequest(errorInfo);
         }
 
+        /// <summary>
+        /// Publishes retailer incentive plan which was in draft mode if date validations succeeed
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="subtypeName"></param>
+        /// <returns></returns>
+        [HttpPut("publishretailer/{planId:guid}/{subtypeName}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult> PublishRetailerPlan(Guid planId, string subtypeName)
+        {
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subtypeName);
+
+            var response = await PublishPlan(plan);
+
+            return response;
+        }
+
+        /// <summary>
+        /// Publishes consumer incentive plan which was in draft mode if date validations succeeed
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        [HttpPut("publishconsumer/{planId:guid}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult> PublishConsumerPlan(Guid planId)
+        {
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
+
+            var response = await PublishPlan(plan);
+
+            return response;
+
+        }
+
+        /// <summary>
+        /// Returns incentive plan with given id and subtypename
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="subtypeName"></param>
+        /// <returns></returns>
         [HttpGet("{planId:guid}/{subtypeName}", Name = nameof(GetIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IncentivePlan>> GetIncentivePlan(Guid planId, string subtypeName)
@@ -289,6 +355,56 @@ namespace blendnet.incentive.api.Controllers
             return Ok(plan);
         }
 
+        /// <summary>
+        /// Returns all consumer incentive plans with given plan type
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        [HttpGet("consumer/{planType}", Name=nameof(GetConsumerIncentivePlans))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<List<IncentivePlan>>> GetConsumerIncentivePlans(PlanType planType)
+        {
+            Audience audience = new Audience()
+            {
+                AudienceType = AudienceType.CONSUMER,
+                SubTypeName = ApplicationConstants.Common.CONSUMER
+            };
+
+            List<IncentivePlan> incentivePlans = await _incentiveRepository.GetIncentivePlans(audience, planType);
+
+            if(incentivePlans == null || incentivePlans.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(incentivePlans);
+        }
+
+        /// <summary>
+        /// Returns all retailer incentive plans with given plan type and subtype name
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="subTypeName"></param>
+        /// <returns></returns>
+        [HttpGet("retailer/{planType}/{subTypeName}", Name = nameof(GetRetailerIncentivePlans))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<List<IncentivePlan>>> GetRetailerIncentivePlans(PlanType planType, string subTypeName)
+        {
+            Audience audience = new Audience()
+            {
+                AudienceType = AudienceType.RETAILER,
+                SubTypeName = subTypeName
+            };
+
+            List<IncentivePlan> incentivePlans = await _incentiveRepository.GetIncentivePlans(audience, planType);
+
+            if (incentivePlans == null || incentivePlans.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(incentivePlans);
+        }
 
         #endregion
 
@@ -310,9 +426,9 @@ namespace blendnet.incentive.api.Controllers
                 currentDraftPlan = await _incentiveRepository.GetCurrentConsumerDraftPlan(incentivePlanRequest.PlanType);
             }
 
-            if(currentDraftPlan != null && !currentDraftPlan.Id.Equals(planId))
+            if (currentDraftPlan != null && !currentDraftPlan.Id.Equals(planId))
             {
-                
+
                 errorInfo.Add(_stringLocalizer["INC_ERR_0017"]);
                 return errorInfo;
             }
@@ -328,7 +444,7 @@ namespace blendnet.incentive.api.Controllers
             if (incentivePlanRequest.Audience.AudienceType == AudienceType.RETAILER)
             {
                 //Get retailer provider info if it is a retailer plan
-                
+
                 if (retailerProviderDto == null)
                 {
                     errorInfo.Add(_stringLocalizer["INC_ERR_0002"]);
@@ -344,19 +460,51 @@ namespace blendnet.incentive.api.Controllers
             return errorInfo != null && errorInfo.Count > 0;
         }
 
-        private List<string> ValidateDate(IncentivePlan incentivePlanRequest)
+        private async Task<List<string>> ValidateDate(IncentivePlan incentivePlan)
         {
             DateTime curDate = DateTime.UtcNow;
 
             List<string> errorInfo = new List<string>();
-            if (incentivePlanRequest.StartDate > incentivePlanRequest.EndDate)
+            if (incentivePlan.StartDate > incentivePlan.EndDate)
             {
                 errorInfo.Add(_stringLocalizer["INC_ERR_0001"]);
             }
 
-            if (incentivePlanRequest.StartDate < curDate)
+            if (incentivePlan.StartDate < curDate)
             {
                 errorInfo.Add(_stringLocalizer["INC_ERR_0011"]);
+            }
+
+            IncentivePlan publishedPlanWrtStDate = null, publishedPlanWrtEndDate = null, publishedInDateRange = null;
+            DateTime startDate = incentivePlan.StartDate;
+            DateTime endDate = incentivePlan.EndDate; 
+
+            if (incentivePlan.Audience.AudienceType == AudienceType.RETAILER)
+            {
+                publishedPlanWrtStDate = await _incentiveRepository.GetRetailerPublishedPlan(incentivePlan.PlanType, incentivePlan.Audience.SubTypeName, startDate);
+                publishedPlanWrtEndDate = await _incentiveRepository.GetRetailerPublishedPlan(incentivePlan.PlanType, incentivePlan.Audience.SubTypeName, endDate);
+                publishedInDateRange = await _incentiveRepository.GetRetailerPublishedPlanInRange(incentivePlan.PlanType, incentivePlan.Audience.SubTypeName, startDate, endDate);
+            }
+            else
+            {
+                publishedPlanWrtStDate = await _incentiveRepository.GetConsumerPublishedPlan(incentivePlan.PlanType, startDate);
+                publishedPlanWrtEndDate = await _incentiveRepository.GetConsumerPublishedPlan(incentivePlan.PlanType, endDate);
+                publishedInDateRange = await _incentiveRepository.GetConsumerPublishedPlanInRange(incentivePlan.PlanType, startDate, endDate);
+            }
+
+            if (publishedPlanWrtStDate != null)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0019"], publishedPlanWrtStDate.Id));
+            }
+
+            if (publishedPlanWrtEndDate != null)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0020"], publishedPlanWrtEndDate.Id));
+            }
+
+            if(publishedInDateRange != null)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0024"], publishedInDateRange.Id));
             }
 
             return errorInfo;
@@ -419,7 +567,6 @@ namespace blendnet.incentive.api.Controllers
 
         }
 
-
         private IncentivePlan CreatePlan(IncentivePlanRequest incentivePlanRequest, RetailerProviderDto retailerProviderDto)
         {
             IncentivePlan incentivePlan = new IncentivePlan();
@@ -471,7 +618,6 @@ namespace blendnet.incentive.api.Controllers
 
             return true;
         }
-
         private bool IsRuleTypeValid(RuleType ruleType, PlanType planType)
         {
             if (planType == PlanType.REGULAR)
@@ -482,6 +628,95 @@ namespace blendnet.incentive.api.Controllers
             return true;
         }
 
+        private async Task<ActionResult> PublishPlan(IncentivePlan plan)
+        {
+            if (plan == null)
+            {
+                return NotFound();
+            }
+
+            List<string> errorInfo = await ValidatePublish(plan);
+
+            if (HasError(errorInfo))
+            {
+                return BadRequest(errorInfo);
+            }
+
+            plan.StartDate = plan.StartDate;
+            plan.EndDate = plan.EndDate; 
+
+            plan.PublishMode = PublishMode.PUBLISHED;
+
+            int statusCode = await _incentiveRepository.UpdateIncentivePlan(plan);
+
+            if (statusCode != (int)System.Net.HttpStatusCode.OK)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0016"]);
+                return BadRequest(errorInfo);
+            }
+
+            return NoContent();
+        }
+
+        private async Task<List<string>> ValidatePublish(IncentivePlan plan)
+        {
+            List<string> errorInfo = new List<string>();
+
+            if (plan.PublishMode != PublishMode.DRAFT)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0014"]);
+                return errorInfo;
+            }
+
+            errorInfo = await ValidateDate(plan);
+
+            if (HasError(errorInfo))
+            {
+                return errorInfo;
+            }
+
+            return errorInfo;
+
+        }
+
+        private async Task<List<string>> ValidateClosePlan(IncentivePlan plan, DateTime endDate)
+        {
+            List<string> errorInfo = new List<string>();
+
+            if (plan.PublishMode != PublishMode.PUBLISHED)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0021"]);
+                return errorInfo;
+            }
+
+            List<IncentivePlan> overlappingPlans = await _incentiveRepository.GetIncentivePlanList(plan.PlanType, plan.Audience, endDate);
+
+            if (overlappingPlans != null && overlappingPlans.Count > 0)
+            {
+                var otherPlans = overlappingPlans.Where(x => !x.Id.Equals(plan.Id)).ToList();
+
+                if (otherPlans.Count > 0)
+                {
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0022"], plan.Id));
+                    return errorInfo;
+                }
+            }
+
+            overlappingPlans = await _incentiveRepository.GetPublishedIncentivePlansInRange(plan.PlanType, plan.Audience, plan.StartDate, endDate);
+
+            if (overlappingPlans != null && overlappingPlans.Count > 0)
+            {
+                var otherPlans = overlappingPlans.Where(x => !x.Id.Equals(plan.Id)).ToList();
+
+                if (otherPlans.Count > 0)
+                {
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0024"], plan.Id));
+                    return errorInfo;
+                };
+            }
+
+            return errorInfo;
+        }
         #endregion
     }
 }

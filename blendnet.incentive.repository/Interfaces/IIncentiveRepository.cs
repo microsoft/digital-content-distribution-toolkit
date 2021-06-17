@@ -36,7 +36,7 @@ namespace blendnet.incentive.repository.Interfaces
         /// </summary>
         /// <param name="planType"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetCurrentConsumerPublishedPlan(PlanType planType, DateTime startDate);
+        public Task<IncentivePlan> GetConsumerPublishedPlan(PlanType planType, DateTime startDate);
 
         /// <summary>
         /// Retrieve current active plan for retailer with given subtype name
@@ -44,7 +44,41 @@ namespace blendnet.incentive.repository.Interfaces
         /// <param name="planType"></param>
         /// <param name="audienceSubTypeName"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetCurrentRetailerPublishedPlan(PlanType planType, string audienceSubTypeName, DateTime startDate);
+        public Task<IncentivePlan> GetRetailerPublishedPlan(PlanType planType, string audienceSubTypeName, DateTime startDate);
+
+        /// <summary>
+        /// Returns published list of events overlapping with given date
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audience"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetIncentivePlanList(PlanType planType, Audience audience, DateTime date);
+
+        /// <summary>
+        /// Returns published list of events overlapping with given date range
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audience"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetPublishedIncentivePlansInRange(PlanType planType, Audience audience, DateTime startDate, DateTime endDate);
+
+        /// <summary>
+        /// Returns consumer published plan in given date range
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetConsumerPublishedPlanInRange(PlanType planType, DateTime startDate, DateTime endDate);
+
+        /// <summary>
+        /// Returns retailer published plan in given date range
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetRetailerPublishedPlanInRange(PlanType planType, string audienceSubTypeName, DateTime startDate, DateTime endDate);
 
         /// <summary>
         /// Returns current active plan for the retailer
@@ -84,6 +118,17 @@ namespace blendnet.incentive.repository.Interfaces
         /// <param name="planId"></param>
         /// <returns></returns>
         public Task<IncentivePlan> GetPlan(Guid planId, string subtypeName);
+
+        /// <summary>
+        /// Returns list of incentive plans for given audience and plan type
+        /// </summary>
+        /// <param name="audience"></param>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetIncentivePlans(Audience audience, PlanType planType);
+
+
+
 
     }
 }

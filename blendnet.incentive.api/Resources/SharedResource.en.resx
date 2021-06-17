@@ -171,4 +171,22 @@
   <data name="INC_ERR_0018" xml:space="preserve">
     <value>INC_ERR_0018-Given audience type does  not match with api</value>
   </data>
+  <data name="INC_ERR_0019" xml:space="preserve">
+    <value>INC_ERR_0019-Overlapping plan exists with given start date with id {0}</value>
+  </data>
+  <data name="INC_ERR_0020" xml:space="preserve">
+    <value>INC_ERR_0020-Overlapping plan exists with given end date with id {0}</value>
+  </data>
+  <data name="INC_ERR_0021" xml:space="preserve">
+    <value>INC_ERR_0021-Only published plans can be closed</value>
+  </data>
+  <data name="INC_ERR_0022" xml:space="preserve">
+    <value>INC_ERR_0022-Given end date overlaps with another plan with id {0}</value>
+  </data>
+  <data name="INC_ERR_0023" xml:space="preserve">
+    <value>INC_ERR_0023-Error in closing plan</value>
+  </data>
+  <data name="INC_ERR_0024" xml:space="preserve">
+    <value>INC_ERR_0024-Overlapping plan exists in given date range with id {0}</value>
+  </data>
 </root>

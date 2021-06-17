@@ -86,9 +86,9 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// </summary>
         /// <param name="planType"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetCurrentConsumerPublishedPlan(PlanType planType, DateTime startDate)
+        public Task<IncentivePlan> GetConsumerPublishedPlan(PlanType planType, DateTime date)
         {
-            return GetPublishedPlan(planType, AudienceType.CONSUMER, ApplicationConstants.Common.CONSUMER, startDate);
+            return GetPublishedPlan(planType, AudienceType.CONSUMER, ApplicationConstants.Common.CONSUMER, date);
         }
 
 
@@ -98,9 +98,56 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <param name="planType"></param>
         /// <param name="audienceSubTypeName"></param>
         /// <returns></returns>
-        public Task<IncentivePlan> GetCurrentRetailerPublishedPlan(PlanType planType, string audienceSubTypeName, DateTime startDate)
+        public Task<IncentivePlan> GetRetailerPublishedPlan(PlanType planType, string audienceSubTypeName, DateTime date)
         {
-            return GetPublishedPlan(planType, AudienceType.RETAILER, audienceSubTypeName, startDate);
+            return GetPublishedPlan(planType, AudienceType.RETAILER, audienceSubTypeName, date);
+        }
+
+        /// <summary>
+        /// Returns published list of events overlapping with given date
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audience"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetIncentivePlanList(PlanType planType, Audience audience, DateTime date)
+        {
+            return GetPublishedPlans(planType, audience.AudienceType, audience.SubTypeName, date);
+        }
+
+        /// <summary>
+        /// Returns published list of events overlapping with given date range
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audience"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetPublishedIncentivePlansInRange(PlanType planType, Audience audience, DateTime startDate, DateTime endDate)
+        {
+            return GetPublishedPlansInRange(planType, audience.AudienceType, audience.SubTypeName, startDate, endDate);
+        }
+
+        /// <summary>
+        /// Returns consumer published plan in given date range
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetConsumerPublishedPlanInRange(PlanType planType, DateTime startDate, DateTime endDate)
+        {
+            return GetPublishedPlanInRange(planType, AudienceType.CONSUMER, ApplicationConstants.Common.CONSUMER, startDate, endDate);
+        }
+
+
+        /// <summary>
+        /// Returns retailer published plan in given date range
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetRetailerPublishedPlanInRange(PlanType planType, string audienceSubTypeName, DateTime startDate, DateTime endDate)
+        {
+            return GetPublishedPlanInRange(planType, AudienceType.RETAILER, audienceSubTypeName, startDate, endDate);
         }
 
         /// <summary>
@@ -111,7 +158,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <returns></returns>
         public Task<IncentivePlan> GetCurrentRetailerActivePlan(PlanType planType, string audienceSubTypeName)
         {
-            return GetCurrentRetailerPublishedPlan(planType, audienceSubTypeName, DateTime.UtcNow);
+            return GetRetailerPublishedPlan(planType, audienceSubTypeName, DateTime.UtcNow);
         }
 
         /// <summary>
@@ -121,7 +168,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <returns></returns>
         public Task<IncentivePlan> GetCurrentConsumerActivePlan(PlanType planType)
         {
-            return GetCurrentConsumerPublishedPlan(planType, DateTime.UtcNow);
+            return GetConsumerPublishedPlan(planType, DateTime.UtcNow);
         }
 
 
@@ -166,7 +213,79 @@ namespace blendnet.incentive.repository.IncentiveRepository
             return GetCurrentDraftPlan(planType, AudienceType.CONSUMER, ApplicationConstants.Common.CONSUMER);
         }
 
+        /// <summary>
+        /// Returns list of incentive plans for given audience and plan type
+        /// </summary>
+        /// <param name="audience"></param>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        public Task<List<IncentivePlan>> GetIncentivePlans(Audience audience, PlanType planType)
+        {
+            const string queryString = @"select * from c where c.planType = @planType 
+                and c.audience.audienceType = @audienceType 
+                and c.audience.subTypeName = @audienceSubTypeName";
+
+            var queryDef = new QueryDefinition(queryString)
+                .WithParameter("@planType", planType)
+                .WithParameter("@audienceType", audience.AudienceType)
+                .WithParameter("@audienceSubTypeName", audience.SubTypeName);
+
+            return GetPlansFromQueryDef(queryDef);
+        }
+
         #endregion
+
+        /// <summary>
+        /// Returns query definition for published plan
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <param name="validationDate"></param>
+        /// <returns></returns>
+        private QueryDefinition GetQueryDefinitionForPublishedPlan(PlanType planType, AudienceType audienceType, string audienceSubTypeName, DateTime validationDate)
+        {
+            const string queryString = @"select * from c where c.planType = @planType 
+                and c.audience.audienceType = @audienceType 
+                and c.audience.subTypeName = @audienceSubTypeName 
+                and c.publishMode = @publishMode 
+                and c.startDate <= @now and c.endDate >= @now";
+
+            var queryDef = new QueryDefinition(queryString)
+                .WithParameter("@planType", planType)
+                .WithParameter("@audienceType", audienceType)
+                .WithParameter("@audienceSubTypeName", audienceSubTypeName)
+                .WithParameter("@publishMode", PublishMode.PUBLISHED)
+                .WithParameter("@now", validationDate);
+            return queryDef;
+        }
+
+        /// <summary>
+        /// Returns query definition for published plan in given date range
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        private QueryDefinition GetQueryDefinitionForDateRange(PlanType planType, AudienceType audienceType, string audienceSubTypeName, DateTime startDate, DateTime endDate)
+        {
+            const string queryString = @"select * from c where c.planType = @planType 
+                and c.audience.audienceType = @audienceType 
+                and c.audience.subTypeName = @audienceSubTypeName 
+                and c.publishMode = @publishMode 
+                and c.startDate >= @stDate and c.endDate <= @endDate";
+
+            var queryDef = new QueryDefinition(queryString)
+                .WithParameter("@planType", planType)
+                .WithParameter("@audienceType", audienceType)
+                .WithParameter("@audienceSubTypeName", audienceSubTypeName)
+                .WithParameter("@publishMode", PublishMode.PUBLISHED)
+                .WithParameter("@stDate", startDate)
+                .WithParameter("@endDate", endDate);
+            return queryDef;
+        }
 
         /// <summary>
         /// Returns published plan with given type, audience and date
@@ -178,18 +297,54 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <returns></returns>
         private Task<IncentivePlan> GetPublishedPlan(PlanType planType, AudienceType audienceType, string audienceSubTypeName, DateTime validationDate)
         {
-            const string queryString = @"select * from c where c.planType = @planType 
-                and c.audience.audienceType = @audienceType 
-                and c.audience.subTypeName = @audienceSubTypeName 
-                and c.startDate <= @now and c.endDate >= @now";
-
-            var queryDef = new QueryDefinition(queryString)
-                .WithParameter("@planType", planType)
-                .WithParameter("@audienceType", audienceType)
-                .WithParameter("@audienceSubTypeName", audienceSubTypeName)
-                .WithParameter("@now", validationDate);
+            QueryDefinition queryDef = GetQueryDefinitionForPublishedPlan(planType, audienceType, audienceSubTypeName, validationDate);
 
             return GetPlanFromQueryDef(queryDef);
+        }
+
+        /// <summary>
+        /// Returns published plans with given type, audience and date
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <param name="validationDate"></param>
+        /// <returns></returns>
+        private Task<List<IncentivePlan>> GetPublishedPlans(PlanType planType, AudienceType audienceType, string audienceSubTypeName, DateTime validationDate)
+        {
+            QueryDefinition queryDef = GetQueryDefinitionForPublishedPlan(planType, audienceType, audienceSubTypeName, validationDate);
+
+            return GetPlansFromQueryDef(queryDef);
+        }
+
+        /// <summary>
+        /// Returns published plan with given type, audience within date range
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <param name="validationDate"></param>
+        /// <returns></returns>
+        private Task<IncentivePlan> GetPublishedPlanInRange(PlanType planType, AudienceType audienceType, string audienceSubTypeName, DateTime startDate, DateTime endDate)
+        {
+            QueryDefinition queryDef = GetQueryDefinitionForDateRange(planType, audienceType, audienceSubTypeName, startDate, endDate);
+
+            return GetPlanFromQueryDef(queryDef);
+        }
+
+        /// <summary>
+        /// Returns published plan with given type, audience within date range
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <param name="audienceType"></param>
+        /// <param name="audienceSubTypeName"></param>
+        /// <param name="validationDate"></param>
+        /// <returns></returns>
+        private Task<List<IncentivePlan>> GetPublishedPlansInRange(PlanType planType, AudienceType audienceType, string audienceSubTypeName, DateTime startDate, DateTime endDate)
+        {
+            QueryDefinition queryDef = GetQueryDefinitionForDateRange(planType, audienceType, audienceSubTypeName, startDate, endDate);
+
+            return GetPlansFromQueryDef(queryDef);
         }
 
 
