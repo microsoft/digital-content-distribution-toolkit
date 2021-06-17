@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { DateAdapter } from '@angular/material/core';
 
 
 export interface DialogData {
@@ -250,13 +251,9 @@ export class ContentTokenDialog {
       err => this.toastr.error(err));
     //this.data.content;
   }
-  onCancelUpload(): void {
+  onClose(): void {
     this.dialogRef.close();
-  }
-
-  onConfirmUpload(): void {
-    this.dialogRef.close();
-  }
+    }
 
 }
 
@@ -273,6 +270,7 @@ export class ProcessConfirmDialog {
   allowMultiSelect = true;
   selection = new SelectionModel<Content>(this.allowMultiSelect, this.initialSelection);
   appliedFilters =[];
+  minStart: Date;
   range = new FormGroup({
     start: new FormControl(null, [Validators.required]),
     end: new FormControl(null, [Validators.required])
@@ -286,28 +284,42 @@ export class ProcessConfirmDialog {
     public contentService: ContentService,
     private toastr: ToastrService) {
       this.filters = environment.filters;
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth();
+      const currentDay = new Date().getDate();
+      this.minStart = new Date(currentYear, currentMonth, currentDay);
     }
 
   onCancel(): void {
     this.dialogRef.close();
   }
 
+  isSaveDisabled() {
+    return this.appliedFilters.length < 1 || !this.range.controls.start.value || !this.range.controls.end.value;
+  }
+
   onConfirm(): void {
-    if(this.appliedFilters.length < 1) {
+    if(this.appliedFilters.length < 1 && (!this.range.controls.start.value || !this.range.controls.end.value)) {
+      this.toastr.warning("Please select broadcast date range and one or more filter/s");
+    } else if(this.appliedFilters.length < 1) {
       this.toastr.warning("Please select one or more filter/s");
     } else if (!this.range.controls.start.value || !this.range.controls.end.value){
       this.toastr.warning("Please broadcast date range");
-    }else {
+    } else {
       var selectedIds = this.data.contents.map(content => {
         return content.id
-      });
+    });
+      var selectedEndDate = this.range.controls.end.value;
+      selectedEndDate.setHours(selectedEndDate.getHours() + 23);
+      selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
+
       var broadcastRequest = {
         "contentIds": selectedIds,
         "filters": this.appliedFilters,
         "startDate": this.range.controls.start.value,
-        "endDate": this.range.controls.end.value
+        "endDate": selectedEndDate
       }
-      this.contentService.boradcastContent(broadcastRequest).subscribe(
+      this.contentService.broadcastContent(broadcastRequest).subscribe(
         res => //this.toastr.success("Content/s submitted for broadcast sucessfully!!"),
         this.onSuccessfulSubmission.emit(res),
         err => this.toastr.error(err));

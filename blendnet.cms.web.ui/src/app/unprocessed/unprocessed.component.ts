@@ -301,9 +301,7 @@ openDeleteConfirmModal(row): void {
 
 viewContent(selectedContent) : void {
   const dialogRef = this.dialog.open(ContentDetailsDialog, {
-    data: {content: selectedContent},
-    width: '70%',
-    height: '70%'
+    data: {content: selectedContent}
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -337,13 +335,7 @@ export class ContentDetailsDialog {
       this.attachments +=  each.name + ' ';
     })
   }
-  onCancelUpload(): void {
-    this.dialogRef.close();
-  }
 
-  onConfirmUpload(): void {
-    this.dialogRef.close();
-  }
 
 }
 

@@ -39,7 +39,7 @@ export class ContentService {
     return this.http.post(url, contendIds, { observe: 'response'});
   }
 
-  boradcastContent(broadcastContentRequest) {
+  broadcastContent(broadcastContentRequest) {
     let url = this.baseUrl + "/broadcast";
     this.logger.log(`Broadcasting`);
     return this.http.post(url, broadcastContentRequest, { observe: 'response'});

@@ -1,7 +1,8 @@
 <h2 mat-dialog-title>
     {{content.title}}
 </h2>
-<div mat-dialog-content class="mat-typography">
+
+<mat-dialog-content class="mat-typography">
 <table class="content-detail-table">
     <tr>
         <td class="content-detail-name">
@@ -140,5 +141,8 @@
         </td>
     </tr>
 </table>
-</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close color="primary">Close</button>
+</mat-dialog-actions>
 

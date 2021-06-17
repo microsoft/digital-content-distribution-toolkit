@@ -4,12 +4,12 @@
     <form >
       <mat-form-field appearance="standard">
         <mat-label>Enter a broadcast date range</mat-label>
-        <mat-date-range-input  [formGroup]="range"  [rangePicker]="picker">
-          <input matStartDate placeholder="Start date"  formControlName="start" >
-          <input matEndDate placeholder="End date"  formControlName="end" >
+        <mat-date-range-input  [formGroup]="range"  [rangePicker]="picker" [min]="minStart">
+          <input matStartDate placeholder="Start date" disabled formControlName="start" >
+          <input matEndDate placeholder="End date" disabled formControlName="end" >
         </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-datepicker-toggle matSuffix [for]="picker" disabled="false"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker disabled="false"></mat-date-range-picker>
       </mat-form-field>
 
       <label><h3><b>Filters</b></h3></label>
@@ -34,5 +34,6 @@
 </div>
 <div mat-dialog-actions align="end">
   <button mat-raised-button (click)="onCancel()" mat-dialog-close class="discard-btn">Cancel</button>
-  <button mat-raised-button (click)="onConfirm()" color="primary" class="update-btn">OK</button>
+  <button mat-raised-button (click)="onConfirm()" color="primary" class="update-btn" [disabled]="isSaveDisabled()"
+  >OK</button>
 </div>
