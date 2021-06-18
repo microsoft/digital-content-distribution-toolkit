@@ -68,7 +68,7 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="incentivePlanRequest"></param>
         /// <returns></returns>
-        [HttpPost("retailerincentiveplan", Name = nameof(CreateRetailerIncentivePlan))]
+        [HttpPost("retailer", Name = nameof(CreateRetailerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> CreateRetailerIncentivePlan(IncentivePlanRequest incentivePlanRequest)
         {
@@ -101,7 +101,7 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="incentivePlanRequest"></param>
         /// <returns></returns>
-        [HttpPost("consumerincentiveplan", Name = nameof(CreateConsumerIncentivePlan))]
+        [HttpPost("consumer", Name = nameof(CreateConsumerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> CreateConsumerIncentivePlan(IncentivePlanRequest incentivePlanRequest)
         {
@@ -190,7 +190,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        [HttpPut("closeconsumer/{planId:guid}/{endDate}")]
+        [HttpPut("consumer/changeenddate/{planId:guid}/{endDate}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> CloseConsumerIncentivePlan(Guid planId, DateTime endDate)
         {
@@ -230,7 +230,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        [HttpPut("closeretailer/{planId:guid}/{subTypeName}/{endDate}")]
+        [HttpPut("retailer/changeenddate/{planId:guid}/{subTypeName}/{endDate}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> CloseRetailerIncentivePlan(Guid planId, string subTypeName, DateTime endDate)
         {
@@ -270,7 +270,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="subtypeName"></param>
         /// <returns></returns>
-        [HttpPut("publishretailer/{planId:guid}/{subtypeName}")]
+        [HttpPut("retailer/publish/{planId:guid}/{subtypeName}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> PublishRetailerPlan(Guid planId, string subtypeName)
         {
@@ -286,7 +286,7 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
-        [HttpPut("publishconsumer/{planId:guid}")]
+        [HttpPut("consumer/publish/{planId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult> PublishConsumerPlan(Guid planId)
         {
@@ -304,11 +304,30 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="subtypeName"></param>
         /// <returns></returns>
-        [HttpGet("{planId:guid}/{subtypeName}", Name = nameof(GetIncentivePlan))]
+        [HttpGet("retailer/{planId:guid}/{subtypeName}", Name = nameof(GetRetailerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<IncentivePlan>> GetIncentivePlan(Guid planId, string subtypeName)
+        public async Task<ActionResult<IncentivePlan>> GetRetailerIncentivePlan(Guid planId, string subtypeName)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subtypeName);
+
+            if (plan == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(plan);
+        }
+
+        /// <summary>
+        /// Returns incentive plan with given id and subtypename
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        [HttpGet("consumer/{planId:guid}", Name = nameof(GetConsumerIncentivePlan))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<IncentivePlan>> GetConsumerIncentivePlan(Guid planId)
+        {
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
 
             if (plan == null)
             {
