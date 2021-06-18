@@ -136,5 +136,42 @@ namespace blendnet.incentive.api.Controllers
             //Start Date & End Date is Mandatory
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Returns the event lists consumer events in the given start date and end date
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        [HttpGet("consumer/events", Name = nameof(GetConsumerEvents))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<EventAggregrateResponse>> GetConsumerEvents(DateTime startDate,DateTime endDate)
+        {
+            //Start Date & End Date is Mandatory
+            //Only allow the events which are valid for consumers. Same validation exists on incentive plan create
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns the event aggregrates for retailer the given start date and end date
+        /// </summary>
+        /// <param name="partnerCode"></param>
+        /// <param name="retailerPartnerProvidedId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        [HttpGet("retailer/events", Name = nameof(GetRetailerEvents))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.Retailer)]
+        public async Task<ActionResult<EventAggregrateResponse>> GetRetailerEvents(string partnerCode,
+                                                                                   string retailerPartnerProvidedId,
+                                                                                   DateTime startDate,
+                                                                                   DateTime endDate)
+        {
+            //Token user id should match with the user id in database against the give RetailerPartnerProvidedId & partnerCode combination
+            //Only allow the events which are valid for retailers. Same validation exists on incentive plan create
+            //Start Date & End Date is Mandatory
+            throw new NotImplementedException();
+        }
     }
 }
