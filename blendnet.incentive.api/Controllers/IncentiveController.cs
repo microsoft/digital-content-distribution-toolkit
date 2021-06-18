@@ -132,57 +132,26 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="updatePlanRequest"></param>
         /// <returns></returns>
-        [HttpPut("{planId:guid}")]
+        [HttpPut("retailer/{planId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<ActionResult> UpdateIncentivePlan(Guid planId, IncentivePlanRequest updatePlanRequest)
+        public async Task<ActionResult> UpdateRetailerIncentivePlan(Guid planId, IncentivePlanRequest updatePlanRequest)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, updatePlanRequest.Audience.SubTypeName);
+            return await UpdatePlan(planId, updatePlanRequest, plan);
+        }
 
-            if (plan == null)
-            {
-                return NotFound();
-            }
-
-            List<string> errorInfo = new List<string>();
-
-            // Only draft mode plans can be updated
-            if (plan.PublishMode != PublishMode.DRAFT)
-            {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0012"]);
-                return BadRequest(errorInfo);
-            }
-
-            RetailerProviderDto retailerProviderDto = null;
-
-            if (updatePlanRequest.Audience.AudienceType == AudienceType.RETAILER)
-            {
-                retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(updatePlanRequest.Audience.SubTypeName);
-            }
-
-            errorInfo = await ValidatePlan(planId, updatePlanRequest, retailerProviderDto);
-
-            if (HasError(errorInfo))
-            {
-                return BadRequest(errorInfo);
-            }
-
-            plan.PlanName = updatePlanRequest.PlanName;
-            plan.PlanType = updatePlanRequest.PlanType;
-            plan.StartDate = updatePlanRequest.StartDate;
-            plan.EndDate = updatePlanRequest.EndDate;
-            plan.Audience = updatePlanRequest.Audience;
-            plan.PlanDetails = updatePlanRequest.PlanDetails;
-
-            int statusCode = await _incentiveRepository.UpdateIncentivePlan(plan);
-
-            if (statusCode == (int)System.Net.HttpStatusCode.OK)
-            {
-                return NoContent();
-            }
-
-            errorInfo.Add(_stringLocalizer["INC_ERR_0013"]);
-
-            return BadRequest(errorInfo);
+        /// <summary>
+        /// Updates existing draft plan with given plan id and other details
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="updatePlanRequest"></param>
+        /// <returns></returns>
+        [HttpPut("consumer/{planId:guid}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult> UpdateConsumerIncentivePlan(Guid planId, IncentivePlanRequest updatePlanRequest)
+        {
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, updatePlanRequest.Audience.SubTypeName);
+            return await UpdatePlan(planId, updatePlanRequest, plan);
 
         }
 
@@ -192,33 +161,27 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="subtypeName"></param>
         /// <returns></returns>
-        [HttpDelete("{planId:guid}/{subtypeName}")]
+        [HttpDelete("retailer/{planId:guid}/{subtypeName}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-        public async Task<ActionResult> DeleteIncentivePlan(Guid planId, string subtypeName)
+        public async Task<ActionResult> DeleteRetailerIncentivePlan(Guid planId, string subtypeName)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subtypeName);
 
-            if (plan == null)
-            {
-                return NotFound();
-            }
+            return await DeleteIncentivePlan(plan);
+        }
 
-            List<string> errorInfo = new List<string>();
-
-            if (plan.PublishMode != PublishMode.DRAFT)
-            {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0014"]);
-                return BadRequest(errorInfo);
-            }
-
-            int statusCode = await _incentiveRepository.DeleteIncentivePlan(planId, subtypeName);
-
-            if (statusCode == (int)System.Net.HttpStatusCode.OK)
-            {
-                return NoContent();
-            }
-
-            return NotFound();
+        /// <summary>
+        /// Deletes given plan id if it is in draft mode
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="subtypeName"></param>
+        /// <returns></returns>
+        [HttpDelete("consumer/{planId:guid}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        public async Task<ActionResult> DeleteConsumerIncentivePlan(Guid planId)
+        {
+            IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
+            return await DeleteIncentivePlan(plan);
         }
 
         /// <summary>
@@ -717,6 +680,82 @@ namespace blendnet.incentive.api.Controllers
 
             return errorInfo;
         }
+
+        private async Task<ActionResult> DeleteIncentivePlan(IncentivePlan plan)
+        {
+            if (plan == null)
+            {
+                return NotFound();
+            }
+
+            List<string> errorInfo = new List<string>();
+
+            if (plan.PublishMode != PublishMode.DRAFT)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0014"]);
+                return BadRequest(errorInfo);
+            }
+
+            int statusCode = await _incentiveRepository.DeleteIncentivePlan(plan.Id.Value, plan.Audience.SubTypeName);
+
+            if (statusCode == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+
+        private async Task<ActionResult> UpdatePlan(Guid planId, IncentivePlanRequest updatePlanRequest, IncentivePlan plan)
+        {
+            if (plan == null)
+            {
+                return NotFound();
+            }
+
+            List<string> errorInfo = new List<string>();
+
+            // Only draft mode plans can be updated
+            if (plan.PublishMode != PublishMode.DRAFT)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0012"]);
+                return BadRequest(errorInfo);
+            }
+
+            RetailerProviderDto retailerProviderDto = null;
+
+            if (updatePlanRequest.Audience.AudienceType == AudienceType.RETAILER)
+            {
+                retailerProviderDto = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(updatePlanRequest.Audience.SubTypeName);
+            }
+
+            errorInfo = await ValidatePlan(planId, updatePlanRequest, retailerProviderDto);
+
+            if (HasError(errorInfo))
+            {
+                return BadRequest(errorInfo);
+            }
+
+            plan.PlanName = updatePlanRequest.PlanName;
+            plan.PlanType = updatePlanRequest.PlanType;
+            plan.StartDate = updatePlanRequest.StartDate;
+            plan.EndDate = updatePlanRequest.EndDate;
+            plan.Audience = updatePlanRequest.Audience;
+            plan.PlanDetails = updatePlanRequest.PlanDetails;
+
+            int statusCode = await _incentiveRepository.UpdateIncentivePlan(plan);
+
+            if (statusCode == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+
+            errorInfo.Add(_stringLocalizer["INC_ERR_0013"]);
+
+            return BadRequest(errorInfo);
+        }
+
+
         #endregion
     }
 }
