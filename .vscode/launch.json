@@ -5,21 +5,106 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "CMS API",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/blendnet.crm.contentprovider.api.bdd/bin/Debug/netcoreapp3.1/blendnet.crm.contentprovider.api.bdd.dll",
+            "preLaunchTask": "build cms.api",
+            "program": "${workspaceFolder}/blendnet.cms.api/bin/Debug/net5.0/blendnet.cms.api.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/blendnet.crm.contentprovider.api.bdd",
-            "console": "internalConsole",
-            "stopAtEntry": false
+            "cwd": "${workspaceFolder}/blendnet.cms.api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https://\\S+)",
+                "uriFormat": "%s/swagger"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS":"https://localhost:44338"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
         },
         {
-            "name": ".NET Core Attach",
+            "name": "RMS API",
             "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
-        }
+            "request": "launch",
+            "preLaunchTask": "build retailer.api",
+            "program": "${workspaceFolder}/blendnet.retailer.api/bin/Debug/net5.0/blendnet.retailer.api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/blendnet.retailer.api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https://\\S+)",
+                "uriFormat": "%s/swagger"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS":"https://localhost:44313"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": "User API",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build user.api",
+            "program": "${workspaceFolder}/blendnet.user.api/bin/Debug/net5.0/blendnet.user.api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/blendnet.user.api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https://\\S+)",
+                "uriFormat": "%s/swagger"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS":"https://localhost:44333"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": "Incentive API",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build incentive.api",
+            "program": "${workspaceFolder}/blendnet.incentive.api/bin/Debug/net5.0/blendnet.incentive.api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/blendnet.incentive.api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https://\\S+)",
+                "uriFormat": "%s/swagger"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS":"https://localhost:44356"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": "RMS Listener",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build retailer.listener",
+            "program": "${workspaceFolder}/blendnet.retailer.listener/bin/Debug/net5.0/blendnet.retailer.listener.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/blendnet.retailer.listener",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "env": {
+                "DOTNET_ENVIRONMENT": "Development"
+            },
+        },
     ]
 }

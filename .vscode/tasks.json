@@ -2,41 +2,64 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build cms.api",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/blendnet.crm.contentprovider.api.bdd/blendnet.crm.contentprovider.api.bdd.csproj",
+                "${workspaceFolder}/blendnet.cms.api/blendnet.cms.api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "build retailer.api",
             "command": "dotnet",
             "type": "process",
             "args": [
-                "publish",
-                "${workspaceFolder}/blendnet.crm.contentprovider.api.bdd/blendnet.crm.contentprovider.api.bdd.csproj",
+                "build",
+                "${workspaceFolder}/blendnet.retailer.api/blendnet.retailer.api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "watch",
+            "label": "build user.api",
             "command": "dotnet",
             "type": "process",
             "args": [
-                "watch",
-                "run",
-                "${workspaceFolder}/blendnet.crm.contentprovider.api.bdd/blendnet.crm.contentprovider.api.bdd.csproj",
+                "build",
+                "${workspaceFolder}/blendnet.user.api/blendnet.user.api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
-        }
+        },
+        {
+            "label": "build incentive.api",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/blendnet.incentive.api/blendnet.incentive.api.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build retailer.listener",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/blendnet.retailer.listener/blendnet.retailer.listener.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
     ]
 }
