@@ -181,12 +181,12 @@
     <value>INC_ERR_0021-Only published plans can be closed</value>
   </data>
   <data name="INC_ERR_0022" xml:space="preserve">
-    <value>INC_ERR_0022-Given end date overlaps with another plan with id {0}</value>
+    <value>INC_ERR_0022-Given end date overlaps with another plan with start date {0} and end date {1}</value>
   </data>
   <data name="INC_ERR_0023" xml:space="preserve">
     <value>INC_ERR_0023-Error in closing plan</value>
   </data>
   <data name="INC_ERR_0024" xml:space="preserve">
-    <value>INC_ERR_0024-Overlapping plan exists in given date range with id {0}</value>
+    <value>INC_ERR_0024-Overlapping plan exists in given date range with start date {0} and end date {1}</value>
   </data>
 </root>

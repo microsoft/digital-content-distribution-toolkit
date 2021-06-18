@@ -660,7 +660,7 @@ namespace blendnet.incentive.api.Controllers
 
                 if (otherPlans.Count > 0)
                 {
-                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0022"], plan.Id));
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0022"], otherPlans.First().StartDate, otherPlans.First().EndDate));
                     return errorInfo;
                 }
             }
@@ -673,7 +673,7 @@ namespace blendnet.incentive.api.Controllers
 
                 if (otherPlans.Count > 0)
                 {
-                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0024"], plan.Id));
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0024"], otherPlans.First().StartDate, otherPlans.First().EndDate));
                     return errorInfo;
                 };
             }
