@@ -189,4 +189,7 @@
   <data name="CMS_ERR_0024" xml:space="preserve">
     <value>CMS_ERR_0024-Invalid json schema - {0}</value>
   </data>
+  <data name="CMS_ERR_0025" xml:space="preserve">
+    <value>CMS_ERR_0025-File content is null. Upload valid file.</value>
+  </data>
 </root>
