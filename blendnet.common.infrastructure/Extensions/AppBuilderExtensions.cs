@@ -28,7 +28,7 @@ namespace blendnet.common.infrastructure.Extensions
 
                 logger.LogError(exceptionHandlerPathFeature.Error, exceptionHandlerPathFeature.Error.Message, exceptionHandlerPathFeature.Path);
 
-                var result = JsonSerializer.Serialize(new { error = exceptionHandlerPathFeature.Error.Message });
+                var result = JsonSerializer.Serialize(new { error = HttpStatusCode.InternalServerError.ToString() });
 
                 await context.Response.WriteAsync(result);
             });
