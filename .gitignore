@@ -341,3 +341,6 @@ healthchecksdb
 
 # Log files from projects
 log-*.txt
+
+# secrets json
+secrets.json
