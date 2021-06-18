@@ -123,6 +123,14 @@ namespace blendnet.cms.api.Controllers
             
             List<string> errorDetails = new List<string>();
 
+            //Null check for file
+            if (file == null)
+            {
+                errorDetails.Add(_stringLocalizer["CMS_ERR_0025"]);
+
+                return BadRequest(errorDetails);
+            }
+
             // Check for Json Format
             if (!ValidateFileExtension(file))
             {
