@@ -78,7 +78,8 @@ export class AppComponent {
         localStorage.getItem("contentProviderName") :"Not Selected";      
       });
       this.userService.loggedInUser$.subscribe(user => {
-        this.currentUserName = user;
+        this.currentUserName = user ? user : 
+        localStorage.getItem("currentUserName");
       })
     }
 

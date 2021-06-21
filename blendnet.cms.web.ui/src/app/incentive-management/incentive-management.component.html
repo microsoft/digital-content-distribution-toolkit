@@ -3,7 +3,7 @@
 <mat-tab-group color="primary" backgroundColor="grey" (selectedTabChange)="tabClick($event)">
     <mat-tab label="Retailer"> 
         <br>
-        <button (click)="createRetailerIncentive()">Create Incentive</button>
+        <button (click)="openAddIncentiveDialog('Retailer')">Create Incentive</button>
         <br>
     <div class="cms-container">
         <div class="mat-elevation-z8">
@@ -58,7 +58,7 @@
      </mat-tab>
     <mat-tab label="Consumer"> 
         <br>
-        <button (click)="createConsumerIncentive()">Create Incentive</button>
+        <button (click)="openAddIncentiveDialog('Consumer')">Create Incentive</button>
         <br>
         <div class="cms-container">
             <div class="mat-elevation-z8">

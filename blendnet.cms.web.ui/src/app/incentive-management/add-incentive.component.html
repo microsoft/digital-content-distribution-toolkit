@@ -1,1 +1,47 @@
-<p>Add incentive!</p>
+<p>{{audience}}</p>
+<form [formGroup]="incentiveForm">
+    <input formControlName="name" placeholder="Plan Name">
+    <br>
+    <input formControlName="type" placeholder="Plan Type">
+    <br>
+    <input formControlName="startDate" placeholder="Start Date">
+    <br>
+    <input formControlName="endDate" placeholder="End Date">
+    <br>
+    <button type="button" (click)="addEvent()">Add Event</button>
+    <div formArrayName="events"
+        *ngFor="let event of getEvents(incentiveForm); let i = index;">
+        <div [formGroupName]="i">
+            <input formControlName="eventType" placeholder="Event Type">
+            <br>
+            <input formControlName="contentProvider" placeholder="contentProvider">
+            <br>
+            <input formControlName="ruleType" placeholder="ruleType">
+            <br>
+            <input formControlName="formula" placeholder="formula">
+            <br>
+            <button type="button" (click)="addRange(i)">Add Range</button>
+            <div formArrayName="ranges"
+                    *ngFor="let range of getRanges(event); let j = index;">
+                <div [formGroupName]="j">
+                    <input formControlName="start" placeholder="start">
+                    <!-- <input formControlName="end" placeholder="end"> -->
+                    <!-- <input formControlName="amount" placeholder="amount"> -->
+                    <button *ngIf="getRanges(event).length > 0"
+                        (click)="removeRange(i)">
+                       Remove Range</button>
+                </div>
+                
+                
+            </div>
+            <button *ngIf="getEvents(incentiveForm).length > 1"
+                (click)="removeEvent(i)">
+               Remove Event</button>
+        
+        </div>
+        
+        
+        
+    </div>
+
+</form>
