@@ -179,7 +179,7 @@ namespace blendnet.user.api.Controllers
 
             if (user.ReferralInfo != null)
             {
-                errorInfo.Add(_stringLocalizer["USR_ERR_004"]);
+                errorInfo.Add(string.Format(_stringLocalizer["USR_ERR_004"],user.ReferralInfo.RetailerReferralCode));
                 return BadRequest(errorInfo);
             }
 

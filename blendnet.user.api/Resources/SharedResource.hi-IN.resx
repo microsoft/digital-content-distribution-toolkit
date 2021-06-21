@@ -127,7 +127,7 @@
     <value>USR_ERR_003-केवल ग्राहकों को रेफ़रल जानकारी जोड़ने की अनुमति है</value>
   </data>
   <data name="USR_ERR_004" xml:space="preserve">
-    <value>USR_ERR_004-रेफ़रल कोड पहले ही असाइन किया जा चुका है</value>
+    <value>USR_ERR_004-रेफ़रल कोड पहले ही असाइन किया जा चुका है - {0}</value>
   </data>
   <data name="USR_ERR_005" xml:space="preserve">
     <value>USR_ERR_005-अमान्य रेफ़रल कोड</value>

@@ -127,7 +127,7 @@
     <value>USR_ERR_003-Only Customers are allowerd to add referral info</value>
   </data>
   <data name="USR_ERR_004" xml:space="preserve">
-    <value>USR_ERR_004-Referral code is already assigned</value>
+    <value>USR_ERR_004-Referral code is already assigned - {0}</value>
   </data>
   <data name="USR_ERR_005" xml:space="preserve">
     <value>USR_ERR_005-Invalid referral code</value>
