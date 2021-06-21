@@ -12,19 +12,14 @@ namespace blendnet.incentive.api.Common
     /// </summary>
     public class IncentiveCalculationHelper
     {
-        IIncentiveRepository _incentiveRepository;
-
         IEventRepository _eventRepository;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="incentiveRepository"></param>
-        public IncentiveCalculationHelper(IIncentiveRepository incentiveRepository,
-                                          IEventRepository eventRepository)
+        public IncentiveCalculationHelper(IEventRepository eventRepository)
         {
-            _incentiveRepository = incentiveRepository;
-
             _eventRepository = eventRepository;
         }
 
@@ -32,14 +27,11 @@ namespace blendnet.incentive.api.Common
         /// <summary>
         /// Calculates the Regular Incentive Plan for Retailer
         /// </summary>
+        /// <param name="incentivePlan"></param>
         /// <param name="retailerPartnerId"></param>
-        /// <param name="retailerProviderCode"></param>
         /// <returns></returns>
-        public async Task<IncentivePlan> CalculateActiveIncentivePlanForRetailer(string retailerProviderCode,string retailerPartnerId)
+        public async Task<IncentivePlan> CalculateIncentivePlanForRetailer(IncentivePlan incentivePlan, string retailerPartnerId)
         {
-            //Get the current active plan for retailer
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, retailerProviderCode);
-
             await CalculateIncentivePlan(incentivePlan, retailerPartnerId);
             
             return incentivePlan;
@@ -49,13 +41,11 @@ namespace blendnet.incentive.api.Common
         /// <summary>
         /// Calculates the Milestone for Retailer
         /// </summary>
+        /// <param name="incentivePlan"></param>
         /// <param name="retailerPartnerId"></param>
-        /// <param name="retailerProviderCode"></param>
         /// <returns></returns>
-        public async Task<IncentivePlan> CalculateActiveMiletoneForRetailer(string retailerProviderCode, string retailerPartnerId)
+        public async Task<IncentivePlan> CalculateMiletoneForRetailer(IncentivePlan incentivePlan, string retailerPartnerId)
         {
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.MILESTONE, retailerProviderCode);
-
             await CalculateIncentivePlan(incentivePlan, retailerPartnerId);
 
             return incentivePlan;
@@ -63,14 +53,12 @@ namespace blendnet.incentive.api.Common
 
         /// <summary>
         /// Calculates Incentive Plan for Consumer
-        /// Question : Calcule over all the past plans?
         /// </summary>
+        /// <param name="incentivePlan"></param>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public async Task<IncentivePlan> CalculateActiveIncentivePlanForConsumer(string phoneNumber)
+        public async Task<IncentivePlan> CalculateIncentivePlanForConsumer(IncentivePlan incentivePlan, string phoneNumber)
         {
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
-
             await CalculateIncentivePlan(incentivePlan, phoneNumber);
 
             return incentivePlan;
@@ -80,12 +68,11 @@ namespace blendnet.incentive.api.Common
         /// Calculates the Milestone for Consumer
         /// Milestone is always calculated on active plan.
         /// </summary>
+        /// <param name="incentivePlan"></param>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public async Task<IncentivePlan> CalculateActiveMilestoneForConsumer(string phoneNumber)
+        public async Task<IncentivePlan> CalculateMilestoneForConsumer(IncentivePlan incentivePlan,string phoneNumber)
         {
-            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.MILESTONE);
-
             await CalculateIncentivePlan(incentivePlan, phoneNumber);
 
             return incentivePlan;
