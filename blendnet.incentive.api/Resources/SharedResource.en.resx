@@ -189,4 +189,22 @@
   <data name="INC_ERR_0024" xml:space="preserve">
     <value>INC_ERR_0024-Overlapping plan exists in given date range with start date {0} and end date {1}</value>
   </data>
+  <data name="INC_ERR_0025" xml:space="preserve">
+    <value>INC_ERR_0025-Retailer do not exist with given id and partner code</value>
+  </data>
+  <data name="INC_ERR_0026" xml:space="preserve">
+    <value>INC_ERR_0026-User is not autorized to query given retailer information</value>
+  </data>
+  <data name="INC_ERR_0027" xml:space="preserve">
+    <value>INC_ERR_0027-No plan exists for the given id</value>
+  </data>
+  <data name="INC_ERR_0028" xml:space="preserve">
+    <value>INC_ERR_0028-Incentive plan is not of type {0}</value>
+  </data>
+  <data name="INC_ERR_0029" xml:space="preserve">
+    <value>INC_ERR_0029-Invalid event type {0}</value>
+  </data>
+  <data name="INC_ERR_0030" xml:space="preserve">
+    <value>INC_ERR_0030-Maximum 30 days of data can be queried</value>
+  </data>
 </root>

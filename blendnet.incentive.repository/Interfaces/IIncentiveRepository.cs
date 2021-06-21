@@ -39,12 +39,27 @@ namespace blendnet.incentive.repository.Interfaces
         public Task<IncentivePlan> GetConsumerPublishedPlan(PlanType planType, DateTime startDate);
 
         /// <summary>
+        /// Get consumer published plan with given Id
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetConsumerPublishedPlan(Guid planId, PlanType planType);
+
+        /// <summary>
         /// Retrieve current active plan for retailer with given subtype name
         /// </summary>
         /// <param name="planType"></param>
         /// <param name="audienceSubTypeName"></param>
         /// <returns></returns>
         public Task<IncentivePlan> GetRetailerPublishedPlan(PlanType planType, string audienceSubTypeName, DateTime startDate);
+
+        /// <summary>
+        /// Get retailer published plan with given Id
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="subTypeName"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetRetailerPublishedPlan(Guid planId, string subTypeName, PlanType planType);
 
         /// <summary>
         /// Returns published list of events overlapping with given date

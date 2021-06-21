@@ -148,6 +148,42 @@ namespace blendnet.incentive.api.Common
             return response;
         }
 
+        public async Task<List<IncentiveEvent>> GetConsumerIncentiveEvents(string phoneNumber, EventType eventType, DateTime startDate, DateTime endDate)
+        {
+            List<EventType> eventTypes = new List<EventType>();
+            eventTypes.Add(eventType);
+            EventCriteriaRequest eventCriteriaRequest = new EventCriteriaRequest()
+            {
+                EventCreatedFor = phoneNumber,
+                AudienceType = AudienceType.CONSUMER,
+                EventTypes = eventTypes,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            List<IncentiveEvent> incentiveEvents = await _eventRepository.GetEvents(eventCriteriaRequest);
+
+            return incentiveEvents;
+        }
+
+        public async Task<List<IncentiveEvent>> GetRetailerIncentiveEvents(string retailerPartnerProvidedId, EventType eventType, DateTime startDate, DateTime endDate)
+        {
+            List<EventType> eventTypes = new List<EventType>();
+            eventTypes.Add(eventType);
+            EventCriteriaRequest eventCriteriaRequest = new EventCriteriaRequest()
+            {
+                EventCreatedFor = retailerPartnerProvidedId,
+                AudienceType = AudienceType.RETAILER,
+                EventTypes = eventTypes,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            List<IncentiveEvent> incentiveEvents = await _eventRepository.GetEvents(eventCriteriaRequest);
+
+            return incentiveEvents;
+        }
+
         #region Private Methods
         /// <summary>
         /// Calculates Incentive Plan
