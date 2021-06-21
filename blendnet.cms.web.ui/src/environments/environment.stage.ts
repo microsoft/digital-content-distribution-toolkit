@@ -4,16 +4,11 @@ export const environment = {
     maxFileUploadSize: 1000000,
     fileAllowedType: 'application/json',
     channelName: "CMSPortal",
-    // contentProviderApiUrl: '/ContentProvider',
     contentProviderApiUrl: "http://20.204.71.102/cmsapi/api/v1/ContentProvider",
-    // contentApiUrl: '/Content',
     contentApiUrl: "http://20.204.71.102/cmsapi/api/v1/Content",
-    // userApiUrl: '/User',
     userApiUrl: "http://20.204.71.102/userapi/api/v1/User",
+    incentiveApiUrl: "http://20.204.71.102/incentiveapi/api/v1/Incentive",
     dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
-    // kaizalaApi0: "/Kaizala0",
-    // kaizalaApi1: "/Kaizala1",
-    // kaizalaApi2: "/Kaizala2",
     kaizalaApi0: "https://api-preprod.kaiza.la/v1/",
     kaizalaApi1: "https://api-preprod.kaiza.la/v1/",
     kaizalaApi2: "https://api-preprod.kaiza.la/v1/",
@@ -52,7 +47,8 @@ export const environment = {
     roles : {
       "SuperAdmin" : "SuperAdmin",
       "ContentAdmin": "ContentAdmin",
-      "User" : "User"
+      "User" : "User",
+      "Retailer": "Retailer"
     }
    };
   

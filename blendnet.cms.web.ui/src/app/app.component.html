@@ -104,6 +104,15 @@
 					<div *ngIf="!isExpanded" class="menu-small-text">Broadcast</div>
 				</div>
 			</a>
+			<a mat-list-item 
+			routerLinkActive="active" 
+			[routerLink]="['incentive-management']">
+				<div>
+					<mat-icon mat-list-icon>emoji_events</mat-icon>
+					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Incentives</span>
+					<div *ngIf="!isExpanded" class="menu-small-text">Incentives</div>
+				</div>
+			</a>
       <!-- </div> -->
       <!-- <mat-list-item class="parent">
 				<span class="full-width" *ngIf="isExpanded">Devices</span>

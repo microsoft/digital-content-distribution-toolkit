@@ -29,6 +29,8 @@ import { CommonDialogComponent } from './common-dialog/common-dialog.component';
 import { AddSubscriptionDialog } from './subscription/add-subscription-dialog';
 import { ProfileComponent } from './profile/profile.component';
 import { PascalToStringPipe } from './custom-pipes/pascalcase-to-string.pipe';
+import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
+import { AddIncentiveComponent } from './incentive-management/add-incentive.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import { PascalToStringPipe } from './custom-pipes/pascalcase-to-string.pipe';
     CommonDialogComponent,
     ProfileComponent,
     PascalToStringPipe,
-    ContentDetailsDialog
+    ContentDetailsDialog,
+    IncentiveManagementComponent,
+    AddIncentiveComponent
   ],
   imports: [
     HttpClientModule,

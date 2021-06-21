@@ -24,7 +24,8 @@ export class RoleGuardService implements CanActivate {
       window.alert('You do not have access as expected role is missing. Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
       return false;
     } else if(!localStorage.getItem("contentProviderId") 
-      && !route.data.isContentProviderSelectPage ) {
+      && route.routeConfig.path !== 'incentive-management' 
+      && route.routeConfig.path !== 'content-providers') {
       window.alert("Please select a Content Provider to access the management services");
       return false;
     }

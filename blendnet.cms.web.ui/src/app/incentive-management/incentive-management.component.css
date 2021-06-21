@@ -1,0 +1,12 @@
+.cms-table-container {
+    position: relative;
+    max-height: 300px;
+    overflow: auto;
+    width: 100%;
+  }
+.cms-container {
+    height: 80%;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 5%;
+}

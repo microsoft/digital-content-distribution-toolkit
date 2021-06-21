@@ -1,0 +1,112 @@
+
+<br>
+<mat-tab-group color="primary" backgroundColor="grey" (selectedTabChange)="tabClick($event)">
+    <mat-tab label="Retailer"> 
+        <br>
+        <button (click)="createRetailerIncentive()">Create Incentive</button>
+        <br>
+    <div class="cms-container">
+        <div class="mat-elevation-z8">
+            <div class="cms-table-container">
+                <table mat-table [dataSource]="dataSourceRetailers">
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let row">{{row.name}} </td>
+                    </ng-container>
+                
+                    <!-- Type Column -->
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef> Type </th>
+                        <td mat-cell *matCellDef="let row"> {{row.type}} </td>
+                    </ng-container>
+
+                    
+                <!-- Date Range Column -->
+                <ng-container matColumnDef="dateRange">
+                    <th mat-header-cell *matHeaderCellDef > Date Range </th>
+                    <td mat-cell *matCellDef="let row"> {{row.dateRange}} </td>
+                </ng-container>
+
+                <!-- Partner Column -->
+                <ng-container matColumnDef="partner">
+                    <th mat-header-cell *matHeaderCellDef > Partner </th>
+                    <td mat-cell *matCellDef="let row"> {{row.partner}} </td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef > Status </th>
+                    <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+                </ng-container>
+                <!-- Status Column -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef > Actions </th>
+                    <td mat-cell *matCellDef="let row"> 
+                        <mat-icon>edit</mat-icon>
+                        <mat-icon>delete</mat-icon>
+                        <mat-icon>publish</mat-icon>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsRetailers; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsRetailers;"></tr>
+
+                </table>
+            </div>
+        </div>
+    </div>
+     </mat-tab>
+    <mat-tab label="Consumer"> 
+        <br>
+        <button (click)="createConsumerIncentive()">Create Incentive</button>
+        <br>
+        <div class="cms-container">
+            <div class="mat-elevation-z8">
+                <div class="cms-table-container">
+                    <table mat-table [dataSource]="dataSourceConsumers">
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef> Name </th>
+                            <td mat-cell *matCellDef="let row">{{row.name}} </td>
+                        </ng-container>
+                    
+                        <!-- Type Column -->
+                        <ng-container matColumnDef="type">
+                            <th mat-header-cell *matHeaderCellDef> Type </th>
+                            <td mat-cell *matCellDef="let row"> {{row.type}} </td>
+                        </ng-container>
+    
+                        
+                    <!-- Date Range Column -->
+                    <ng-container matColumnDef="dateRange">
+                        <th mat-header-cell *matHeaderCellDef > Date Range </th>
+                        <td mat-cell *matCellDef="let row"> {{row.dateRange}} </td>
+                    </ng-container>
+    
+    
+                    <!-- Status Column -->
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef > Status </th>
+                        <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+                    </ng-container>
+                    <!-- Status Column -->
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef > Actions </th>
+                        <td mat-cell *matCellDef="let row"> 
+                            <mat-icon>edit</mat-icon>
+                            <mat-icon>delete</mat-icon>
+                            <mat-icon>publish</mat-icon>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsConsumers; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsConsumers;"></tr>
+    
+                    </table>
+                </div>
+            </div>
+        </div>
+    </mat-tab>
+  </mat-tab-group>
+
+<br>
+

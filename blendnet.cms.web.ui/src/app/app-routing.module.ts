@@ -14,6 +14,7 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { environment } from 'src/environments/environment';
 import { ProfileComponent } from './profile/profile.component';
+import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
 
 
 const appRoutes: Routes = [
@@ -70,14 +71,23 @@ const appRoutes: Routes = [
     } 
   },
   {
+    path: 'incentive-management',
+   component: IncentiveManagementComponent,
+   canActivate: [
+    RoleGuardService
+  ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin]
+    } 
+  },
+  {
     path: 'content-providers',
      component: ContentProviderComponent,
      canActivate: [
       RoleGuardService
     ],
     data: { 
-      expectedRole: [environment.roles.SuperAdmin, environment.roles.ContentAdmin],
-      isContentProviderSelectPage: true
+      expectedRole: [environment.roles.SuperAdmin, environment.roles.ContentAdmin]
     } 
     },
   {
