@@ -72,7 +72,6 @@ namespace blendnet.incentive.api.Controllers
         ///< returns ></ returns >
         [HttpGet("consumer/milestone", Name = nameof(GetConsumerCalculatedMilestone))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(KaizalaIdentityRoles.User)]
         public async Task<ActionResult<IncentivePlan>> GetConsumerCalculatedMilestone
             (Guid? planId)
         {
