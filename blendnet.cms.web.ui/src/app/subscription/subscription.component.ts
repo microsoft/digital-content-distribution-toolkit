@@ -48,6 +48,11 @@ export class SubscriptionComponent {
   }
 
   save(sub) {
+    var selectedEndDate = sub.endDate;
+    selectedEndDate.setHours(selectedEndDate.getHours() + 23);
+    selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
+    selectedEndDate.setSeconds(selectedEndDate.getSeconds() + 59);
+    sub.endDate = selectedEndDate;
     this.subscriptionService.editSubscription(sub).subscribe(
       res => {
         this.toastr.success("Subscription updated successfully!");

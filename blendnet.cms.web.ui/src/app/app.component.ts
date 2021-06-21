@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Contentprovider } from './models/contentprovider.model';
@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
 import { KaizalaService } from './services/kaizala.service';
 import { environment } from 'src/environments/environment';
 import { CommonDialogComponent } from 'src/app/common-dialog/common-dialog.component';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { UserService } from './services/user.service';
 
 
 
@@ -37,7 +38,8 @@ export class AppComponent {
     private cpService: ContentProviderService,
     private router: Router,
     private kaizalaService: KaizalaService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private userService: UserService
   ) {
     this.kaizalaService.currentUser.subscribe(user => {
       this.currentUser = user});
@@ -75,14 +77,12 @@ export class AppComponent {
         localStorage.getItem("contentProviderName") ? 
         localStorage.getItem("contentProviderName") :"Not Selected";      
       });
-      this.kaizalaService.currentUserName.subscribe(userName => {
-        this.currentUserName = userName});
-      this.kaizalaService.currentUser.subscribe(user => {
-        this.currentUser = user });
+      this.userService.loggedInUser$.subscribe(user => {
+        this.currentUserName = user;
+      })
     }
 
     logout() {
-
       const dialogRef = this.dialog.open(CommonDialogComponent, {
         disableClose: true,
         data: {message: "Are you sure you want to log out?", heading:'Confirm Logout',

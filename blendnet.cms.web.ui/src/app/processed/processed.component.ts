@@ -312,7 +312,7 @@ export class ProcessConfirmDialog {
       var selectedEndDate = this.range.controls.end.value;
       selectedEndDate.setHours(selectedEndDate.getHours() + 23);
       selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
-
+      selectedEndDate.setSeconds(selectedEndDate.getSeconds() + 59);
       var broadcastRequest = {
         "contentIds": selectedIds,
         "filters": this.appliedFilters,

@@ -58,21 +58,6 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.countryCodes = environment.countryCodes;
     this.selectedCountryCodeValue = this.countryCodes[0].value;
-    // this.msalBroadcastService.msalSubject$
-    //   .pipe(
-    //     filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
-    //   )
-    //   .subscribe({
-    //     next: (result: EventMessage) => {
-    //       console.log(result);
-    //       if (result?.payload?.account) {
-    //         this.authService.instance.setActiveAccount(result.payload.account);
-    //       }
-    //     },
-    //     error: (error) => console.log(error)
-    //   });
-
-    // this.setLoginDisplay();
     this.contact = new FormControl('', [Validators.required, Validators.maxLength(10), Validators.minLength(10), Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
     this.otp = new FormControl('', [Validators.required, Validators.maxLength(6),  Validators.minLength(4),  Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
     this.otpSendErrorMessage = "";
@@ -96,23 +81,6 @@ export class LoginComponent implements OnInit {
     }
 
   }
-
-  // setLoginDisplay() {
-    // this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
-    // if(this.loginDisplay) {
-    //   this.token = this.authService.instance.getAllAccounts()[0].idTokenClaims;
-    //   this.token.groups.forEach(group => {
-    //     this.role.push(group);
-    //   });
-    //   this.username = this.token.givenName;
-    //   console.log(this.username);
-    //   console.log(this.role);
-    // }
-  //   this.showLoginDisplay = localStorage.getItem("currentUser") ? (localStorage.getItem("roles") ? false: true) : true;
-  //   if(!this.showLoginDisplay) {
-  //     var roles = localStorage.getItem("roles");
-  //   }
-  // }
 
   showContactOnlySection() {
     this.isContactOnlySection = true;
@@ -174,15 +142,10 @@ export class LoginComponent implements OnInit {
             var response: any = res.body;
             localStorage.setItem("roles", response.userRole);
             this.roles =  localStorage.getItem("roles");
-            // this.showLoginDisplay = false;
-            // this.userService.changeShowLoginDisplay(false);
-            // // this.router.navigate(['/'])
-            // // .then(() =>
-            //   window.location.reload();
-            // // );
             this.isContactOnlySection = true;
             this.isCountryCodeSection = false;
             this.isOTPSection = false; 
+            this.userService.setLoggedInUser(this.contact.value);
             this.router.navigate([this.returnUrl]);
           },
           err => {
