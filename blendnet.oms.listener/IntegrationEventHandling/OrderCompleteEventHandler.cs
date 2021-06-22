@@ -97,7 +97,7 @@ namespace blendnet.oms.listener.IntegrationEventHandling
             };
             dynamic payloadObject =  NotificationUtilities.GetNotificationPayload(notificationData);
             payloadObject.data.messsage.appname = _appSettings.KaizalaIdentityAppName;
-            payloadObject.data.id = order.Id;   
+            payloadObject.data.orderId = order.Id;   
             string payload = JsonConvert.SerializeObject(payloadObject);
             return payload;
         }
