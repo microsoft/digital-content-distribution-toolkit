@@ -1,5 +1,4 @@
-﻿using blendnet.common.dto.Notification;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using static blendnet.common.dto.ApplicationConstants;
@@ -8,7 +7,7 @@ namespace blendnet.common.infrastructure.Notification
 {
     public static class NotificationUtilities
     {
-        public static dynamic GetNotificationPayload(NotificationData notificationData)
+        public static string GetNotificationPayload(string title, string body, string? attachmentUrl, Guid? orderId, int notificationType, string kaizalaIdentityAppName)
         {
          
             dynamic message = new JObject();
@@ -17,9 +16,9 @@ namespace blendnet.common.infrastructure.Notification
 
             dynamic notification = new JObject();
 
-            notification.body = notificationData.Body;
-            notification.title =  notificationData.Title;
-            notification.image = notificationData.AttachmentUrl;
+            notification.body = body;
+            notification.title = title;
+            notification.image = attachmentUrl;
 
             android.notification = notification;
 
@@ -30,14 +29,20 @@ namespace blendnet.common.infrastructure.Notification
             dynamic gcm = new JObject();
             dynamic data = new JObject();
             gcm.pushNotificationKey = "newMsgPushNotification";
+            gcm.appname = kaizalaIdentityAppName;
 
             data.message = gcm;
-            data.type = notificationData.Type;
+            data.type = notificationType;
+            if (notificationType == PushNotificationType.OrderComplete)
+            {
+                data.orderId = orderId;
+            }
             gcmObject.priority = "high";
 
             gcmObject.data = data;
             gcmObject.message = message;
-            return gcmObject;
+            string msg = JsonConvert.SerializeObject(gcmObject);
+            return msg;
         }
     }
 }
