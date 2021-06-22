@@ -38,6 +38,11 @@ namespace blendnet.common.dto.Cms
         public CommandType CommandType { get; set; }
 
         /// <summary>
+        /// Created By User Id
+        /// </summary>
+        public Guid CreatedByUserId { get; set; }
+
+        /// <summary>
         /// Created Date
         /// </summary>
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;

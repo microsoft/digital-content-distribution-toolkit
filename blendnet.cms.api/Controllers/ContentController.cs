@@ -229,7 +229,8 @@ namespace blendnet.cms.api.Controllers
                 ContentCommand contentDeleteCommand = new ContentCommand()
                 {
                     CommandType = CommandType.DeleteContent,
-                    Content = contentToDelete
+                    Content = contentToDelete,
+                    CreatedByUserId = UserClaimData.GetUserId(this.User.Claims)
                 };
 
                 //publish the event
@@ -354,7 +355,8 @@ namespace blendnet.cms.api.Controllers
                         ContentCommand contentTransformCommand = new ContentCommand()
                         {
                             CommandType = CommandType.TransformContent,
-                            ContentId = content.Id.Value
+                            ContentId = content.Id.Value,
+                            CreatedByUserId = UserClaimData.GetUserId(this.User.Claims)
                         };
 
                         //publish the event
@@ -440,6 +442,7 @@ namespace blendnet.cms.api.Controllers
                         {
                             CommandType = CommandType.BroadcastContent,
                             ContentId = content.Id.Value,
+                            CreatedByUserId = UserClaimData.GetUserId(this.User.Claims),
                             BroadcastRequest = new BroadcastRequest() 
                             { 
                                 Filters = broadcastContentRequest.Filters,
@@ -523,6 +526,8 @@ namespace blendnet.cms.api.Controllers
                 ContentCommand contentCommand = new ContentCommand();
 
                 contentCommand.ContentId = contentId;
+
+                contentCommand.CreatedByUserId = UserClaimData.GetUserId(this.User.Claims);
 
                 //publish the event
                 ContentUploadedIntegrationEvent contentUploadedIntegrationEvent = new ContentUploadedIntegrationEvent()
