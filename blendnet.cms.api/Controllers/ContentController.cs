@@ -195,6 +195,8 @@ namespace blendnet.cms.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult> DeleteContent(Guid contentId)
         {
+            List<string> errorInfo = new List<string>();
+
             Content contentToDelete = await _contentRepository.GetContentById(contentId);
 
             if (contentToDelete == null)
@@ -214,8 +216,10 @@ namespace blendnet.cms.api.Controllers
                     contentToDelete.ContentTransformStatus == ContentTransformStatus.TransformNotInitialized &&
                     contentToDelete.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastNotInitialized)
             {
-                return BadRequest(String.Format(_stringLocalizer["CMS_ERR_0002"], contentToDelete.Id.Value, ContentUploadStatus.UploadComplete,
+                errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0002"], contentToDelete.Id.Value, ContentUploadStatus.UploadComplete,
                     ContentUploadStatus.UploadFailed, ContentTransformStatus.TransformNotInitialized, ContentBroadcastStatus.BroadcastNotInitialized));
+
+                return BadRequest(errorInfo);
             }
 
             int statusCode = await _contentRepository.DeleteContent(contentId);
@@ -254,16 +258,22 @@ namespace blendnet.cms.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<string>> GetContentToken(Guid contentId)
         {
+            List<string> errorInfo = new List<string>();
+
             Content content = await _contentRepository.GetContentById(contentId);
 
             if (content == null)
             {
-                return BadRequest(String.Format(_stringLocalizer["CMS_ERR_0003"], contentId));
+                errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0003"], contentId));
+
+                return BadRequest(errorInfo);
             }
 
             if (content.ContentTransformStatus != ContentTransformStatus.TransformComplete)
             {
-                return BadRequest(String.Format(_stringLocalizer["CMS_ERR_0004"], content.ContentTransformStatus.ToString()));
+                errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0004"], content.ContentTransformStatus.ToString()));
+
+                return BadRequest(errorInfo);
             }
 
             string token = await _amsHelper.GetContentToken(content.Id.Value, content.ContentTransformStatusUpdatedBy.Value);
@@ -306,11 +316,15 @@ namespace blendnet.cms.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> TransformContent(TransformContentRequest transformContentRequest)
         {
+            List<string> errorInfo = new List<string>();
+
             if (transformContentRequest == null || 
                 transformContentRequest.ContentIds == null || 
                 transformContentRequest.ContentIds.Count() <= 0)
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0005"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0005"]);
+
+                return BadRequest(errorInfo);
             }
 
             List<Content> contentlist = await _contentRepository.GetContentByIds(transformContentRequest.ContentIds);
@@ -373,6 +387,8 @@ namespace blendnet.cms.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> BroadcastContent(BroadcastContentRequest broadcastContentRequest)
         {
+            List<string> errorInfo = new List<string>();
+
             if (broadcastContentRequest == null ||
                 broadcastContentRequest.ContentIds == null ||
                 broadcastContentRequest.ContentIds.Count() <= 0 ||
@@ -381,12 +397,16 @@ namespace blendnet.cms.api.Controllers
                 broadcastContentRequest.StartDate.Equals(DateTime.MinValue) ||
                 broadcastContentRequest.EndDate.Equals(DateTime.MinValue))
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0007"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0007"]);
+
+                return BadRequest(errorInfo);
             }
 
             if (broadcastContentRequest.EndDate <= broadcastContentRequest.StartDate)
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0008"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0008"]);
+
+                return BadRequest(errorInfo);
             }
 
             List<Content> contentlist = await _contentRepository.GetContentByIds(broadcastContentRequest.ContentIds);

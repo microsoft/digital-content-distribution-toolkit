@@ -55,7 +55,10 @@ namespace blendnet.cms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<ContentApiResult<ContentDto>>> GetProcessedAssets(Guid contentProviderId, string continuationToken)
         {
+            List<string> errorInfo = new List<string>();
+
             ContentStatusFilter contentStatusFilter = new ContentStatusFilter();
+            
             contentStatusFilter.ContentTransformStatuses = new string[] { ContentTransformStatus.TransformComplete.ToString() };
 
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
@@ -64,7 +67,9 @@ namespace blendnet.cms.api.Controllers
 
             if (result._data == null || result._data.Count == 0)
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0017"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0017"]);
+
+                return BadRequest(errorInfo);
             }
 
             return Ok(result);
@@ -80,8 +85,12 @@ namespace blendnet.cms.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<ContentApiResult<Content>>> GetBroadcastedAssets(Guid contentProviderId, string continuationToken)
         {
+            List<string> errorInfo = new List<string>();
+
             ContentStatusFilter contentStatusFilter = new ContentStatusFilter();
+            
             contentStatusFilter.ContentTransformStatuses = new string[] { ContentTransformStatus.TransformComplete.ToString() };
+            
             contentStatusFilter.ContentBroadcastStatuses = new string[] { ContentBroadcastStatus.BroadcastOrderComplete.ToString() };
 
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
@@ -90,7 +99,9 @@ namespace blendnet.cms.api.Controllers
 
             if(result._data == null || result._data.Count == 0)
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0017"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0017"]);
+
+                return BadRequest(errorInfo);
             }
 
             return Ok(result);
