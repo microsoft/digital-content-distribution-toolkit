@@ -1,5 +1,4 @@
 ﻿using blendnet.common.dto;
-using blendnet.common.dto.Notification;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.user.repository.Interfaces;
@@ -97,20 +96,6 @@ namespace blendnet.user.repository.CosmosRepository
             return await _container.ExtractFirstDataFromQueryIterator<User>(queryDef);
         }
 
-        /// <summary>
-        /// Returns the BlendNet Users By channelId
-        /// </summary>
-        /// <param name="channelId"></param>
-        /// <returns>List<UserData></returns>
-        public async Task<List<UserData>> GetUsersDataByChannelId(Channel channelId)
-        {
-            var queryString = "SELECT u.id AS userId, u.phoneNumber from u where u.channelId = @channelId and u.type = @type";
-            var queryDef = new QueryDefinition(queryString)
-                                .WithParameter("@channelId", channelId)
-                                .WithParameter("@type", UserContainerType.User);
-            
-            return await _container.ExtractDataFromQueryIterator<UserData>(queryDef);
-        }
         /// <summary>
         /// Get Referral data based on retailer partner id and given date range
         /// </summary>
