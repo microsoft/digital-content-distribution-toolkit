@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using static blendnet.common.dto.ApplicationConstants;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
+using Microsoft.Extensions.Configuration;
 
 namespace blendnet.incentive.api.Controllers
 {
@@ -45,8 +46,11 @@ namespace blendnet.incentive.api.Controllers
 
         private IncentiveCalculationHelper _incentiveCalculationHelper;
 
+        private readonly IConfiguration _configuration;
+
         public IncentiveEventController(IIncentiveRepository incentiveRepository,
                                 ILogger<IncentiveEventController> logger,
+                                IConfiguration configuration,
                                 IOptionsMonitor<IncentiveAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
                                 RetailerProxy retailerProxy,
@@ -55,6 +59,8 @@ namespace blendnet.incentive.api.Controllers
             _incentiveRepository = incentiveRepository;
 
             _logger = logger;
+
+            _configuration = configuration;
 
             _incentiveAppSettings = optionsMonitor.CurrentValue;
 
@@ -114,7 +120,9 @@ namespace blendnet.incentive.api.Controllers
         {
             IncentivePlan incentivePlan = null;
 
-            List<string> errorInfo = await ValidateRetailer(retailerPartnerProvidedId, partnerCode);
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, partnerCode);
+            
+            List<string> errorInfo = ValidateRetailer(retailer);
 
             if(errorInfo.Count > 0)
             {
@@ -138,7 +146,7 @@ namespace blendnet.incentive.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            incentivePlan = await _incentiveCalculationHelper.CalculateMiletoneForRetailer(incentivePlan, retailerPartnerProvidedId);
+            incentivePlan = await _incentiveCalculationHelper.CalculateMiletoneForRetailer(incentivePlan, retailer.PartnerId);
 
             return Ok(incentivePlan);
             
@@ -197,7 +205,9 @@ namespace blendnet.incentive.api.Controllers
         {
             IncentivePlan incentivePlan = null;
 
-            List<string> errorInfo = await ValidateRetailer(retailerPartnerProvidedId, partnerCode);
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, partnerCode);
+
+            List<string> errorInfo = ValidateRetailer(retailer);
 
             if (errorInfo.Count > 0)
             {
@@ -221,7 +231,7 @@ namespace blendnet.incentive.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            incentivePlan = await _incentiveCalculationHelper.CalculateIncentivePlanForRetailer(incentivePlan, retailerPartnerProvidedId);
+            incentivePlan = await _incentiveCalculationHelper.CalculateIncentivePlanForRetailer(incentivePlan, retailer.PartnerId);
 
             return Ok(incentivePlan);
         }
@@ -297,14 +307,16 @@ namespace blendnet.incentive.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            errorInfo = await ValidateRetailer(retailerPartnerProvidedId, partnerCode);
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, partnerCode);
+            
+            errorInfo = ValidateRetailer(retailer);
 
             if(errorInfo.Count > 0)
             {
                 return BadRequest(errorInfo);
             }
 
-            List<EventAggregrateResponse> eventAggregrateResponses = await _incentiveCalculationHelper.CalculateRandomIncentiveForRetailer(retailerPartnerProvidedId, startDate, endDate);
+            List<EventAggregrateResponse> eventAggregrateResponses = await _incentiveCalculationHelper.CalculateRandomIncentiveForRetailer(retailer.PartnerId, startDate, endDate);
 
             if(eventAggregrateResponses.Count == 0)
             {
@@ -341,8 +353,10 @@ namespace blendnet.incentive.api.Controllers
             }
 
             var numberOfDays = (endDate - startDate).TotalDays;
-            
-            if(numberOfDays > 30)
+
+            int maxDaysGap = _configuration.GetValue<int>("MaxDaysGapInQuery");
+
+            if (numberOfDays > maxDaysGap)
             {
                 errorInfo.Add(_stringLocalizer["INC_ERR_0030"]);
                 return BadRequest(errorInfo);
@@ -397,14 +411,16 @@ namespace blendnet.incentive.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            errorInfo = await ValidateRetailer(retailerPartnerProvidedId, partnerCode);
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, partnerCode);
+
+            errorInfo = ValidateRetailer(retailer);
 
             if(errorInfo.Count > 0)
             {
                 return BadRequest(errorInfo);
             }
 
-            List<IncentiveEvent> incentiveEvents = await _incentiveCalculationHelper.GetRetailerIncentiveEvents(retailerPartnerProvidedId, eventType, startDate, endDate);
+            List<IncentiveEvent> incentiveEvents = await _incentiveCalculationHelper.GetRetailerIncentiveEvents(retailer.PartnerId, eventType, startDate, endDate);
 
             if (incentiveEvents.Count == 0)
             {
@@ -417,11 +433,16 @@ namespace blendnet.incentive.api.Controllers
 
         #region private methods
 
-        private async Task<List<string>> ValidateRetailer(string retailerPartnerProvidedId, string partnerCode)
+        /// <summary>
+        /// Checks if retailer exists and if retailer id is same as current user id
+        /// </summary>
+        /// <param name="retailer"></param>
+        /// <param name="retailerPartnerProvidedId"></param>
+        /// <param name="partnerCode"></param>
+        /// <returns></returns>
+        private List<string> ValidateRetailer(RetailerDto retailer)
         {
             List<string> errorInfo = new List<string>();
-
-            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, partnerCode);
 
             if (retailer == null)
             {
@@ -440,6 +461,11 @@ namespace blendnet.incentive.api.Controllers
             return errorInfo;
         }
 
+        /// <summary>
+        /// Checks if incentive plan exists
+        /// </summary>
+        /// <param name="incentivePlan"></param>
+        /// <returns></returns>
         private List<string> ValidateIncentivePlan(IncentivePlan incentivePlan)
         {
             List<string> errorInfo = new List<string>();

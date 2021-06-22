@@ -89,7 +89,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             incentiveEvent.EventCreatedFor = user.ReferralInfo.RetailerPartnerId;
             incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
             incentiveEvent.EventType = EventType.RETAILER_INCOME_REFFRAL_COMPLETED;
-            incentiveEvent.OriginalValue = 1;
+            incentiveEvent.OriginalValue = 0;
 
             PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeRetailerRegularPlan, EventType.RETAILER_INCOME_REFFRAL_COMPLETED, incentiveEvent.EventSubType);
 

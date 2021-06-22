@@ -156,7 +156,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
                 incentiveEvent.EventType = EventType.CONSUMER_INCOME_ORDER_COMPLETED;
                 incentiveEvent.EventSubType = orderItem.Subscription.ContentProviderId.ToString();
-                incentiveEvent.OriginalValue = 1;
+                incentiveEvent.OriginalValue = 0;
 
                 PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeConsumerRegularPlan, EventType.CONSUMER_INCOME_ORDER_COMPLETED, incentiveEvent.EventSubType);
 

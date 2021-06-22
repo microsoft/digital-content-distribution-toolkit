@@ -158,6 +158,7 @@ namespace blendnet.incentive.api
             services.AddTransient<IEventRepository, EventRepository>();
             services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<RetailerProviderProxy>();
+            services.AddTransient<RetailerProxy>();
             services.AddTransient<IncentiveCalculationHelper>();
 
             //Configure Cosmos DB
