@@ -211,16 +211,24 @@ namespace blendnet.cms.api.Controllers
                 return actionResult;
             }
 
-            if (!(  contentToDelete.ContentUploadStatus == ContentUploadStatus.UploadFailed || 
-                    contentToDelete.ContentUploadStatus == ContentUploadStatus.UploadComplete) &&
-                    contentToDelete.ContentTransformStatus == ContentTransformStatus.TransformNotInitialized &&
-                    contentToDelete.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastNotInitialized)
+            if ((   contentToDelete.ContentUploadStatus != ContentUploadStatus.UploadFailed &&
+                    contentToDelete.ContentUploadStatus != ContentUploadStatus.UploadComplete ) )
             {
                 errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0002"], contentToDelete.Id.Value, ContentUploadStatus.UploadComplete,
                     ContentUploadStatus.UploadFailed, ContentTransformStatus.TransformNotInitialized, ContentBroadcastStatus.BroadcastNotInitialized));
 
                 return BadRequest(errorInfo);
             }
+
+            if ((contentToDelete.ContentTransformStatus != ContentTransformStatus.TransformNotInitialized ||
+                    contentToDelete.ContentBroadcastStatus != ContentBroadcastStatus.BroadcastNotInitialized))
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0002"], contentToDelete.Id.Value, ContentUploadStatus.UploadComplete,
+                    ContentUploadStatus.UploadFailed, ContentTransformStatus.TransformNotInitialized, ContentBroadcastStatus.BroadcastNotInitialized));
+
+                return BadRequest(errorInfo);
+            }
+
 
             int statusCode = await _contentRepository.DeleteContent(contentId);
 
