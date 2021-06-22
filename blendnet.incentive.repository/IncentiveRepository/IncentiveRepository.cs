@@ -104,6 +104,29 @@ namespace blendnet.incentive.repository.IncentiveRepository
         }
 
         /// <summary>
+        /// Returns consumer published plan with given id
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetConsumerPublishedPlan(Guid planId, PlanType planType)
+        {
+            return GetPublishedPlan(planId, planType, ApplicationConstants.Common.CONSUMER);
+        }
+
+        /// <summary>
+        /// Returns retailer published plan with given id
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="subTypeName"></param>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        public Task<IncentivePlan> GetRetailerPublishedPlan(Guid planId, string subTypeName, PlanType planType)
+        {
+            return GetPublishedPlan(planId, planType, subTypeName);
+        }
+
+        /// <summary>
         /// Returns published list of events overlapping with given date
         /// </summary>
         /// <param name="planType"></param>
@@ -302,6 +325,8 @@ namespace blendnet.incentive.repository.IncentiveRepository
             return GetPlanFromQueryDef(queryDef);
         }
 
+       
+
         /// <summary>
         /// Returns published plans with given type, audience and date
         /// </summary>
@@ -367,6 +392,22 @@ namespace blendnet.incentive.repository.IncentiveRepository
                 .WithParameter("@audienceType", audienceType)
                 .WithParameter("@audienceSubTypeName", audienceSubTypeName)
                 .WithParameter("@publishMode", PublishMode.DRAFT);
+
+            return GetPlanFromQueryDef(queryDef);
+        }
+
+        private Task<IncentivePlan> GetPublishedPlan(Guid planId, PlanType planType, string subTypeName)
+        {
+            const string queryString = @"select * from c where c.id = @planId 
+                and c.audience.subTypeName = @subTypeName 
+                and c.planType = @planType
+                and c.publishMode = @publishMode";
+
+            var queryDef = new QueryDefinition(queryString)
+                .WithParameter("@planId", planId.ToString())
+                .WithParameter("@subTypeName", subTypeName)
+                .WithParameter("@planType", planType)
+                .WithParameter("@publishMode", PublishMode.PUBLISHED);
 
             return GetPlanFromQueryDef(queryDef);
         }

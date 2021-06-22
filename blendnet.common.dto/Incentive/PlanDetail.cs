@@ -54,7 +54,7 @@ namespace blendnet.common.dto.Incentive
     {
         public double Value { get; set; }
 
-        public double Value1 { get; set; }
+        public double ResidualValue { get; set; }
     }
 
     public class Formula
