@@ -405,7 +405,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
 
             var queryDef = new QueryDefinition(queryString)
                 .WithParameter("@planId", planId.ToString())
-                .WithParameter("@audienceSubTypeName", subTypeName)
+                .WithParameter("@subTypeName", subTypeName)
                 .WithParameter("@planType", planType)
                 .WithParameter("@publishMode", PublishMode.PUBLISHED);
 
