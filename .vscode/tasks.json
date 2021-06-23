@@ -61,5 +61,17 @@
             ],
             "problemMatcher": "$msCompile"
         },
+        {
+            "label": "build incentive.listener",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/blendnet.incentive.listener/blendnet.incentive.listener.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
     ]
 }

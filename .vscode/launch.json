@@ -106,5 +106,19 @@
                 "DOTNET_ENVIRONMENT": "Development"
             },
         },
+        {
+            "name": "Incentive Listener",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build incentive.listener",
+            "program": "${workspaceFolder}/blendnet.incentive.listener/bin/Debug/net5.0/blendnet.incentive.listener.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/blendnet.incentive.listener",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "env": {
+                "DOTNET_ENVIRONMENT": "Development"
+            },
+        },
     ]
 }
