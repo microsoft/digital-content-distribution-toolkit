@@ -207,10 +207,9 @@ namespace blendnet.common.dto
 
         public struct PushNotificationType
         {
-            public const int NewArrival = 1;
+            public const int OrderComplete = 1;
 
-            public const int OrderComplete = 2;
-
+            public const int NewArrival = 2;
         }
 
         public struct Common

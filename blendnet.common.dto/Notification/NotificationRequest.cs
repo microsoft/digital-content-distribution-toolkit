@@ -32,19 +32,4 @@ namespace blendnet.common.dto.Notification
 
         public Guid UserId { get; set; }
     }
-
-    
-    public class NotificationData
-    {
-        
-        public string Title { get; set; }
-
-        public string Body { get; set; }
-
-        public string? AttachmentUrl { get; set; }
-
-        public int Type { get; set; }
-
-    }
-    
 }
