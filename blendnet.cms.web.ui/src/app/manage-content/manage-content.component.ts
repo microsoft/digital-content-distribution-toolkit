@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import {AfterViewInit, Component, Inject, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, Inject, QueryList, ViewChildren} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';

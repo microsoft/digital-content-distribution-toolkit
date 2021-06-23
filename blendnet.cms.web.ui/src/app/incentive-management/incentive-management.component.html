@@ -1,112 +1,156 @@
+<div class="cms-container-incentive">
+    <br>
+    <mat-tab-group color="primary" backgroundColor="grey" (selectedTabChange)="tabClick($event)">
+        <mat-tab label="RETAILER PLAN"> 
+            <br>
+            <span *ngIf="showRetailerIncentive">
+                <button mat-raised-button color="primary" (click)="openAddIncentivePage('Retailer')">Create Incentive</button>
 
-<br>
-<mat-tab-group color="primary" backgroundColor="grey" (selectedTabChange)="tabClick($event)">
-    <mat-tab label="Retailer"> 
-        <br>
-        <button (click)="openAddIncentiveDialog('Retailer')">Create Incentive</button>
-        <br>
-    <div class="cms-container">
-        <div class="mat-elevation-z8">
-            <div class="cms-table-container">
-                <table mat-table [dataSource]="dataSourceRetailers">
-                    <!-- Name Column -->
-                    <ng-container matColumnDef="name">
-                        <th mat-header-cell *matHeaderCellDef> Name </th>
-                        <td mat-cell *matCellDef="let row">{{row.name}} </td>
-                    </ng-container>
+                <br>
                 
-                    <!-- Type Column -->
-                    <ng-container matColumnDef="type">
-                        <th mat-header-cell *matHeaderCellDef> Type </th>
-                        <td mat-cell *matCellDef="let row"> {{row.type}} </td>
-                    </ng-container>
-
-                    
-                <!-- Date Range Column -->
-                <ng-container matColumnDef="dateRange">
-                    <th mat-header-cell *matHeaderCellDef > Date Range </th>
-                    <td mat-cell *matCellDef="let row"> {{row.dateRange}} </td>
-                </ng-container>
-
-                <!-- Partner Column -->
-                <ng-container matColumnDef="partner">
-                    <th mat-header-cell *matHeaderCellDef > Partner </th>
-                    <td mat-cell *matCellDef="let row"> {{row.partner}} </td>
-                </ng-container>
-
-                <!-- Status Column -->
-                <ng-container matColumnDef="status">
-                    <th mat-header-cell *matHeaderCellDef > Status </th>
-                    <td mat-cell *matCellDef="let row"> {{row.status}} </td>
-                </ng-container>
-                <!-- Status Column -->
-                <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef > Actions </th>
-                    <td mat-cell *matCellDef="let row"> 
-                        <mat-icon>edit</mat-icon>
-                        <mat-icon>delete</mat-icon>
-                        <mat-icon>publish</mat-icon>
-                    </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumnsRetailers; sticky: true"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumnsRetailers;"></tr>
-
-                </table>
-            </div>
-        </div>
-    </div>
-     </mat-tab>
-    <mat-tab label="Consumer"> 
-        <br>
-        <button (click)="openAddIncentiveDialog('Consumer')">Create Incentive</button>
-        <br>
-        <div class="cms-container">
-            <div class="mat-elevation-z8">
-                <div class="cms-table-container">
-                    <table mat-table [dataSource]="dataSourceConsumers">
-                        <!-- Name Column -->
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef> Name </th>
-                            <td mat-cell *matCellDef="let row">{{row.name}} </td>
-                        </ng-container>
-                    
-                        <!-- Type Column -->
-                        <ng-container matColumnDef="type">
-                            <th mat-header-cell *matHeaderCellDef> Type </th>
-                            <td mat-cell *matCellDef="let row"> {{row.type}} </td>
-                        </ng-container>
+                <div class="cms-container">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Search Incentive</mat-label>
+                        <input matInput (keyup)="applyFilterRetailer($event)" placeholder="Ex. Incentive Plan">
+                        <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                    <div class="mat-elevation-z8">
+                        <div class="cms-table-container">
+                            <table mat-table [dataSource]="dataSourceRetailers" class="incentive-table" matSort>
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                                    <td mat-cell *matCellDef="let row">{{row.name}} </td>
+                                </ng-container>
+                            
+                                <!-- Type Column -->
+                                <ng-container matColumnDef="type">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.type}} </td>
+                                </ng-container>
+            
+                                
+                                <!--Start  Date  Column -->
+                                <ng-container matColumnDef="startDate">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.startDate | date: 'dd-MMM-yyy'}} </td>
+                                </ng-container>
     
+                                <!--End  Date  Column -->
+                                <ng-container matColumnDef="endDate">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> End Date </th>
+                                    <td mat-cell *matCellDef="let row"> {{row.endDate | date: 'dd-MMM-yyy'}} </td>
+                                </ng-container>
+            
+                            <!-- Partner Column -->
+                            <ng-container matColumnDef="partner">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Partner </th>
+                                <td mat-cell *matCellDef="let row"> {{row.partner}} </td>
+                            </ng-container>
+            
+                            <!-- Status Column -->
+                            <ng-container matColumnDef="status" >
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                                <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+                            </ng-container>
+                            <!-- Status Column -->
+                            <ng-container matColumnDef="edit">
+                                <th mat-header-cell *matHeaderCellDef > Edit </th>
+                                <td mat-cell *matCellDef="let row"> 
+                                    <mat-icon>edit</mat-icon>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsRetailers; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsRetailers;"></tr>
+            
+                            </table>
+                        </div>
+                        <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+
+                    </div>
+                </div>
+            </span>
+            <span *ngIf="createRetailerIncentive">
+                <button mat-icon-button color="primary" (click)="showIncentivePage('Retailer')"><mat-icon>back</mat-icon></button>
+                <app-add-incentive audience="Retailer"></app-add-incentive>
+            </span>
+            
+        </mat-tab>
+        <mat-tab label="CONSUMER PLAN"> 
+            <br>
+            <span *ngIf="showConsumerIncentive">
+                <div>
+                    <button mat-raised-button color="primary" (click)="openAddIncentivePage('Consumer')">Create Incentive</button>
+                    <span class="cms-spacer"></span>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Search</mat-label>
+                        <input matInput (keyup)="applyFilterConsumer($event)" placeholder="Ex. Incentive Plan">
+                        <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                </div>
+                
+            <br>
+            <div class="cms-container">
+                <div class="mat-elevation-z8">
+                    <div class="cms-table-container">
+                        <table mat-table [dataSource]="dataSourceConsumers" class="incentive-table" matSort>
+                            <!-- Name Column -->
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                                <td mat-cell *matCellDef="let row">{{row.name}} </td>
+                            </ng-container>
                         
-                    <!-- Date Range Column -->
-                    <ng-container matColumnDef="dateRange">
-                        <th mat-header-cell *matHeaderCellDef > Date Range </th>
-                        <td mat-cell *matCellDef="let row"> {{row.dateRange}} </td>
-                    </ng-container>
-    
-    
-                    <!-- Status Column -->
-                    <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef > Status </th>
-                        <td mat-cell *matCellDef="let row"> {{row.status}} </td>
-                    </ng-container>
-                    <!-- Status Column -->
-                    <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef > Actions </th>
-                        <td mat-cell *matCellDef="let row"> 
-                            <mat-icon>edit</mat-icon>
-                            <mat-icon>delete</mat-icon>
-                            <mat-icon>publish</mat-icon>
-                        </td>
-                    </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="displayedColumnsConsumers; sticky: true"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumnsConsumers;"></tr>
-    
-                    </table>
+                            <!-- Type Column -->
+                            <ng-container matColumnDef="type" >
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+                            <td mat-cell *matCellDef="let row"> {{row.type}} </td>
+                            </ng-container>
+        
+                            
+                            <!--Start  Date  Column -->
+                            <ng-container matColumnDef="startDate">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </th>
+                                <td mat-cell *matCellDef="let row"> {{row.startDate | date: 'dd-MMM-yyy'}} </td>
+                            </ng-container>
+
+                            <!--End  Date  Column -->
+                            <ng-container matColumnDef="endDate" >
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> End Date </th>
+                                <td mat-cell *matCellDef="let row"> {{row.endDate | date: 'dd-MMM-yyy'}} </td>
+                            </ng-container>
+        
+        
+                        <!-- Status Column -->
+                        <ng-container matColumnDef="status" >
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                            <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+                        </ng-container>
+                        <!-- Status Column -->
+                        <ng-container matColumnDef="edit">
+                            <th mat-header-cell *matHeaderCellDef > Edit </th>
+                            <td mat-cell *matCellDef="let row"> 
+                                <mat-icon>edit</mat-icon>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsConsumers; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsConsumers;"></tr>
+        
+                        </table>
+                    </div>
+                    <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
                 </div>
             </div>
-        </div>
-    </mat-tab>
-  </mat-tab-group>
+            </span>
+                
 
-<br>
+            <span *ngIf="createConsumerIncentive">
+                <button mat-icon-button color="primary" (click)="showIncentivePage('Consumer')"><mat-icon>back</mat-icon></button>
+                <app-add-incentive audience="Retailer"></app-add-incentive>
+            </span>
+        </mat-tab>
+    </mat-tab-group>
+    
+    <br>
+</div>
+
 

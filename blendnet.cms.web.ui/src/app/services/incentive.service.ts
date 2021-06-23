@@ -27,8 +27,15 @@ export class IncentiveService {
 
   }
 
-  createIncentivePlan(incentivePlan){
-    let url = this.baseUrl + "/retailerincentiveplan";
+  createIncentivePlanRetailer(incentivePlan){
+    let url = this.baseUrl + "/retailer";
+    this.logger.log(`Creating incentive plan`);
+    return this.http.post(url, incentivePlan, { observe: 'response'});
+
+  }
+
+    createIncentivePlanConsumer(incentivePlan){
+    let url = this.baseUrl + "/consumer";
     this.logger.log(`Creating incentive plan`);
     return this.http.post(url, incentivePlan, { observe: 'response'});
 

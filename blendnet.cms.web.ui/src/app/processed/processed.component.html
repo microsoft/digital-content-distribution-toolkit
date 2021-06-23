@@ -98,11 +98,8 @@
             </ng-container>
 
             <!-- Delete Action Column -->
-            <ng-container matColumnDef="isDeletable">
+            <!-- <ng-container matColumnDef="isDeletable">
                 <th mat-header-cell *matHeaderCellDef> 
-                    <!-- <button mat-icon-button disabled>
-                        <mat-icon mat-list-icon >delete</mat-icon> 
-                    </button> -->
                     Delete
                 </th>
                 <td mat-cell *matCellDef="let row" >
@@ -113,7 +110,19 @@
                         matTooltip="Archive Content">delete</mat-icon> 
                     </button>
                 </td>
-            </ng-container>
+            </ng-container> -->
+             <!-- View Action Column -->
+        <ng-container matColumnDef="view">
+            <th mat-header-cell *matHeaderCellDef> 
+                Meta-data
+             </th>
+            <td mat-cell *matCellDef="let row" >
+                <button mat-icon-button  (click)="viewContent(row)">
+                    <mat-icon mat-list-icon 
+                    matTooltip="View content">visibility</mat-icon> 
+                </button>
+            </td>
+        </ng-container>
         
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

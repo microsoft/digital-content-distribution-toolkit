@@ -9,6 +9,7 @@ import { Content } from '../models/content.model';
 import { ContentService } from '../services/content.service';
 import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
+import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
 
 export interface DialogData {
   message: string;
@@ -22,7 +23,7 @@ export interface DialogData {
   templateUrl: 'broadcast.component.html',
 })
 export class BroadcastComponent {
-  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'manageDevices', 'isBroadcastCancellable'];
+  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'manageDevices', 'isBroadcastCancellable', 'view'];
   dataSource: MatTableDataSource<Content>;
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";
@@ -81,6 +82,17 @@ export class BroadcastComponent {
       console.log('HTTP Error', err)
     }
     );
+  }
+
+  viewContent(selectedContent) : void {
+    const dialogRef = this.dialog.open(ContentDetailsDialog, {
+      data: {content: selectedContent}
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  
   }
 
   toggleSelection(event, row) {

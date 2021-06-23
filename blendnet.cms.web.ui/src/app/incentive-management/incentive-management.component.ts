@@ -1,13 +1,10 @@
-import { formatDate } from '@angular/common';
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Incentive, PlanType, RetailerPartner } from '../models/incentive.model';
+import { Incentive } from '../models/incentive.model';
 import { IncentiveService } from '../services/incentive.service';
-import { AddIncentiveComponent } from './add-incentive.component';
-import { LOCALE_ID, Inject } from '@angular/core';
 
 @Component({
   selector: 'app-incentive-management',
@@ -15,20 +12,24 @@ import { LOCALE_ID, Inject } from '@angular/core';
   styleUrls: ['./incentive-management.component.css']
 })
 export class IncentiveManagementComponent implements OnInit {
-  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'dateRange', 'status' , 'actions'];
+  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'startDate', 'endDate', 'status' , 'edit'];
   dataSourceRetailers: MatTableDataSource<Incentive>;
 
   dataSourceConsumers: MatTableDataSource<Incentive>;
-  displayedColumnsConsumers: string[] = ['name', 'type', 'dateRange' , 'status' , 'actions'];
+  displayedColumnsConsumers: string[] = ['name', 'type', 'startDate', 'endDate', 'status' , 'edit'];
 
 
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
   @ViewChildren(MatSort) sort = new QueryList<MatSort>();
 
+  showRetailerIncentive = true;
+  createRetailerIncentive = false;
+  showConsumerIncentive = true;
+  createConsumerIncentive = false;
 
   constructor( private incentiveService: IncentiveService,
-    public dialog: MatDialog,
-    @Inject(LOCALE_ID) public locale: string) { }
+    public dialog: MatDialog
+    ) { }
 
   ngOnInit(): void {
     this.getRetailerIncentivePlans();
@@ -47,8 +48,8 @@ export class IncentiveManagementComponent implements OnInit {
           const validResult = res.filter((result) => Array.isArray(result));
           var mergedResult = [].concat.apply([], validResult);
           this.dataSourceRetailers = this.createDataSource(mergedResult);
-          // this.dataSourceRetailers.paginator = this.paginator;
-          // this.dataSourceRetailers.sort = this.sort;          
+          this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
+          this.dataSourceRetailers.sort = this.sort.toArray()[0];          
         },
       err => {
         this.dataSourceRetailers = this.createDataSource([]);
@@ -59,7 +60,7 @@ export class IncentiveManagementComponent implements OnInit {
   }
 
   createDataSource(response) {
-    var dataSource: any[] =[];
+    var dataSource: Incentive[] =[];
     if(response) {
       response.forEach( data => {
         var row: any = {};
@@ -67,8 +68,8 @@ export class IncentiveManagementComponent implements OnInit {
         row.status = data.publishMode;
         row.type = data.planType;
         row.partner = data.audience.subTypeName;
-        row.dateRange = formatDate(data.startDate, "dd-mm-yyyy", this.locale) + " " + formatDate(data.endDate, "dd-mm-yyyy", this.locale);
-        console.log(row.dateRange);
+        row.startDate = data.startDate;
+        row.endDate =  data.endDate;
         dataSource.push(row);
       });
     }
@@ -82,8 +83,8 @@ export class IncentiveManagementComponent implements OnInit {
           const validResult = res.filter((result) => Array.isArray(result));
           var mergedResult = [].concat.apply([], validResult);
           this.dataSourceConsumers = this.createDataSource(mergedResult);
-          // this.dataSourceConsumers.paginator = this.paginator;
-          // this.dataSourceConsumers.sort = this.sort;          
+          this.dataSourceConsumers.paginator = this.paginator.toArray()[1];;
+          this.dataSourceConsumers.sort = this.sort.toArray()[1];         
         },
       err => {
         this.dataSourceConsumers = this.createDataSource([]);
@@ -93,61 +94,45 @@ export class IncentiveManagementComponent implements OnInit {
     );
   }
 
-
-  createConsumerIncentive() {
-
-  }
-  s
-  createRetailerIncentive() {
-    var incentivePlan = {
-      "planName": "UIPlan1",
-      "planType": "REGULAR",
-      "startDate": "2021-11-17T16:34:09.672Z",
-      "endDate": "2021-11-17T16:34:09.672Z",
-      "audience": {
-        "audienceType": "RETAILER",
-        "subTypeName": "NOVO"
-      },
-      "planDetails": [
-        {
-          "eventType": "RETAILER_INCOME_ORDER_COMPLETED",
-          "eventTitle": "Order Complete Incentive",
-          "ruleType": "SUM",
-          "formula": {
-            "formulaType": "PLUS",
-            "leftOperand": 10,
-            "rightOperand": 0,
-            "rangeOperand": [
-              {
-                "startRange": 0,
-                "endRange": 0,
-                "output": 0
-              }
-            ]
-          }
-        }
-      ]
-    }
-    this.incentiveService.createIncentivePlan(incentivePlan).subscribe(
-      res =>
-      console.log(res),
-      err => console.log(err)
-    );
-
-  }
-
-
-  openAddIncentiveDialog(audience): void {
-    const dialogRef = this.dialog.open(AddIncentiveComponent, {
-      data: {
-        audience: audience,
-      },
-      width: '60%'
-    });
   
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+
+  openAddIncentivePage(audience): void {
+    if(audience === "Retailer") {
+      this.showRetailerIncentive = false;
+      this.createRetailerIncentive = true;
+    } else {
+      this.showConsumerIncentive = false;
+      this.createConsumerIncentive = true;
+    }
+
+  }
+
+  showIncentivePage(audience): void {
+    if(audience === "Retailer") {
+      this.showRetailerIncentive = true;
+      this.createRetailerIncentive = false;
+    } else {
+      this.showConsumerIncentive = true;
+      this.createConsumerIncentive = false;
+    }
+  }
+
+  applyFilterRetailer(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceRetailers.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSourceRetailers.paginator) {
+      this.dataSourceRetailers.paginator.firstPage();
+    }
+  }
+
+  applyFilterConsumer(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceConsumers.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSourceConsumers.paginator) {
+      this.dataSourceConsumers.paginator.firstPage();
+    }
   }
   
 }

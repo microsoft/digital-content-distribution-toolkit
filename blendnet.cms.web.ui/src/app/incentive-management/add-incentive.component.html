@@ -1,47 +1,198 @@
-<p>{{audience}}</p>
-<form [formGroup]="incentiveForm">
-    <input formControlName="name" placeholder="Plan Name">
-    <br>
-    <input formControlName="type" placeholder="Plan Type">
-    <br>
-    <input formControlName="startDate" placeholder="Start Date">
-    <br>
-    <input formControlName="endDate" placeholder="End Date">
-    <br>
-    <button type="button" (click)="addEvent()">Add Event</button>
-    <div formArrayName="events"
-        *ngFor="let event of getEvents(incentiveForm); let i = index;">
-        <div [formGroupName]="i">
-            <input formControlName="eventType" placeholder="Event Type">
-            <br>
-            <input formControlName="contentProvider" placeholder="contentProvider">
-            <br>
-            <input formControlName="ruleType" placeholder="ruleType">
-            <br>
-            <input formControlName="formula" placeholder="formula">
-            <br>
-            <button type="button" (click)="addRange(i)">Add Range</button>
-            <div formArrayName="ranges"
-                    *ngFor="let range of getRanges(event); let j = index;">
-                <div [formGroupName]="j">
-                    <input formControlName="start" placeholder="start">
-                    <!-- <input formControlName="end" placeholder="end"> -->
-                    <!-- <input formControlName="amount" placeholder="amount"> -->
-                    <button *ngIf="getRanges(event).length > 0"
-                        (click)="removeRange(i)">
-                       Remove Range</button>
-                </div>
-                
-                
-            </div>
-            <button *ngIf="getEvents(incentiveForm).length > 1"
-                (click)="removeEvent(i)">
-               Remove Event</button>
-        
-        </div>
-        
-        
-        
-    </div>
+<h2 >
+    {{audience}} Incentive Plan
+</h2>
 
-</form>
+  <mat-horizontal-stepper [linear]="true" #stepper>
+    <mat-step [stepControl]="incentiveFormGroup" label="Plan Details">
+      <form [formGroup]="incentiveFormGroup">
+                    <mat-form-field >
+                        <input matInput placeholder="Plan Name" 
+                        formControlName="name" required >
+                    </mat-form-field>
+                    <br>
+                    <br>
+                    <label class="cms-incentive-plan-type-font" id="cms-incentive-radio-group-label">Incentive Plan Type</label>&nbsp;&nbsp;&nbsp;
+                    <br>
+                    <mat-radio-group aria-labelledby="cms-incentive-radio-group-label"
+                    class="cms-incentive-radio-group" formControlName="type">
+                        <mat-radio-button value="REGULAR" class="cms-incentive-plan-type">REGULAR</mat-radio-button>
+                        <mat-radio-button value="MILESTONE" class="cms-incentive-plan-type">MILESTONE</mat-radio-button>
+                    </mat-radio-group>
+                    <br><br>
+                    <mat-form-field *ngIf="audience === 'Retailer'">
+                        <mat-label>Retailer Partner</mat-label>
+                        <mat-select [(ngModel)]="selectedRetailerPartner" name="partner"
+                        formControlName="partner">
+                        <mat-option *ngFor="let partner of partners" [value]="partner">
+                            {{partner}}
+                        </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+  
+        <div mat-dialog-actions align="end">
+          <button mat-raised-button matStepperNext class="discard-btn" >Cancel</button>
+          <button mat-raised-button color="primary" matStepperNext  class="update-btn">Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="eventsFormGroup" label="Event Details">
+      <form [formGroup]="eventsFormGroup">
+        <br>
+        <br>
+        <mat-accordion class="cms-incentive-headers-align"
+        formArrayName="events"
+        *ngFor="let event of getEvents(); let i = index;">
+            <mat-expansion-panel [formGroupName]="i" [expanded]="step === i" (opened)="setStep(i)" hideToggle
+            (opened)="panelOpenState = true"
+                       (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <span *ngIf="panelOpenState">
+                            Event Details
+                        </span>
+                        <span *ngIf="!panelOpenState">
+                            {{selectedEventType.title}} &nbsp;&nbsp;"ContentProvider Name"
+                        </span>
+                        
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        <span *ngIf="panelOpenState">
+
+                        </span>
+                        <span *ngIf="!panelOpenState">
+                           "Rule type"  "Formula"  "Target" "Value"
+                            <!-- {{selectedRuleType}}  &nbsp;&nbsp; {{selectedRuleType}} &nbsp;&nbsp; {{selectedRuleType}} -->
+                        </span>
+                           <button align="end" mat-icon-button color="primary"  
+                           *ngIf="i!==0"
+                            (click)="removeEvent(i)">
+                        <mat-icon matTooltip="Delete Event">delete</mat-icon></button>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                <table>
+                    <tr>
+                        <td>
+                            <mat-form-field>
+                                <mat-label>Event Type</mat-label>
+                                <mat-select [(ngModel)]="selectedEventType" name="eventType" (ngModelChange)="onOrderCompleteEvent(i)"
+                                formControlName="eventType">
+                                <mat-option *ngFor="let event of eventTypes" [value]="event">
+                                    {{event.title}}
+                                </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field >
+                                <mat-label>Content Provider</mat-label>
+                                <mat-select  name="contentProviderId" 
+                                formControlName="contentProviderId" [disabled]="isCPDisabled">
+                                <mat-option *ngFor="let cp of contentProviders" [value]="cp.id">
+                                    {{cp.name}}
+                                </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field *ngIf="false">
+                                <mat-label>Rule Type</mat-label>
+                                <mat-select name="ruleType"
+                                formControlName="ruleType">
+                                <mat-option *ngFor="let rule of ruleTypes" [value]="rule">{{rule}}
+                                </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field>
+                                <mat-label>Formula</mat-label>
+                                <mat-select name="formula"
+                                formControlName="formula">
+                                <span *ngIf="isMileStonePlanType()">
+                                    <mat-option  *ngFor="let formula of milestoneFormulas" [value]="formula">
+                                        {{formula}}
+                                    </mat-option>
+                                </span>
+                                <span *ngIf="!isMileStonePlanType()">
+                                    <mat-option  *ngFor="let formula of regularFormulas" [value]="formula">
+                                        {{formula}} 
+                                    </mat-option>
+                                </span>
+                                
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field *ngIf="!isRangeFormulaType(i)">
+                                <input matInput placeholder="Milestone target" 
+                                formControlName="target" required >
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field *ngIf="!isRangeFormulaType(i)">
+                                <input matInput placeholder="Incentive" 
+                                formControlName="incentive" required >
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+            
+                <span *ngIf="isMileStonePlanType() && isRangeFormulaType(i)">
+                    <br>
+                    <div formArrayName="ranges"
+                    *ngFor="let range of getRanges(i); let j = index;">
+                    <div [formGroupName]="j">
+                            <mat-form-field>
+                                <input matInput placeholder="Start" 
+                                formControlName="start" required >
+                            </mat-form-field>
+
+                            <mat-form-field>
+                                <input matInput placeholder="End" 
+                                formControlName="end" required >
+                            </mat-form-field>
+
+                            <mat-form-field>
+                                <input matInput placeholder="Incentive" 
+                                formControlName="incentive" required >
+                            </mat-form-field>
+
+                            <button mat-icon-button color="primary" *ngIf="j!==0"
+                            (click)="removeRange(i)">
+                                <mat-icon>remove</mat-icon>
+                            </button>
+                    </div>
+                    </div>
+                    <button mat-stroked-button color="primary" 
+                    (click)="addRange(i)">
+                        <mat-icon matTooltip="Add Range">add</mat-icon>
+                        Add Range
+                    </button>
+                </span>
+
+
+
+              <mat-action-row>
+                <button *ngIf="i!==0" mat-button color="warn" (click)="prevStep()">Previous Event</button>
+                <button mat-button color="primary" (click)="nextStep()">Next Event</button>
+              </mat-action-row>
+            </mat-expansion-panel> 
+            <br>              
+          </mat-accordion>
+          <button mat-stroked-button color="primary" type="button" (click)="addEvent()"><mat-icon>add</mat-icon>Add Event</button>
+
+          <div mat-dialog-actions align="end">
+            <button mat-raised-button matStepperNext class="discard-btn" >Cancel</button>
+            <button mat-raised-button color="primary" matStepperNext  class="update-btn">Next</button>
+          </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Done</ng-template>
+      <p>You are now done.</p>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button (click)="stepper.reset()">Reset</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>

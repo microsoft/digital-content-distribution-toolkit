@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
 
 
 export interface DialogData {
@@ -23,7 +24,7 @@ export interface DialogData {
   templateUrl: 'processed.component.html',
 })
 export class ProcessedComponent {
-  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'url', 'isDeletable', 'isBroadcastable'];
+  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'url', 'view', 'isBroadcastable'];
   dataSource: MatTableDataSource<Content>;
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";
@@ -149,6 +150,17 @@ export class ProcessedComponent {
           }
       }    
     }
+  }
+
+  viewContent(selectedContent) : void {
+    const dialogRef = this.dialog.open(ContentDetailsDialog, {
+      data: {content: selectedContent}
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  
   }
 
 openBroadcastConfirmDialog(content): void {

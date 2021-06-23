@@ -74,11 +74,27 @@
             <!-- Manage Device Action Column -->
             <ng-container matColumnDef="manageDevices">
                 <th mat-header-cell *matHeaderCellDef> 
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Manage Devices
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Manage
                 </th>
                 <td mat-cell *matCellDef="let row" >
                     <button mat-button color="primary">
-                        Manage Devices 
+                        Devices
+                    </button>
+                </td>
+            </ng-container>
+            
+            <!-- View Action Column -->
+            <ng-container matColumnDef="view">
+                <th mat-header-cell *matHeaderCellDef> 
+                    Meta-data
+                    <!-- <button mat-icon-button disabled>
+                        <mat-icon mat-list-icon >visibility</mat-icon> 
+                    </button> -->
+                </th>
+                <td mat-cell *matCellDef="let row" >
+                    <button mat-icon-button  (click)="viewContent(row)">
+                        <mat-icon mat-list-icon 
+                        matTooltip="View content">visibility</mat-icon> 
                     </button>
                 </td>
             </ng-container>

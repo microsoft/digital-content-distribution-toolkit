@@ -115,15 +115,13 @@ export class UnprocessedComponent {
 
   isContentNotProcessable(row) {
     return row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
-    || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED
-    && row.contentTransformStatus !== ContentStatus.TRANSFORM_FAILED);
+    || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED);
   }
 
   isContentNotDeletable(row) {
     return (row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
     && row.contentUploadStatus !== ContentStatus.UPLOAD_FAILED)
-    || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED
-    && row.contentTransformStatus !== ContentStatus.TRANSFORM_FAILED);  
+    || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED);  
   }
 
 
