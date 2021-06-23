@@ -22,6 +22,8 @@ using blendnet.common.infrastructure.Authentication;
 using blendnet.common.dto.Events;
 using Microsoft.Extensions.Localization;
 using blendnet.common.infrastructure;
+using Microsoft.ApplicationInsights;
+using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.oms.api.Controllers
 {
@@ -52,6 +54,8 @@ namespace blendnet.oms.api.Controllers
 
         IStringLocalizer<SharedResource> _stringLocalizer;
 
+        private TelemetryClient _telemetryClient;
+
         public OrderController(IOMSRepository omsRepository,
                                 ILogger<OrderController> logger,
                                 ContentProxy contentProxy,
@@ -60,7 +64,8 @@ namespace blendnet.oms.api.Controllers
                                 SubscriptionProxy subscriptionProxy,
                                 IEventBus eventBus,
                                 IOptionsMonitor<OmsAppSettings> optionsMonitor,
-                                IStringLocalizer<SharedResource> stringLocalizer)
+                                IStringLocalizer<SharedResource> stringLocalizer,
+                                TelemetryClient telemetryClient)
         {
             _omsRepository = omsRepository;
 
@@ -79,6 +84,8 @@ namespace blendnet.oms.api.Controllers
             _omsAppSettings = optionsMonitor.CurrentValue;
 
             _stringLocalizer = stringLocalizer;
+
+            _telemetryClient = telemetryClient;
         }
 
         #region Order management methods
@@ -201,6 +208,8 @@ namespace blendnet.oms.api.Controllers
                 };
 
                 await _eventBus.Publish(orderCompletedIntegrationEvent);
+
+                SendOrderCompletedAIEvent(order);
 
                 return NoContent();
             }
@@ -428,11 +437,11 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("active")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<OrderItem>> GetActiveSubscriptionOrders()
+        public async Task<ActionResult<common.dto.Oms.OrderItem>> GetActiveSubscriptionOrders()
         {
             var userPhoneNumber = User.Identity.Name;
 
-            List<OrderItem> orderItems = await _omsRepository.GetActiveSubscriptionOrders(userPhoneNumber);
+            List<common.dto.Oms.OrderItem> orderItems = await _omsRepository.GetActiveSubscriptionOrders(userPhoneNumber);
 
             if (orderItems == null)
             {
@@ -542,7 +551,7 @@ namespace blendnet.oms.api.Controllers
         {
             Order order = new Order();
 
-            OrderItem orderItem = new OrderItem();
+            common.dto.Oms.OrderItem orderItem = new common.dto.Oms.OrderItem();
             orderItem.Subscription = subscription;
 
             order.UserId = userId;
@@ -645,6 +654,41 @@ namespace blendnet.oms.api.Controllers
             string token = await AmsUtilities.GetContentToken(amsData, contentId, commandId);
 
             return token;
+        }
+
+        /// <summary>
+        /// Sends order completed AI event 
+        /// </summary>
+        /// <param name="order"></param>
+        private void SendOrderCompletedAIEvent(Order order)
+        {
+            List<Model.OrderItem> orderItems = new List<Model.OrderItem>();
+
+            foreach (var orderItem in order.OrderItems) 
+            {
+                var orderItemDetail = new Model.OrderItem()
+                {
+                    SubscriptionId = orderItem.Subscription.Id.Value,
+                    SubscriptionName = orderItem.Subscription.Title,
+                    ContentProviderId = orderItem.Subscription.ContentProviderId,
+                    SubscriptionValue = orderItem.Subscription.Price
+                };
+                orderItems.Add(orderItemDetail);
+            }
+
+            OrderCompletedAIEvent orderCompletedAIEvent = new OrderCompletedAIEvent()
+            {
+                OrderId = order.Id.Value,
+                UserId = order.UserId,
+                RetailerId = order.RetailerId.Value,
+                RetailerPartnerId = order.RetailerPartnerId,
+                OrderPlacedDateTime = order.OrderCreatedDate,
+                PaymentDepositDateTime = order.DepositDate.Value,
+                OrderCompletedDateTime = order.OrderCompletedDate.Value,
+                OrderItems = System.Text.Json.JsonSerializer.Serialize(orderItems)
+            };
+
+            _telemetryClient.TrackEvent(orderCompletedAIEvent);
         }
 
         #endregion
