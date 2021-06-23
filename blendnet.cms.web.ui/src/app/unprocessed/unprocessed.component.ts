@@ -293,7 +293,7 @@ openDeleteConfirmModal(row): void {
   }
 
   onDeleteSuccess() {
-    this.toastr.success("Content submitted for deletion for successfully");
+    this.toastr.success("Content submitted for deletion successfully");
     this.getUnprocessedContent();
   }
 
