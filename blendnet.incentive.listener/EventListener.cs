@@ -52,6 +52,8 @@ namespace blendnet.incentive.listener
 
             _eventBus.Subscribe<UserStreamContentIncentiveIntegrationEvent, UserStreamContentIncentiveIntegrationEventHandler>();
 
+            _eventBus.Subscribe<UserOnbrdngRtngSbmttdIncentiveIntegrationEvent, UserOnboardingRatingSubmittedIncentiveIntegrationEventHandler>();
+
             await _eventBus.StartProcessing();
 
             _logger.LogInformation("Subscribe complete by blendnet.incentive.listener");

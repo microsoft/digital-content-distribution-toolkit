@@ -247,6 +247,58 @@ namespace blendnet.incentive.api.Controllers
             }
         }
 
+        /// <summary>
+        /// API to record Onboarding Rating Submitted event from consumer app
+        /// </summary>
+        /// <param name="onboardingRatingSubmittedUserEventRequest"></param>
+        /// <returns></returns>
+        [HttpPost("recordOnboardingRatingSubmitted")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        public async Task<ActionResult> RecordOnboardingRatingSubmittedEvent(UserEventRequest onboardingRatingSubmittedUserEventRequest)
+        {
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+            string callerPhoneNumber = this.User.Identity.Name;
+            DateTime now = DateTime.UtcNow;
+
+            // validation - date can't be from future
+            if (onboardingRatingSubmittedUserEventRequest.OriginalTime > now)
+            {
+                // this event is from future, so reject
+                string errorString = string.Format(_stringLocalizer["INC_ERR_0031"], EventType.CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED, callerUserId);
+                _logger.LogInformation(errorString);
+                return BadRequest(new string[] { errorString });
+            }
+
+            // Validate event existence
+            var existingEvents = await _eventRepository.GetEvents(new EventCriteriaRequest()
+            {
+                AudienceType = AudienceType.CONSUMER,
+                EventCreatedFor = callerPhoneNumber,
+                EventTypes = new List<EventType>() { EventType.CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED },
+            });
+
+            if (existingEvents == null || existingEvents.Count == 0) // no event exist
+            {
+                // create event from request
+                var integrationEvent = new UserOnbrdngRtngSbmttdIncentiveIntegrationEvent()
+                {
+                    UserId = callerUserId,
+                    UserPhone = callerPhoneNumber,
+                    OriginalTime = onboardingRatingSubmittedUserEventRequest.OriginalTime,
+                };
+
+                await _eventBus.Publish(integrationEvent);
+                return Ok();
+            }
+            else
+            {
+                // event already exists so reject
+                string errorString = string.Format(_stringLocalizer["INC_ERR_0032"], EventType.CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED, callerUserId);
+                _logger.LogInformation(errorString);
+                return BadRequest(new string[] { errorString });
+            }
+        }
+
         #endregion
 
         #region private methods
