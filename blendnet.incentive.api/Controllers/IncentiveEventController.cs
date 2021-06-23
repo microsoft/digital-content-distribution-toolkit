@@ -115,7 +115,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("retailer/milestone/{retailerPartnerProvidedId}/{partnerCode}", Name = nameof(GetRetailerCalculatedMilestone))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.Retailer)]
+        [AuthorizeRoles(KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<IncentivePlan>> GetRetailerCalculatedMilestone(string retailerPartnerProvidedId, string partnerCode, Guid? planId)
         {
             IncentivePlan incentivePlan = null;
@@ -151,7 +151,6 @@ namespace blendnet.incentive.api.Controllers
             return Ok(incentivePlan);
             
         }
-
 
         /// <summary>
         /// Returns the calculated regular incentive plan for the consumer
@@ -198,7 +197,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("retailer/regular/{partnerCode}/{retailerPartnerProvidedId}", Name = nameof(GetRetailerCalculatedRegular))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.Retailer)]
+        [AuthorizeRoles(KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<IncentivePlan>> GetRetailerCalculatedRegular(string partnerCode,
                                                                                        string retailerPartnerProvidedId,
                                                                                        Guid? planId)
@@ -284,7 +283,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("retailer/regular/range/{partnerCode}/{retailerPartnerProvidedId}", Name = nameof(GetRetailerCalculatedRndmIncentives))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.Retailer)]
+        [AuthorizeRoles(KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<EventAggregrateResponse>> GetRetailerCalculatedRndmIncentives(string partnerCode,
                                                                                         string retailerPartnerProvidedId,
                                                                                         DateTime startDate,
@@ -382,7 +381,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("retailer/events", Name = nameof(GetRetailerEvents))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.Retailer)]
+        [AuthorizeRoles(KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<EventAggregrateResponse>> GetRetailerEvents(string partnerCode,
                                                                                    string retailerPartnerProvidedId,
                                                                                    EventType eventType,
@@ -447,6 +446,12 @@ namespace blendnet.incentive.api.Controllers
             if (retailer == null)
             {
                 errorInfo.Add(_stringLocalizer["INC_ERR_0025"]);
+                return errorInfo;
+            }
+
+            if (User.IsInRole(KaizalaIdentityRoles.SuperAdmin))
+            {
+                // Retailer specific validation is not required for superadmin
                 return errorInfo;
             }
 
