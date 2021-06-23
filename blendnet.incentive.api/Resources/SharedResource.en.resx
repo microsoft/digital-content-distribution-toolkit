@@ -207,4 +207,16 @@
   <data name="INC_ERR_0030" xml:space="preserve">
     <value>INC_ERR_0030-Maximum 30 days of data can be queried</value>
   </data>
+  <data name="INC_ERR_0031" xml:space="preserve">
+    <value>INC_ERR_0031-Received event {0} from future for User ID {1}</value>
+  </data>
+  <data name="INC_ERR_0032" xml:space="preserve">
+    <value>INC_ERR_0032-Received duplicate {0} for User ID {1}</value>
+  </data>
+  <data name="INC_ERR_0033" xml:space="preserve">
+    <value>INC_ERR_0033-Received event {0} with no content ID for User ID {1}</value>
+  </data>
+  <data name="INC_ERR_0034" xml:space="preserve">
+    <value>INC_ERR_0034-Received event {0} with unknown content ID {1} for User ID {2}</value>
+  </data>
 </root>

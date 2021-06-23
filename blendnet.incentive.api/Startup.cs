@@ -1,20 +1,23 @@
+using blendnet.api.proxy.Cms;
 using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
+using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
+using blendnet.common.infrastructure.ServiceBus;
 using blendnet.incentive.api.Common;
 using blendnet.incentive.repository.IncentiveRepository;
 using blendnet.incentive.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,9 +27,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace blendnet.incentive.api
 {
@@ -160,6 +161,7 @@ namespace blendnet.incentive.api
             services.AddTransient<RetailerProviderProxy>();
             services.AddTransient<RetailerProxy>();
             services.AddTransient<IncentiveCalculationHelper>();
+            services.AddTransient<ContentProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -169,7 +171,9 @@ namespace blendnet.incentive.api
 
             //Configure Redis Cache
             ConfigureDistributedCache(services);
-
+            
+            // Configure Event Bus
+            ConfigureEventBus(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -249,6 +253,13 @@ namespace blendnet.incentive.api
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 
+            //Configure Http Clients
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT, c =>
+            {
+                string cmsBaseUrl = Configuration.GetValue<string>("CmsBaseUrl");
+                c.BaseAddress = new Uri(cmsBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
         }
 
         /// <summary>
@@ -320,6 +331,28 @@ namespace blendnet.incentive.api
                    opts.SupportedUICultures = supportedCultures;
 
                });
+        }
+
+        private void ConfigureEventBus(IServiceCollection services)
+        {
+            //event bus related registrations
+            string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
+            string serviceBusTopicName = Configuration.GetValue<string>("ServiceBusTopicName");
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddServiceBusClient(serviceBusConnectionString);
+            });
+
+            services.AddSingleton<EventBusConnectionData>(ebcd =>
+            {
+                EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
+                eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
+                eventBusConnectionData.TopicName = serviceBusTopicName;
+                return eventBusConnectionData;
+            });
+
+            services.AddSingleton<IEventBus, EventServiceBus>();
         }
     }
 }

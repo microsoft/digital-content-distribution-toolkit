@@ -144,6 +144,10 @@ namespace blendnet.incentive.listener
 
             services.AddTransient<OrderCompletedEventIntegrationEventHandler>();
             services.AddTransient<RetailerAssignedIntegrationEventHandler>();
+            services.AddTransient<UserIntegrationEventHandler>();
+            services.AddTransient<UserSigninIncentiveIntegrationEventHandler>();
+            services.AddTransient<UserAppOpenIncentiveIntegrationEventHandler>();
+            services.AddTransient<UserStreamContentIncentiveIntegrationEventHandler>();
         }
 
         /// <summary>

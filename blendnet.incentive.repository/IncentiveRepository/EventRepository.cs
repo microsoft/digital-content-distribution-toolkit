@@ -71,7 +71,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
             //if the date time is provided then add the add condition
             if (eventCriteria.StartDate.HasValue && eventCriteria.EndDate.HasValue)
             {
-                eventDateTimeCondition = "AND (c.eventDateTime >= @startDate AND c.eventDateTime <= @endDate )";
+                eventDateTimeCondition = "AND (c.eventOccuranceTime >= @startDate AND c.eventOccuranceTime <= @endDate )";
             }
 
             queryString = string.Format(queryString, eventTypeAndCondition, eventDateTimeCondition);
@@ -126,7 +126,7 @@ namespace blendnet.incentive.repository.IncentiveRepository
             //if the date time is provided then add the add condition
             if (request.StartDate.HasValue && request.EndDate.HasValue)
             {
-                eventDateTimeCondition = "AND (c.eventDateTime >= @startDate AND c.eventDateTime <= @endDate )";
+                eventDateTimeCondition = "AND (c.eventOccuranceTime >= @startDate AND c.eventOccuranceTime <= @endDate )";
             }
 
             if (request.AggregrateType == RuleType.COUNT)

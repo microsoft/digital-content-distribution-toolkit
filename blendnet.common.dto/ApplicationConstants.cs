@@ -212,6 +212,13 @@ namespace blendnet.common.dto
             public const int NewArrival = 2;
         }
 
+        public struct IncentiveEventAdditionalPropertyKeys
+        {
+            public const string ContentId = "ContentId";
+            public const string ContentProviderId = "ContentProviderId";
+            public const string UserId = "UserId";
+        }
+
         public struct Common
         {
             public static readonly Guid NIL_GUID = Guid.Empty;

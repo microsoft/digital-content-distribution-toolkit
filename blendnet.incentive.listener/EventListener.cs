@@ -46,10 +46,15 @@ namespace blendnet.incentive.listener
 
             _eventBus.Subscribe<RetailerAssignedIntegrationEvent, RetailerAssignedIntegrationEventHandler>();
 
+            _eventBus.Subscribe<UserSigninIncentiveIntegrationEvent, UserSigninIncentiveIntegrationEventHandler>();
+
+            _eventBus.Subscribe<UserAppOpenIncentiveIntegrationEvent, UserAppOpenIncentiveIntegrationEventHandler>();
+
+            _eventBus.Subscribe<UserStreamContentIncentiveIntegrationEvent, UserStreamContentIncentiveIntegrationEventHandler>();
+
             await _eventBus.StartProcessing();
 
             _logger.LogInformation("Subscribe complete by blendnet.incentive.listener");
-
         }
 
         /// <summary>

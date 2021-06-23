@@ -34,20 +34,15 @@ namespace blendnet.common.dto.Incentive
         public List<Property> Properties { get; set; }
 
         /// <summary>
-        /// UTC Date time value of when the event is created
-        /// </summary>
-        public DateTime EventDateTime { get; set; }
-
-        /// <summary>
-        /// Time during which event was created. Might differ than EventDateTime when event is 
+        /// Time during which event was created. Might differ than CreatedDate when event is 
         /// called from client and there are network delays
         /// </summary>
         public DateTime EventOccuranceTime { get; set; }
 
         /// <summary>
-        /// Date time represented in int format
+        /// EventOccurance time represented in int format
         /// </summary>
-        public int EventDate { get; set; }
+        public int EventOccuranceDate => Int32.Parse(EventOccuranceTime.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYMMDD));
 
         /// <summary>
         /// Computed Value of the event which is later used for computation

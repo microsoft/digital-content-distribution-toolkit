@@ -14,14 +14,11 @@ namespace blendnet.incentive.listener.Util
         {
             if (incentivePlan == null) return null;
 
-            List<PlanDetail> planDetails = incentivePlan.PlanDetails.Where(plan => plan.EventType == eventType && plan.EventSubType == eventSubType).ToList();
+            PlanDetail planDetail = incentivePlan.PlanDetails
+                                                .Where(plan => plan.EventType == eventType && plan.EventSubType == eventSubType)
+                                                .FirstOrDefault();
 
-            if (planDetails.Count == 0)
-            {
-                return null;
-            }
-
-            return planDetails[0]; //Ideally only one plan should be present
+            return planDetail;
         }
 
         public static double GetComputedValue(double originalValue, Formula formula)
@@ -50,10 +47,51 @@ namespace blendnet.incentive.listener.Util
             var curDate = DateTime.UtcNow;
             IncentiveEvent incentiveEvent = new IncentiveEvent();
             incentiveEvent.EventId = Guid.NewGuid();
-            incentiveEvent.EventDateTime = incentiveEvent.EventOccuranceTime = curDate;
-            incentiveEvent.EventDate = Int32.Parse(curDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYMMDD));
+            incentiveEvent.EventOccuranceTime = curDate;
             incentiveEvent.CreatedDate = curDate;
             incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
+            return incentiveEvent;
+        }
+
+        /// <summary>
+        /// Creates basic incentive event for User Events
+        /// </summary>
+        /// <param name="userPhoneNumber">Phone number of the user</param>
+        /// <param name="userId">User Id of the user</param>
+        /// <param name="eventType">Event Type</param>
+        /// <param name="eventOriginalTime">Event's original time</param>
+        /// <returns></returns>
+        public static IncentiveEvent CreateUserIncentiveEvent(string userPhoneNumber, Guid userId, EventType eventType, DateTime eventOriginalTime)
+        {
+            var incentiveEvent = new IncentiveEvent()
+            {
+                EventCreatedFor = userPhoneNumber,
+                EventType = eventType,
+                Audience = new Audience()
+                {
+                    AudienceType = AudienceType.CONSUMER,
+                    SubTypeName = ApplicationConstants.Common.CONSUMER,
+                },
+                CreatedByUserId = userId,
+                CreatedDate = DateTime.UtcNow,
+                EventCategoryType = EventCategoryType.INCOME,
+                EventOccuranceTime = eventOriginalTime,
+                EventSubType = null,
+                EventId = Guid.NewGuid(),
+                CalculatedValue = 0, // will be calculated later
+                OriginalValue = 0,
+                ModifiedByByUserId = null,
+                ModifiedDate = null,
+                Properties = new List<Property>() 
+                {
+                    new Property()
+                    {
+                        Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.UserId,
+                        Value = userId.ToString(),
+                    }
+                },
+            };
+
             return incentiveEvent;
         }
     }
