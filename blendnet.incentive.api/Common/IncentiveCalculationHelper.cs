@@ -394,7 +394,7 @@ namespace blendnet.incentive.api.Common
 
                         if (rangeValue != default(RangeValue))
                         {
-                            result.Value = rangeValue.Output * formula.SecondOperand.Value;
+                            result.Value = rangeValue.Output;
                         }
 
                         break;

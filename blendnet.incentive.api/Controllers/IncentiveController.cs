@@ -192,7 +192,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPut("consumer/changeenddate/{planId:guid}/{endDate}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<ActionResult> CloseConsumerIncentivePlan(Guid planId, DateTime endDate)
+        public async Task<ActionResult> ChangeConsumerIncentivePlan(Guid planId, DateTime endDate)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
 
@@ -232,7 +232,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPut("retailer/changeenddate/{planId:guid}/{subTypeName}/{endDate}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<ActionResult> CloseRetailerIncentivePlan(Guid planId, string subTypeName, DateTime endDate)
+        public async Task<ActionResult> ChangeRetailerIncentivePlan(Guid planId, string subTypeName, DateTime endDate)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subTypeName);
 
@@ -717,7 +717,7 @@ namespace blendnet.incentive.api.Controllers
 
             int statusCode = await _incentiveRepository.DeleteIncentivePlan(plan.Id.Value, plan.Audience.SubTypeName);
 
-            if (statusCode == (int)System.Net.HttpStatusCode.OK)
+            if (statusCode == (int)System.Net.HttpStatusCode.NoContent)
             {
                 return NoContent();
             }
