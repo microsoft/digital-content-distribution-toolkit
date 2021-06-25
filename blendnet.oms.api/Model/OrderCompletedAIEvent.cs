@@ -27,6 +27,11 @@ namespace blendnet.oms.api.Model
         /// Retailer partner id
         /// </summary>
         public string RetailerPartnerId { get; set; }
+
+        /// <summary>
+        /// Retailer additional attributes
+        /// </summary>
+        public Dictionary<string, string> RetailerAdditionalAttributes { get; set; }
         
         /// <summary>
         /// List of subscriptions bought in the order

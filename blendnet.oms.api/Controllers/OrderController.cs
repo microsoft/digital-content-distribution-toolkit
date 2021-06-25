@@ -209,7 +209,7 @@ namespace blendnet.oms.api.Controllers
 
                 await _eventBus.Publish(orderCompletedIntegrationEvent);
 
-                SendOrderCompletedAIEvent(order);
+                SendOrderCompletedAIEvent(order, retailer.AdditionalAttibutes);
 
                 return NoContent();
             }
@@ -660,7 +660,7 @@ namespace blendnet.oms.api.Controllers
         /// Sends order completed AI event 
         /// </summary>
         /// <param name="order"></param>
-        private void SendOrderCompletedAIEvent(Order order)
+        private void SendOrderCompletedAIEvent(Order order, Dictionary<string, string> retailerAdditionalAttributes)
         {
             List<Model.OrderItem> orderItems = new List<Model.OrderItem>();
 
@@ -682,6 +682,7 @@ namespace blendnet.oms.api.Controllers
                 UserId = order.UserId,
                 RetailerId = order.RetailerId.Value,
                 RetailerPartnerId = order.RetailerPartnerId,
+                RetailerAdditionalAttributes = retailerAdditionalAttributes,
                 OrderPlacedDateTime = order.OrderCreatedDate,
                 PaymentDepositDateTime = order.DepositDate.Value,
                 OrderCompletedDateTime = order.OrderCompletedDate.Value,
