@@ -311,7 +311,8 @@ namespace blendnet.user.api.Controllers
 
                 if (retailerProvider == null)
                 {
-                    listOfValidationErrors.Add(string.Format(_stringLocalizer["USR_ERR_13"], callerUserId));
+                    listOfValidationErrors.Add(string.Format(_stringLocalizer["USR_ERR_013"], callerUserId));
+                    return BadRequest(listOfValidationErrors);
                 }
 
                 var existingRetailer = await _retailerProxy.GetRetailerById(retailerRequest.RetailerId, retailerProvider.PartnerCode);
