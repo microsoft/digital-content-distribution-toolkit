@@ -225,5 +225,9 @@ namespace blendnet.common.dto
 
             public const string CONSUMER = "CONSUMER";
         }
+        public struct UserProfile
+        {
+            public const int NameMaxLength = 20;
+        }
     }
 }

@@ -162,11 +162,6 @@ namespace blendnet.user.api.Controllers
         public async Task<ActionResult> UpdateProfile(UpdateProfileRequest request)
         {
             List<string> errorInfo = new List<string>();
-            if(request.Name.Length > 20)
-            {
-                errorInfo.Add(String.Format(_stringLocalizer["USR_ERR_014"]));
-                return BadRequest(errorInfo);
-            }
             User user = await _userRepository.GetUserByPhoneNumber(this.User.Identity.Name);
             if(user == null){
                 return NotFound();
