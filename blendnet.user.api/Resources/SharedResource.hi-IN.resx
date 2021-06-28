@@ -153,4 +153,7 @@
   <data name="USR_ERR_012" xml:space="preserve">
     <value>USR_ERR_012-खुदरा विक्रेता पहले से मौजूद आईडी : {0}</value>
   </data>
+  <data name="USR_ERR_014" xml:space="preserve">
+    <value>USR_ERR_014-नाम 20 वर्णों से कम का होना चाहिए</value>
+  </data>
 </root>

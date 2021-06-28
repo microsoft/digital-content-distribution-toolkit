@@ -34,6 +34,11 @@ namespace blendnet.common.dto.User
         /// <summary>
         /// Name of the user
         /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// UserName of the user
+        /// </summary>
         public string UserName { get; set; }
 
         /// <summary>

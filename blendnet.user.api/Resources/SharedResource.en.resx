@@ -156,4 +156,7 @@
   <data name="USR_ERR_013" xml:space="preserve">
     <value>USR_ERR_013-Retailer Provider not found for ID : {0}</value>
   </data>
+  <data name="USR_ERR_014" xml:space="preserve">
+    <value>USR_ERR_014-Name should be less tha 20 characters</value>
+  </data>
 </root>
