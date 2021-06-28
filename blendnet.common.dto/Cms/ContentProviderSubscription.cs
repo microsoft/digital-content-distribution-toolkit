@@ -32,6 +32,10 @@ namespace blendnet.common.dto
 
         public DateTime EndDate { get; set; }
 
+        public bool IsRedeemable { get; set; }
+
+        public int RedemptionValue { get; set; }
+
         public void SetIdentifiers()
         {
             this.Id = Guid.NewGuid();

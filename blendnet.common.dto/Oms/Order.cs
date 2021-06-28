@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace blendnet.common.dto.Oms
 {
@@ -67,6 +68,27 @@ namespace blendnet.common.dto.Oms
         public int? PaymentDepositDate { get; set; }
 
         /// <summary>
+        /// Marks if its redemmed
+        /// </summary>
+        public bool IsRedeemed { get; set; }
+
+        /// <summary>
+        /// Total Coins used for redemption
+        /// </summary>
+        public int TotalRedemmedValue {
+            get 
+            {
+                if (OrderItems != null)
+                {
+                    return OrderItems.Select(oi => oi.RedeemedValue).Sum();
+                }
+
+                return 0;
+            }
+                
+        }
+
+        /// <summary>
         /// Order Created Date
         /// </summary>
         public DateTime OrderCreatedDate { get; set; }
@@ -109,6 +131,11 @@ namespace blendnet.common.dto.Oms
         /// Amount Collected
         /// </summary>
         public float? AmountCollected { get; set; }
+
+        /// <summary>
+        /// Redeemed Value
+        /// </summary>
+        public int RedeemedValue { get; set; }
 
         /// <summary>
         /// Purchased Plan Date.

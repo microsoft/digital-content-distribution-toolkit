@@ -219,6 +219,80 @@ namespace blendnet.oms.api.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Allows the end user to redeem subscription agains the accumulated points
+        /// </summary>
+        /// <param name="orderRequest"></param>
+        /// <returns></returns>
+        [HttpPost("redeem", Name = nameof(RedeemOrder))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        public async Task<ActionResult> RedeemOrder(OrderRequest orderRequest)
+        {
+            List<string> errorInfo = new List<string>();
+
+            Guid userId = UserClaimData.GetUserId(User.Claims);
+            
+            string userPhoneNumber = User.Identity.Name;
+
+            //check when the last redemption was done. make sure there is some gap of X seconds
+            if ( !await AllowOrderRedemption(userPhoneNumber))
+            {
+                return new StatusCodeResult((int)System.Net.HttpStatusCode.TooManyRequests);
+            }
+
+            // Get Subscription
+            ContentProviderSubscriptionDto subscription = await _subscriptionProxy.GetSubscription(orderRequest.ContentProviderId, orderRequest.SubscriptionId);
+
+            if (subscription == null)
+            {
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0001"]);
+                return BadRequest(errorInfo);
+            }
+
+            //validate the subscription end date and if its marked for redemption
+            var error = ValidateSubscription(subscription,true);
+
+            if (error != null)
+            {
+                errorInfo.Add(error);
+                return BadRequest(errorInfo);
+            }
+
+            var orderStatusFilter = new OrderStatusFilter();
+
+            orderStatusFilter.OrderStatuses.Add(OrderStatus.Created);
+            
+            orderStatusFilter.OrderStatuses.Add(OrderStatus.Completed);
+
+            // Check if user do not hold active order for same content provider
+            if (await ActiveOrderExists(userPhoneNumber, orderRequest.ContentProviderId, orderStatusFilter))
+            {
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0002"]);
+                return BadRequest(errorInfo);
+            }
+
+            //TO DO : Get the coins balance validate against the coins required. Call to incentive proxy
+            
+            //Populate following in Order object
+            //Phone number, user id, user name, content provider id, subscription, Order status, OrderCreatedDate
+            Order order = GetOrderForRedemption(userId, userPhoneNumber, subscription);
+
+            //Insert order object in db
+            Guid orderId = await _omsRepository.CreateOrder(order);
+
+            OrderCompletedIntegrationEvent orderCompletedIntegrationEvent = new OrderCompletedIntegrationEvent()
+            {
+                Order = order,
+            };
+
+            await _eventBus.Publish(orderCompletedIntegrationEvent);
+
+            SendOrderCompletedAIEvent(order, null);
+
+            return Ok(orderId);
+        }
+
         /// <summary>
         /// Cancel order 
         /// </summary>
@@ -508,13 +582,22 @@ namespace blendnet.oms.api.Controllers
         }
 
         /// <summary>
-        /// Validates subscription
+        /// Validates subscription should not have ended in past date
+        /// Also in case of redemptions, checks if this can be redeemed or not
         /// </summary>
         /// <param name="subscription"></param>
         /// <returns></returns>
-        private string ValidateSubscription(ContentProviderSubscriptionDto subscription)
+        private string ValidateSubscription(ContentProviderSubscriptionDto subscription, bool validateRedemption = false)
         {
             DateTime subscriptionEndDate = subscription.EndDate;
+
+            if (validateRedemption)
+            {
+                if (!subscription.IsRedeemable)
+                {
+                    return _stringLocalizer["OMS_ERR_0017"];
+                }
+            }
 
             if (subscriptionEndDate < DateTime.UtcNow)
             {
@@ -524,6 +607,13 @@ namespace blendnet.oms.api.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Checks if an order / active subscription already exists for the give content provider
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <param name="contentProviderId"></param>
+        /// <param name="orderFilter"></param>
+        /// <returns></returns>
         private async Task<bool> ActiveOrderExists(string userPhoneNumber, Guid contentProviderId, OrderStatusFilter orderFilter)
         {
             List<Order> activeOrders = await _omsRepository.GetOrderByContentProviderId(userPhoneNumber, contentProviderId, orderFilter);
@@ -545,6 +635,37 @@ namespace blendnet.oms.api.Controllers
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Checks if redemption to be allowed
+        /// It checks for the time stamp for last redemeed order. 
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <returns></returns>
+        private async Task<bool> AllowOrderRedemption(string userPhoneNumber)
+        {
+            var orderStatusFilter = new OrderStatusFilter();
+
+            orderStatusFilter.OrderStatuses.Add(OrderStatus.Completed);
+
+            List<Order> completedOrders = await _omsRepository.GetOrdersByPhoneNumber(userPhoneNumber, orderStatusFilter,true);
+
+            if (completedOrders != null && completedOrders.Count > 0)
+            {
+                DateTime currentDate = DateTime.UtcNow;
+
+                //if the redemption is happening with in 30 secs, reject it
+                Order lastRedeemedOrder = completedOrders.
+                                                Where(co => (currentDate.Subtract(co.OrderCompletedDate.Value).TotalSeconds <= _omsAppSettings.OrderRedemptionThrottleInSecs)).FirstOrDefault();
+
+                if (lastRedeemedOrder != null)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private Order CreateOrder(Guid userId, string userPhoneNumber, ContentProviderSubscriptionDto subscription)
@@ -575,6 +696,11 @@ namespace blendnet.oms.api.Controllers
             return retailer.IsActive();
         }
 
+        /// <summary>
+        /// Checks if the order state is created or not
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         private string ValidateOrder(Order order)
         {
             string errorInfo = null;
@@ -591,6 +717,11 @@ namespace blendnet.oms.api.Controllers
             return errorInfo;
         }
 
+        /// <summary>
+        /// Checks whether Amount collected is < 0
+        /// </summary>
+        /// <param name="completeOrderRequest"></param>
+        /// <returns></returns>
         private bool ValidateAmount(CompleteOrderRequest completeOrderRequest)
         {
             if(completeOrderRequest.AmountCollected < 0)
@@ -628,6 +759,52 @@ namespace blendnet.oms.api.Controllers
             order.OrderCompletedDate = currentDate;
             order.OrderStatus = OrderStatus.Completed;
         }
+
+        /// <summary>
+        /// Returns the populated object for redemption
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userPhoneNumber"></param>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
+        private Order GetOrderForRedemption(Guid userId, 
+                                            string userPhoneNumber, 
+                                            ContentProviderSubscriptionDto subscription)
+        {
+            var currentDate = DateTime.UtcNow;
+
+            Order order = new Order();
+            
+            common.dto.Oms.OrderItem orderItem = new common.dto.Oms.OrderItem();
+            
+            orderItem.Subscription = subscription;
+
+            orderItem.PlanStartDate = currentDate;
+
+            orderItem.PlanEndDate = currentDate.Date.AddDays(orderItem.Subscription.DurationDays).AddMilliseconds(1);//to ensure millisecond part is shown
+
+            orderItem.RedeemedValue = subscription.RedemptionValue;
+
+            order.OrderCompletedDate = currentDate;
+            
+            order.OrderStatus = OrderStatus.Completed;
+
+            order.UserId = userId;
+            
+            order.PhoneNumber = userPhoneNumber;
+
+            order.CreatedByUserId = userId;
+            
+            order.CreatedDate = currentDate;
+
+            order.IsRedeemed = true;
+
+            order.OrderItems.Add(orderItem);
+
+            return order;
+        }
+
+
 
         /// <summary>
         /// Generates the token for the Content and Command Id
@@ -671,8 +848,10 @@ namespace blendnet.oms.api.Controllers
                     SubscriptionId = orderItem.Subscription.Id.Value,
                     SubscriptionName = orderItem.Subscription.Title,
                     ContentProviderId = orderItem.Subscription.ContentProviderId,
-                    SubscriptionValue = orderItem.Subscription.Price
+                    SubscriptionValue = orderItem.Subscription.Price,
+                    RedemptionValue = orderItem.RedeemedValue
                 };
+
                 orderItems.Add(orderItemDetail);
             }
 
@@ -680,15 +859,19 @@ namespace blendnet.oms.api.Controllers
             {
                 OrderId = order.Id.Value,
                 UserId = order.UserId,
-                RetailerId = order.RetailerId.Value,
-                RetailerPartnerId = order.RetailerPartnerId,
-                RetailerPartnerCode = order.RetailerPartnerCode,
-                RetailerAdditionalAttributes = retailerAdditionalAttributes,
-                OrderPlacedDateTime = order.OrderCreatedDate,
-                PaymentDepositDateTime = order.DepositDate.Value,
+                IsRedeemed = order.IsRedeemed,
                 OrderCompletedDateTime = order.OrderCompletedDate.Value,
+                OrderPlacedDateTime = order.OrderCreatedDate,
                 OrderItems = System.Text.Json.JsonSerializer.Serialize(orderItems)
             };
+            
+            if (!order.IsRedeemed)
+            {
+                orderCompletedAIEvent.RetailerId = order.RetailerId.Value;
+                orderCompletedAIEvent.RetailerPartnerId = order.RetailerPartnerId;
+                orderCompletedAIEvent.RetailerAdditionalAttributes = retailerAdditionalAttributes;
+                orderCompletedAIEvent.PaymentDepositDateTime = order.DepositDate.Value;
+            }
 
             _telemetryClient.TrackEvent(orderCompletedAIEvent);
         }

@@ -128,7 +128,7 @@ namespace blendnet.oms.repository.CosmosRepository
             return purchaseData;
         }
 
-        public async Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, OrderStatusFilter orderFilter)
+        public async Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, OrderStatusFilter orderFilter, bool onlyRedeemed = false)
         {
             try
             {
@@ -140,6 +140,12 @@ namespace blendnet.oms.repository.CosmosRepository
                     queryString = queryString + " and c.orderStatus in ({0})";
                     var orderString = "\"" + string.Join("\",\"", orderFilter.OrderStatuses) + "\"";
                     queryString = string.Format(queryString, orderString);
+                }
+
+                //incase only redeemed needs to be read
+                if (onlyRedeemed)
+                {
+                    queryString = queryString + " and c.isRedeemed = true ";
                 }
 
                 var queryDef = new QueryDefinition(queryString).WithParameter("@phoneNumber", phoneNumber);

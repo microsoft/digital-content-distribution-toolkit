@@ -165,4 +165,7 @@
   <data name="OMS_ERR_0016" xml:space="preserve">
     <value>OMS_ERR_0016-Invalid Retailer Provider</value>
   </data>
+  <data name="OMS_ERR_0017" xml:space="preserve">
+    <value>OMS_ERR_0017-Subscription is not marked for redemption.</value>
+  </data>
 </root>

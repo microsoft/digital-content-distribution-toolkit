@@ -19,9 +19,14 @@ namespace blendnet.oms.api.Model
         public Guid OrderId { get; set; }
 
         /// <summary>
+        /// Marks if its redemmed
+        /// </summary>
+        public bool IsRedeemed { get; set; }
+
+        /// <summary>
         /// Retailer id
         /// </summary>
-        public Guid RetailerId { get; set; }
+        public Guid? RetailerId { get; set; }
 
         /// <summary>
         /// Retailer partner id
@@ -51,7 +56,7 @@ namespace blendnet.oms.api.Model
         /// <summary>
         /// payment deposit date time
         /// </summary>
-        public DateTime PaymentDepositDateTime { get; set; }
+        public DateTime? PaymentDepositDateTime { get; set; }
 
         /// <summary>
         /// order completed date time
@@ -81,6 +86,11 @@ namespace blendnet.oms.api.Model
         /// Subscription value
         /// </summary>
         public float SubscriptionValue { get; set; }
+
+        /// <summary>
+        /// Qty of points required to redeem
+        /// </summary>
+        public int RedemptionValue { get; set; }
     }
 
 }

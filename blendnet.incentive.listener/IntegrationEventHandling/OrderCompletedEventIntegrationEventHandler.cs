@@ -56,29 +56,43 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             {
                 using (_telemetryClient.StartOperation<RequestTelemetry>("OrderCompletedEventIntegrationEventHandler.Handle"))
                 {
-                    _logger.LogInformation($"Adding events of order completion");
+                    _logger.LogInformation($"Adding events of order completion for order id {integrationEvent.Order.Id} User {integrationEvent.Order.PhoneNumber}");
 
                     Order order = integrationEvent.Order;
 
-                    IncentivePlan activeRetailerRegularPlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, order.RetailerPartnerCode);
-
-                    List<IncentiveEvent> retailerEvents = GetRetailerEventsForOrderCompletion(order, activeRetailerRegularPlan);
-
-                    foreach (var retailerEvent in retailerEvents)
+                    if (!order.IsRedeemed)
                     {
-                        await _eventRepository.CreateIncentiveEvent(retailerEvent);
+                        IncentivePlan activeRetailerRegularPlan = await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, order.RetailerPartnerCode);
+
+                        List<IncentiveEvent> retailerEvents = GetRetailerEventsForOrderCompletion(order, activeRetailerRegularPlan);
+
+                        foreach (var retailerEvent in retailerEvents)
+                        {
+                            await _eventRepository.CreateIncentiveEvent(retailerEvent);
+                        }
+
+                        IncentivePlan activeConsumerRegularPlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
+
+                        List<IncentiveEvent> consumerEvents = GetConsumerEventsForOrderCompletion(order, activeConsumerRegularPlan);
+
+                        foreach (var consumerEvent in consumerEvents)
+                        {
+                            await _eventRepository.CreateIncentiveEvent(consumerEvent);
+                        }
+                    }else
+                    {
+                        _logger.LogInformation($"Since order is redeemed no credit to user {integrationEvent.Order.PhoneNumber} and retailer. Order id {integrationEvent.Order.Id}");
+
+                        List<IncentiveEvent> consumerEvents = GetConsumerEventsForRedemption(order);
+
+                        foreach (var consumerEvent in consumerEvents)
+                        {
+                            await _eventRepository.CreateIncentiveEvent(consumerEvent);
+                        }
+
                     }
 
-                    IncentivePlan activeConsumerRegularPlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
-
-                    List<IncentiveEvent> consumerEvents = GetConsumerEventsForOrderCompletion(order, activeConsumerRegularPlan);
-
-                    foreach (var consumerEvent in consumerEvents)
-                    {
-                        await _eventRepository.CreateIncentiveEvent(consumerEvent);
-                    }
-
-                    _logger.LogInformation($"Done adding event");
+                    _logger.LogInformation($"Done adding events for order id {integrationEvent.Order.Id} User {integrationEvent.Order.PhoneNumber} ");
                 }
             }
             catch (Exception e)
@@ -179,7 +193,42 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
         }
 
-        
+        /// <summary>
+        /// Generates the incentive events to insert.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        private List<IncentiveEvent> GetConsumerEventsForRedemption(Order order)
+        {
+            List<IncentiveEvent> incentiveEvents = new List<IncentiveEvent>();
+
+            foreach (var orderItem in order.OrderItems)
+            {
+                IncentiveEvent incentiveEvent = IncentiveUtil.CreateIncentiveEvent(EventCategoryType.EXPENSE);
+
+                incentiveEvent.Audience = new Audience()
+                {
+                    AudienceType = AudienceType.CONSUMER,
+                    SubTypeName = ApplicationConstants.Common.CONSUMER
+                };
+
+                incentiveEvent.EventCreatedFor = order.PhoneNumber;
+                incentiveEvent.EventCategoryType = EventCategoryType.EXPENSE;
+                incentiveEvent.EventType = EventType.CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM;
+                incentiveEvent.EventSubType = orderItem.Subscription.ContentProviderId.ToString();
+                incentiveEvent.OriginalValue = orderItem.RedeemedValue;
+                incentiveEvent.CalculatedValue = orderItem.RedeemedValue * -1;
+                                
+                AddProperties(incentiveEvent, order, orderItem);
+
+                incentiveEvents.Add(incentiveEvent);
+            }
+
+            return incentiveEvents;
+
+        }
+
+
 
         /// <summary>
         /// Adds all order related details in the properties which can be used on client side for further tracking or processing
@@ -195,20 +244,28 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 Name = C_OrderId,
                 Value = order.Id.ToString()
             };
+
             incentiveEvent.Properties.Add(orderData);
 
             dynamic value = new JObject();
+            
             value.subscriptionId = orderItem.Subscription.Id;
-            value.transactionId = orderItem.PartnerReferenceNumber;
+            
+            if (!order.IsRedeemed)
+            {
+                value.transactionId = orderItem.PartnerReferenceNumber;
+            }
+            
             value.subscriptionTitle = orderItem.Subscription.Title;
+            
             value.contentProviderId = orderItem.Subscription.ContentProviderId;
 
             Property transactionData = new Property()
             {
                 Name = C_OrderItem,
                 Value = JsonConvert.SerializeObject(value)
-
             };
+            
             incentiveEvent.Properties.Add(transactionData);
 
             Property userData = new Property()
@@ -223,14 +280,20 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 Name = C_UserId,
                 Value = order.UserId.ToString()
             };
+
             incentiveEvent.Properties.Add(userIdData);
 
-            Property retailerData = new Property()
+            if (!order.IsRedeemed)
             {
-                Name = C_RetailerId,
-                Value = order.RetailerPartnerId
-            };
-            incentiveEvent.Properties.Add(retailerData);
+                Property retailerData = new Property()
+                {
+                    Name = C_RetailerId,
+                    Value = order.RetailerPartnerId
+                };
+
+                incentiveEvent.Properties.Add(retailerData);
+            }
+            
         }
     }
 }
