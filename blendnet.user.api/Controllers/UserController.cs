@@ -153,6 +153,32 @@ namespace blendnet.user.api.Controllers
         }
 
         /// <summary>
+        /// Update User Profile
+        /// </summary>
+        /// <param name="User"></param>
+        /// <returns></returns>
+        [HttpPut("profile", Name = nameof(UpdateProfile))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult> UpdateProfile(UpdateProfileRequest request)
+        {
+            List<string> errorInfo = new List<string>();
+            User user = await _userRepository.GetUserByPhoneNumber(this.User.Identity.Name);
+            if(user == null){
+                return NotFound();
+            }
+            user.Name = request.Name;
+            int response = await _userRepository.UpdateUser(user);
+            if (response == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
         /// Assign Retailer(Referral) data  to the Customer
         /// </summary>
         /// <param name="referralDto"></param>
