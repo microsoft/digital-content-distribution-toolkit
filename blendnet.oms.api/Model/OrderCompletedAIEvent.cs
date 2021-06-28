@@ -36,8 +36,6 @@ namespace blendnet.oms.api.Model
         /// <summary>
         /// List of subscriptions bought in the order
         /// </summary>
-        //public List<SubscriptionDetail> SubscriptionDetails { get; set; } 
-
         public string OrderItems { get; set; }
 
         /// <summary>

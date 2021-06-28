@@ -50,4 +50,17 @@ namespace blendnet.common.dto.Incentive
         /// </summary>
         public RuleType RuleType { get; set; }
     }
+
+    public class EventAggregateData
+    {
+        /// <summary>
+        /// List of event aggregate response
+        /// </summary>
+        public List<EventAggregrateResponse> EventAggregateResponses { get; set; }
+
+        /// <summary>
+        /// Summation of all aggregate values
+        /// </summary>
+        public double TotalValue { get; set; }
+    }
 }

@@ -72,13 +72,13 @@ namespace blendnet.incentive.api.Controllers
         }
 
         ///<summary>
-        ///Returns the calculated milestone for the consumer
+        ///Returns the calculated milestone for the consumer -- Disabling this method for now till it is needed
         ///</summary>
         ///<param name = "planId" ></ param >
         ///< returns ></ returns >
-        [HttpGet("consumer/milestone", Name = nameof(GetConsumerCalculatedMilestone))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<IncentivePlan>> GetConsumerCalculatedMilestone
+       // [HttpGet("consumer/milestone", Name = nameof(GetConsumerCalculatedMilestone))]
+      //  [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+       /* public async Task<ActionResult<IncentivePlan>> GetConsumerCalculatedMilestone
             (Guid? planId)
         {
             string phoneNumber = User.Identity.Name;
@@ -104,7 +104,7 @@ namespace blendnet.incentive.api.Controllers
             incentivePlan = await _incentiveCalculationHelper.CalculateMilestoneForConsumer(incentivePlan, phoneNumber);
 
             return Ok(incentivePlan);
-        }
+        */
 
         /// <summary>
         /// Returns the calculated milestone for the retailer
@@ -161,31 +161,18 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("consumer/regular", Name = nameof(GetConsumerCalculatedRegular))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<IncentivePlan>> GetConsumerCalculatedRegular(Guid? planId)
+        public async Task<ActionResult<EventAggregateData>> GetConsumerCalculatedRegular()
         {
             string phoneNumber = User.Identity.Name;
-            IncentivePlan incentivePlan;
-            List<string> errorInfo;
 
-            if (planId.HasValue)
+            var response = await _incentiveCalculationHelper.CalculateRandomIncentiveForConsumer(phoneNumber);
+
+            if(response.EventAggregateResponses.Count == 0)
             {
-                incentivePlan = await _incentiveRepository.GetConsumerPublishedPlan(planId.Value, PlanType.REGULAR);
-            }
-            else
-            {
-                incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
+                return NoContent();
             }
 
-            errorInfo = ValidateIncentivePlan(incentivePlan);
-
-            if (errorInfo.Count > 0)
-            {
-                return BadRequest(errorInfo);
-            }
-
-            incentivePlan = await _incentiveCalculationHelper.CalculateIncentivePlanForConsumer(incentivePlan, phoneNumber);
-
-            return Ok(incentivePlan);
+            return Ok(response);
         }
 
         /// <summary>
@@ -244,7 +231,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("consumer/regular/range", Name = nameof(GetConsumerCalculatedRndmIncentives))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<List<EventAggregrateResponse>>> GetConsumerCalculatedRndmIncentives(DateTime startDate,
+        public async Task<ActionResult<EventAggregateData>> GetConsumerCalculatedRndmIncentives(DateTime startDate,
                                                                                                       DateTime endDate)
         {
             string phoneNumber = User.Identity.Name;
@@ -262,9 +249,9 @@ namespace blendnet.incentive.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            List<EventAggregrateResponse> eventAggregrateResponses = await _incentiveCalculationHelper.CalculateRandomIncentiveForConsumer(phoneNumber, startDate, endDate);
+            var eventAggregrateResponses = await _incentiveCalculationHelper.CalculateRandomIncentiveForConsumer(phoneNumber, startDate, endDate);
 
-            if(eventAggregrateResponses.Count == 0)
+            if(eventAggregrateResponses.EventAggregateResponses.Count == 0)
             {
                 return NotFound();
             }
@@ -315,9 +302,9 @@ namespace blendnet.incentive.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            List<EventAggregrateResponse> eventAggregrateResponses = await _incentiveCalculationHelper.CalculateRandomIncentiveForRetailer(retailer.PartnerId, startDate, endDate);
+            var eventAggregrateResponses = await _incentiveCalculationHelper.CalculateRandomIncentiveForRetailer(retailer.PartnerId, startDate, endDate);
 
-            if(eventAggregrateResponses.Count == 0)
+            if(eventAggregrateResponses.EventAggregateResponses.Count == 0)
             {
                 return NotFound();
             }

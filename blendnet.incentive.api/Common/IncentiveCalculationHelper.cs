@@ -85,7 +85,7 @@ namespace blendnet.incentive.api.Common
         /// <param name="startDate"></param>
         /// <param name="dateTime"></param>
         /// <returns></returns>
-        public async Task<List<EventAggregrateResponse>> CalculateRandomIncentiveForRetailer(string retailerPartnerId,
+        public async Task<EventAggregateData> CalculateRandomIncentiveForRetailer(string retailerPartnerId,
                                                                 DateTime startDate,
                                                                 DateTime endDate)
         {
@@ -100,7 +100,13 @@ namespace blendnet.incentive.api.Common
 
             List<EventAggregrateResponse> response = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
 
-            return response;
+            EventAggregateData eventAggregateData = new EventAggregateData()
+            {
+                EventAggregateResponses = response,
+                TotalValue = response.Select(x => x.AggregratedValue).Sum()
+            };
+
+            return eventAggregateData;
         }
 
 
@@ -111,7 +117,7 @@ namespace blendnet.incentive.api.Common
         /// <param name="startDate"></param>
         /// <param name="dateTime"></param>
         /// <returns></returns>
-        public async Task<List<EventAggregrateResponse>> CalculateRandomIncentiveForConsumer(string phoneNumber,
+        public async Task<EventAggregateData> CalculateRandomIncentiveForConsumer(string phoneNumber,
                                                               DateTime startDate, 
                                                               DateTime endDate)
         {
@@ -126,7 +132,13 @@ namespace blendnet.incentive.api.Common
 
             List<EventAggregrateResponse> response = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
 
-            return response;
+            EventAggregateData eventAggregateData = new EventAggregateData()
+            {
+                EventAggregateResponses = response,
+                TotalValue = response.Select(x => x.AggregratedValue).Sum()
+            };
+
+            return eventAggregateData;
         }
 
         /// <summary>
@@ -134,7 +146,7 @@ namespace blendnet.incentive.api.Common
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public async Task<List<EventAggregrateResponse>> CalculateRandomIncentiveForConsumer(string phoneNumber)
+        public async Task<EventAggregateData> CalculateRandomIncentiveForConsumer(string phoneNumber)
         {
             EventAggregrateRequest eventAggregrateRequest = new EventAggregrateRequest()
             {
@@ -145,7 +157,13 @@ namespace blendnet.incentive.api.Common
 
             List<EventAggregrateResponse> response = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
 
-            return response;
+            EventAggregateData eventAggregateData = new EventAggregateData()
+            {
+                EventAggregateResponses = response,
+                TotalValue = response.Select(x => x.AggregratedValue).Sum()
+            };
+
+            return eventAggregateData;
         }
 
         /// <summary>
