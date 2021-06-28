@@ -682,6 +682,7 @@ namespace blendnet.oms.api.Controllers
                 UserId = order.UserId,
                 RetailerId = order.RetailerId.Value,
                 RetailerPartnerId = order.RetailerPartnerId,
+                RetailerPartnerCode = order.RetailerPartnerCode,
                 RetailerAdditionalAttributes = retailerAdditionalAttributes,
                 OrderPlacedDateTime = order.OrderCreatedDate,
                 PaymentDepositDateTime = order.DepositDate.Value,
