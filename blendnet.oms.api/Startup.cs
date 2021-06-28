@@ -30,6 +30,7 @@ using Microsoft.Extensions.Options;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using blendnet.common.infrastructure.Extensions;
+using blendnet.api.proxy.Incentive;
 
 namespace blendnet.oms.api
 {
@@ -162,6 +163,7 @@ namespace blendnet.oms.api
             services.AddTransient<RetailerProviderProxy>();
             services.AddTransient<UserProxy>();
             services.AddTransient<KaizalaIdentityProxy>();
+            services.AddTransient<IncentiveEventProxy>();
 
             //Configure Service Bus
             string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
@@ -263,6 +265,17 @@ namespace blendnet.oms.api
                 c.BaseAddress = new Uri(retailerBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
+
+            //Configure INCENTIVE Http Clients
+
+            string incentiveBaseUrl = Configuration.GetValue<string>("IncentiveBaseUrl");
+            
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.INCENTIVE_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(incentiveBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
         }
 
         /// <summary>

@@ -169,7 +169,27 @@ namespace blendnet.incentive.api.Controllers
 
             if(response.EventAggregateResponses.Count == 0)
             {
-                return NoContent();
+                return NotFound();
+            }
+
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Returns the milestone for the given user phone number
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        [HttpGet("consumer/regular/{phoneNumber}", Name = nameof(GetConsumerCalculatedRegularByPhoneNumber))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<EventAggregateData>> GetConsumerCalculatedRegularByPhoneNumber(string phoneNumber)
+        {
+            var response = await _incentiveCalculationHelper.CalculateRandomIncentiveForConsumer(phoneNumber);
+
+            if (response.EventAggregateResponses.Count == 0)
+            {
+                return NotFound();
             }
 
             return Ok(response);

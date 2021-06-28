@@ -168,4 +168,7 @@
   <data name="OMS_ERR_0017" xml:space="preserve">
     <value>OMS_ERR_0017-Subscription is not marked for redemption.</value>
   </data>
+  <data name="OMS_ERR_0018" xml:space="preserve">
+    <value>OMS_ERR_0018-Insufficient balance. Balance Required {0} Account Balance {1}</value>
+  </data>
 </root>

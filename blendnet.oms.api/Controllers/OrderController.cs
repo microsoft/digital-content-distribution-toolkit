@@ -24,6 +24,8 @@ using Microsoft.Extensions.Localization;
 using blendnet.common.infrastructure;
 using Microsoft.ApplicationInsights;
 using blendnet.common.infrastructure.Extensions;
+using blendnet.api.proxy.Incentive;
+using blendnet.common.dto.Incentive;
 
 namespace blendnet.oms.api.Controllers
 {
@@ -56,12 +58,15 @@ namespace blendnet.oms.api.Controllers
 
         private TelemetryClient _telemetryClient;
 
+        private IncentiveEventProxy _incentiveEventProxy;
+
         public OrderController(IOMSRepository omsRepository,
                                 ILogger<OrderController> logger,
                                 ContentProxy contentProxy,
                                 RetailerProxy retailerProxy,
                                 RetailerProviderProxy retailerProviderProxy,
                                 SubscriptionProxy subscriptionProxy,
+                                IncentiveEventProxy incentiveEventProxy,
                                 IEventBus eventBus,
                                 IOptionsMonitor<OmsAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
@@ -78,7 +83,9 @@ namespace blendnet.oms.api.Controllers
             _retailerProxy = retailerProxy;
 
             _retailerProviderProxy = retailerProviderProxy;
-            
+
+            _incentiveEventProxy = incentiveEventProxy;
+
             _eventBus = eventBus;
 
             _omsAppSettings = optionsMonitor.CurrentValue;
@@ -272,8 +279,16 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            //TO DO : Get the coins balance validate against the coins required. Call to incentive proxy
-            
+            //Check if user has the sufficient balance
+            Tuple<bool, double> balance = await HasSufficientBalance(userPhoneNumber, subscription.RedemptionValue);
+
+            //Get the coins balance validate against the coins required. Call to incentive proxy
+            if (!balance.Item1)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["OMS_ERR_0018"], subscription.RedemptionValue,balance.Item2));
+                return BadRequest(errorInfo);
+            }
+
             //Populate following in Order object
             //Phone number, user id, user name, content provider id, subscription, Order status, OrderCreatedDate
             Order order = GetOrderForRedemption(userId, userPhoneNumber, subscription);
@@ -666,6 +681,35 @@ namespace blendnet.oms.api.Controllers
             }
 
             return true;
+        }
+
+
+        /// <summary>
+        /// Checks if the user has sufficient balance to redeem
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <param name="balanceRequired"></param>
+        /// <returns></returns>
+        private async Task<Tuple<bool,double>> HasSufficientBalance(string userPhoneNumber, int balanceRequired)
+        {
+            double actualBalance = 0;
+
+            EventAggregateData data = await _incentiveEventProxy.GetConsumerCalculatedRegular(userPhoneNumber);
+
+            if (data == null)
+            {
+                return new Tuple<bool, double>(false,actualBalance);
+            }
+
+            actualBalance = data.TotalValue;
+
+            if (actualBalance >= balanceRequired)
+            {
+                return new Tuple<bool, double>(true, actualBalance);
+            }
+
+            return new Tuple<bool, double>(false, actualBalance); ;
+
         }
 
         private Order CreateOrder(Guid userId, string userPhoneNumber, ContentProviderSubscriptionDto subscription)
