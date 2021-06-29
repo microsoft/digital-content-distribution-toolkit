@@ -4,6 +4,7 @@ using blendnet.common.dto.Events;
 using blendnet.common.dto.Incentive;
 using blendnet.common.dto.Oms;
 using blendnet.common.infrastructure;
+using blendnet.incentive.listener.Model;
 using blendnet.incentive.listener.Util;
 using blendnet.incentive.repository.Interfaces;
 using Microsoft.ApplicationInsights;
@@ -15,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.incentive.listener.IntegrationEventHandling
 {
@@ -83,13 +85,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                     {
                         _logger.LogInformation($"Since order is redeemed no credit to user {integrationEvent.Order.PhoneNumber} and retailer. Order id {integrationEvent.Order.Id}");
 
-                        List<IncentiveEvent> consumerEvents = GetConsumerEventsForRedemption(order);
-
-                        foreach (var consumerEvent in consumerEvents)
-                        {
-                            await _eventRepository.CreateIncentiveEvent(consumerEvent);
-                        }
-
+                        await AddRedemptionEvents(order);
                     }
 
                     _logger.LogInformation($"Done adding events for order id {integrationEvent.Order.Id} User {integrationEvent.Order.PhoneNumber} ");
@@ -99,6 +95,62 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             {
                 _logger.LogError(e, $"OrderCompletedEventIntegrationEventHandler.Handle failed ");
             }
+        }
+
+        /// <summary>
+        /// Adds redemption Expense events
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        private async Task AddRedemptionEvents(Order order)
+        {
+            List<IncentiveEvent> consumerEvents = GetConsumerEventsForRedemption(order);
+
+            foreach (var consumerEvent in consumerEvents)
+            {
+                try
+                {
+                    await _eventRepository.CreateIncentiveEvent(consumerEvent);
+                }
+                catch (Exception ex)
+                {
+                    _telemetryClient.TrackEvent(GetRedemptionDeductionFailureAIEvent(consumerEvent, order));
+
+                    _logger.LogError(ex, $"Failed to add expense event for User {consumerEvent.EventCreatedFor} Order {order.Id} Event Sub Type : {consumerEvent.EventSubType} ");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get the failure Event
+        /// </summary>
+        /// <param name="incentiveEvent"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        private RedemptionDeductionFailureAIEvent GetRedemptionDeductionFailureAIEvent(IncentiveEvent incentiveEvent, Order order)
+        {
+            RedemptionDeductionFailureAIEvent aiEvent = new RedemptionDeductionFailureAIEvent();
+
+            aiEvent.OrderId = order.Id.Value;
+
+            aiEvent.OrderCompletedDate = order.OrderCompletedDate;
+
+            aiEvent.UserId = order.UserId;
+
+            aiEvent.EventType = incentiveEvent.EventType.ToString();
+            
+            aiEvent.EventSubType = incentiveEvent.EventSubType;
+
+            aiEvent.RedeemedValue = incentiveEvent.OriginalValue;
+
+            Property orderItem = incentiveEvent.Properties.Where(p => p.Name.Equals(C_OrderItem)).FirstOrDefault();
+
+            if(orderItem != null)
+            {
+                aiEvent.OrderItem = orderItem.Value;
+            }
+
+            return aiEvent;
         }
 
         /// <summary>
