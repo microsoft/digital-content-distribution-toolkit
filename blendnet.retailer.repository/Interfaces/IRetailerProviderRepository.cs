@@ -1,5 +1,6 @@
 using blendnet.common.dto.Retailer;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace blendnet.retailer.repository.Interfaces
@@ -26,5 +27,11 @@ namespace blendnet.retailer.repository.Interfaces
         /// <param name="serviceAccountId"></param>
         /// <returns></returns>
         Task<RetailerProviderDto> GetRetailerProviderByServiceAccountId(Guid serviceAccountId);
+
+        /// <summary>
+        /// Gets all Retailer Providers
+        /// </summary>
+        /// <returns></returns>
+        Task<List<RetailerProviderDto>> GetAllRetailerProviders();
     }
 }

@@ -109,6 +109,18 @@ namespace blendnet.retailer.api.Controllers
             return retailerProvider == null ? NotFound() : Ok(retailerProvider);
         }
 
+        /// <summary>
+        /// Gets list of all Retailer Providers
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("all")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<RetailerProviderDto>> GetAllRetailerProviders()
+        {
+            var retailerProviders = await _retailerProviderRepository.GetAllRetailerProviders();
+            return retailerProviders == null || retailerProviders.Count == 0 ? NotFound() : Ok(retailerProviders);
+        }
+
         #endregion
         
         #region Private methods

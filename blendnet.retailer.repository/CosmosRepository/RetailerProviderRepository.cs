@@ -6,6 +6,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -69,6 +70,19 @@ namespace blendnet.retailer.repository.CosmosRepository
             var list = await _container.ExtractDataFromQueryIterator<RetailerProviderDto>(queryDef);
             var result = list.FirstOrDefault();
             return result;
+        }
+
+        /// <summary>
+        /// Gets all Retailer Providers
+        /// </summary>
+        /// <returns></returns>
+        async Task<List<RetailerProviderDto>> IRetailerProviderRepository.GetAllRetailerProviders()
+        {
+            const string queryString = "SELECT VALUE root FROM root";
+            var queryDef = new QueryDefinition(queryString);
+
+            var list = await _container.ExtractDataFromQueryIterator<RetailerProviderDto>(queryDef);
+            return list;
         }
     }
 }
