@@ -18,6 +18,10 @@ spec:
       containers:
       - name: blendnet-user-api
         image: image_name
+        resources:
+          limits:
+            memory: "4Gi"
+            cpu: "2"
         ports:
         - containerPort: 80
         readinessProbe:
