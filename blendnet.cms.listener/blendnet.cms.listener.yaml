@@ -18,5 +18,9 @@ spec:
       containers:
       - name: blendnet-cms-listener
         image: image_name
+        resources:
+          limits:
+            memory: "8Gi"
+            cpu: "2"
         ports:
         - containerPort: 80
