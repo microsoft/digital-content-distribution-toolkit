@@ -1,16 +1,15 @@
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
-using Microsoft.AspNetCore.Http;
+using blendnet.common.dto.User;
+using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using blendnet.common.infrastructure.Authentication;
-using blendnet.common.dto.User;
-using Microsoft.Extensions.Localization;
-using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -29,7 +28,7 @@ namespace blendnet.cms.api.Controllers
 
         IStringLocalizer<SharedResource> _stringLocalizer;
 
-        public SubscriptionController(ILogger<SubscriptionController> logger, IContentProviderRepository contentProviderRepository, 
+        public SubscriptionController(ILogger<SubscriptionController> logger, IContentProviderRepository contentProviderRepository,
             IStringLocalizer<SharedResource> stringLocalizer)
         {
             this._logger = logger;
@@ -254,6 +253,11 @@ namespace blendnet.cms.api.Controllers
             if (subscription.Price <= 0)
             {
                 listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0023"]);
+            }
+
+            if (subscription.IsRedeemable && subscription.RedemptionValue <= 0)
+            {
+                listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0026"]);
             }
 
             return listOfValidationErrors;

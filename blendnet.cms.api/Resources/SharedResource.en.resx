@@ -192,4 +192,7 @@
   <data name="CMS_ERR_0025" xml:space="preserve">
     <value>CMS_ERR_0025-File content is null. Upload valid file.</value>
   </data>
+  <data name="CMS_ERR_0026" xml:space="preserve">
+    <value>CMS_ERR_0026-Redemption Value should be minimum 1 for a redeemable subscription</value>
+  </data>
 </root>
