@@ -25,6 +25,8 @@ using System.Net.Http;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using blendnet.api.proxy.KaizalaIdentity;
+using System.Configuration;
+using blendnet.api.proxy.Ses;
 
 namespace blendnet.cms.listener
 {
@@ -137,6 +139,9 @@ namespace blendnet.cms.listener
                     //Configure Kaizala Identity Proxy
                     services.AddTransient<KaizalaIdentityProxy>();
 
+                    //Configure SES Cancellation Proxy
+                    services.AddTransient<VODEProxy>();
+
                 });
 
 
@@ -214,6 +219,9 @@ namespace blendnet.cms.listener
             services.AddTransient<MomOrderRejectedIntegrationEventHandler>();
 
             services.AddTransient<MomOrderIntegrationEventHandler>();
+
+            services.AddTransient<ContentBroadcastCancellationIntegrationEventHandler>();
+
         }
 
 
@@ -265,6 +273,15 @@ namespace blendnet.cms.listener
             //Configure Http Clients
             services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
             {
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+
+            //Configure Http Client for SES service
+            string sesServiceBaseUrl = hostContext.Configuration.GetValue<string>("SESSeviceBaseUrl");
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.SESVODE_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(sesServiceBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }

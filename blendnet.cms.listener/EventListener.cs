@@ -80,6 +80,8 @@ namespace blendnet.cms.listener
             
             _eventBus.Subscribe<MomOrderCancelledIntegrationEvent, MomOrderCancelledIntegrationEventHandler>();
 
+            _eventBus.Subscribe<ContentBroadcastCancellationIntegrationEvent, ContentBroadcastCancellationIntegrationEventHandler>();
+
             await _eventBus.StartProcessing();
 
             //todo: read from config once we finalize that we are ok to consume blob created event here.

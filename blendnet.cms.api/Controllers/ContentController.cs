@@ -482,6 +482,64 @@ namespace blendnet.cms.api.Controllers
         }
 
 
+        /// <summary>
+        /// Returns the Token to view the content
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpPost("{contentId:guid}/cancelbroadcast", Name = nameof(CancelBroadcast))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<string>> CancelBroadcast(Guid contentId)
+        {
+            List<string> errorInfo = new List<string>();
+
+            Content content = await _contentRepository.GetContentById(contentId);
+
+            if (content == null)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0003"], contentId));
+
+                return BadRequest(errorInfo);
+            }
+
+            //allow only if broadcasted or broadcast cancellation has failed
+            if (content.ContentBroadcastStatus != ContentBroadcastStatus.BroadcastOrderComplete &&
+                content.ContentBroadcastStatus != ContentBroadcastStatus.BroadcastCancelFailed)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0027"], ContentBroadcastStatus.BroadcastOrderComplete, ContentBroadcastStatus.BroadcastCancelFailed));
+
+                return BadRequest(errorInfo);
+            }
+
+            content.ContentBroadcastStatus = ContentBroadcastStatus.BroadcastCancelSubmitted;
+
+            content.ContentBroadcastStatusUpdatedBy = null;
+
+            content.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
+
+            content.ModifiedDate = DateTime.UtcNow;
+
+            await _contentRepository.UpdateContent(content);
+
+            ContentCommand contentBroadcastCancelCommand = new ContentCommand()
+            {
+                CommandType = CommandType.CancelBroadcastContent,
+                ContentId = content.Id.Value,
+                CreatedByUserId = UserClaimData.GetUserId(this.User.Claims)
+            };
+
+            //publish the event
+            ContentBroadcastCancellationIntegrationEvent contentBroadcastIntegrationEvent = new ContentBroadcastCancellationIntegrationEvent()
+            {
+                ContentBroadcastCancellationCommand = contentBroadcastCancelCommand
+            };
+
+            await _eventBus.Publish(contentBroadcastIntegrationEvent);
+
+            return Ok();
+        }
+
         #endregion
 
         #region Private Methods

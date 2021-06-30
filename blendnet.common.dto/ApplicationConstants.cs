@@ -84,6 +84,7 @@ namespace blendnet.common.dto
             public const string KAIZALA_HTTP_CLIENT = "kaizala";
             public const string USER_HTTP_CLIENT = "user";
             public const string INCENTIVE_HTTP_CLIENT = "incentive";
+            public const string SESVODE_HTTP_CLIENT = "ses";
         }
 
         public struct StorageContainerPolicyNames

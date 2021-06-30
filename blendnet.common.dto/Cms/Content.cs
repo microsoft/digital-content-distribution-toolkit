@@ -166,6 +166,11 @@ namespace blendnet.common.dto.Cms
         /// </summary>
         public Guid? ContentBroadcastStatusUpdatedBy { get; set; }
 
+        /// <summary>
+        /// Command Id
+        /// </summary>
+        public Guid? ContentBroadcastedBy { get; set; }
+
         public void SetIdentifiers()
         {
             this.Id = Guid.NewGuid();
@@ -254,7 +259,11 @@ namespace blendnet.common.dto.Cms
         BroadcastOrderRejected = 7,
         BroadcastOrderFailed = 8,
         BroadcastOrderCancelled = 9,
-        BroadcastFailed = 10
+        BroadcastFailed = 10,
+        BroadcastCancelSubmitted = 11,
+        BroadcastCancelInProgress = 12,
+        BroadcastCancelComplete = 13,
+        BroadcastCancelFailed = 14
     }
 
 }

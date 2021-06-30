@@ -84,6 +84,7 @@ namespace blendnet.common.dto.Cms
         DeleteContent = 1,
         TransformContent = 2,
         BroadcastContent = 3,
+        CancelBroadcastContent = 4,
     }
 
     /// <summary>

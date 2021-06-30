@@ -129,6 +129,9 @@ namespace blendnet.cms.listener.Common
             else if (contentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderComplete)
             {
                 broadcastCommand.CommandStatus = CommandStatus.Complete;
+
+                //keep track of command id which broadcasted the content
+                content.ContentBroadcastedBy = broadcastCommand.Id;
             }
             else if (contentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderCancelled ||
                       contentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderFailed ||

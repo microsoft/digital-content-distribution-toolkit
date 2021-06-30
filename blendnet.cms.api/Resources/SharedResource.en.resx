@@ -195,4 +195,7 @@
   <data name="CMS_ERR_0026" xml:space="preserve">
     <value>CMS_ERR_0026-Redemption Value should be minimum 1 for a redeemable subscription</value>
   </data>
+  <data name="CMS_ERR_0027" xml:space="preserve">
+    <value>CMS_ERR_0004-The content broadcast status should be in {0} {1}</value>
+  </data>
 </root>
