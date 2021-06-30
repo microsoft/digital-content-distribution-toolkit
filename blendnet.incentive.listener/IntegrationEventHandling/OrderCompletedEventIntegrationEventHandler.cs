@@ -104,7 +104,9 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
         /// <returns></returns>
         private async Task AddRedemptionEvents(Order order)
         {
-            List<IncentiveEvent> consumerEvents = GetConsumerEventsForRedemption(order);
+            IncentivePlan activeConsumerRegularPlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
+
+            List<IncentiveEvent> consumerEvents = GetConsumerEventsForRedemption(order, activeConsumerRegularPlan);
 
             foreach (var consumerEvent in consumerEvents)
             {
@@ -141,7 +143,9 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             
             aiEvent.EventSubType = incentiveEvent.EventSubType;
 
-            aiEvent.RedeemedValue = incentiveEvent.OriginalValue;
+            aiEvent.OriginalValue = incentiveEvent.OriginalValue;
+
+            aiEvent.CalculatedValue = incentiveEvent.CalculatedValue;
 
             Property orderItem = incentiveEvent.Properties.Where(p => p.Name.Equals(C_OrderItem)).FirstOrDefault();
 
@@ -250,7 +254,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
         /// </summary>
         /// <param name="order"></param>
         /// <returns></returns>
-        private List<IncentiveEvent> GetConsumerEventsForRedemption(Order order)
+        private List<IncentiveEvent> GetConsumerEventsForRedemption(Order order, IncentivePlan activeConsumerRegularPlan)
         {
             List<IncentiveEvent> incentiveEvents = new List<IncentiveEvent>();
 
@@ -269,8 +273,20 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 incentiveEvent.EventType = EventType.CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM;
                 incentiveEvent.EventSubType = orderItem.Subscription.ContentProviderId.ToString();
                 incentiveEvent.OriginalValue = orderItem.RedeemedValue;
-                incentiveEvent.CalculatedValue = orderItem.RedeemedValue * -1;
-                                
+
+                PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeConsumerRegularPlan, EventType.CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM, null);
+
+                if (planDetail == null)
+                {
+                    _logger.LogWarning($"Storing orphan expense event as no active consumer plan exists for event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventCreatedFor} and order id {order.Id}");
+
+                    incentiveEvent.CalculatedValue = 0;
+                }
+                else
+                {
+                    incentiveEvent.CalculatedValue = orderItem.RedeemedValue * -1;
+                }
+
                 AddProperties(incentiveEvent, order, orderItem);
 
                 incentiveEvents.Add(incentiveEvent);

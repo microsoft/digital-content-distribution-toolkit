@@ -40,8 +40,13 @@ namespace blendnet.incentive.listener.Model
         public string OrderItem { get; set; }
 
         /// <summary>
-        /// Redeemed Value
+        /// Value set for redemption
         /// </summary>
-        public double RedeemedValue { get; set; }
+        public double OriginalValue { get; set; }
+
+        /// <summary>
+        /// Calculated Value for Redemption
+        /// </summary>
+        public double CalculatedValue { get; set; }
     }
 }
