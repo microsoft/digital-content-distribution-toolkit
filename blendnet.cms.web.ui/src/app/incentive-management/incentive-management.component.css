@@ -8,7 +8,20 @@
     height: 90%;
     width: 90%;
     margin-left: 5%;
-    margin-top: 5%;
+    margin-top: 1%;
+}
+#event-details-table  {
+  font-size: smaller;
+}
+#event-details-table th {
+    text-align: left;
+    color: grey;
+    font-weight:lighter;
+    /* align-items: left; */
+}
+#event-details-table td {
+  /* border:1px solid black; */
+  /* border-radius: 10px; */
 }
 
 .update-btn {
@@ -20,7 +33,7 @@
 
 mat-form-field.mat-form-field {
   font-size: 12px;
-  width: 150px;
+  width: 140px;
 }
 
 .cms-spacer {
