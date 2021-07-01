@@ -73,9 +73,9 @@ namespace blendnet.api.proxy.Ses
 
             LoginRequest loginRequest = new LoginRequest();
 
-            loginRequest.user = _configuration["SESSeviceUser"];
+            loginRequest.user = _configuration["SESServiceUser"];
 
-            loginRequest.pwd = _configuration["SESSevicePwd"];
+            loginRequest.pwd = _configuration["SESServicePwd"];
 
             string token = await _vodeHttpClient.Post<LoginRequest,String>(url,loginRequest,true);
 

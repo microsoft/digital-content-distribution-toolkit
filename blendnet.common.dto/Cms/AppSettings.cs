@@ -109,11 +109,11 @@ namespace blendnet.common.dto.cms
 
         public string KaizalaIdentityAppName { get; set; }
 
-        public string SESSeviceBaseUrl { get; set; }
+        public string SESServiceBaseUrl { get; set; }
 
-        public string SESSeviceUser { get; set; }
+        public string SESServiceUser { get; set; }
 
-        public string SESSevicePwd { get; set; }
+        public string SESServicePwd { get; set; }
 
     }
 }

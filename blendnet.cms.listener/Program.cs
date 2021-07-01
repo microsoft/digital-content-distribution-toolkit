@@ -278,7 +278,7 @@ namespace blendnet.cms.listener
 
 
             //Configure Http Client for SES service
-            string sesServiceBaseUrl = hostContext.Configuration.GetValue<string>("SESSeviceBaseUrl");
+            string sesServiceBaseUrl = hostContext.Configuration.GetValue<string>("SESServiceBaseUrl");
             services.AddHttpClient(ApplicationConstants.HttpClientKeys.SESVODE_HTTP_CLIENT, c =>
             {
                 c.BaseAddress = new Uri(sesServiceBaseUrl);
