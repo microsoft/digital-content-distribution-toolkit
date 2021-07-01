@@ -389,7 +389,7 @@ namespace blendnet.incentive.api.Controllers
         [HttpGet("retailer/events", Name = nameof(GetRetailerEvents))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<EventAggregrateResponse>> GetRetailerEvents(string partnerCode,
+        public async Task<ActionResult<IncentiveEvent>> GetRetailerEvents(string partnerCode,
                                                                                    string retailerPartnerProvidedId,
                                                                                    EventType eventType,
                                                                                    DateTime startDate,
