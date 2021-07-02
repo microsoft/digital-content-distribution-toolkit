@@ -97,16 +97,27 @@ namespace blendnet.retailer.api.Controllers
         /// API to get Retailer object for self
         /// </summary>
         /// <param name="partnerCode">Partner Code</param>
+        /// <param name="partnerProvidedRetailerId">Retailer ID as assigned by the partner</param>
         /// <returns></returns>
-        [HttpGet("{partnerCode}/me")]
+        [HttpGet("{partnerCode}/{partnerProvidedRetailerId}/me")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.Retailer)]
-        public async Task<ActionResult<RetailerDto>> GetSelfRetailer(string partnerCode)
+        public async Task<ActionResult<RetailerDto>> GetSelfRetailer(string partnerCode, string partnerProvidedRetailerId)
         {
-            string callerUserPhone = this.User.Identity.Name;
-            RetailerDto retailer = await this._retailerRepository.GetRetailerByPhoneNumberAndPartnerCode(phoneNumber: callerUserPhone,
-                                                                                                            partnerCode: partnerCode);
-            return retailer != null ? Ok(retailer) : NotFound();
+            Guid callerUserId = UserClaimData.GetUserId(this.User.Claims);
+            string partnerId = RetailerDto.CreatePartnerId(partnerCode, partnerProvidedRetailerId);
+
+            RetailerDto retailer = await this._retailerRepository.GetRetailerByPartnerId(partnerId);
+
+            // for ME, we also match the caller details
+            if (retailer != null && retailer.Id == callerUserId)
+            {
+                return Ok(retailer);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         #endregion

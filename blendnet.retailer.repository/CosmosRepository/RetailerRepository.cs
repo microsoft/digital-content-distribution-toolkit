@@ -165,29 +165,6 @@ namespace blendnet.retailer.repository.CosmosRepository
         }
 
         /// <summary>
-        /// Gets Retailer by phone number and partner code
-        /// </summary>
-        /// <param name="phoneNumber">Phone Number</param>
-        /// <param name="partnerCode">Partner Code</param>
-        /// <param name="shouldGetInactiveRetailers">Should include inactive retailers in query</param>
-        /// <returns>Retailer Entry</returns>
-        async Task<RetailerDto> IRetailerRepository.GetRetailerByPhoneNumberAndPartnerCode(string phoneNumber, string partnerCode, bool shouldGetInactiveRetailers)
-        {
-            const string queryString = 
-                    @"SELECT * FROM r 
-                    WHERE r.partnerCode = @partnerCode AND r.phoneNumber = @phoneNumber AND (@shouldGetInactiveRetailers OR (r.startDate < @now AND r.endDate > @now))";
-
-            var query = new QueryDefinition(queryString)
-                            .WithParameter("@partnerCode", partnerCode)
-                            .WithParameter("@phoneNumber", phoneNumber)
-                            .WithParameter("@shouldGetInactiveRetailers", shouldGetInactiveRetailers)
-                            .WithParameter("@now", DateTime.UtcNow);
-
-            var result = await this._container.ExtractFirstDataFromQueryIterator<RetailerDto>(query);
-            return result;
-        }
-
-        /// <summary>
         /// Reserves a globally unique referral code for retailer
         /// </summary>
         /// <returns>returns the reserved code</returns>
