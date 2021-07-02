@@ -240,6 +240,18 @@ namespace blendnet.user.api.Controllers
 
                 await _eventBus.Publish(retailerAssignedIntegrationEvent);
 
+                // publish AI event
+                AssignRetailerAIEvent assignRetailerAIEvent = new AssignRetailerAIEvent()
+                {
+                    PartnerCode = retailerDto.PartnerCode,
+                    PartnerProvidedId = retailerDto.PartnerProvidedId,
+                    RetailerPartnerId = retailerDto.PartnerId,
+                    UserId = user.Id,
+                    RetailerAdditionalAttributes = retailerDto.AdditionalAttibutes,
+                };
+
+                _telemetryClient.TrackEvent(assignRetailerAIEvent);
+
                 return NoContent();
             }
             else
