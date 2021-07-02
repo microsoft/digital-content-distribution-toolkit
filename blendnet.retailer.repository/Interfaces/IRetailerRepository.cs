@@ -48,5 +48,14 @@ namespace blendnet.retailer.repository.Interfaces
         /// <param name="retailer"></param>
         /// <returns>status code</returns>
         Task<int> UpdateRetailer(RetailerDto retailer);
+
+        /// <summary>
+        /// Gets Retailer by phone number and partner code
+        /// </summary>
+        /// <param name="phoneNumber">Phone Number</param>
+        /// <param name="partnerCode">Partner Code</param>
+        /// <param name="shouldGetInactiveRetailers">Should include inactive retailers in query (optional)</param>
+        /// <returns>Retailer Entity</returns>
+        Task<RetailerDto> GetRetailerByPhoneNumberAndPartnerCode(string phoneNumber, string partnerCode, bool shouldGetInactiveRetailers = false);
     }
 }

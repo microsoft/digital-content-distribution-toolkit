@@ -93,6 +93,22 @@ namespace blendnet.retailer.api.Controllers
             }
         }
 
+        /// <summary>
+        /// API to get Retailer object for self
+        /// </summary>
+        /// <param name="partnerCode">Partner Code</param>
+        /// <returns></returns>
+        [HttpGet("{partnerCode}/me")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.Retailer)]
+        public async Task<ActionResult<RetailerDto>> GetSelfRetailer(string partnerCode)
+        {
+            string callerUserPhone = this.User.Identity.Name;
+            RetailerDto retailer = await this._retailerRepository.GetRetailerByPhoneNumberAndPartnerCode(phoneNumber: callerUserPhone,
+                                                                                                            partnerCode: partnerCode);
+            return retailer != null ? Ok(retailer) : NotFound();
+        }
+
         #endregion
     }
 }
