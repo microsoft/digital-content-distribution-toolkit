@@ -1,7 +1,14 @@
-<h2 >
-    {{audience}} Incentive Plan
-</h2>
-<button (click)="displayIncentivePlan()">BACK</button>
+<div align="center">
+    <h2>
+        {{audience}} Incentive Plan
+    </h2>
+</div>
+<br>
+<div align="end">
+    <button mat-raised-button color="primary" (click)="displayIncentivePlan()"
+    class="back-to-list">BACK</button>
+</div>
+<br>
   <mat-horizontal-stepper [linear]="true" #stepper>
     <mat-step [stepControl]="incentiveFormGroup" label="Plan Details">
       <form [formGroup]="incentiveFormGroup">

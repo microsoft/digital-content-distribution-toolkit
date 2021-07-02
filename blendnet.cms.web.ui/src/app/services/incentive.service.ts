@@ -85,13 +85,13 @@ export class IncentiveService {
   }
 
   publishRetailerIncentivePlan(planId, subType) {
-    let url = this.baseUrl + "/retailer/"+ planId + "/" + subType;
+    let url = this.baseUrl + "/retailer/publish/"+ planId + "/" + subType;
     this.logger.log(`Publishisg retailer incentive plan by ID and sub type`);
     return this.http.put(url, { observe: 'response'});
   }
 
   publishConsumerIncentivePlan(planId) {
-    let url = this.baseUrl + "/consumer/"+ planId;
+    let url = this.baseUrl + "/consumer/publish/"+ planId;
     this.logger.log(`Publishing consumer incentive plan by ID`);
     return this.http.put(url, { observe: 'response'});
   }

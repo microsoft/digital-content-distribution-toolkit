@@ -148,12 +148,12 @@ export class IncentiveManagementComponent implements OnInit {
     }
   }
 
-  applyFilterRetailer(event: Event) {
+  applyFilterRetailer(event) {
     var filterValue = "";
-    if(event) {
+    if(event && event.target) {
       filterValue = event.target ? (event.target as HTMLInputElement).value : this.selectedStatusRetailer;
     } else {
-      filterValue = this.selectedStatusRetailer;
+      filterValue = event.value;
     }
     this.dataSourceRetailers.filter = filterValue.trim().toLowerCase();
 
@@ -163,12 +163,12 @@ export class IncentiveManagementComponent implements OnInit {
   }
 
 
-  applyFilterConsumer(event: Event) {
+  applyFilterConsumer(event) {
     var filterValue = "";
-    if(event) {
+    if(event && event.target) {
        filterValue = event.target ? (event.target as HTMLInputElement).value : this.selectedStatusConsumer;
     } else {
-      filterValue = this.selectedStatusConsumer;
+      filterValue = event.value;
     }
     this.dataSourceConsumers.filter = filterValue.trim().toLowerCase();
 

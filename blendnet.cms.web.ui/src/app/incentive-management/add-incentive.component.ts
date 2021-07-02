@@ -10,7 +10,7 @@ import { MatStepper } from '@angular/material/stepper';
 @Component({
   selector: 'app-add-incentive',
   templateUrl: './add-incentive.component.html',
-  styleUrls: ['./incentive-management.component.css']
+  styleUrls: ['./add-incentive.component.css']
 })
 export class AddIncentiveComponent implements OnInit {
 
@@ -73,7 +73,7 @@ export class AddIncentiveComponent implements OnInit {
         this.incentiveService.getRetailerIncentivePlanByIdAndPartner(this.plan.id, this.plan.partner).subscribe(
           res => {
             console.log(res);
-            this.createRetailerFilledForm(res.body);
+            this.createFilledForm(res.body);
           }
             ,
           err => console.log(err)
@@ -82,7 +82,7 @@ export class AddIncentiveComponent implements OnInit {
         this.incentiveService.getConsumerIncentivePlanById(this.plan.id).subscribe(
           res => {
             console.log(res);
-            this.createConsumerFilledForm(res.body);
+            this.createFilledForm(res.body);
           },
           err => console.log(err)
         )
@@ -152,7 +152,7 @@ export class AddIncentiveComponent implements OnInit {
       ]
   }
 
-  createRetailerFilledForm(plan: any) {
+  createFilledForm(plan: any) {
     // this.incentiveFormGroup = this.formBuilder.group({
     //   name :  new FormControl(plan.planName),
     //   type : new FormControl(plan.planType),
@@ -180,10 +180,10 @@ export class AddIncentiveComponent implements OnInit {
       // this.createEmptyFormDraft();
       this.isDraft = true;
     } else {
-      this.isPublished = true;
       setTimeout(() => {           
         this.stepper.next();
        }, 1);
+      this.isPublished = true;
        setTimeout(() => {           
         this.stepper.next();
        }, 1);

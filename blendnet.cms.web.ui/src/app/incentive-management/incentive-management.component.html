@@ -3,23 +3,36 @@
         <mat-tab label="RETAILER"> 
             <br>
             <span *ngIf="showRetailerIncentive">
-                <button mat-raised-button color="primary" (click)="openAddIncentivePage('RETAILER')">Create Incentive</button>
-                
                 <div class="cms-container">
-                    <mat-form-field >
+                    <div align="end">
+                        <button mat-raised-button color="primary" class="create-incentive"
+                        (click)="openAddIncentivePage('RETAILER')">Create Incentive</button>
+                    </div>
+                    <br>
+                    <div mat-dialog-actions align="end">
+                        <b>Filter: </b> <mat-button-toggle-group (change)="applyFilterRetailer($event)"#planTypeToggle="matButtonToggleGroup">
+                            <mat-button-toggle value="REGULAR" aria-label="REGULAR">
+                              REGULAR
+                            </mat-button-toggle>
+                            <mat-button-toggle value="MILESTONE" aria-label="MILESTONE">
+                              MILESTONE
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                    <mat-form-field>
                         <mat-label>Search Incentive</mat-label>
                         <input matInput (keyup)="applyFilterRetailer($event)" placeholder="Ex. Incentive Plan">
                         <mat-icon matSuffix>search</mat-icon>
                     </mat-form-field>
-                    &nbsp; &nbsp;
+                    <!-- <span class="cms-spacer"></span>
                     <mat-form-field appearance="outline" >
                         <mat-label>Status</mat-label>
                         <mat-select [(ngModel)]="selectedStatusRetailer" name="status" (selectionChange)="applyFilterRetailer($event)">
-                          <mat-option *ngFor="let s of statuses" [value]="s">
+                            <mat-option *ngFor="let s of statuses" [value]="s">
                             {{s}}
-                          </mat-option>
+                            </mat-option>
                         </mat-select>
-                      </mat-form-field>
+                        </mat-form-field> -->
                     <div class="mat-elevation-z8">
                         <div class="cms-table-container">
                             <table mat-table [dataSource]="dataSourceRetailers" class="incentive-table" matSort>
@@ -88,27 +101,37 @@
         <mat-tab label="CONSUMER"> 
             <br>
             <span *ngIf="showConsumerIncentive">
-                <div>
-                    <button mat-raised-button color="primary" (click)="openAddIncentivePage('CONSUMER')">Create Incentive</button>
-                    <span class="cms-spacer"></span>
-                    <mat-form-field >
-                        <mat-label>Search</mat-label>
+                
+            <div class="cms-container">
+                <div align="end">
+                    <button mat-raised-button color="primary" class="create-incentive"
+                    (click)="openAddIncentivePage('CONSUMER')">Create Incentive</button>
+                </div>
+                <br>
+                <div mat-dialog-actions align="end">
+                    <b>Filter: </b> <mat-button-toggle-group (change)="applyFilterConsumer($event)" #planTypeToggle="matButtonToggleGroup">
+                        <mat-button-toggle value="REGULAR" aria-label="REGULAR">
+                          REGULAR
+                        </mat-button-toggle>
+                        <mat-button-toggle value="MILESTONE" aria-label="MILESTONE">
+                          MILESTONE
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+                <mat-form-field>
+                    <mat-label>Search Incentive</mat-label>
                         <input matInput (keyup)="applyFilterConsumer($event)" placeholder="Ex. Incentive Plan">
                         <mat-icon matSuffix>search</mat-icon>
-                    </mat-form-field>
-                    &nbsp; &nbsp;
-                    <mat-form-field appearance="outline" >
-                        <mat-label>Status</mat-label>
-                        <mat-select [(ngModel)]="selectedStatusConsumer" name="status" (selectionChange)="applyFilterConsumer($event)">
-                          <mat-option *ngFor="let s of statuses" [value]="s">
-                            {{s}}
-                          </mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                </div>
-                
-            <br>
-            <div class="cms-container">
+                  </mat-form-field>
+                  <!-- <mat-form-field appearance="outline" >
+                    <mat-label>Status</mat-label>
+                    <mat-select [(ngModel)]="selectedStatusConsumer" name="status" (selectionChange)="applyFilterConsumer($event)">
+                      <mat-option *ngFor="let s of statuses" [value]="s">
+                        {{s}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field> -->
+                  
                 <div class="mat-elevation-z8">
                     <div class="cms-table-container">
                         <table mat-table [dataSource]="dataSourceConsumers" class="incentive-table" matSort>
