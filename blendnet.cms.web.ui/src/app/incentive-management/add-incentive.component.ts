@@ -226,7 +226,7 @@ export class AddIncentiveComponent implements OnInit {
       eventForm.get('contentProvider').setValue(event.eventSubType);
       eventForm.get('ruleType').setValue(event.ruleType);
       eventForm.get('formula').setValue(event.formula.formulaType);
-      eventForm.get('target').setValue(event.formula.SecondOperand);
+      eventForm.get('target').setValue(event.formula.secondOperand);
       eventForm.get('incentive').setValue(event.formula.firstOperand);
       eventArray.push(eventForm);
     });
@@ -652,7 +652,7 @@ export class AddIncentiveComponent implements OnInit {
         var partner = this.incentiveFormGroup.get('partner').value;
         this.publishRetailerIncentive(partner);
       } else {
-        this.publishConsumerIncentive()
+        this.publishConsumerIncentive();
       }
     }
 
