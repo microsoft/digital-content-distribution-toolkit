@@ -27,7 +27,8 @@ spec:
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: 443
+            scheme: HTTPS
           periodSeconds: 3
           timeoutSeconds: 1
 ---
