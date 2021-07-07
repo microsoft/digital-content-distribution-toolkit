@@ -55,7 +55,7 @@ import { SubscriptionService } from "../services/subscription.service";
       selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
       selectedEndDate.setSeconds(selectedEndDate.getSeconds() + 59);
       var sub = {
-        contentProviderId : localStorage.getItem("contentProviderId"),
+        contentProviderId : sessionStorage.getItem("contentProviderId"),
         title: this.subForm.get('name').value,
         durationDays: this.subForm.get('durationDays').value,
         price: this.subForm.get('price').value,

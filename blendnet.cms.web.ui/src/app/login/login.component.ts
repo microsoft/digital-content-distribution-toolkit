@@ -140,8 +140,8 @@ export class LoginComponent implements OnInit {
         this.kaizalaService.getUserRoles(this.contact.value).subscribe(
           res => {
             var response: any = res.body;
-            localStorage.setItem("roles", response.userRole);
-            this.roles =  localStorage.getItem("roles");
+            sessionStorage.setItem("roles", response.userRole);
+            this.roles =  sessionStorage.getItem("roles");
             this.isContactOnlySection = true;
             this.isCountryCodeSection = false;
             this.isOTPSection = false; 

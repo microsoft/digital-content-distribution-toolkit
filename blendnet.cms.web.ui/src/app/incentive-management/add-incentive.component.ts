@@ -187,40 +187,18 @@ export class AddIncentiveComponent implements OnInit {
        setTimeout(() => {           
         this.stepper.next();
        }, 1);
-      // setTimeout(() => {           
-      //    this.stepper.selectedIndex = 2;
-      //    }, 1);
-      // this.stepper.selectedIndex = 2;
-      // this.createEmptyFormPublished();
+
     }
   }
 
   createEventbyPlanDetails(eventArray, events) {
-    // events.forEach(event => {
-    //     var eventForm = this.formBuilder.group({
-    //       eventType: new FormControl(event.eventType,[Validators.required]),
-    //       eventTitle: new FormControl(event.eventTitle,[Validators.required]),
-    //       contentProvider: new FormControl(event.eventSubType),
-    //       ruleType: new FormControl(event.ruleType),
-    //       formula: new FormControl(event.formula.formulaType,[Validators.required]),
-    //       target: new FormControl(event.formula.secondOperand, [ Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
-    //       incentive: new FormControl(event.formula.firstOperand, [Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
-    //       ranges: this.formBuilder.array([])
-    //   });
-    //   if(event.formula.rangeOperand && event.formula.rangeOperand.length > 0) {
-    //     var rangeArray = eventForm.get('ranges') as FormArray;
-    //     this.createRangeByDetails(rangeArray, event.formula.rangeOperand);
-    //   }
-    //   eventArray.push(eventForm);
-    // });
-    // return eventArray;
 
     events.forEach(event => {
       var eventForm = this.createEvent();
-      // if(event.formula.rangeOperand && event.formula.rangeOperand.length > 0) {
-      //   var rangeArray = eventForm.get('ranges') as FormArray;
-      //   this.createRangeByDetails(rangeArray, event.formula.rangeOperand);
-      // }
+      if(event.formula.rangeOperand && event.formula.rangeOperand.length > 0) {
+        var rangeArray = eventForm.get('ranges') as FormArray;
+        eventForm.get('ranges').setValue(this.createRangeByDetails(rangeArray, event.formula.rangeOperand));
+      }
       eventForm.get('eventType').setValue(event.eventType);
       eventForm.get('eventTitle').setValue(event.eventTitle);
       eventForm.get('contentProvider').setValue(event.eventSubType);
@@ -235,13 +213,18 @@ export class AddIncentiveComponent implements OnInit {
 
   createRangeByDetails(rangeArray, ranges) {
     ranges.forEach( range => {
-      var rangeForm = this.formBuilder.group({
-        start: new FormControl(range.start, [Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
-        end: new FormControl(range.end, [Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
-        incentive: new FormControl(range.output, [Validators.pattern(/^-?(0|[1-9]\d*)?$/)])
-      });
+      // var rangeForm = this.formBuilder.group({
+      //   start: new FormControl(range.start, [Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
+      //   end: new FormControl(range.end, [Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
+      //   incentive: new FormControl(range.output, [Validators.pattern(/^-?(0|[1-9]\d*)?$/)])
+      // });
+      var rangeForm = this.createRange();
+      rangeForm.get('start').setValue(range.startRange);
+      rangeForm.get('end').setValue(range.endRange);
+      rangeForm.get('output').setValue(range.output);
       rangeArray.push(rangeForm);
     });
+    rangeArray.remove(0);
     return rangeArray;
   }
 
@@ -254,6 +237,9 @@ export class AddIncentiveComponent implements OnInit {
       type : new FormControl('',[Validators.required]),
       partner: new FormControl(''),
     });
+    if(this.audience === "RETAILER") {
+      this.addPartnerValidator();
+    }
     this.eventsFormGroup = this.formBuilder.group({
       events: this.formBuilder.array([ this.createEvent() ])
     });
@@ -262,7 +248,8 @@ export class AddIncentiveComponent implements OnInit {
       startDate: new FormControl('',[Validators.required]),
       endDate: new FormControl('',[Validators.required]),
 
-    })
+    });
+    
   }
 
   // createEmptyFormPublished() {
@@ -317,15 +304,15 @@ export class AddIncentiveComponent implements OnInit {
     return ranges.controls;
   }
   
-  removeRange(j){
-    this.events = this.eventsFormGroup.get('events') as FormArray
-    this.ranges = this.events.controls[j].get('ranges') as FormArray;
+  removeRange(j, i){
+    var events = this.eventsFormGroup.get('events') as FormArray
+    this.ranges = events.controls[i].get('ranges') as FormArray;
     this.ranges.removeAt(j);
  }
 
  removeEvent(i){
-  this.events = this.eventsFormGroup.get('events') as FormArray;
-  this.events.removeAt(i);
+  var events = this.eventsFormGroup.get('events') as FormArray;
+  events.removeAt(i);
   this.panelOpenState = this.panelOpenState.splice(i,1);
   // this.isCPDisabled = this.isCPDisabled.splice(i, 1);
 
@@ -346,8 +333,8 @@ export class AddIncentiveComponent implements OnInit {
         contentProvider: new FormControl({value:'', disabled:true}),
         ruleType: new FormControl(''),
         formula: new FormControl('',[Validators.required]),
-        target: new FormControl('', [ Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
-        incentive: new FormControl('', [Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
+        target: new FormControl(''),
+        incentive: new FormControl(''),
         ranges: this.formBuilder.array([this.createRange()])
     })
   }
@@ -374,6 +361,53 @@ export class AddIncentiveComponent implements OnInit {
 // }
 
 
+  addPartnerValidator() {
+    this.incentiveFormGroup.get('partner').setValidators([Validators.required]);
+  }
+
+
+  onPlanTypeChange() {
+    var events = this.eventsFormGroup.get('events') as FormArray;
+    events.controls.forEach((e, i) => {
+      events.controls[i].get('formula').setValue('');
+      events.controls[i].get('formula').setValidators([Validators.required]);
+      if(this.incentiveFormGroup.get('type').value === "MILESTONE") {
+        events.controls[i].get('ruleType').setValidators([Validators.required]);
+      } else {
+        events.controls[i].get('ruleType').clearValidators();
+      }
+    })
+    
+  }
+  onFomulaChange(eventNumber) {
+    var events = this.eventsFormGroup.get('events') as FormArray;
+    // var eventType = this.events.controls[eventNumber].get('eventType');
+    var formula = events.controls[eventNumber].get('formula');
+    // if(eventType.value.includes('Order')) {
+      
+    // } else {
+    //   this.events.controls[eventNumber].get('contentProvider').clearValidators();
+    // }
+    // if(this.incentiveFormGroup.get('type').value === "MILESTONE") {
+    //   events.controls[eventNumber].get('ruleType').setValidators([Validators.required]);
+    // } else {
+    //   events.controls[eventNumber].get('ruleType').clearValidators();
+    // }
+
+    if(formula.value === "DIVIDE_AND_MULTIPLY") {
+      events.controls[eventNumber].get('target').setValidators([Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
+      events.controls[eventNumber].get('incentive').setValidators([Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
+    } else if(formula.value === "RANGE_AND_MULTIPLY") {
+      //
+      events.controls[eventNumber].get('target').clearValidators();
+      events.controls[eventNumber].get('incentive').clearValidators();
+    } else {
+      events.controls[eventNumber].get('incentive').setValidators([Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
+    }
+
+
+  }
+
   createRange() : FormGroup {
     return this.formBuilder.group({
       start: new FormControl('', [Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
@@ -383,8 +417,15 @@ export class AddIncentiveComponent implements OnInit {
   }
 
   addEvent(): void {
-    this.events = this.eventsFormGroup.get('events') as FormArray;
-    this.events.push(this.createEvent());
+    var events = this.eventsFormGroup.get('events') as FormArray;
+    var event = this.createEvent();
+    if(this.incentiveFormGroup.get('type').value === "MILESTONE") {
+      event.get('ruleType').setValidators([Validators.required]);
+    } else {
+      event.get('ruleType').clearValidators();
+    }
+    events.push(event);
+    this.eventsFormGroup.markAsUntouched();
     this.panelOpenState.fill(false, 0, this.getTotalEvents()-1);
     this.panelOpenState.push(true);
     this.nextStep();
@@ -408,10 +449,13 @@ export class AddIncentiveComponent implements OnInit {
     //   events.controls[eventNumber].get('contentProvider').setValue(null);
       
     // }
+    var events = this.eventsFormGroup.get('events') as FormArray;
     if(!events.controls[eventNumber].get('eventType').value.includes("ORDER")){
       // this.isCPDisabled[eventNumber] = true;
-      var events = this.eventsFormGroup.get('events') as FormArray;
       events.controls[eventNumber].get('contentProvider').setValue(null);
+      events.controls[eventNumber].get('contentProvider').clearValidators();
+    } else {
+      events.controls[eventNumber].get('contentProvider').setValidators([Validators.required]);
     }
   }
 
@@ -482,13 +526,14 @@ export class AddIncentiveComponent implements OnInit {
   }
 
   displayIncentivePlan() {
+    this.plan = null;
     this.newIncentiveEvent.emit();
   }
 
   createPlanDetails() {
     var planDetails: any[] = [];
-    this.events = this.eventsFormGroup.get('events') as FormArray;
-    this.events.controls.forEach( event => {
+    var events = this.eventsFormGroup.get('events') as FormArray;
+    events.controls.forEach( event => {
       var eventDetail: any = {};
       eventDetail.eventType = event.get('eventType').value;
       eventDetail.eventTitle = event.get('eventTitle').value;
@@ -546,7 +591,9 @@ export class AddIncentiveComponent implements OnInit {
 
   getSelectedEventType(i){
     var events = this.eventsFormGroup.get('events') as FormArray;
-    return this.eventTypes.find(event => (event.value === events.controls[i].get('eventType').value)).name;
+    if(events.controls[i].get('eventType').value) {
+      return this.eventTypes.find(event => (event.value === events.controls[i].get('eventType').value)).name;
+    }
     
   }
   getSelectedCP(i){

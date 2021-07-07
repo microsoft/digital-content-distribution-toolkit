@@ -21,7 +21,8 @@
                     <label class="cms-incentive-plan-type-font" id="cms-incentive-radio-group-label">Incentive Plan Type</label>&nbsp;&nbsp;&nbsp;
                     <br>
                     <mat-radio-group aria-labelledby="cms-incentive-radio-group-label"
-                    class="cms-incentive-radio-group" formControlName="type" [disableControl]="isPublished">
+                    class="cms-incentive-radio-group" formControlName="type" [disableControl]="isPublished"
+                    (ngModelChange)="onPlanTypeChange()">
                         <mat-radio-button value="REGULAR" class="cms-incentive-plan-type">REGULAR</mat-radio-button>
                         <mat-radio-button value="MILESTONE" class="cms-incentive-plan-type">MILESTONE</mat-radio-button>
                     </mat-radio-group>
@@ -143,7 +144,8 @@
                             <mat-form-field>
                                 <mat-label>Formula</mat-label>
                                 <mat-select name="formula"
-                                formControlName="formula"  [disableControl]="isPublished">
+                                formControlName="formula"  [disableControl]="isPublished"
+                                (ngModelChange)="onFomulaChange(i)">
                                 <span *ngIf="isMileStonePlanType()">
                                     <mat-option  *ngFor="let formula of milestoneFormulas" [value]="formula">
                                         {{formula}}
@@ -194,7 +196,7 @@
                             </mat-form-field>
 
                             <button mat-icon-button color="primary" *ngIf="j!==0 || getTotalRanges(i)>=2"
-                            (click)="removeRange(i)">
+                            (click)="removeRange(j, i)">
                                 <mat-icon>remove</mat-icon>
                             </button>
                     </div>
