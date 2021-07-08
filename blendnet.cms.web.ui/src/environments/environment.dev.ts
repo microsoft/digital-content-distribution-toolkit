@@ -8,6 +8,7 @@ export const environment = {
     contentApiUrl: "https://blendnet-dev.kaiza.la/cmsapi/api/v1/Content",
     userApiUrl: "https://blendnet-dev.kaiza.la/userapi/api/v1/User",
     incentiveApiUrl: "https://blendnet-dev.kaiza.la/incentiveapi/api/v1/Incentive",
+    retailerApiUrl: "https://blendnet-dev.kaiza.la/retailerapi/api/v1",
     dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
     kaizalaApi0: "https://api-alpha.kaiza.la/v1/",
     kaizalaApi1: "https://api-alpha1.kaiza.la/v1/",

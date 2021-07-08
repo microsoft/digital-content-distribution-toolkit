@@ -6,6 +6,7 @@ import { IncentiveService } from '../services/incentive.service';
 import { Output, EventEmitter } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { MatStepper } from '@angular/material/stepper';
+import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'app-add-incentive',
@@ -54,7 +55,8 @@ export class AddIncentiveComponent implements OnInit {
     private formBuilder: FormBuilder,
     private incentiveService: IncentiveService,
     private contentProviderService: ContentProviderService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private configService: ConfigService
   ) { 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth();
@@ -115,9 +117,23 @@ export class AddIncentiveComponent implements OnInit {
     
   }
 
+  getPartnerCodes(partners) {
+    var partnerCodes = [];
+    if(partners && Array.isArray(partners)){
+      partners.forEach(partner => {
+        partnerCodes.push(partner.partnerCode);
+      })
+    }
+    return partnerCodes;
+  }
+  
   setConfigForRetailer() {
     this.ruleTypes = [RuleType.SUM,RuleType.COUNT];
-      this.partners = [RetailerPartner.NOVO, RetailerPartner.TSTP];
+    this.configService.getRetailerPartners().subscribe(
+      res => this.partners = this.getPartnerCodes(res),
+      err => console.log(err)
+    );
+      // this.partners = [RetailerPartner.NOVO, RetailerPartner.TSTP];
       this.eventTypes = [
         {
           name: 'Referral',
