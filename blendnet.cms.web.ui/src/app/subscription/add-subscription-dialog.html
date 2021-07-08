@@ -1,72 +1,88 @@
 <h1 mat-dialog-title></h1>
-<form [formGroup]="subForm" (ngSubmit)="createSubscription()">
-  <div mat-dialog-content>
-    <table>
-      <tr>
-        <td>
-          <mat-form-field>
-            <input matInput placeholder="Name" 
-            formControlName="name" required>
-            <mat-error *ngIf="errorHandling('name', 'required')"> 
-              You must provide a name
-            </mat-error>
-          </mat-form-field>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <input matInput placeholder="Price"  
-            formControlName="price" required  type="number" min ="1">
-            <mat-error *ngIf="errorHandling('price', 'required') || errorHandling('price', 'min')"> 
-             Invalid price, should be greater than 0
-            </mat-error>
-          </mat-form-field>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <input matInput type="number" placeholder="Duration (in days)"  
-            formControlName="durationDays" required min="1" max="365">
-            <mat-error *ngIf="errorHandling('durationDays', 'required') || errorHandling('durationDays', 'min') || errorHandling('durationDays', 'max')"> 
-              Invalid duration, should be between [1 - 365]
-             </mat-error>    
+
+  <div mat-dialog-content class="sub-dialog">
+    <form [formGroup]="subForm" >
+      <table>
+        <tr>
+          <td colspan="2">
+            <mat-form-field>
+              <input matInput placeholder="Name" 
+              formControlName="name" required>
+              <mat-error *ngIf="errorHandling('name', 'required')"> 
+                You must provide a name
+              </mat-error>
             </mat-form-field>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field >
-            <mat-label>Start date</mat-label>
-            <input matInput  [matDatepicker]="startpicker"
-            formControlName="startDate" required disabled [min]="minStart">
-            <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
-            <mat-datepicker #startpicker disabled="false"></mat-datepicker>
-          </mat-form-field>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field >
-            <mat-label>End date</mat-label>
-            <input matInput  [matDatepicker]="endpicker"
-            formControlName="endDate" required disabled [min]="minEnd">
-            <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
-            <mat-datepicker #endpicker disabled="false"></mat-datepicker>
-          </mat-form-field>
-        </td>
-      </tr>
-    </table>
-    
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <input matInput placeholder="Price"  
+              formControlName="price" required  type="number" min ="1">
+              <mat-error *ngIf="errorHandling('price', 'required') || errorHandling('price', 'min')"> 
+              Invalid price, should be greater than 0
+              </mat-error>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field>
+              <input matInput type="number" placeholder="Duration (in days)"  
+              formControlName="durationDays" required min="1" max="365">
+              <mat-error *ngIf="errorHandling('durationDays', 'required') || errorHandling('durationDays', 'min') || errorHandling('durationDays', 'max')"> 
+                Invalid duration, should be between [1 - 365]
+              </mat-error>    
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field >
+              <mat-label>Start date</mat-label>
+              <input matInput  [matDatepicker]="startpicker"
+              formControlName="startDate" required disabled [min]="minStart">
+              <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+              <mat-datepicker #startpicker disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field >
+              <mat-label>End date</mat-label>
+              <input matInput  [matDatepicker]="endpicker"
+              formControlName="endDate" required disabled [min]="minEnd">
+              <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+              <mat-datepicker #endpicker disabled="false"></mat-datepicker>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <label class="cms-sub" id="cms-sub">
+                Is redeemable ? </label>&nbsp;&nbsp;&nbsp;
+              <mat-radio-group aria-labelledby="cms-sub-radio-group-label"
+                      class="cms-sub-radio-group" formControlName="isRedeemable" >
+                          <mat-radio-button value="No" class="cms-sub">No</mat-radio-button>&nbsp; &nbsp;
+                          <mat-radio-button value="Yes" class="cms-incentive-plan-type">Yes</mat-radio-button>
+              </mat-radio-group>
+          </td>
+          <td>
+            <mat-form-field *ngIf="isRedeemable()">
+              <input matInput placeholder="Rememption Value"  
+              formControlName="redemptionValue" required  type="number" min ="1">
+              <mat-error *ngIf="errorHandling('redemptionValue', 'required') || errorHandling('redemptionValue', 'min')"> 
+              Invalid redemption value, should be greater than 0
+              </mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </form>
   </div>
   
 
-  <div mat-dialog-actions>
-    <button mat-button></button>
-    <button mat-raised-button cdkFocusInitial [disabled]="!subForm.valid"
-    color="primary">Create</button>
+  <div mat-dialog-actions align="end">
+    <button mat-raised-button [disabled]="!subForm.valid"
+    color="primary" (click)="submitSubscription()">Save</button>
 
   </div>
-</form>
+
   

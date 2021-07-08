@@ -19,7 +19,7 @@ export class SubscriptionService {
   getSubscriptionsForCP() {
     let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") + "/Subscription";
     this.logger.log(`Fetching subscriptions for content providers`);
-    return this.http.get(url);
+    return this.http.get(url, { observe: 'response'});
   }
 
   createSubscription(subscription) : Observable<HttpResponse<any>>{
