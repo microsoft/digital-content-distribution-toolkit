@@ -416,10 +416,15 @@ namespace blendnet.user.api.Controllers
             //Track the Retailer created event to Application Insights
             CreateRetailerAIEvent createRetailerAIEvent = new CreateRetailerAIEvent()
             {
+                City = retailer.Address.City,
+                Latitude = retailer.Address.MapLocation.Latitude,
+                Longitude = retailer.Address.MapLocation.Longitude,
                 Name = retailer.UserName,
                 PartnerCode = retailer.PartnerCode,
                 PartnerProvidedId = retailer.PartnerProvidedId,
+                PinCode = retailer.Address.PinCode,
                 RetailerPartnerId = retailer.PartnerId,
+                State = retailer.Address.State,
                 AdditionalAttributes = retailer.AdditionalAttibutes,
             };
 
