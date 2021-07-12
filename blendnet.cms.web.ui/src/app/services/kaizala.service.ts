@@ -25,9 +25,9 @@ export class KaizalaService {
     private http: HttpClient,
     private contentProviderService: ContentProviderService
   ) {
-    this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(sessionStorage.getItem('currentUser')));
+    this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
-    this.currentUserNameSubject = new BehaviorSubject<any>(sessionStorage.getItem('currentUserName'));
+    this.currentUserNameSubject = new BehaviorSubject<any>(localStorage.getItem('currentUserName'));
     this.currentUserName = this.currentUserNameSubject.asObservable();
    }
 
@@ -116,8 +116,8 @@ export class KaizalaService {
       {
         headers: {'AppName': environment.kaizalaAppName}
       }).pipe(map(user => {
-        sessionStorage.setItem('currentUserName', contact);
-        sessionStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('currentUserName', contact);
+        localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
         return user;
       }));
@@ -139,14 +139,14 @@ export class KaizalaService {
 
   logout() {
     // remove the selected Content Provider from the local storage
-    sessionStorage.removeItem("contentProviderId");
-    sessionStorage.removeItem("contentProviderName");
-    sessionStorage.removeItem("roles");
+    localStorage.removeItem("contentProviderId");
+    localStorage.removeItem("contentProviderName");
+    localStorage.removeItem("roles");
 
     this.contentProviderService.changeDefaultCP(null);
     // remove user from local storage and set current user to null
-    sessionStorage.removeItem('currentUser');
-    sessionStorage.removeItem('currentUserName');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUserName');
     this.currentUserSubject.next(null);
   }
 }

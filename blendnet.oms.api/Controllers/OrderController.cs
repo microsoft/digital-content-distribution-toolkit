@@ -456,7 +456,6 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("{orderId:guid}", Name = nameof(GetOrderByOrderId))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.User, KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<Order>> GetOrderByOrderId(Guid orderId)
         {
             var userPhoneNumber = User.Identity.Name;
@@ -481,7 +480,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPost("{phoneNumber}/orderlist")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.RetailerManagement)]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer)]
         public async Task<ActionResult<List<Order>>> GetOrder(string phoneNumber, OrderStatusFilter orderFilter)
         {
 

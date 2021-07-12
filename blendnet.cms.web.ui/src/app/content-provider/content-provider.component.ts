@@ -37,13 +37,13 @@ export class ContentProviderComponent implements OnInit {
   getContentProviders(): void {
     this.cps$ = this.contentProviderService.getContentProviders()
     .pipe(map( cps => {
-      if(cps.length >= 1 && (!sessionStorage.getItem("contentProviderId") || 
-        !sessionStorage.getItem("contentProviderName"))) {
+      if(cps.length >= 1 && (!localStorage.getItem("contentProviderId") || 
+        !localStorage.getItem("contentProviderName"))) {
           console.log("Setting the default Content Provider " + cps[0].name);
           this.selectedCP = cps[0];
           this.contentProviderService.changeDefaultCP(this.selectedCP);
-          sessionStorage.setItem("contentProviderId", this.selectedCP.id);
-          sessionStorage.setItem("contentProviderName", this.selectedCP.name);
+          localStorage.setItem("contentProviderId", this.selectedCP.id);
+          localStorage.setItem("contentProviderName", this.selectedCP.name);
         }
       return this.createCPList(cps);
     }))
@@ -71,7 +71,7 @@ export class ContentProviderComponent implements OnInit {
       
     });
 
-    if(sessionStorage.getItem("roles")?.includes(environment.roles.SuperAdmin)) {
+    if(localStorage.getItem("roles").includes(environment.roles.SuperAdmin)) {
       var emptyCP = {
         id: null,
         name: '',
@@ -131,8 +131,8 @@ export class ContentProviderComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         if (result === 'proceed') {
           console.log('proceed');
-          sessionStorage.setItem("contentProviderId", selectedCp.id);
-          sessionStorage.setItem("contentProviderName", selectedCp.name);
+          localStorage.setItem("contentProviderId", selectedCp.id);
+          localStorage.setItem("contentProviderName", selectedCp.name);
           this.toastr.success("Your have selected " + selectedCp.name);
           this.contentProviderService.changeDefaultCP(selectedCp);
         }

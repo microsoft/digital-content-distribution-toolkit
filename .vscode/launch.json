@@ -71,28 +71,6 @@
             }
         },
         {
-            "name": "OMS API",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build oms.api",
-            "program": "${workspaceFolder}/blendnet.oms.api/bin/Debug/net5.0/blendnet.oms.api.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/blendnet.oms.api",
-            "stopAtEntry": false,
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https://\\S+)",
-                "uriFormat": "%s/swagger"
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS":"https://localhost:44389"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
-        },
-        {
             "name": "Incentive API",
             "type": "coreclr",
             "request": "launch",

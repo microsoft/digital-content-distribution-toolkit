@@ -27,29 +27,21 @@ export class IncentiveManagementComponent implements OnInit {
   showConsumerIncentive = true;
   createConsumerIncentive = false;
 
-  statuses= [];
-  selectedStatusRetailer;
-  selectedStatusConsumer;
-  selectedPlan = null;
-
   constructor( private incentiveService: IncentiveService,
     public dialog: MatDialog
     ) { }
 
   ngOnInit(): void {
-    this.statuses = ['REGULAR', 'MILESTONE'];
     this.getRetailerIncentivePlans();
 
   }
-
   tabClick(event) {
-    if(event.tab.textLabel === "RETAILER") {
+    if(event.tab.textLabel === "Retailer") {
       this.getRetailerIncentivePlans();
-    } else if(event.tab.textLabel === "CONSUMER"){
+    } else if(event.tab.textLabel === "Consumer"){
       this.getConsumerIncentivePlans();
     }
   }
-
   getRetailerIncentivePlans() {
     this.incentiveService.getRetailerIncentives().subscribe(
       res => {
@@ -57,9 +49,7 @@ export class IncentiveManagementComponent implements OnInit {
           var mergedResult = [].concat.apply([], validResult);
           this.dataSourceRetailers = this.createDataSource(mergedResult);
           this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
-          this.dataSourceRetailers.sort = this.sort.toArray()[0];  
-          this.selectedStatusRetailer= this.statuses[0]; 
-          this.applyFilterRetailer(null);           
+          this.dataSourceRetailers.sort = this.sort.toArray()[0];          
         },
       err => {
         this.dataSourceRetailers = this.createDataSource([]);
@@ -74,7 +64,6 @@ export class IncentiveManagementComponent implements OnInit {
     if(response) {
       response.forEach( data => {
         var row: any = {};
-        row.id = data.id;
         row.name = data.planName;
         row.status = data.publishMode;
         row.type = data.planType;
@@ -88,19 +77,6 @@ export class IncentiveManagementComponent implements OnInit {
   }
 
 
-  addIncentive(audience) {
-    this.selectedPlan = null;
-    if(audience === "RETAILER") {
-      this.createRetailerIncentive = false;
-      this.getRetailerIncentivePlans();
-      this.showRetailerIncentive = true;
-    } else {
-      this.createConsumerIncentive = false;
-      this.getConsumerIncentivePlans();
-      this.showConsumerIncentive = true;
-    }
-  }
-
   getConsumerIncentivePlans() {
     this.incentiveService.getConsumerIncentives().subscribe(
       res => { 
@@ -108,9 +84,7 @@ export class IncentiveManagementComponent implements OnInit {
           var mergedResult = [].concat.apply([], validResult);
           this.dataSourceConsumers = this.createDataSource(mergedResult);
           this.dataSourceConsumers.paginator = this.paginator.toArray()[1];;
-          this.dataSourceConsumers.sort = this.sort.toArray()[1];   
-          this.selectedStatusConsumer= this.statuses[0];     
-          this.applyFilterConsumer(null);    
+          this.dataSourceConsumers.sort = this.sort.toArray()[1];         
         },
       err => {
         this.dataSourceConsumers = this.createDataSource([]);
@@ -120,20 +94,10 @@ export class IncentiveManagementComponent implements OnInit {
     );
   }
 
-  editIncentivePlan(row, audience) {
-    this.selectedPlan = row;
-    this.openAddIncentivePage(audience);
-  }
-
-  openNewIncentivePage(audience) {
-    this.selectedPlan = null;
-    this.openAddIncentivePage(audience);
-  }
-
   
 
   openAddIncentivePage(audience): void {
-    if(audience === "RETAILER") {
+    if(audience === "Retailer") {
       this.showRetailerIncentive = false;
       this.createRetailerIncentive = true;
     } else {
@@ -144,7 +108,7 @@ export class IncentiveManagementComponent implements OnInit {
   }
 
   showIncentivePage(audience): void {
-    if(audience === "RETAILER") {
+    if(audience === "Retailer") {
       this.showRetailerIncentive = true;
       this.createRetailerIncentive = false;
     } else {
@@ -153,13 +117,8 @@ export class IncentiveManagementComponent implements OnInit {
     }
   }
 
-  applyFilterRetailer(event) {
-    var filterValue = "";
-    if(event && event.target) {
-      filterValue = event.target ? (event.target as HTMLInputElement).value : this.selectedStatusRetailer;
-    } else if(event && event.value){
-      filterValue = event.value ;
-    }
+  applyFilterRetailer(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceRetailers.filter = filterValue.trim().toLowerCase();
 
     if (this.dataSourceRetailers.paginator) {
@@ -167,14 +126,8 @@ export class IncentiveManagementComponent implements OnInit {
     }
   }
 
-
-  applyFilterConsumer(event) {
-    var filterValue = "";
-    if(event && event.target) {
-       filterValue = event.target ? (event.target as HTMLInputElement).value : this.selectedStatusConsumer;
-    } else if(event && event.value){
-      filterValue = event.value;
-    }
+  applyFilterConsumer(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceConsumers.filter = filterValue.trim().toLowerCase();
 
     if (this.dataSourceConsumers.paginator) {
