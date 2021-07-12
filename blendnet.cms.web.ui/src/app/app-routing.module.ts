@@ -23,7 +23,7 @@ const appRoutes: Routes = [
     path: 'unprocessed-content', 
     component: UnprocessedComponent,
     canActivate: [
-      AuthGuardService, RoleGuardService
+      RoleGuardService
     ],
     data: { 
       expectedRole: [environment.roles.SuperAdmin]
@@ -33,7 +33,7 @@ const appRoutes: Routes = [
     path: 'processed-content',
      component: ProcessedComponent,
      canActivate: [
-      AuthGuardService, RoleGuardService
+      RoleGuardService
     ],
     data: { 
       expectedRole: [environment.roles.SuperAdmin]
@@ -44,7 +44,7 @@ const appRoutes: Routes = [
     path: 'broadcast-content',
    component: BroadcastComponent,
    canActivate: [
-    AuthGuardService, RoleGuardService
+    RoleGuardService
   ],
     data: { 
       expectedRole: [environment.roles.SuperAdmin]
@@ -54,7 +54,7 @@ const appRoutes: Routes = [
     path: 'devices',
    component: DevicesComponent,
    canActivate: [
-    AuthGuardService, RoleGuardService
+    RoleGuardService
   ],
     data: { 
       expectedRole: [environment.roles.SuperAdmin]
@@ -64,7 +64,7 @@ const appRoutes: Routes = [
     path: 'manage-content',
    component: ManageContentComponent,
    canActivate: [
-    AuthGuardService, RoleGuardService
+    RoleGuardService
   ],
     data: { 
       expectedRole: [environment.roles.SuperAdmin]
@@ -74,7 +74,7 @@ const appRoutes: Routes = [
     path: 'incentive-management',
    component: IncentiveManagementComponent,
    canActivate: [
-    AuthGuardService, RoleGuardService
+    RoleGuardService
   ],
     data: { 
       expectedRole: [environment.roles.SuperAdmin]
@@ -84,7 +84,7 @@ const appRoutes: Routes = [
     path: 'content-providers',
      component: ContentProviderComponent,
      canActivate: [
-      AuthGuardService, RoleGuardService
+      RoleGuardService
     ],
     data: { 
       expectedRole: [environment.roles.SuperAdmin, environment.roles.ContentAdmin]
@@ -94,7 +94,7 @@ const appRoutes: Routes = [
     path: 'sas-key', 
     component: SasKeyComponent,
     canActivate: [
-      AuthGuardService, RoleGuardService
+      RoleGuardService
     ],
     data: { 
       expectedRole: [environment.roles.SuperAdmin, environment.roles.ContentAdmin]
@@ -102,16 +102,13 @@ const appRoutes: Routes = [
   },
   {
     path: 'profile', 
-    component: ProfileComponent,
-    canActivate: [
-      AuthGuardService
-    ],
+    component: ProfileComponent
   },
   {
     path: 'subscriptions', 
     component: SubscriptionComponent,
     canActivate: [
-      AuthGuardService, RoleGuardService
+      RoleGuardService
     ],
     data: { 
       expectedRole: [environment.roles.SuperAdmin]

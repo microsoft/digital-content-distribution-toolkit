@@ -45,8 +45,8 @@ export class AppComponent {
       this.currentUser = user});
     this.kaizalaService.currentUserName.subscribe(userName => {
         this.currentUserName = userName});
-    this.selectedCPName = sessionStorage.getItem("contentProviderName") ? 
-      sessionStorage.getItem("contentProviderName") : "Not Selected";
+    this.selectedCPName = localStorage.getItem("contentProviderName") ? 
+      localStorage.getItem("contentProviderName") : "Not Selected";
 
   }
 
@@ -54,8 +54,8 @@ export class AppComponent {
         this.isExpanded = (this.innerWidth > 768) ? true : false;
         this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
           this.selectedCPName = selectedCP ? selectedCP.name : 
-          sessionStorage.getItem("contentProviderName") ? 
-          sessionStorage.getItem("contentProviderName") :"Not Selected";
+          localStorage.getItem("contentProviderName") ? 
+          localStorage.getItem("contentProviderName") :"Not Selected";
         });
 
         this.resizeObservable$ = fromEvent(window, 'resize')
@@ -69,17 +69,17 @@ export class AppComponent {
 
 
     ngDoCheck() {
-      this.hasMenuAccess = sessionStorage.getItem("roles")?.includes(environment.roles.SuperAdmin) ||
-      sessionStorage.getItem("roles")?.includes(environment.roles.ContentAdmin);
+      this.hasMenuAccess = localStorage.getItem("roles")?.includes(environment.roles.SuperAdmin) ||
+      localStorage.getItem("roles")?.includes(environment.roles.ContentAdmin);
 
       this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
         this.selectedCPName = selectedCP ? selectedCP.name : 
-        sessionStorage.getItem("contentProviderName") ? 
-        sessionStorage.getItem("contentProviderName") :"Not Selected";      
+        localStorage.getItem("contentProviderName") ? 
+        localStorage.getItem("contentProviderName") :"Not Selected";      
       });
       this.userService.loggedInUser$.subscribe(user => {
         this.currentUserName = user ? user : 
-        sessionStorage.getItem("currentUserName");
+        localStorage.getItem("currentUserName");
       })
     }
 

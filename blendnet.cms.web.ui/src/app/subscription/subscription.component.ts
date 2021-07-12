@@ -4,9 +4,6 @@ import { SubscriptionService } from '../services/subscription.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog} from '@angular/material/dialog';
 import { AddSubscriptionDialog } from './add-subscription-dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-subscription',
@@ -20,10 +17,6 @@ export class SubscriptionComponent {
   today;
   minEnd: Date;
 
-  displayedColumns: string[] = ['status','title', 'price', 'durationDays', 'startDate', 'endDate', 'isRedeemable', 'redemptionValue', 'edit'];
-  dataSource: MatTableDataSource<any>;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
 
   constructor(
@@ -48,47 +41,38 @@ export class SubscriptionComponent {
 
   getSubscriptions() {
     this.subscriptionService.getSubscriptionsForCP().subscribe(
-      res => {
-        this.dataSource = this.createDataSource(res.body);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-
-      },
+      res => this.cpSubscriptions = res,
       err => {
-        this.dataSource = this.createDataSource([]);
         this.toastr.error(err);
-        console.log('HTTP Error', err);
-      }
-     );
+    });
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
-  createDataSource(rawDataList) {
-    var dataSource: any[] =[];
-    if(rawDataList) {
-      rawDataList.forEach( rawData => {
-        rawData.status = (rawData.endDate >= this.today || rawData.startDate >= this.today)
-                       ? true : false;
-        dataSource.push(rawData);
-      });
-    }
-    return new MatTableDataSource(dataSource);
+  save(sub) {
+    var selectedEndDate = sub.endDate;
+    selectedEndDate.setHours(selectedEndDate.getHours() + 23);
+    selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
+    selectedEndDate.setSeconds(selectedEndDate.getSeconds() + 59);
+    sub.endDate = selectedEndDate;
+    this.subscriptionService.editSubscription(sub).subscribe(
+      res => {
+        this.toastr.success("Subscription updated successfully!");
+        this.getSubscriptions();
+      },
+      err => this.toastr.error(err)
+    );
   }
 
 
+  disableSaveBtn(sub) {
+    return (!sub.price || sub.price < 0 || 
+      !sub.durationDays || sub.durationDays < 1 || sub.durationDays > 365);
+
+  }
  
-  openDialog(sub): void {
+  openDialog(): void {
     const dialogRef = this.dialog.open(AddSubscriptionDialog, {
-      width: '50%',
-      data: sub
+      width: '300px',
+      data: {}
     });
 
     dialogRef.componentInstance.onSubCreate.subscribe(data => {

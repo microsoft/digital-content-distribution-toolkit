@@ -1,38 +1,19 @@
-
+<div class="cms-container-incentive">
+    <br>
     <mat-tab-group color="primary" backgroundColor="grey" (selectedTabChange)="tabClick($event)">
-        <mat-tab label="RETAILER"> 
+        <mat-tab label="RETAILER PLAN"> 
             <br>
             <span *ngIf="showRetailerIncentive">
+                <button mat-raised-button color="primary" (click)="openAddIncentivePage('Retailer')">Create Incentive</button>
+
+                <br>
+                
                 <div class="cms-container">
-                    <div align="end">
-                        <button mat-raised-button color="primary" class="create-incentive"
-                        (click)="openNewIncentivePage('RETAILER')">Create Incentive</button>
-                    </div>
-                    <br>
-                    <div mat-dialog-actions align="end">
-                        <b>Filter: </b> <mat-button-toggle-group (change)="applyFilterRetailer($event)"#planTypeToggle="matButtonToggleGroup">
-                            <mat-button-toggle value="REGULAR" aria-label="REGULAR">
-                              REGULAR
-                            </mat-button-toggle>
-                            <mat-button-toggle value="MILESTONE" aria-label="MILESTONE">
-                              MILESTONE
-                            </mat-button-toggle>
-                        </mat-button-toggle-group>
-                    </div>
-                    <mat-form-field>
+                    <mat-form-field appearance="outline">
                         <mat-label>Search Incentive</mat-label>
                         <input matInput (keyup)="applyFilterRetailer($event)" placeholder="Ex. Incentive Plan">
                         <mat-icon matSuffix>search</mat-icon>
                     </mat-form-field>
-                    <!-- <span class="cms-spacer"></span>
-                    <mat-form-field appearance="outline" >
-                        <mat-label>Status</mat-label>
-                        <mat-select [(ngModel)]="selectedStatusRetailer" name="status" (selectionChange)="applyFilterRetailer($event)">
-                            <mat-option *ngFor="let s of statuses" [value]="s">
-                            {{s}}
-                            </mat-option>
-                        </mat-select>
-                        </mat-form-field> -->
                     <div class="mat-elevation-z8">
                         <div class="cms-table-container">
                             <table mat-table [dataSource]="dataSourceRetailers" class="incentive-table" matSort>
@@ -76,10 +57,7 @@
                             <ng-container matColumnDef="edit">
                                 <th mat-header-cell *matHeaderCellDef > Edit </th>
                                 <td mat-cell *matCellDef="let row"> 
-                                    <button mat-icon-button  (click)="editIncentivePlan(row, 'RETAILER')">
-                                        <mat-icon mat-icon 
-                                        matTooltip="Edit">edit</mat-icon> 
-                                    </button>
+                                    <mat-icon>edit</mat-icon>
                                 </td>
                             </ng-container>
                             <tr mat-header-row *matHeaderRowDef="displayedColumnsRetailers; sticky: true"></tr>
@@ -87,51 +65,32 @@
             
                             </table>
                         </div>
-                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                        <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
 
                     </div>
                 </div>
             </span>
             <span *ngIf="createRetailerIncentive">
-                <!-- <button mat-icon-button color="primary" (click)="showIncentivePage('RETAILER')"><mat-icon>back</mat-icon></button> -->
-                <app-add-incentive (newIncentiveEvent)="addIncentive('RETAILER')" [plan]="selectedPlan" audience='RETAILER'></app-add-incentive>
+                <button mat-icon-button color="primary" (click)="showIncentivePage('Retailer')"><mat-icon>back</mat-icon></button>
+                <app-add-incentive audience="Retailer"></app-add-incentive>
             </span>
             
         </mat-tab>
-        <mat-tab label="CONSUMER"> 
+        <mat-tab label="CONSUMER PLAN"> 
             <br>
             <span *ngIf="showConsumerIncentive">
-                
-            <div class="cms-container">
-                <div align="end">
-                    <button mat-raised-button color="primary" class="create-incentive"
-                    (click)="openNewIncentivePage('CONSUMER')">Create Incentive</button>
-                </div>
-                <br>
-                <div mat-dialog-actions align="end">
-                    <b>Filter: </b> <mat-button-toggle-group (change)="applyFilterConsumer($event)" #planTypeToggle="matButtonToggleGroup">
-                        <mat-button-toggle value="REGULAR" aria-label="REGULAR">
-                          REGULAR
-                        </mat-button-toggle>
-                        <mat-button-toggle value="MILESTONE" aria-label="MILESTONE">
-                          MILESTONE
-                        </mat-button-toggle>
-                    </mat-button-toggle-group>
-                </div>
-                <mat-form-field>
-                    <mat-label>Search Incentive</mat-label>
+                <div>
+                    <button mat-raised-button color="primary" (click)="openAddIncentivePage('Consumer')">Create Incentive</button>
+                    <span class="cms-spacer"></span>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Search</mat-label>
                         <input matInput (keyup)="applyFilterConsumer($event)" placeholder="Ex. Incentive Plan">
                         <mat-icon matSuffix>search</mat-icon>
-                  </mat-form-field>
-                  <!-- <mat-form-field appearance="outline" >
-                    <mat-label>Status</mat-label>
-                    <mat-select [(ngModel)]="selectedStatusConsumer" name="status" (selectionChange)="applyFilterConsumer($event)">
-                      <mat-option *ngFor="let s of statuses" [value]="s">
-                        {{s}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field> -->
-                  
+                    </mat-form-field>
+                </div>
+                
+            <br>
+            <div class="cms-container">
                 <div class="mat-elevation-z8">
                     <div class="cms-table-container">
                         <table mat-table [dataSource]="dataSourceConsumers" class="incentive-table" matSort>
@@ -170,29 +129,28 @@
                         <ng-container matColumnDef="edit">
                             <th mat-header-cell *matHeaderCellDef > Edit </th>
                             <td mat-cell *matCellDef="let row"> 
-                                <button mat-icon-button  (click)="editIncentivePlan(row, 'CONSUMER')">
-                                    <mat-icon mat-icon 
-                                    matTooltip="Edit">edit</mat-icon> 
-                                </button>                            </td>
+                                <mat-icon>edit</mat-icon>
+                            </td>
                         </ng-container>
                         <tr mat-header-row *matHeaderRowDef="displayedColumnsConsumers; sticky: true"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumnsConsumers;"></tr>
         
                         </table>
                     </div>
-                    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                    <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
                 </div>
             </div>
             </span>
                 
 
             <span *ngIf="createConsumerIncentive">
-                <!-- <button mat-icon-button color="primary" (click)="showIncentivePage('CONSUMER')"><mat-icon>back</mat-icon></button> -->
-                <app-add-incentive (newIncentiveEvent)="addIncentive('CONSUMER')" [plan]="selectedPlan" audience='CONSUMER'></app-add-incentive>
+                <button mat-icon-button color="primary" (click)="showIncentivePage('Consumer')"><mat-icon>back</mat-icon></button>
+                <app-add-incentive audience="Retailer"></app-add-incentive>
             </span>
         </mat-tab>
     </mat-tab-group>
     
-
+    <br>
+</div>
 
 

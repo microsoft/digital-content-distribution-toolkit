@@ -25,10 +25,7 @@ export enum ContentStatus {
     BROADCAST_ORDER_CANCELLED = "BroadcastOrderCancelled",
     BROADCAST_FAILED = "BroadcastFailed",
     BROADCAST_COMPLETE = "BroadcastComplete",
-    BROADCAST_CANCEL_SUBMITTED = "BroadcastCancelSubmitted",
     BROADCAST_CANCEL_INPROGRESS = "BroadcastCancelInProgress",
-    BROADCAST_CANCEL_COMPLETE = "BroadcastCancelComplete",
-    BROADCAST_CANCEL_FAILED = "BroadcastCancelFailed",
 
 
     ARCHIVED = 'ARCHIVED',

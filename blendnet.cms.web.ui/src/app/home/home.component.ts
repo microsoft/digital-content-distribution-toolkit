@@ -9,21 +9,21 @@ import { KaizalaService } from '../services/kaizala.service';
 })
 export class HomeComponent implements OnInit {
 
-  // currentUser: any;
-  // userName: string = "";
-  // roles: string = "";
-  // hasNoAdminRoles: boolean = false;
+  currentUser: any;
+  userName: string = "";
+  roles: string = "";
+  hasNoAdminRoles: boolean = false;
   constructor(
-    // private kaizalaService: KaizalaService
+    private kaizalaService: KaizalaService
   ) {
-    // this.kaizalaService.currentUser.subscribe(user => this.currentUser = user);
-    // this.userName = sessionStorage.getItem("currentUserName");
+    this.kaizalaService.currentUser.subscribe(user => this.currentUser = user);
+    this.userName = localStorage.getItem("currentUserName");
    }
 
   ngOnInit(): void {
-    // this.roles = sessionStorage.getItem("roles");
-    // this.hasNoAdminRoles = !(sessionStorage.getItem("roles")?.includes(environment.roles.SuperAdmin) ||
-    // sessionStorage.getItem("roles")?.includes(environment.roles.ContentAdmin));
+    this.roles = localStorage.getItem("roles");
+    this.hasNoAdminRoles = !(localStorage.getItem("roles").includes(environment.roles.SuperAdmin) ||
+    localStorage.getItem("roles").includes(environment.roles.ContentAdmin));
   }
 
 }

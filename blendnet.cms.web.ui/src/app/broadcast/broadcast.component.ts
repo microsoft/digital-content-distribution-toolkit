@@ -66,12 +66,7 @@ export class BroadcastComponent {
         ContentStatus.BROADCAST_ORDER_CREATED,
         ContentStatus.BROADCAST_ORDER_COMPLETE,
         ContentStatus.BROADCAST_ORDER_REJECTED,
-        ContentStatus.BROADCAST_ORDER_FAILED,
-        ContentStatus.BROADCAST_COMPLETE,
-        ContentStatus.BROADCAST_CANCEL_SUBMITTED,
-        ContentStatus.BROADCAST_CANCEL_INPROGRESS,
-        ContentStatus.BROADCAST_CANCEL_FAILED,
-        ContentStatus.BROADCAST_CANCEL_COMPLETE
+        ContentStatus.BROADCAST_ORDER_FAILED
       ]
     }
     this.contentService.getContentByCpIdAndFilters(broadcastContentFilters).subscribe(
@@ -130,10 +125,7 @@ export class BroadcastComponent {
   isBroadcastCancellable(row) {
     return row.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
     || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_FAILED
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_SUBMITTED
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_INPROGRESS
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE);
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_FAILED);
   }
 
   applyFilter(event: Event) {

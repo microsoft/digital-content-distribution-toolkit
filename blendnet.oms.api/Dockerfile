@@ -8,10 +8,9 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
 COPY ["blendnet.oms.api/blendnet.oms.api.csproj", "blendnet.oms.api/"]
+COPY ["blendnet.cms.repository/blendnet.cms.repository.csproj", "blendnet.cms.repository/"]
 COPY ["blendnet.common.dto/blendnet.common.dto.csproj", "blendnet.common.dto/"]
 COPY ["blendnet.common.infrastructure/blendnet.common.infrastructure.csproj", "blendnet.common.infrastructure/"]
-COPY ["blendnet.api.proxy/blendnet.api.proxy.csproj", "blendnet.api.proxy/"]
-COPY ["blendnet.oms.repository/blendnet.oms.repository.csproj", "blendnet.oms.repository/"]
 RUN dotnet restore "blendnet.oms.api/blendnet.oms.api.csproj"
 COPY . .
 WORKDIR "/src/blendnet.oms.api"

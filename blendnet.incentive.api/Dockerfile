@@ -11,7 +11,6 @@ COPY ["blendnet.incentive.api/blendnet.incentive.api.csproj", "blendnet.incentiv
 COPY ["blendnet.incentive.repository/blendnet.incentive.repository.csproj", "blendnet.incentive.repository/"]
 COPY ["blendnet.common.dto/blendnet.common.dto.csproj", "blendnet.common.dto/"]
 COPY ["blendnet.common.infrastructure/blendnet.common.infrastructure.csproj", "blendnet.common.infrastructure/"]
-COPY ["blendnet.api.proxy/blendnet.api.proxy.csproj", "blendnet.api.proxy/"]
 RUN dotnet restore "blendnet.incentive.api/blendnet.incentive.api.csproj"
 COPY . .
 WORKDIR "/src/blendnet.incentive.api"
