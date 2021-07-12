@@ -8,19 +8,19 @@ import { Component, OnInit } from '@angular/core';
 export class ProfileComponent implements OnInit {
  
   roles: string[];
-  currentUsername;
+  // currentUsername;
   constructor() { }
 
   ngOnInit(): void {
-    this.roles = localStorage.getItem("roles").split(",");
-    this.currentUsername = localStorage.getItem("currentUserName");
+    this.roles = sessionStorage.getItem("roles")?.split(",");
+    // this.currentUsername = sessionStorage.getItem("currentUserName");
   }
 
-  convertToSentence(role): string {
-    var result = role.replace( /([A-Z])/g, " $1" );
-    var finalResult = result.charAt(0).toUpperCase() + result.slice(1);
-    console.log(finalResult);
-    return finalResult;
-  }
+  // convertToSentence(role): string {
+  //   var result = role.replace( /([A-Z])/g, " $1" );
+  //   var finalResult = result.charAt(0).toUpperCase() + result.slice(1);
+  //   console.log(finalResult);
+  //   return finalResult;
+  // }
 
 }

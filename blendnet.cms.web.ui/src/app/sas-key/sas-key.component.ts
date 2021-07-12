@@ -28,8 +28,9 @@ export class SasKeyComponent implements OnInit {
   }
 
   generateSAS() {
-    var cpId = localStorage.getItem("contentProviderId");
-    this.sasKeyService.generateSASKey(cpId)
+    var cpId = sessionStorage.getItem("contentProviderId");
+    if(cpId) {
+      this.sasKeyService.generateSASKey(cpId)
       .subscribe( res => {
         this.sasKey  = res.sasUri;
         var today = new Date();
@@ -40,6 +41,10 @@ export class SasKeyComponent implements OnInit {
       error => {
         this.toastr.error(error); 
       });
+    } else {
+      this.toastr.error("Please select a content provider to generate the SAS"); 
+    }
+    
   }
 
   showSuccess(message) {

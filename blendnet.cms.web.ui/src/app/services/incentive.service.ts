@@ -20,23 +20,17 @@ export class IncentiveService {
     
    }
 
-  getIncentiveByIdAndSubType(planId, subType) {
-    let url = this.baseUrl + "/"+ planId + "/" + subType;
-    this.logger.log(`Fetching incentive plan by ID and subtype`);
-    return this.http.get(url, { observe: 'response'});
-
-  }
 
   createIncentivePlanRetailer(incentivePlan){
     let url = this.baseUrl + "/retailer";
-    this.logger.log(`Creating incentive plan`);
+    this.logger.log(`Creating retailerincentive plan`);
     return this.http.post(url, incentivePlan, { observe: 'response'});
 
   }
 
     createIncentivePlanConsumer(incentivePlan){
     let url = this.baseUrl + "/consumer";
-    this.logger.log(`Creating incentive plan`);
+    this.logger.log(`Creating consumer incentive plan`);
     return this.http.post(url, incentivePlan, { observe: 'response'});
 
   }
@@ -76,5 +70,54 @@ export class IncentiveService {
     
     this.logger.log(`Getting incentive plans for consumer`);
     return forkJoin([regularIncentives, milestoneIncentives]);
+  }
+
+  getRetailerIncentivePlanByIdAndPartner(planId, subType) {
+    let url = this.baseUrl + "/retailer/"+ planId + "/" + subType;
+    this.logger.log(`Fetching retailer incentive plan by ID and subtype`);
+    return this.http.get(url, { observe: 'response'});
+  }
+
+  getConsumerIncentivePlanById(planId) {
+    let url = this.baseUrl + "/consumer/"+ planId ;
+    this.logger.log(`Fetching consumer incentive plan by ID`);
+    return this.http.get(url, { observe: 'response'});
+  }
+
+  publishRetailerIncentivePlan(planId, subType) {
+    let url = this.baseUrl + "/retailer/publish/"+ planId + "/" + subType;
+    this.logger.log(`Publishisg retailer incentive plan by ID and sub type`);
+    return this.http.put(url, { observe: 'response'});
+  }
+
+  publishConsumerIncentivePlan(planId) {
+    let url = this.baseUrl + "/consumer/publish/"+ planId;
+    this.logger.log(`Publishing consumer incentive plan by ID`);
+    return this.http.put(url, { observe: 'response'});
+  }
+
+  changeDateRetailerIncentivePlan(planId, subType, endDate){
+    let url = this.baseUrl + "/retailer/changeenddate/"+ planId + "/" + subType + "/" + endDate;
+    this.logger.log(`Updating retailer incentive plan end date by ID `);
+    return this.http.put(url, { observe: 'response'});
+  }
+
+  changeDateConsumerIncentivePlan(planId, endDate){
+    let url = this.baseUrl + "/consumer/changeenddate/"+ planId + "/" + endDate;
+    this.logger.log(`Updating consumer incentive plan end date by ID `);
+    return this.http.put(url, { observe: 'response'});
+  
+  }
+
+  updateRetailerDraftPlan(planId, plan){
+    let url = this.baseUrl + "/retailer/"+ planId;
+    this.logger.log(`Updating retailer incentive plan in draft state by ID `);
+    return this.http.put(url, plan, { observe: 'response'});
+  }
+
+  updateConsumerDraftPlan(planId, plan){
+    let url = this.baseUrl + "/consumer/"+ planId;
+    this.logger.log(`Updating consumer incentive plan in draft state by ID `);
+    return this.http.put(url, plan, { observe: 'response'});
   }
 }

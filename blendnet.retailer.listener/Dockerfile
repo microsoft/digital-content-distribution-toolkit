@@ -9,7 +9,7 @@ COPY ["blendnet.retailer.listener/blendnet.retailer.listener.csproj", "blendnet.
 COPY ["blendnet.retailer.repository/blendnet.retailer.repository.csproj", "blendnet.retailer.repository/"]
 COPY ["blendnet.common.dto/blendnet.common.dto.csproj", "blendnet.common.dto/"]
 COPY ["blendnet.common.infrastructure/blendnet.common.infrastructure.csproj", "blendnet.common.infrastructure/"]
-COPY ["MPDParser/MPDParser.csproj", "MPDParser/"]
+COPY ["blendnet.api.proxy/blendnet.api.proxy.csproj", "blendnet.api.proxy/"]
 RUN dotnet restore "blendnet.retailer.listener/blendnet.retailer.listener.csproj"
 COPY . .
 WORKDIR "/src/blendnet.retailer.listener"

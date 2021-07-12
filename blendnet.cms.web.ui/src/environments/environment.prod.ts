@@ -8,6 +8,7 @@ export const environment = {
   contentApiUrl: "/cmsapi/api/v1/Content",
   userApiUrl: "/userapi/api/v1/User",
   incentiveApiUrl: "/incentiveapi/api/v1/Incentive",
+  retailerApiUrl: "/retailerapi/api/v1",
   dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
   kaizalaApi0: "https://api-alpha.kaiza.la/v1/",
   kaizalaApi1: "https://api-alpha1.kaiza.la/v1/",

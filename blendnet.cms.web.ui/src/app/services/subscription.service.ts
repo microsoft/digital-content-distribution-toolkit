@@ -17,26 +17,26 @@ export class SubscriptionService {
   ) { }
 
   getSubscriptionsForCP() {
-    let url = this.baseUrl + "/" + localStorage.getItem("contentProviderId") + "/Subscription";
+    let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") + "/Subscription";
     this.logger.log(`Fetching subscriptions for content providers`);
-    return this.http.get(url);
+    return this.http.get(url, { observe: 'response'});
   }
 
   createSubscription(subscription) : Observable<HttpResponse<any>>{
-    let url = this.baseUrl +  "/" + localStorage.getItem("contentProviderId") + "/Subscription";
+    let url = this.baseUrl +  "/" + sessionStorage.getItem("contentProviderId") + "/Subscription";
     this.logger.log(`Creating subscription`);
     return this.http.post(url, subscription, { observe: 'response'});
   }
 
   editSubscription(subscription) : Observable<HttpResponse<any>> {
-    let url = this.baseUrl + "/" + localStorage.getItem("contentProviderId") + 
+    let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") + 
     "/Subscription/" + subscription.id;
     this.logger.log(`Editing subscription`);
     return this.http.put(url, subscription, { observe: 'response'});
   }
 
   deleteSubscription(subscription): Observable<HttpResponse<any>>  {
-    let url = this.baseUrl + "/" + localStorage.getItem("contentProviderId") + 
+    let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") + 
     "/Subscription/" + subscription.id;
     this.logger.log(`Deleting subscription`);
     return this.http.delete(url, { observe: 'response'});

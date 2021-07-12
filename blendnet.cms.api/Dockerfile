@@ -11,6 +11,7 @@ COPY ["blendnet.cms.api/blendnet.cms.api.csproj", "blendnet.cms.api/"]
 COPY ["blendnet.cms.repository/blendnet.cms.repository.csproj", "blendnet.cms.repository/"]
 COPY ["blendnet.common.dto/blendnet.common.dto.csproj", "blendnet.common.dto/"]
 COPY ["blendnet.common.infrastructure/blendnet.common.infrastructure.csproj", "blendnet.common.infrastructure/"]
+COPY ["blendnet.api.proxy/blendnet.api.proxy.csproj", "blendnet.api.proxy/"]
 RUN dotnet restore "blendnet.cms.api/blendnet.cms.api.csproj"
 COPY . .
 WORKDIR "/src/blendnet.cms.api"

@@ -31,6 +31,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { PascalToStringPipe } from './custom-pipes/pascalcase-to-string.pipe';
 import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
 import { AddIncentiveComponent } from './incentive-management/add-incentive.component';
+import { DisableControlDirective } from './custom-directives/disable-control.directive';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { AddIncentiveComponent } from './incentive-management/add-incentive.comp
     PascalToStringPipe,
     ContentDetailsDialog,
     IncentiveManagementComponent,
-    AddIncentiveComponent
+    AddIncentiveComponent,
+    DisableControlDirective
   ],
   imports: [
     HttpClientModule,

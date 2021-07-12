@@ -50,6 +50,18 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "build oms.api",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/blendnet.oms.api/blendnet.oms.api.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "build retailer.listener",
             "command": "dotnet",
             "type": "process",

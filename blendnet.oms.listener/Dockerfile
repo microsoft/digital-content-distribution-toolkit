@@ -8,6 +8,7 @@ WORKDIR /src
 COPY ["blendnet.oms.listener/blendnet.oms.listener.csproj", "blendnet.oms.listener/"]
 COPY ["blendnet.common.dto/blendnet.common.dto.csproj", "blendnet.common.dto/"]
 COPY ["blendnet.common.infrastructure/blendnet.common.infrastructure.csproj", "blendnet.common.infrastructure/"]
+COPY ["blendnet.api.proxy/blendnet.api.proxy.csproj", "blendnet.api.proxy/"]
 RUN dotnet restore "blendnet.oms.listener/blendnet.oms.listener.csproj"
 COPY . .
 WORKDIR "/src/blendnet.oms.listener"
