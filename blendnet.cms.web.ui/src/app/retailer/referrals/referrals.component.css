@@ -1,0 +1,126 @@
+.referrals-heading {
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.back-nav {
+    margin-right: 10px;
+    vertical-align: bottom;
+}
+
+.referrals-heading-text {
+    display: inline-block;
+    font-weight: 500;
+    font-size: 18px;
+    color: #101010;
+}
+
+.landing-page-total-block-wrapper {
+    padding-left: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.landing-page-currency-image-block{
+    display: inline-block;
+}
+
+.landing-page-total-value-block {
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.landing-page-total-image-block {
+    /* display: block; */
+    float: right;
+    padding-right: 20px;
+    width: calc(100% - 175px);
+    max-width: 100px;
+}
+
+.landing-page-total-image-block-field {
+    width: 100%;
+}
+
+.referral-total-value {
+    font-size: 20px;
+    line-height: 32px;
+    color: #101010;
+}
+
+.total-earnings-text {
+    font-size: 14px;
+    line-height: 16px;
+    color: #5D6973;
+    font-weight: 700;
+}
+
+.accordion-left-content {
+    display: inline-block;
+    /* float: right; */
+    color: #101010;
+    font-size: 14px;
+}
+
+.accordion-right-content {
+    float: right;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.accordion-heading {
+    width: 100%;
+}
+
+.mat-expansion-panel-header {
+    background:  #F2F5F8 !important;
+}
+
+::ng-deep .mat-expansion-indicator {
+    margin-top: -5px;
+}
+
+.accordion-total-inner-wrapper {
+    padding-top: 20px;
+}
+
+.accordion-currency-image-block {
+    display: inline-block;
+}
+
+.accordion-value-block {
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.accordion-value {
+    color: #101010;
+    font-weight: 500;
+}
+
+.accordion-text {
+    font-size: 12px;
+    /* line-height: 16px; */
+    color: #5D6973;
+}
+
+.each-value {
+    float: right;
+    padding-right: 20px;
+    color: #1CB5A2;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.accordion-currency {
+    width: 25px;
+}
+
+.referrals-heading, .landing-page-total-block-wrapper {
+    background: white;
+}
+
+.accordion-block {
+    margin-top: 5px;
+}

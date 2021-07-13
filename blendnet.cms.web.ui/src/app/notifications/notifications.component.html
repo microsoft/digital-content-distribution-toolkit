@@ -1,0 +1,60 @@
+<div class="cms-container">
+    <h1>Notifications</h1>
+        
+        <button mat-raised-button color="primary" class="create-btn" (click)="openDialog()"> New Notification </button>
+        <br>
+        <mat-form-field>
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Don" #input>
+          </mat-form-field>
+        
+
+<div class="mat-elevation-z8">
+    <div class="cms-table-container">
+        <table mat-table matSort [dataSource]="dataSource">  
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <!-- <mat-checkbox (change)="$event ? masterToggle() : null"
+                                [checked]="selection.hasValue() && isAllSelected()"
+                                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                >
+                    </mat-checkbox> -->
+                </th>
+                <td mat-cell *matCellDef="let element">element.Preview
+                </td>
+            </ng-container>
+
+            <!-- Preview Column -->
+            <ng-container matColumnDef="Preview">
+                <th mat-header-cell *matHeaderCellDef> Preview </th>
+                <td mat-cell *matCellDef="let element"> <div>
+                    <figure class="image-is-128x128" >
+                      <img [src]="element.Preview" height="30" />
+                    </figure>
+                  </div> </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="Title">
+                <th mat-header-cell *matHeaderCellDef> Title </th>
+                <td mat-cell *matCellDef="let element"> {{element.Title}} </td>
+            </ng-container>
+
+            <!-- Weight Column -->
+            <ng-container matColumnDef="Status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let element"> {{element.Status}} </td>
+            </ng-container>
+
+            <!-- Symbol Column -->
+            <ng-container matColumnDef="CreatedOn">
+                <th mat-header-cell *matHeaderCellDef> Created On </th>
+                <td mat-cell *matCellDef="let element"> {{element.CreatedOn}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>             
+</div>
+</div> 

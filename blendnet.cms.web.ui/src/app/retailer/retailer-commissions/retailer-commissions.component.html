@@ -1,0 +1,86 @@
+<div class="referrals-main-block">
+    <div class="referrals-heading">
+        <img class="back-nav" (click)="navigateToHome()" src="../../assets/images/retailer-referrals/back-nav.jpg">
+        <div class="referrals-heading-text">Commissions</div>
+        <div class="commissions-slider" *ngIf="carouselInit">
+            <owl-carousel-o [options]="customOptions">
+                <ng-container *ngFor="let commission of commissionsCarouselArr">
+                    <ng-template carouselSlide>
+                        <div class="each-offer">
+                            <div class="each-offer-inner">
+                                <!-- <img class="offer-decor" src="../../assets/images/retailer-commissions/trophy.png"> -->
+                                <img class="each-offer-logo" src="../../assets/images/retailer-commissions/each-offer-logo.png">
+                                <div class="each-offer-text-block">
+                                    {{commission.earnText}}
+                                </div>
+                                <div class="each-offer-text-block-date">
+                                    <span class="each-offer-valid-label">Valid till :</span>
+                                    <span class="each-offer-valid-date">{{commission.validTillText}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>  
+    
+                </ng-container>
+              </owl-carousel-o>
+        
+        </div>
+    </div>
+    <div class="landing-page-total-block-wrapper">
+        
+        <div class="landing-page-total-inner-wrapper">
+            <div class="landing-page-currency-image-block">
+                <img src="../../assets/images/retailer-landing-page/rupee.jpg">
+            </div>
+            <div class="landing-page-total-value-block">
+                <div class="referral-total-value">
+                    Rs.{{totalEarnings}}
+                </div>
+                <div class="total-earnings-text">
+                    Total Earnings
+                </div>
+            </div>
+            <div class="landing-page-total-image-block">
+                <!-- <img src="../../assets/images/retailer-landing-page/total.jpg"> -->
+                <mat-form-field appearance="fill" class="landing-page-total-image-block-field">
+                    <!-- <mat-label>Month</mat-label> -->
+                    <mat-select (selectionChange)="monthSelected($event)" [(ngModel)]="monthSelect">
+                        <mat-option *ngFor="let month of monthsDropDown" [value]="month">
+                            {{month.monthName}}
+                        </mat-option>
+                    </mat-select>
+                    </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-block">
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let commission of nestedCommissions; first as isFirst" [expanded]="isFirst">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div class="accordion-heading">
+                        <div class="accordion-left-content">{{commission.occuredDate}} • {{commission.transactions.length}} Transactions</div>
+                        <div class="accordion-right-content">Rs. {{commission.amount}}</div>     
+                    </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div *ngFor="let transaction of commission.transactions" class="accordion-total-inner-wrapper" (click)="commissionDialog()">
+                <div class="accordion-currency-image-block">
+                    <img class="accordion-currency" src="../../assets/images/retailer-landing-page/rupee.jpg">
+                </div>
+                <div class="accordion-value-block">
+                    <div class="accordion-value">
+                        {{transaction.name}}
+                    </div>
+                    <div class="accordion-text">
+                        {{transaction.occuredTime}}
+                    </div>
+                </div>
+                <div class="each-value">
+                    +Rs. {{transaction.calculatedValue}}
+                </div>
+            </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+    </div>
+</div>

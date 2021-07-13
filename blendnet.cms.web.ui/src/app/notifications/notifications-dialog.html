@@ -1,0 +1,129 @@
+<h1 mat-dialog-title>Create Notification</h1>
+
+<mat-horizontal-stepper [linear]="false" #stepper> 
+  <mat-step [stepControl]="firstFormGroup">  
+    <form [formGroup]="firstFormGroup">  
+      <ng-template matStepLabel>Add Details</ng-template>  
+      <table class="notif-dialog-table">
+        <tr>
+          <td>
+            <mat-form-field appearance = "outline" fxFlex = 100%>
+              <input matInput placeholder="Title" 
+              formControlName="title" required>
+              <mat-error *ngIf="errorHandling('title', 'required')"> 
+                You must provide a title
+              </mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field appearance = "outline" >
+              <textarea matInput placeholder = "Message" class="notif-text-area" [(ngModel)]="notif" 
+              cdkTextareaAutosize formControlName="string" ></textarea>
+              <mat-error *ngIf="errorHandling('text', 'required') || errorHandling('text', 'required')"> 
+               You must provide text
+              </mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div mat-dialog-actions class="form-group">
+              <input
+            class="file-input"
+            type="file"
+            name="file"
+            #fileInput #fileUpload hidden
+            (change)="onChange(fileInput.files[0])"
+          />
+          <button mat-raised-button color="primary"   (click)="fileUpload.click()">Upload</button>
+          <span class="file-cta">
+            <span class="file-icon">
+              <!-- <fa-icon [icon]="['fas', 'upload']"></fa-icon> -->
+            </span>
+          </span>
+          <span class="file-name">
+            {{ fileName }}
+          </span>
+              </div> 
+              <div class="file-upload-error">
+                  {{fileUploadError}}
+              </div>
+               <!--change onNoClick() to openUploadConfirmModal() and add an uploadConfirmModal() this-->
+               <div>
+                <figure class="image-is-128x128" >
+                  <img [src]="imageUrl" height="130" align="left"/>
+                </figure>
+              </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div mat-dialog-actions align="end">
+              <button mat-raised-button (click)="onNoClick()" mat-dialog-close class="discard-btn" >Cancel</button>
+              <button mat-raised-button matStepperNext color="primary" type="button" cdkFocusInitial [disabled]="!firstFormGroup.valid">Next</button>
+            </div>
+          </td>
+        </tr>       
+      </table>  
+    </form>  
+  </mat-step>
+
+  <mat-step [stepControl]="secondFormGroup" label="Select Target">  
+    <form [formGroup]="secondFormGroup">  
+      <mat-form-field appearance="outline" >
+        <mat-label >User Segment</mat-label>
+        <mat-select>
+          <mat-option value="one">Users</mat-option>
+          <!--<mat-option value="two">Second option</mat-option>-->
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" required>
+        <mat-label>Target App</mat-label>
+        <mat-select>
+          <mat-option value="one">User Mishtu App</mat-option>
+          <!--<mat-option value="two">Second option</mat-option>-->
+        </mat-select>
+      </mat-form-field>
+      <div  mat-dialog-actions align="end">  
+        <button mat-raised-button matStepperPrevious>Back</button>  
+        <button mat-raised-button color="primary" matStepperNext>Next</button>  
+      </div>  
+    </form>  
+  </mat-step> 
+
+  <mat-step >    
+    <ng-template matStepLabel>Schedule</ng-template>  
+    <mat-slide-toggle color="primary" [checked] = "scheduleChecked" [(ngModel)] = "scheduleChecked">Schedule Now </mat-slide-toggle>
+    <div *ngIf="!scheduleChecked; else elseBlock">
+      <mat-form-field appearance="outline" >
+        <mat-label>Date</mat-label>
+        <input matInput  [matDatepicker]="startpicker"
+        formControlName="sendDate" required [min]="minStart">
+        <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+        <mat-datepicker #startpicker disabled="false"></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="outline" >
+        <mat-label>Time</mat-label>
+        <input matInput  [matDatepicker]="endpicker"
+        formControlName="sendTime" required >
+        <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+        <mat-datepicker #endpicker disabled="false"></mat-datepicker>
+      </mat-form-field>
+      <div mat-dialog-actions align="end">
+        <button mat-raised-button (click)="onNoClick()" mat-dialog-close class="discard-btn" >Cancel</button>
+        <button mat-raised-button color="primary" type="button">Create</button>
+      </div>
+    </div>
+    <ng-template #elseBlock> 
+      <div mat-dialog-actions align="end">
+        <button mat-raised-button (click)="onNoClick()" mat-dialog-close class="discard-btn">Cancel</button>
+        <button mat-raised-button color="primary"  >Create</button>
+      </div> 
+    </ng-template> 
+  </mat-step>  
+<!-- </form> -->
+</mat-horizontal-stepper>  
+
+  

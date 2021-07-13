@@ -1,6 +1,30 @@
+# Sound-Event-Detection---ML-in-Signal-Processing
+
 # CMS
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.3.
+
+## Prerequisites
+
+To use Angular framework on your local machine, you need to install the following beforehand:
+
+### Node.js
+
+Angular requires an active LTS or maintenance LTS version of Node.js. 
++ Download [Node.js](https://nodejs.org/en/download/) for Windows by clicking the "Windows Installer" option.
++ Run the downloaded Node.js `.msi` Installer - including accepting the license, selecting the destination, and authenticating for the install. This requires Administrator privileges, and you may need to authenticate.
++ To ensure Node.js has been installed, run `node -v` in your terminal and confirm the version installed.
+
+### npm Package Manager
+
++ Update your version of npm with `npm install npm --global`. This requires Administrator privileges, and you may need to authenticate.
+
+### Angular CLI
+
++ Run `git clone`<url> in the terminal of your editor to clone this repository.
++ Go to the `cd bine-crm` directory.
++ `git checkout sprint-5` and execute `cd blendnet.cms.web.ui` to work in the CMS directory.
++  Install angular CLI for this project in this directory by running the command `npm install -g @angular/cli`.
 
 ## Development server
 

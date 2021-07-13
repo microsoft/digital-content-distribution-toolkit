@@ -1,0 +1,84 @@
+.commission-dialog-image {
+    position: absolute;
+    top: -10px;
+}
+
+.commission-dialog-image-block {
+    position: relative;
+}
+
+.commission-dialog-heading {
+    font-weight: 500;
+    font-size: 18px;
+    padding-bottom: 10px;
+}
+
+.commission-dialog-sub-heading {
+    font-size: 14px;
+    color: #5D6973;
+}
+
+.commission-heading-block {
+    padding-top: 10px;
+    text-align: center;
+}
+
+.commission-value-block {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.commission-value-value {
+    width: 50%;
+    display: inline-block;
+    text-align: left;
+    color: #101010;
+    font-weight: 500;
+}
+
+.commission-value-attr {
+    width: 50%;
+    display: inline-block;
+    text-align: right;
+    color: #5D6973;
+}
+
+.commission-value-each {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 0.5px solid #D4E5F1;
+}
+
+.commission-dialog-currency {
+    color: #1CB5A2;
+}
+
+.commission-dialog-support-block {
+    text-align: center;
+}
+
+.get-help-link {
+    color:#1973EB;
+    font-weight: 700;
+}
+
+.commission-dialog-support-block {
+    padding-top: 20px;
+}
+
+.commission-dialog-close {
+    margin-top: 20px;
+    color: #1973EB;
+    background: white;
+    width: 100%;
+    border: 1px solid #1973EB !important;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+button {
+    outline: none !important;
+}

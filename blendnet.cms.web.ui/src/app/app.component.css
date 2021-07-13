@@ -2,6 +2,11 @@
     height: calc(100vh - 63px);
     border: 1px solid rgba(0, 0, 0, 0.5);
 }
+
+.retailer-cms-container {
+    height: 100vh !important;
+}
+
 .position-fixed{
     position: fixed
   }
@@ -72,4 +77,29 @@
         left: 50%;
         transform: translate(-50%, -50%);
       }
+
+      .retailer-menu {
+        width: 100%;
+      }
   }
+
+  @media only screen and (min-width: 768px) and (max-width: 1023px) {
+      .retailer-menu {
+        width: 100%;
+      }
+  }
+
+  .force-full-menu {
+      width: 100%;
+  }
+
+  .hidden {
+      display: none !important;
+  }
+
+  @media only screen and (min-width: 1024px) {
+    .retailer-menu, .referrals-main-block {
+      width: 900px;
+      margin-left: calc(50vw - 450px);
+    }
+}

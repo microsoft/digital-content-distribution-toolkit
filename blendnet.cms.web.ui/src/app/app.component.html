@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="cms-toolbar">
+<mat-toolbar *ngIf="!hasRetailerAccess" color="primary" class="cms-toolbar">
 	<!-- <img class="sidenav-toggler" src="../assets/noun_menu.svg"
 	(click)="isExpanded = !isExpanded"> -->
 	<span>
@@ -26,14 +26,9 @@
 	</div>
 
 </mat-toolbar>
-<mat-sidenav-container class="cms-container" autosize >
+<mat-sidenav-container class="cms-container {{hasRetailerAccess? 'retailer-cms-container': ''}}" autosize >
 	<mat-sidenav  *ngIf="currentUser && hasMenuAccess" #sidenav class="cms-sidenav" mode="side" opened="true">	
 		<mat-nav-list>
-			<!-- <mat-list-item class="parent"> -->
-				<!-- <span class="full-width" *ngIf="isExpanded" 
-				 [routerLink]="['/']">Home</span>
-				<mat-icon mat-list-icon>home</mat-icon> -->
-			<!-- </mat-list-item> -->
 			<div class="submenu" [ngClass]="{'expanded' : true}">
 				<a mat-list-item
 				 [routerLink]="['/']">
@@ -46,7 +41,7 @@
 				</a>
         		<a mat-list-item
 				 routerLinkActive="active" 
-				 [routerLink]="['content-providers']">
+				 [routerLink]="['admin/content-providers']">
 					<div>
 						<mat-icon mat-list-icon>play_lesson</mat-icon>
 						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Content Providers</span>
@@ -55,7 +50,7 @@
 				</a>
 				<a mat-list-item
 				 routerLinkActive="active" 
-				 [routerLink]="['sas-key']">
+				 [routerLink]="['admin/sas-key']">
 					<div>
 						<mat-icon mat-list-icon>vpn_key</mat-icon>
 						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">SAS Key</span>
@@ -64,11 +59,20 @@
 				</a>
 				<a mat-list-item 
 				 routerLinkActive="active" 
-				[routerLink]="['subscriptions']">
+				[routerLink]="['admin/subscriptions']">
 					<div>
 						<mat-icon mat-list-icon>subscriptions</mat-icon>
 						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Subscriptions</span>
 						<div *ngIf="!isExpanded" class="menu-small-text">Subscriptions</div>
+					</div>
+				</a>
+				<a mat-list-item 
+				 routerLinkActive="active" 
+				[routerLink]="['notifications']">
+					<div>
+						<mat-icon mat-list-icon>notifications</mat-icon>
+						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Notifications</span>
+						<div *ngIf="!isExpanded" class="menu-small-text">Notifications</div>
 					</div>
 				</a>
       <!-- </div> -->
@@ -79,7 +83,7 @@
 			<!-- <div class="submenu" [ngClass]="{'expanded' : true}"> -->
 			<a mat-list-item 
 			routerLinkActive="active" 
-			[routerLink]="['unprocessed-content']">
+			[routerLink]="['admin/unprocessed-content']">
 				<div>
 					<mat-icon mat-list-icon>movie</mat-icon>
 					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Unprocessed</span>
@@ -88,7 +92,7 @@
 			</a>
 			<a mat-list-item 
 			routerLinkActive="active" 
-			[routerLink]="['processed-content']">
+			[routerLink]="['admin/processed-content']">
 				<div>
 					<mat-icon mat-list-icon>local_movies</mat-icon>
 					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Processed</span>
@@ -97,7 +101,7 @@
 			</a>
 			<a mat-list-item 
 			routerLinkActive="active" 
-			[routerLink]="['broadcast-content']">
+			[routerLink]="['admin/broadcast-content']">
 				<div>
 					<mat-icon mat-list-icon>live_tv</mat-icon>
 					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Broadcast</span>
@@ -121,7 +125,7 @@
 			<!-- <div class="submenu" [ngClass]="{'expanded' : true}" > -->
 			<a mat-list-item 
 			routerLinkActive="active" 
-			[routerLink]="['devices']">
+			[routerLink]="['admin/devices']">
 				<div>
 					<mat-icon mat-list-icon>router</mat-icon>
 					&nbsp;&nbsp;<span *ngIf="isExpanded"  class="menu-side-text">Devices</span>
@@ -130,7 +134,7 @@
 			</a>
 			<a mat-list-item 
 			routerLinkActive="active" 
-			[routerLink]="['manage-content']">
+			[routerLink]="['admin/manage-content']">
 				<div>
 					<mat-icon mat-list-icon>manage_accounts</mat-icon>
 					&nbsp;&nbsp;<span *ngIf="isExpanded"   class="menu-side-text">Manage content</span>
@@ -145,9 +149,18 @@
     <mat-nav-list>
   </mat-nav-list>
 </mat-sidenav>
+	<mat-sidenav  *ngIf="hasRetailerAccess" #sidenav class="cms-sidenav retailer-menu {{userService.getRetailerRouted() ? 'hidden': ''}}" mode="side" opened="true">
+		<mat-nav-list>
+			<app-retailer-landing-page></app-retailer-landing-page>
+		</mat-nav-list>
+		<div class="retailer-layout">
+			
+		</div>
+	</mat-sidenav>
 
-	<div class="cms-sidenav-content">
-		<router-outlet></router-outlet>
+	<div *ngIf="!hasRetailerAccess" class="cms-sidenav-content">
+		<!-- <router-outlet></router-outlet> -->
+		<router-outlet class="{{(hasRetailerAccess && !isDesktop && !userService.getRetailerRouted()) ? 'hidden': ''}}"></router-outlet>
 	</div>
 
 </mat-sidenav-container>
