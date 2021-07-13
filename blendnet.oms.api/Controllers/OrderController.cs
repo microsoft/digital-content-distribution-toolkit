@@ -905,8 +905,8 @@ namespace blendnet.oms.api.Controllers
                 OrderId = order.Id.Value,
                 UserId = order.UserId,
                 IsRedeemed = order.IsRedeemed,
-                OrderCompletedDateTime = order.OrderCompletedDate.Value,
-                OrderPlacedDateTime = order.OrderCreatedDate,
+                OrderCompletedDateTime = System.Text.Json.JsonSerializer.Serialize(order.OrderCompletedDate.Value),
+                OrderPlacedDateTime = System.Text.Json.JsonSerializer.Serialize(order.OrderCreatedDate),
                 OrderItems = System.Text.Json.JsonSerializer.Serialize(orderItems)
             };
             
@@ -914,8 +914,9 @@ namespace blendnet.oms.api.Controllers
             {
                 orderCompletedAIEvent.RetailerId = order.RetailerId.Value;
                 orderCompletedAIEvent.RetailerPartnerId = order.RetailerPartnerId;
+                orderCompletedAIEvent.RetailerPartnerCode = order.RetailerPartnerCode;
                 orderCompletedAIEvent.RetailerAdditionalAttributes = retailerAdditionalAttributes;
-                orderCompletedAIEvent.PaymentDepositDateTime = order.DepositDate.Value;
+                orderCompletedAIEvent.PaymentDepositDateTime = System.Text.Json.JsonSerializer.Serialize(order.DepositDate.Value);
             }
 
             _telemetryClient.TrackEvent(orderCompletedAIEvent);

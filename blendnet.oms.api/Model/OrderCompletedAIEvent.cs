@@ -51,17 +51,17 @@ namespace blendnet.oms.api.Model
         /// <summary>
         /// order created date time
         /// </summary>
-        public DateTime OrderPlacedDateTime { get; set; }
+        public string OrderPlacedDateTime { get; set; }
 
         /// <summary>
         /// payment deposit date time
         /// </summary>
-        public DateTime? PaymentDepositDateTime { get; set; }
+        public string PaymentDepositDateTime { get; set; }
 
         /// <summary>
         /// order completed date time
         /// </summary>
-        public DateTime OrderCompletedDateTime { get; set; }
+        public string OrderCompletedDateTime { get; set; }
 
     }
 
