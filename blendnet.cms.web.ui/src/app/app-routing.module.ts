@@ -16,9 +16,21 @@ import { environment } from 'src/environments/environment';
 import { ProfileComponent } from './profile/profile.component';
 import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
 
+import { NotificationsComponent } from './notifications/notifications.component';
 
 const appRoutes: Routes = [
-
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./authenticated-user/authenticated-user.module').then(m => m.AuthenticatedUserModule)
+  },
+  {
+    path: 'retailer',
+    loadChildren: () => import('./retailer/retailer.module').then(m => m.RetailerModule)
+  },
   {
     path: 'unprocessed-content', 
     component: UnprocessedComponent,
@@ -117,6 +129,16 @@ const appRoutes: Routes = [
       expectedRole: [environment.roles.SuperAdmin]
     } 
   },
+  {
+    path: 'notifications', 
+    component: NotificationsComponent,
+    canActivate: [
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin]
+    } 
+  },
   { 
     path: '', 
     component: HomeComponent, 
@@ -125,11 +147,14 @@ const appRoutes: Routes = [
     path: 'login',
     component: LoginComponent
   },
+  {
+    path: 'profile',
+    component: ProfileComponent
+  },
   { 
     path: '**', 
     redirectTo: '' 
   }
-
 ];
 
 @NgModule({

@@ -29,9 +29,14 @@ import { CommonDialogComponent } from './common-dialog/common-dialog.component';
 import { AddSubscriptionDialog } from './subscription/add-subscription-dialog';
 import { ProfileComponent } from './profile/profile.component';
 import { PascalToStringPipe } from './custom-pipes/pascalcase-to-string.pipe';
+import { RetailerLandingPageComponent } from './retailer-landing-page/retailer-landing-page.component';
+import { CarouselModule } from 'ngx-owl-carousel-o';
+
 import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
 import { AddIncentiveComponent } from './incentive-management/add-incentive.component';
 import { DisableControlDirective } from './custom-directives/disable-control.directive';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { NotificationsDialog } from './notifications/notifications-dialog';
 
 @NgModule({
   declarations: [
@@ -54,10 +59,13 @@ import { DisableControlDirective } from './custom-directives/disable-control.dir
     CommonDialogComponent,
     ProfileComponent,
     PascalToStringPipe,
+    RetailerLandingPageComponent,
     ContentDetailsDialog,
     IncentiveManagementComponent,
     AddIncentiveComponent,
-    DisableControlDirective
+    DisableControlDirective,
+    NotificationsComponent,
+    NotificationsDialog
   ],
   imports: [
     HttpClientModule,
@@ -74,7 +82,8 @@ import { DisableControlDirective } from './custom-directives/disable-control.dir
       positionClass: 'toast-top-center',
       preventDuplicates: true
     }
-    )
+    ),
+    CarouselModule
   ],
   exports: [RouterModule],
   providers: [

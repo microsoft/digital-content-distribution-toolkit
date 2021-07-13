@@ -1,0 +1,131 @@
+.referrals-heading {
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: white;
+    /* border-bottom: 2px solid #E5E5E5; */
+}
+
+.back-nav {
+    margin-right: 10px;
+    vertical-align: bottom;
+}
+
+.referrals-heading-text {
+    display: inline-block;
+    font-weight: 500;
+    font-size: 18px;
+    color: #101010;
+}
+
+.incentives-each-block {
+    padding: 30px;
+    background: white;
+}
+
+.referrals-route-inner {
+    background-color: #D6EBFF;
+    height: 70px;
+    background-image: url('../../../assets/images/retailer-landing-page/referrals.png');
+    background-repeat: no-repeat;
+    /* background-position: calc(100% + 5px) 5px; */
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-position: calc(100% + 5px) -16px;
+}
+
+.milestones-route-inner {
+    background-color: #FFFACB;
+    height: 70px;
+    background-image: url('../../../assets/images/retailer-landing-page/milestones.png');
+    background-repeat: no-repeat;
+    background-position: 100% -12px;
+    box-shadow: 0px 4px 8px #FFFACB;
+    /* border-radius: 8px; */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.commission-route-inner {
+    background-color: #C6E2E1;
+    height: 70px;
+    background-image: url('../../../assets/images/retailer-landing-page/commission.png');
+    background-repeat: no-repeat;
+    background-position: 100% -12px;
+    box-shadow: 0px 4px 8px #C6E2E1;
+    /* border-radius: 8px; */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.incentive-text-type {
+    color: #101010;
+    padding-left: 30px;
+    line-height: 70px;
+}
+
+.each-offer-text-block {
+    color: #101010;
+    font-weight: 600;
+}
+
+.each-offer-inner {
+    height: 60px;
+    background: #FAFCFF;
+    border: 0.5px solid #D4E5F1;
+    /* border-radius: 8px; */
+    padding-right: 10px;
+    padding-left: 20px;
+    padding-top: 25px;
+    padding-bottom: 20px;
+    position: relative;
+}
+
+.each-offer-valid-label {
+    color: #606060;
+    font-size: 12px;
+}
+
+.each-offer-valid-date {
+    color: #1973EB;
+    font-size: 12px;
+    font-weight: bold;
+    padding-left: 3px;
+}
+
+.each-offer-conversion {
+    font-size: 12px;
+    color: #606060;
+}
+
+
+.referrals-each-offer-inner {
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+}
+
+
+.milestones-each-offer-inner {
+    box-shadow: 0px 2px 8px #FFFACB;
+}
+
+
+.commissions-each-offer-inner {
+    box-shadow: 0px 2px 8px #C6E2E1;
+    height: unset !important;
+}
+/* box-shadow: 0px 4px 8px; */
+
+.commission-left {
+    width: calc(100% - 100px);
+    display: inline-block;
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+.commission-right {
+    width: 100px;
+    display: inline-block;
+    padding-top: 10px;
+    padding-bottom: 5px;
+}

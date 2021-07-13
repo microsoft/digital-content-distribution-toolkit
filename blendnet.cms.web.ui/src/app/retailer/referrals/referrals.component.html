@@ -1,0 +1,63 @@
+<div class="referrals-main-block">
+    <div class="referrals-heading">
+        <img class="back-nav" (click)="navigateToHome()" src="../../assets/images/retailer-referrals/back-nav.jpg">
+        <div class="referrals-heading-text">Referrals</div>
+    </div>
+    <div class="landing-page-total-block-wrapper">
+        
+        <div class="landing-page-total-inner-wrapper">
+            <div class="landing-page-currency-image-block">
+                <img src="../../assets/images/retailer-landing-page/rupee.jpg">
+            </div>
+            <div class="landing-page-total-value-block">
+                <div class="referral-total-value">
+                    Rs.{{totalEarnings}}
+                </div>
+                <div class="total-earnings-text">
+                    Total Earnings
+                </div>
+            </div>
+            <div class="landing-page-total-image-block">
+                <!-- <img src="../../assets/images/retailer-landing-page/total.jpg"> -->
+                <mat-form-field appearance="fill" class="landing-page-total-image-block-field">
+                    <!-- <mat-label>Month</mat-label> -->
+                    <mat-select (selectionChange)="monthSelected($event)" [(ngModel)]="monthSelect">
+                      <mat-option *ngFor="let month of monthsDropDown" [value]="month">
+                         {{month.monthName}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-block">
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let referral of nestedReferrals;first as isFirst" [expanded]="isFirst">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div class="accordion-heading">
+                        <div class="accordion-left-content">{{referral.occuredDate}} • {{referral.transactions.length}} Referrals</div>
+                        <div class="accordion-right-content">Rs. {{referral.amount}}</div>     
+                    </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div *ngFor="let transaction of referral.transactions" class="accordion-total-inner-wrapper">
+                <div class="accordion-currency-image-block">
+                    <img class="accordion-currency" src="../../assets/images/retailer-landing-page/rupee.jpg">
+                </div>
+                <div class="accordion-value-block">
+                    <div class="accordion-value">
+                        {{transaction.mobile}}
+                    </div>
+                    <div class="accordion-text">
+                        {{transaction.occuredTime}}
+                    </div>
+                </div>
+                <div class="each-value">
+                    +Rs. {{transaction.calculatedValue}}
+                </div>
+            </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+    </div>
+</div>

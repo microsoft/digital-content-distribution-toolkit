@@ -9,6 +9,7 @@ import { LogService } from './log.service';
 })
 export class UserService {
   baseUrl = environment.userApiUrl;
+  isRetailerRouted = false;
   private loggedInUser = new BehaviorSubject<any>(null);
   loggedInUser$ = this.loggedInUser.asObservable();
 
@@ -29,6 +30,14 @@ export class UserService {
     return this.http.post(url, user);
   }
 
+  setRetailerRouted(flag) {
+    console.log('setting routed to' + flag)
+    this.isRetailerRouted = flag;
+  }
+
+  getRetailerRouted() {
+    return this.isRetailerRouted;
+  }
   
   setLoggedInUser(user) {
     this.loggedInUser.next(user)

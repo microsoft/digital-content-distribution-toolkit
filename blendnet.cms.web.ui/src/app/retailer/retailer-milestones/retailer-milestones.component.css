@@ -1,0 +1,187 @@
+.referrals-heading {
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.back-nav {
+    margin-right: 10px;
+    vertical-align: bottom;
+}
+
+.referrals-heading-text {
+    display: inline-block;
+    font-weight: 500;
+    font-size: 18px;
+    color: #101010;
+}
+
+.landing-page-total-block-wrapper {
+    padding-left: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.landing-page-currency-image-block{
+    display: inline-block;
+}
+
+.landing-page-total-value-block {
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.landing-page-total-image-block {
+    /* display: block; */
+    float: right;
+    padding-right: 20px;
+    width: calc(100% - 175px);
+    max-width: 100px;
+}
+
+.landing-page-total-image-block-field {
+    width: 100%;
+}
+
+.referral-total-value {
+    font-size: 20px;
+    line-height: 32px;
+    color: #101010;
+}
+
+.total-earnings-text {
+    font-size: 14px;
+    line-height: 16px;
+    color: #5D6973;
+    font-weight: 700;
+}
+
+.accordion-left-content {
+    display: inline-block;
+    /* float: right; */
+    color: #101010;
+    font-size: 14px;
+}
+
+.accordion-right-content {
+    float: right;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.accordion-heading {
+    width: 100%;
+}
+
+.mat-expansion-panel-header {
+    background:  #F2F5F8 !important;
+}
+
+::ng-deep .mat-expansion-indicator {
+    margin-top: -5px;
+}
+
+.accordion-total-inner-wrapper {
+    padding-top: 20px;
+}
+
+.accordion-currency-image-block {
+    display: inline-block;
+}
+
+.accordion-value-block {
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.accordion-value {
+    color: #101010;
+    font-weight: 500;
+}
+
+.accordion-text {
+    font-size: 12px;
+    /* line-height: 16px; */
+    color: #5D6973;
+}
+
+.each-value {
+    float: right;
+    padding-right: 20px;
+    color: #1CB5A2;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+
+
+.referrals-heading, .landing-page-total-block-wrapper {
+    background: white;
+}
+
+.landing-each-offer {
+    height: 150px;
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.landing-each-offer {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.landing-each-offer-milestone {
+    height: 150px;
+    background: #90C0FF;
+    border-radius: 8px;
+    /* padding-top: 22px;
+    padding-bottom: 22px; */
+    position: relative;
+    background-image: url('../../../assets/images/retailer-landing-page/milestones.png');
+    background-repeat: no-repeat;
+    background-position: 100% 67px;
+}
+
+.landing-each-offer-milestone-inner {
+    padding-top: 22px;
+    padding-bottom: 22px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.each-offer-text-block {
+    color: white;
+}
+
+.milestone-heading-1 {
+    font-weight: 600;
+}
+
+.milesone-progress {
+    vertical-align: bottom;
+    position: absolute;
+    width: calc(100% - 110px);
+    bottom: 17px;
+    color: white;
+}
+
+::ng-deep .mat-progress-bar-fill::after {
+    background-color: #FEB500
+}
+
+.ongoing-milestones {
+    background: white;
+    margin-top: 20px;
+}
+
+.ongoing-text {
+    color: #101010;
+    font-size: 16px;
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.landing-page-total-block-wrapper {
+    border-bottom: 2px solid #E5E5E5;
+    border-top: 2px solid #E5E5E5;
+}

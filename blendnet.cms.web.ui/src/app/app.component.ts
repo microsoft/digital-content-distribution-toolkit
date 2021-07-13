@@ -23,6 +23,7 @@ export class AppComponent {
 
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded;
+  isDesktop;
   showHomeSubmenu: boolean = true;
   showContentSubmenu: boolean = true;
   showDeviceSubmenu: boolean = true;
@@ -31,6 +32,7 @@ export class AppComponent {
   currentUser: any;
   currentUserName: string = '';
   hasMenuAccess: boolean = false;
+  hasRetailerAccess: boolean = false;
   innerWidth = window.innerWidth;
   resizeObservable$: Observable<Event>
   resizeSubscription$: Subscription;
@@ -39,7 +41,7 @@ export class AppComponent {
     private router: Router,
     private kaizalaService: KaizalaService,
     public dialog: MatDialog,
-    private userService: UserService
+    public userService: UserService
   ) {
     this.kaizalaService.currentUser.subscribe(user => {
       this.currentUser = user});
@@ -52,6 +54,7 @@ export class AppComponent {
 
     ngOnInit(): void {
         this.isExpanded = (this.innerWidth > 768) ? true : false;
+        this.isDesktop = (this.innerWidth > 1023) ? true : false;
         this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
           this.selectedCPName = selectedCP ? selectedCP.name : 
           sessionStorage.getItem("contentProviderName") ? 
@@ -62,6 +65,7 @@ export class AppComponent {
         this.resizeSubscription$ = this.resizeObservable$.subscribe( evt => {
           this.innerWidth = window.innerWidth;
           this.isExpanded = (this.innerWidth > 768) ? true : false;
+          this.isDesktop = (this.innerWidth > 1023) ? true : false;
         })
         
     }
@@ -69,8 +73,9 @@ export class AppComponent {
 
 
     ngDoCheck() {
-      this.hasMenuAccess = sessionStorage.getItem("roles")?.includes(environment.roles.SuperAdmin) ||
-      sessionStorage.getItem("roles")?.includes(environment.roles.ContentAdmin);
+      this.hasRetailerAccess = sessionStorage.getItem("roles")?.includes(environment.roles.Retailer);
+      this.hasMenuAccess = (sessionStorage.getItem("roles")?.includes(environment.roles.SuperAdmin) ||
+      sessionStorage.getItem("roles")?.includes(environment.roles.ContentAdmin)) && !this.hasRetailerAccess;
 
       this.cpService.sharedSelectedCP$.subscribe(selectedCP => {
         this.selectedCPName = selectedCP ? selectedCP.name : 
