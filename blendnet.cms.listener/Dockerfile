@@ -9,6 +9,7 @@ COPY ["blendnet.cms.listener/blendnet.cms.listener.csproj", "blendnet.cms.listen
 COPY ["blendnet.cms.repository/blendnet.cms.repository.csproj", "blendnet.cms.repository/"]
 COPY ["blendnet.common.dto/blendnet.common.dto.csproj", "blendnet.common.dto/"]
 COPY ["blendnet.common.infrastructure/blendnet.common.infrastructure.csproj", "blendnet.common.infrastructure/"]
+COPY ["blendnet.api.proxy/blendnet.api.proxy.csproj", "blendnet.api.proxy/"]
 COPY ["MPDParser/MPDParser.csproj", "MPDParser/"]
 RUN dotnet restore "blendnet.cms.listener/blendnet.cms.listener.csproj"
 COPY . .

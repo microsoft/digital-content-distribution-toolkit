@@ -58,7 +58,7 @@ export class AddContentProviderComponent implements OnInit {
     // this.amaxDate = new Date(currentYear , currentMonth, currentDate+10);
     // this.dminDate = new Date(currentYear, currentMonth, currentDate+1);
     // this.dmaxDate = new Date(currentYear+1, 11, 31);
-    this.isSuperAdmin = localStorage.getItem("roles")?.includes(environment.roles.SuperAdmin);
+    this.isSuperAdmin = sessionStorage.getItem("roles")?.includes(environment.roles.SuperAdmin);
     if(this.isSuperAdmin) {
       this.removable = true;
     } else{

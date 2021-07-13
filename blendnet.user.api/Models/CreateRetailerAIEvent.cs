@@ -33,6 +33,36 @@ namespace blendnet.user.api.Models
         public string RetailerPartnerId { get; set; }
 
         /// <summary>
+        /// State
+        /// </summary>
+        /// <value></value>
+        public string State { get; set; }
+
+        /// <summary>
+        /// City
+        /// </summary>
+        /// <value></value>
+        public string City { get; set; }
+
+        /// <summary>
+        /// Pin Code
+        /// </summary>
+        /// <value></value>
+        public int PinCode { get; set; }
+
+        /// <summary>
+        /// Latitude of the location coordinates
+        /// </summary>
+        /// <value></value>
+        public double Latitude { get; set; }
+
+        /// <summary>
+        /// Longitude of the location coordinates
+        /// </summary>
+        /// <value></value>
+        public double Longitude { get; set; }
+
+        /// <summary>
         /// Additional Attributes for the retailer
         /// </summary>
         /// <value></value>
