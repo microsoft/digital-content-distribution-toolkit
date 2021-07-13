@@ -195,7 +195,7 @@ namespace blendnet.oms.api.Controllers
             
             
             //validate amount collected
-            if(!ValidateAmount(completeOrderRequest))
+            if(!ValidateAmount(completeOrderRequest, order))
             {
                 errorInfo.Add(_stringLocalizer["OMS_ERR_0003"]);
                 return BadRequest(errorInfo);
@@ -456,11 +456,33 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("{orderId:guid}", Name = nameof(GetOrderByOrderId))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.User, KaizalaIdentityRoles.RetailerManagement)]
+        [AuthorizeRoles(KaizalaIdentityRoles.User)]
         public async Task<ActionResult<Order>> GetOrderByOrderId(Guid orderId)
         {
             var userPhoneNumber = User.Identity.Name;
 
+            Order order = await _omsRepository.GetOrderByOrderId(orderId, userPhoneNumber);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(order);
+            }
+        }
+
+        /// <summary>
+        ///  API to get order details by orderId by retailer managemet
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpGet("{orderId:guid}/{userPhoneNumber}", Name = nameof(GetOrderByOrderIdAndPhoneNumber))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.RetailerManagement)]
+        public async Task<ActionResult<Order>> GetOrderByOrderIdAndPhoneNumber(Guid orderId, string userPhoneNumber)
+        {
             Order order = await _omsRepository.GetOrderByOrderId(orderId, userPhoneNumber);
 
             if (order == null)
@@ -484,7 +506,6 @@ namespace blendnet.oms.api.Controllers
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<List<Order>>> GetOrder(string phoneNumber, OrderStatusFilter orderFilter)
         {
-
             List<Order> orderlist = await _omsRepository.GetOrdersByPhoneNumber(phoneNumber, orderFilter);
 
             if (orderlist.Count() > 0)
@@ -767,9 +788,21 @@ namespace blendnet.oms.api.Controllers
         /// </summary>
         /// <param name="completeOrderRequest"></param>
         /// <returns></returns>
-        private bool ValidateAmount(CompleteOrderRequest completeOrderRequest)
+        private bool ValidateAmount(CompleteOrderRequest completeOrderRequest, Order order)
         {
             if(completeOrderRequest.AmountCollected < 0)
+            {
+                return false;
+            }
+
+            float expectedTotal = 0;
+
+            foreach(var orderItem in order.OrderItems)
+            {
+                expectedTotal += orderItem.Subscription.Price;
+            }
+
+            if(expectedTotal != completeOrderRequest.AmountCollected)
             {
                 return false;
             }
