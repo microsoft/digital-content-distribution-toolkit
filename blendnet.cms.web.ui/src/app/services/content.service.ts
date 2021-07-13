@@ -21,13 +21,13 @@ export class ContentService {
 
 
   getContentByCpIdAndFilters(unprocessedContentFilters) {
-    let url = this.baseUrl + "/"+ localStorage.getItem("contentProviderId") + "/contentlist";
+    let url = this.baseUrl + "/"+ sessionStorage.getItem("contentProviderId") + "/contentlist";
     this.logger.log(`Fetching content by contentprovider and filters`);
     return this.http.post(url, unprocessedContentFilters, { observe: 'response'});
   }
  
   uploadContent(formData){
-    let url = this.baseUrl + "/"+ localStorage.getItem("contentProviderId") ;
+    let url = this.baseUrl + "/"+ sessionStorage.getItem("contentProviderId") ;
     this.logger.log(`Uploading Content JSON`);
     return this.http.post(url, formData, 
       {reportProgress: true, observe: 'events'});
