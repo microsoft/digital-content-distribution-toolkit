@@ -325,6 +325,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("consumer/{planId:guid}", Name = nameof(GetConsumerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.User, KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<IncentivePlan>> GetConsumerIncentivePlan(Guid planId)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
@@ -344,6 +345,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("consumer/{planType}", Name=nameof(GetConsumerIncentivePlans))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.User, KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<List<IncentivePlan>>> GetConsumerIncentivePlans(PlanType planType)
         {
             Audience audience = new Audience()
