@@ -39,7 +39,7 @@ export class NotificationsComponent implements OnInit {
   selectedNotifications: number=0;
   allowedMaxSelection: number = environment.allowedMaxSelection;
   deleteConfirmMessage: string = "Content once deleted can not be restored. Please press Continue to begin the deletion.";
-  displayedColumns: string[] = ['Preview', 'Title', 'Status', 'CreatedOn'];
+  displayedColumns: string[] = ['Preview', 'Title', 'Description', 'Status', 'CreatedOn'];
   dataSource = ELEMENT_DATA;
 
   @ViewChild(MatAccordion) accordion: MatAccordion;

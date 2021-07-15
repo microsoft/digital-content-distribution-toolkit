@@ -71,7 +71,7 @@ export enum EventType {
     "Consumer Order Complete" = "CONSUMER_INCOME_ORDER_COMPLETED",
     "Consumer Redeem Subscription" = "CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM",
     "Retailer Order Complete"= "RETAILER_INCOME_ORDER_COMPLETED",
-    "Retailer Referral"= "RETAILER_INCOME_REFFRAL_COMPLETED"
+    "Retailer Referral"= "RETAILER_INCOME_REFERRAL_COMPLETED"
 }
 
 

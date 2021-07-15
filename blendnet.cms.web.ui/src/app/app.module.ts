@@ -35,6 +35,7 @@ import { CarouselModule } from 'ngx-owl-carousel-o';
 import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
 import { AddIncentiveComponent } from './incentive-management/add-incentive.component';
 import { DisableControlDirective } from './custom-directives/disable-control.directive';
+import { AddEventDialog } from './incentive-management/add-event-dialog';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { NotificationsDialog } from './notifications/notifications-dialog';
 
@@ -64,6 +65,7 @@ import { NotificationsDialog } from './notifications/notifications-dialog';
     IncentiveManagementComponent,
     AddIncentiveComponent,
     DisableControlDirective,
+    AddEventDialog,
     NotificationsComponent,
     NotificationsDialog
   ],

@@ -1,10 +1,11 @@
 <div class="cms-container">
 
-    <h1>Subscriptions</h1>
+    <h1>Subscriptions
 
-    <button mat-raised-button color="primary" class="create-btn"
-    (click)="openDialog(null)"> Create </button>
+        <button mat-raised-button color="primary" class="create-btn"
+        (click)="openDialog(null)" style="float: right;"> New Subscription </button>
 
+    </h1>
     <!-- <div style="float: right;" *ngIf="cpSubscriptions?.length>0">
         <button matTooltip="Expand All"   mat-icon-button  
         color="primary" (click)="accordion.openAll()"><mat-icon>expand_more</mat-icon></button>
@@ -79,7 +80,7 @@
 <mat-form-field>
     <mat-label>Filter</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Premium" #input>
-  </mat-form-field>
+</mat-form-field>
 
     <div class="mat-elevation-z8">
         <div class="cms-table-container">
@@ -177,5 +178,5 @@
         </div>
       
         <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
-      </div>
+    </div>
 </div>

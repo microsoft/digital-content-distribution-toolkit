@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ToastrService } from 'ngx-toastr';
+import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { Incentive } from '../models/incentive.model';
 import { IncentiveService } from '../services/incentive.service';
 
@@ -12,11 +14,11 @@ import { IncentiveService } from '../services/incentive.service';
   styleUrls: ['./incentive-management.component.css']
 })
 export class IncentiveManagementComponent implements OnInit {
-  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'startDate', 'endDate', 'status' , 'edit'];
+  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'startDate', 'endDate', 'status' , 'edit', 'publish'];
   dataSourceRetailers: MatTableDataSource<Incentive>;
 
   dataSourceConsumers: MatTableDataSource<Incentive>;
-  displayedColumnsConsumers: string[] = ['name', 'type', 'startDate', 'endDate', 'status' , 'edit'];
+  displayedColumnsConsumers: string[] = ['name', 'type', 'startDate', 'endDate', 'status' , 'edit', 'publish'];
 
 
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
@@ -33,7 +35,8 @@ export class IncentiveManagementComponent implements OnInit {
   selectedPlan = null;
 
   constructor( private incentiveService: IncentiveService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private toastr: ToastrService
     ) { }
 
   ngOnInit(): void {
@@ -181,5 +184,82 @@ export class IncentiveManagementComponent implements OnInit {
       this.dataSourceConsumers.paginator.firstPage();
     }
   }
+
+  
+  publishPlan(row, audience) {
+    if(audience === "RETAILER") {
+      this.publishRetailerIncentive(row.id, row.partner);
+    } else {
+      this.publishConsumerIncentive(row.id);
+    }
+  }
+
+  
+openPublishDialog(row, audience) {
+  const dialogRef = this.dialog.open(CommonDialogComponent, {
+    data: {
+      heading: 'Confirm',
+      message: "Please click confirm to publish the incentive plan.",
+      partner: row.partner,
+      planId: row.id,
+      audience: audience,
+      action: "PROCESS",
+      buttons: this.openSelectCPModalButtons()
+    },
+    maxHeight: '400px'
+  });
+
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'proceed') {
+      this.publishPlan(row, audience);
+    }
+  });
+}
+
+openSelectCPModalButtons(): Array<any> {
+  return [{
+    label: 'Cancel',
+    type: 'basic',
+    value: 'cancel',
+    class: 'discard-btn'
+  },
+  {
+    label: 'Confirm',
+    type: 'primary',
+    value: 'submit',
+    class: 'update-btn'
+  }
+  ]
+}
+
+  publishRetailerIncentive(id, partner) {
+    this.incentiveService.publishRetailerIncentivePlan(id, partner).subscribe(
+      res => {
+        this.toastr.success("Retailer Incentive plan published successfully");
+        console.log(res),
+        this.getRetailerIncentivePlans();
+      },
+      err =>  {
+        console.log(err);
+        this.toastr.error(err);
+      }
+    );
+  }
+
+  publishConsumerIncentive(id){
+    this.incentiveService.publishConsumerIncentivePlan(id).subscribe(
+      res => {
+        this.toastr.success("Consumer Incentive plan published successfully");
+        console.log(res),
+        this.getConsumerIncentivePlans();
+      },
+      err =>  {
+        console.log(err);
+        this.toastr.error(err);
+      }
+    );
+  }
+
   
 }

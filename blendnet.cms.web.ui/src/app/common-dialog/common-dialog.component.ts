@@ -21,7 +21,7 @@ export class CommonDialogComponent {
     if (button.value === 'submit') {
       this.dialogRef.close('proceed');
     } else if (button.value === 'cancel') {
-      this.dialogRef.close();
+      this.dialogRef.close('cancel');
     }
   }
 

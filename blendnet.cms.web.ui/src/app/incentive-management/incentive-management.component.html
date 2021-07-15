@@ -1,16 +1,13 @@
 
     <mat-tab-group color="primary" backgroundColor="grey" (selectedTabChange)="tabClick($event)">
-        <mat-tab label="RETAILER"> 
+        <mat-tab label="RETAILER" > 
             <br>
             <span *ngIf="showRetailerIncentive">
                 <div class="cms-container">
-                    <div align="end">
-                        <button mat-raised-button color="primary" class="create-incentive"
-                        (click)="openNewIncentivePage('RETAILER')">Create Incentive</button>
-                    </div>
-                    <br>
-                    <div mat-dialog-actions align="end">
-                        <b>Filter: </b> <mat-button-toggle-group (change)="applyFilterRetailer($event)"#planTypeToggle="matButtonToggleGroup">
+                    <h4>
+                        <button mat-raised-button color="primary"
+                        (click)="openNewIncentivePage('RETAILER')">New Incentive</button>
+                        <mat-button-toggle-group (change)="applyFilterRetailer($event)"#planTypeToggle="matButtonToggleGroup" style="float: right;">
                             <mat-button-toggle value="REGULAR" aria-label="REGULAR">
                               REGULAR
                             </mat-button-toggle>
@@ -18,6 +15,11 @@
                               MILESTONE
                             </mat-button-toggle>
                         </mat-button-toggle-group>
+                    </h4>
+                    
+                    
+                    <div mat-dialog-actions align="end">
+                        
                     </div>
                     <mat-form-field>
                         <mat-label>Search Incentive</mat-label>
@@ -72,13 +74,23 @@
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
                                 <td mat-cell *matCellDef="let row"> {{row.status}} </td>
                             </ng-container>
-                            <!-- Status Column -->
+                            <!-- edit Column -->
                             <ng-container matColumnDef="edit">
                                 <th mat-header-cell *matHeaderCellDef > Edit </th>
                                 <td mat-cell *matCellDef="let row"> 
                                     <button mat-icon-button  (click)="editIncentivePlan(row, 'RETAILER')">
                                         <mat-icon mat-icon 
                                         matTooltip="Edit">edit</mat-icon> 
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="publish">
+                                <th mat-header-cell *matHeaderCellDef > Publish </th>
+                                <td mat-cell *matCellDef="let row"> 
+                                    <button mat-icon-button  (click)="openPublishDialog(row, 'RETAILER')" [disabled]="row.status === 'PUBLISHED'">
+                                        <mat-icon mat-icon 
+                                        matTooltip="Publish">publish</mat-icon> 
                                     </button>
                                 </td>
                             </ng-container>
@@ -103,11 +115,23 @@
             <span *ngIf="showConsumerIncentive">
                 
             <div class="cms-container">
-                <div align="end">
+                <h4>
+                    <button mat-raised-button color="primary"
+                    (click)="openNewIncentivePage('CONSUMER')">New Incentive</button>
+                    <mat-button-toggle-group (change)="applyFilterConsumer($event)"#planTypeToggle="matButtonToggleGroup" style="float: right;">
+                        <mat-button-toggle value="REGULAR" aria-label="REGULAR">
+                          REGULAR
+                        </mat-button-toggle>
+                        <mat-button-toggle value="MILESTONE" aria-label="MILESTONE">
+                          MILESTONE
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                </h4>
+                <!-- <div align="end">
                     <button mat-raised-button color="primary" class="create-incentive"
                     (click)="openNewIncentivePage('CONSUMER')">Create Incentive</button>
-                </div>
-                <br>
+                </div> -->
+                <!-- <br>
                 <div mat-dialog-actions align="end">
                     <b>Filter: </b> <mat-button-toggle-group (change)="applyFilterConsumer($event)" #planTypeToggle="matButtonToggleGroup">
                         <mat-button-toggle value="REGULAR" aria-label="REGULAR">
@@ -117,7 +141,7 @@
                           MILESTONE
                         </mat-button-toggle>
                     </mat-button-toggle-group>
-                </div>
+                </div> -->
                 <mat-form-field>
                     <mat-label>Search Incentive</mat-label>
                         <input matInput (keyup)="applyFilterConsumer($event)" placeholder="Ex. Incentive Plan">
@@ -166,14 +190,25 @@
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
                             <td mat-cell *matCellDef="let row"> {{row.status}} </td>
                         </ng-container>
-                        <!-- Status Column -->
+                        <!-- Edit Column -->
                         <ng-container matColumnDef="edit">
                             <th mat-header-cell *matHeaderCellDef > Edit </th>
                             <td mat-cell *matCellDef="let row"> 
                                 <button mat-icon-button  (click)="editIncentivePlan(row, 'CONSUMER')">
                                     <mat-icon mat-icon 
                                     matTooltip="Edit">edit</mat-icon> 
-                                </button>                            </td>
+                                </button>
+                            </td>
+                        </ng-container>
+                        
+                        <ng-container matColumnDef="publish">
+                            <th mat-header-cell *matHeaderCellDef > Publish </th>
+                            <td mat-cell *matCellDef="let row"> 
+                                <button mat-icon-button  (click)="openPublishDialog(row, 'CONSUMER')" [disabled]="row.status === 'PUBLISHED'">
+                                    <mat-icon mat-icon 
+                                    matTooltip="Publish">publish</mat-icon> 
+                                </button>
+                            </td>
                         </ng-container>
                         <tr mat-header-row *matHeaderRowDef="displayedColumnsConsumers; sticky: true"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumnsConsumers;"></tr>

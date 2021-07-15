@@ -1,32 +1,32 @@
-<div align="center">
+<div class="cms-container">
+
     <h2>
-        {{audience}} Incentive Plan
-    </h2>
-</div>
-<br>
-<div align="end">
-    <button mat-raised-button color="primary" (click)="displayIncentivePlan()"
-    class="back-to-list">BACK</button>
-</div>
-<br>
-  <mat-horizontal-stepper [linear]="true" #stepper>
-    <mat-step [stepControl]="incentiveFormGroup" label="Plan Details">
-      <form [formGroup]="incentiveFormGroup">
-                    <mat-form-field >
+        {{audience}} INCENTIVE PLAN
+
+
+        <button mat-raised-button color="primary" (click)="displayIncentivePlan()" style="float: right;"
+        class="back-to-list">BACK</button> 
+</h2>
+<mat-card>
+    <form [formGroup]="incentiveFormGroup">
+        <div>
+                <label class="type-label">Incentive Plan Type: </label>&nbsp;&nbsp;&nbsp;
+                <mat-radio-group  formControlName="type" [disableControl]="isPublished" aria-label="Select plan type">
+                <!-- (ngModelChange)="onPlanTypeChange()"> -->
+                    <mat-radio-button value="REGULAR" (click)="onPlanTypeChange()">REGULAR PLAN</mat-radio-button>
+                    <mat-radio-button value="MILESTONE" (click)="onPlanTypeChange()">MILESTONE PLAN</mat-radio-button>
+                </mat-radio-group>
+        </div>
+        <br>
+        <table >
+            <tr>
+                <td>
+                    <mat-form-field>
                         <input matInput placeholder="Plan Name" 
                         formControlName="name" required  [disableControl]="isPublished">
                     </mat-form-field>
-                    <br>
-                    <br>
-                    <label class="cms-incentive-plan-type-font" id="cms-incentive-radio-group-label">Incentive Plan Type</label>&nbsp;&nbsp;&nbsp;
-                    <br>
-                    <mat-radio-group aria-labelledby="cms-incentive-radio-group-label"
-                    class="cms-incentive-radio-group" formControlName="type" [disableControl]="isPublished"
-                    (ngModelChange)="onPlanTypeChange()">
-                        <mat-radio-button value="REGULAR" class="cms-incentive-plan-type">REGULAR</mat-radio-button>
-                        <mat-radio-button value="MILESTONE" class="cms-incentive-plan-type">MILESTONE</mat-radio-button>
-                    </mat-radio-group>
-                    <br><br>
+                </td>
+                <td>
                     <mat-form-field *ngIf="audience === 'RETAILER'">
                         <mat-label>Retailer Partner</mat-label>
                         <mat-select  name="partner" formControlName="partner"
@@ -36,238 +36,140 @@
                         </mat-option>
                         </mat-select>
                     </mat-form-field>
-      </form>
-      <div mat-dialog-actions align="end">
-        <button mat-raised-button class="discard-btn" (click)="displayIncentivePlan()" >Cancel</button>
-        <button mat-raised-button color="primary" matStepperNext  class="update-btn">Next</button>
-      </div>
-    </mat-step>
-    <mat-step [stepControl]="eventsFormGroup" label="Event Details">
-      <form [formGroup]="eventsFormGroup">
-        <br>
-        <br>
-        <mat-accordion class="cms-incentive-headers-align"
-            formArrayName="events"
-            *ngFor="let event of getEvents(); let i = index;">
-            <mat-expansion-panel [formGroupName]="i" [expanded]="step === i" (opened)="setStep(i)" hideToggle
-                (opened)="setPanelOpenState(i, true)"
-                       (closed)="setPanelOpenState(i, false)">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <span *ngIf="getPanelOpenState(i)">
-                            Event Details
-                        </span> 
-                        <table *ngIf="!getPanelOpenState(i)" id="event-details-table">
-                            <tr>
-                                <th>Event Type</th>
-                                <th *ngIf="!isCPDisabledForEvent(i)">ContentProvider</th>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {{getSelectedEventType(i) ? getSelectedEventType(i) : 'Not Selected'}} 
-                                </td>
-                                <td *ngIf="!isCPDisabledForEvent(i)"> 
-                                    {{getSelectedCP(i)? getSelectedCP(i) : 'Not Selected'}}
-                                </td>
-                            </tr>
-                        </table>
-                        
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        <span *ngIf="getPanelOpenState(i)"></span>
-                        <table *ngIf="!getPanelOpenState(i)" id="event-details-table">
-                            <tr>
-                                <th *ngIf="isMileStonePlanType()">Rule Type</th>
-                                <th>Formula Type</th>
-                                <th *ngIf="isFormulaTypeDivide(i)">Target</th>
-                                <th *ngIf="(isFormulaTypeDivide(i) && isMileStonePlanType()) || !isMileStonePlanType()">Incentive</th>
-                            </tr>
-                            <tr>
-                                <td *ngIf="isMileStonePlanType()"> {{getSelectedRuleType(i) ? getSelectedRuleType(i) : 'NA'}} </td>
-                                <td>{{getSelectedFormulaType(i) ? getSelectedFormulaType(i) : 'NA'}} </td>
-                                <td *ngIf="isFormulaTypeDivide(i)"> 
-                                    {{getSelectedTarget(i) ? getSelectedTarget(i) : 'NA'}} 
-                                </td>
-                                <td *ngIf="(isFormulaTypeDivide(i) && isMileStonePlanType()) || !isMileStonePlanType()"> {{getSelectedIncentive(i) ? getSelectedIncentive(i) : 'NA'}} </td>
-                            </tr>
-                        </table>
-                           <button align="end" mat-icon-button color="primary"  
-                           *ngIf="i!==0" [disabled]="isPublished"
-                            (click)="removeEvent(i)">
-                        <mat-icon matTooltip="Delete Event">delete</mat-icon></button>
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                <table>
-                    <tr>
-                        <td>
-                            <mat-form-field>
-                                <mat-label>Event Type</mat-label>
-                                <mat-select  name="eventType" (ngModelChange)="onEventTypeChange(i)"
-                                formControlName="eventType"  [disableControl]="isPublished">
-                                <mat-option *ngFor="let event of eventTypes" [value]="event.value">
-                                    {{event.name}}
-                                </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field >
-                                <input matInput placeholder="Event Title" 
-                                formControlName="eventTitle" required  [disableControl]="isPublished">
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field >
-                                <mat-label>Content Provider</mat-label>
-                                <mat-select  name="contentProvider" 
-                                formControlName="contentProvider"
-                                [disableControl]="isCPDisabledForEvent(i) || isPublished">
-                                <mat-option *ngFor="let cp of contentProviders" [value]="cp.id">
-                                    {{cp.name}}
-                                </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                        <td *ngIf="isMileStonePlanType()">
-                            <mat-form-field >
-                                <mat-label>Rule Type</mat-label>
-                                <mat-select name="ruleType"
-                                formControlName="ruleType"  [disableControl]="isPublished">
-                                <mat-option *ngFor="let rule of ruleTypes" [value]="rule">{{rule}}
-                                </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <mat-form-field>
-                                <mat-label>Formula</mat-label>
-                                <mat-select name="formula"
-                                formControlName="formula"  [disableControl]="isPublished"
-                                (ngModelChange)="onFomulaChange(i)">
-                                <span *ngIf="isMileStonePlanType()">
-                                    <mat-option  *ngFor="let formula of milestoneFormulas" [value]="formula">
-                                        {{formula}}
-                                    </mat-option>
-                                </span>
-                                <span *ngIf="!isMileStonePlanType()">
-                                    <mat-option  *ngFor="let formula of regularFormulas" [value]="formula">
-                                        {{formula}} 
-                                    </mat-option>
-                                </span>
-                                
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                        <td *ngIf="isDivideFormulaType(i)">
-                            <mat-form-field >
-                                <input matInput placeholder="Milestone target" 
-                                formControlName="target" required  [disableControl]="isPublished">
-                            </mat-form-field>
-                        </td>
-                        <td *ngIf="!isRangeFormulaType(i)">
-                            <mat-form-field >
-                                <input matInput placeholder="Incentive" 
-                                formControlName="incentive" required  [disableControl]="isPublished">
-                            </mat-form-field>
-                        </td>
-                    </tr>
-                </table>
-            
-                <span *ngIf="isMileStonePlanType() && isRangeFormulaType(i)">
-                    <br>
-                    <div formArrayName="ranges"
-                    *ngFor="let range of getRanges(i); let j = index;">
-                    <div [formGroupName]="j">
-                            <mat-form-field>
-                                <input matInput placeholder="Start" 
-                                formControlName="start" required  [disableControl]="isPublished">
-                            </mat-form-field>
+                   
+                   
+                </td>
+            </tr>
 
-                            <mat-form-field>
-                                <input matInput placeholder="End" 
-                                formControlName="end" required  [disableControl]="isPublished">
-                            </mat-form-field>
+            <tr>
+                <td>
+                    <mat-form-field >
+                        <mat-label>Start date</mat-label>
+                        <input matInput  [matDatepicker]="startpicker" disabled
+                        formControlName="startDate" required  [min]="minStart">
+                        <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+                        <mat-datepicker #startpicker [disabled]="isPublished"></mat-datepicker>
+                      </mat-form-field>
+                </td>
+                <td>
+                    <mat-form-field >
+                        <mat-label>End date</mat-label>
+                        <input matInput  [matDatepicker]="endpicker" disabled
+                        formControlName="endDate" required  [min]="minEnd">
+                        <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+                        <mat-datepicker #endpicker [disabled]=false></mat-datepicker>
+                      </mat-form-field>
+                </td>
+            </tr>
+        </table> 
+    </form>
 
-                            <mat-form-field>
-                                <input matInput placeholder="Incentive" 
-                                formControlName="incentive" required  [disableControl]="isPublished">
-                            </mat-form-field>
 
-                            <button mat-icon-button color="primary" *ngIf="j!==0 || getTotalRanges(i)>=2"
-                            (click)="removeRange(j, i)">
-                                <mat-icon>remove</mat-icon>
-                            </button>
-                    </div>
-                    </div>
-                    <button mat-stroked-button color="primary" 
-                    (click)="addRange(i)"  [disabled]="isPublished">
-                        <mat-icon matTooltip="Add Range">add</mat-icon>
-                        Add Range
+    <button mat-stroked-button color="primary" type="button" [disabled]="isPublished || isIncentiveFormNotValid()" (click)="openDialog(null)"><mat-icon>add</mat-icon>Add Event</button>
+    <br> <br>
+
+    <div class="mat-elevation-z8">
+        <div class="cms-table-container">
+            <table mat-table [dataSource]="dataSource" matSort>     
+            <!-- event type Column -->
+            <ng-container matColumnDef="eventType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+                <td mat-cell *matCellDef="let row"> {{row.eventTypeName}} </td>
+            </ng-container>
+            <!-- event title Column -->
+            <ng-container matColumnDef="eventTitle">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+                <td mat-cell *matCellDef="let row"> {{row.eventTitle}} </td>
+            </ng-container>
+            <!-- content provider Column -->
+            <ng-container matColumnDef="contentProvider">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Contentprovider </th>
+                <td mat-cell *matCellDef="let row"> {{row.eventSubTypeName}} </td>
+            </ng-container>
+            <!-- rule type Column -->
+            <ng-container matColumnDef="ruleType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> RuleType </th>
+                <td mat-cell *matCellDef="let row"> {{row.ruleType}} </td>
+            </ng-container>
+            <!-- formula Column -->
+            <ng-container matColumnDef="formula">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Formula </th>
+                <td mat-cell *matCellDef="let row"> {{row.formula.formulaType}} </td>
+            </ng-container>
+                <!-- Incentive Column -->
+                <ng-container matColumnDef="incentive">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Incentive </th>
+                <td mat-cell *matCellDef="let row"> {{row.formula.firstOperand}} </td>
+            </ng-container>
+            <!-- milestoneTarget Column -->
+                <ng-container matColumnDef="milestoneTarget">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Milestone Target</th>
+                <td mat-cell *matCellDef="let row"> {{row.formula.secondOperand}} </td>
+            </ng-container>
+                <!-- edit Column -->
+                <ng-container matColumnDef="edit">
+                <th mat-header-cell *matHeaderCellDef> 
+                    Edit
+                    </th>
+                <td mat-cell *matCellDef="let row" >
+                    <button mat-icon-button [disabled]="isPublished"
+                        (click)="openDialog(row)">
+                    <!-- [disabled]="!row.status"> -->
+                        <mat-icon mat-icon 
+                        matTooltip="Edit">edit</mat-icon> 
                     </button>
-                </span>
+                </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef> 
+                    Delete
+                    </th>
+                <td mat-cell *matCellDef="let row; let rowIndex = index" >
+                    <button mat-icon-button [disabled]="isPublished"
+                        (click)="removeEvent(rowIndex)">
+                        <mat-icon mat-icon 
+                        matTooltip="delete">delete</mat-icon> 
+                    </button>
+                </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        
+            <!-- Row shown when there is no matching data. -->
+            <!-- <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4" *ngIf="input.value?.length>0">No data matching the filter "{{input.value}}"</td>
+            </tr>  -->
+            </table>
+        </div>
+        
+        <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+    </div>
 
 
 
-              <mat-action-row>
-                <button *ngIf="i!==0" mat-button color="warn" (click)="prevStep()">Previous Event</button>
-                <button mat-button color="primary" (click)="nextStep()" *ngIf="i!==(getTotalEvents()-1)">Next Event</button>
-              </mat-action-row>
-            </mat-expansion-panel> 
-            <br>              
-        </mat-accordion>
-          <button mat-stroked-button color="primary" type="button" [disabled]="isPublished" (click)="addEvent()"><mat-icon>add</mat-icon>Add Event</button>
-      </form>
-      <div mat-dialog-actions align="end">
-        <button mat-raised-button matStepperPrevious class="discard-btn" >Cancel</button>
-        <button mat-raised-button color="primary" matStepperNext  class="update-btn">Next</button>
-      </div>
-    </mat-step>
-    <mat-step [stepControl]="datesFormGroup" label="Active Duration">
-      <form [formGroup]="datesFormGroup">
-        <mat-form-field >
-            <mat-label>Start date</mat-label>
-            <input matInput  [matDatepicker]="startpicker"
-            formControlName="startDate" required [disableControl]="stepper.selectedIndex===2" [min]="minStart">
-            <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
-            <mat-datepicker #startpicker [disabled]="isPublished"></mat-datepicker>
-          </mat-form-field>
-          <br>
-          <mat-form-field >
-            <mat-label>End date</mat-label>
-            <input matInput  [matDatepicker]="endpicker"
-            formControlName="endDate" required [disableControl]="stepper.selectedIndex===2" [min]="minEnd">
-            <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
-            <mat-datepicker #endpicker [disabled]=false></mat-datepicker>
-          </mat-form-field>
-      </form>
+    <br>
     
     <div mat-dialog-actions align="end">
-    <button mat-raised-button  class="discard-btn" >Cancel</button>
     <button mat-raised-button color="primary"  class="update-btn"
     (click)="createIncentive()"
-    *ngIf="!isDraft && !isPublished">
+    *ngIf="!isDraft && !isPublished" [disabled]="isIncentiveFormNotValid() || isEventFormNotValid()">
         Draft Plan
     </button>
 
     <button mat-raised-button color="primary"   class="update-btn"
     (click)="changeDate()"
     *ngIf="isPublished">
-        Update
+        Change End Date
     </button>
     <button mat-raised-button color="primary"   class="update-btn"
     (click)="updateDraftPlan()"
-    *ngIf="isDraft && isFormUpdated()">
-        Update
+    *ngIf="isDraft" [disabled]="isIncentiveFormNotValid() || isEventFormNotValid()" >
+        Update Plan
     </button>
 
-    <button mat-raised-button color="primary"   class="update-btn"
-    (click)="publishPlan()"
-    *ngIf="isDraft && !isFormUpdated()">
-        Publish Plan
-    </button>
 
     </div>
-    </mat-step>
-  </mat-horizontal-stepper>
+</mat-card>
+</div>

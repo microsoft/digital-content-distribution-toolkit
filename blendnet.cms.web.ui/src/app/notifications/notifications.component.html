@@ -1,7 +1,8 @@
 <div class="cms-container">
-    <h1>Notifications</h1>
+    <h1>Notifications
         
-        <button mat-raised-button color="primary" class="create-btn" (click)="openDialog()"> New Notification </button>
+        <button mat-raised-button color="primary" class="create-btn" (click)="openDialog()" style="float: right;"> New Notification </button>
+    </h1>
         <br>
         <mat-form-field>
             <mat-label>Filter</mat-label>
@@ -40,6 +41,12 @@
                 <td mat-cell *matCellDef="let element"> {{element.Title}} </td>
             </ng-container>
 
+            <!-- Name Column -->
+            <ng-container matColumnDef="Description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+
             <!-- Weight Column -->
             <ng-container matColumnDef="Status">
                 <th mat-header-cell *matHeaderCellDef> Status </th>
@@ -49,7 +56,7 @@
             <!-- Symbol Column -->
             <ng-container matColumnDef="CreatedOn">
                 <th mat-header-cell *matHeaderCellDef> Created On </th>
-                <td mat-cell *matCellDef="let element"> {{element.CreatedOn}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.CreatedOn |  date: 'short'}} </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
