@@ -88,14 +88,14 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
             incentiveEvent.EventCreatedFor = user.ReferralInfo.RetailerPartnerId;
             incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
-            incentiveEvent.EventType = EventType.RETAILER_INCOME_REFFRAL_COMPLETED;
+            incentiveEvent.EventType = EventType.RETAILER_INCOME_REFERRAL_COMPLETED;
             incentiveEvent.OriginalValue = 0;
 
-            PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeRetailerRegularPlan, EventType.RETAILER_INCOME_REFFRAL_COMPLETED, incentiveEvent.EventSubType);
+            PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeRetailerRegularPlan, EventType.RETAILER_INCOME_REFERRAL_COMPLETED, incentiveEvent.EventSubType);
 
             if (planDetail == null)
             {
-                _logger.LogWarning($"Storing orphan event as no active plan exists for retailer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventCreatedFor} and event type {EventType.RETAILER_INCOME_REFFRAL_COMPLETED}");
+                _logger.LogWarning($"Storing orphan event as no active plan exists for retailer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventCreatedFor} and event type {EventType.RETAILER_INCOME_REFERRAL_COMPLETED}");
                 incentiveEvent.CalculatedValue = 0;
             }
             else
