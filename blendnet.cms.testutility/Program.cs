@@ -57,6 +57,10 @@ namespace blendnet.cms.testutility
                .AddEnvironmentVariables()
                .Build());
 
+            await PerformChecksumTest();
+
+            return;
+
             
             if (args == null || args.Length <=0)
             {
@@ -93,6 +97,45 @@ namespace blendnet.cms.testutility
             }
 
             Console.WriteLine("Process Complete!");
+        }
+
+
+        private static async Task PerformChecksumTest()
+        {
+            string storageConnection = "";
+
+            //string containerName = "0f1c4593-c132-4037-9f5d-cee8552346b2-processed";
+            //string filePathToTest = "95481721-87e9-42e5-9c18-3612a15fe747/c6b0432d-8149-479c-bef8-489c735f0e67/fnl/c6b0432d-8149-479c-bef8-489c735f0e67.mpd";
+
+            string containerName = "0f1c4593-c132-4037-9f5d-cee8552346b2-mezzanine";
+            string filePathToTest = "61b31451-5d29-4e28-8ed0-13d26decca95/d541e59d-9bb6-4262-a3b3-bfe3bee64086/wrking/d541e59d-9bb6-4262-a3b3-bfe3bee64086.mpd";
+
+            BlobServiceClient blobServiceClient = new BlobServiceClient(storageConnection);
+
+            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            BlockBlobClient sourceBlob = blobContainerClient.GetBlockBlobClient(filePathToTest);
+
+            Tuple<long, string> checksumInfo = await GetBlobChecksumAndLength(sourceBlob);
+        }
+
+        private static async Task<Tuple<long, string>> GetBlobChecksumAndLength(BlockBlobClient blockBlobClient)
+        {
+            string checksum = string.Empty;
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                await blockBlobClient.DownloadToAsync(stream);
+
+                stream.Position = 0;
+
+                checksum = EventHandlingUtilities.GetChecksum(stream);
+            }
+
+            BlobProperties blobProperties = await blockBlobClient.GetPropertiesAsync();
+
+            return new Tuple<long, string>(blobProperties.ContentLength, checksum);
+
         }
 
         private static async Task DownloadAsync(AppSettings config)

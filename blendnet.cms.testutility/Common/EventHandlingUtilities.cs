@@ -8,7 +8,9 @@ using Microsoft.Rest;
 using Microsoft.Rest.Azure.Authentication;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -122,6 +124,24 @@ namespace blendnet.cms.testutility
             return sasUri.AbsoluteUri;
         }
 
-       
+        public static string GetChecksum(MemoryStream stream)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            string checksum = string.Empty;
+
+            using (var sha = SHA256.Create())
+            {
+                byte[] checksumBytes = sha.ComputeHash(stream);
+
+                checksum = BitConverter.ToString(checksumBytes).Replace("-", String.Empty).ToLowerInvariant();
+            }
+
+            stopwatch.Stop();
+
+            return checksum;
+        }
+
+
     }
 }
