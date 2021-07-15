@@ -22,7 +22,7 @@ namespace blendnet.incentive.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.User)]
+    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
     public class IncentiveController : ControllerBase
     {
         private const string C_CONSUMER = "CONSUMER";
@@ -325,7 +325,6 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("consumer/{planId:guid}", Name = nameof(GetConsumerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.User)]
         public async Task<ActionResult<IncentivePlan>> GetConsumerIncentivePlan(Guid planId)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
@@ -345,7 +344,6 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("consumer/{planType}", Name=nameof(GetConsumerIncentivePlans))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.User)]
         public async Task<ActionResult<List<IncentivePlan>>> GetConsumerIncentivePlans(PlanType planType)
         {
             Audience audience = new Audience()
