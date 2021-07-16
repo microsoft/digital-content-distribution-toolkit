@@ -388,6 +388,30 @@ namespace blendnet.incentive.api.Controllers
             return Ok(incentivePlans);
         }
 
+        [HttpGet("eventlist/{audienceType}", Name = nameof(GetEventTypes))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public ActionResult<List<string>> GetEventTypes(AudienceType audienceType)
+        {
+            List<string> eventTypes = new List<string>();
+
+            if (audienceType == AudienceType.RETAILER)
+            {
+                eventTypes.Add(EventType.RETAILER_INCOME_ORDER_COMPLETED.ToString());
+                eventTypes.Add(EventType.RETAILER_INCOME_REFERRAL_COMPLETED.ToString());
+            }
+            else
+            {
+                eventTypes.Add(EventType.CONSUMER_INCOME_APP_ONCE_OPEN.ToString());
+                eventTypes.Add(EventType.CONSUMER_INCOME_FIRST_SIGNIN.ToString());
+                eventTypes.Add(EventType.CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED.ToString());
+                eventTypes.Add(EventType.CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER.ToString());
+                eventTypes.Add(EventType.CONSUMER_INCOME_ORDER_COMPLETED.ToString());
+                eventTypes.Add(EventType.CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM.ToString());
+            }
+
+            return Ok(eventTypes);
+        }
+
         #endregion
 
         #region private methods
