@@ -96,6 +96,19 @@ export class IncentiveService {
     return this.http.put(url, { observe: 'response'});
   }
 
+  deleteDraftRetailerIncentivePlan(planId, subType) {
+    let url = this.baseUrl + "/retailer/"+ planId + "/" + subType;
+    this.logger.log(`Deleting retailer incentive plan by ID and sub type`);
+    return this.http.delete(url, { observe: 'response'});
+  }
+
+  deleteDraftConsumerIncentivePlan(planId) {
+    let url = this.baseUrl + "/consumer/"+ planId;
+    this.logger.log(`Deleting consumer incentive plan by ID`);
+    return this.http.delete(url, { observe: 'response'});
+  }
+
+
   changeDateRetailerIncentivePlan(planId, subType, endDate){
     let url = this.baseUrl + "/retailer/changeenddate/"+ planId + "/" + subType + "/" + endDate;
     this.logger.log(`Updating retailer incentive plan end date by ID `);

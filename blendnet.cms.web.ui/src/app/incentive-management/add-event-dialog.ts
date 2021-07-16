@@ -43,7 +43,10 @@ import { EventType, RuleType } from "../models/incentive.model";
        }
       this.eventForm.get('eventType').setValue(this.data.event.eventType);
       this.eventForm.get('eventTitle').setValue(this.data.event.eventTitle);
-      this.eventForm.get('eventSubType').setValue(this.data.event.eventSubType);
+      if(this.data.event.eventSubType) {
+        this.eventForm.get('eventSubType').setValue(this.data.event.eventSubType);
+        this.showCP = true;
+      }
       this.eventForm.get('ruleType').setValue(this.data.event.ruleType);
       this.eventForm.get('formula').setValue(this.data.event.formula.formulaType);
       this.eventForm.get('incentive').setValue(this.data.event.formula.firstOperand);
@@ -229,7 +232,7 @@ import { EventType, RuleType } from "../models/incentive.model";
    
     addEvent() {
       var event = {
-        index : this.data.event ? this.data.event.index : undefined,
+        index : this.data.rowIndex,
         eventType : this.eventForm.get('eventType').value,
         eventTitle : this.eventForm.get('eventTitle').value,
         eventSubType : this.eventForm.get('eventSubType').value,

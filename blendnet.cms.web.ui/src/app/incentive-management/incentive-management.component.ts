@@ -14,11 +14,11 @@ import { IncentiveService } from '../services/incentive.service';
   styleUrls: ['./incentive-management.component.css']
 })
 export class IncentiveManagementComponent implements OnInit {
-  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'startDate', 'endDate', 'status' , 'edit', 'publish'];
+  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'startDate', 'endDate', 'status' , 'edit', 'publish', 'delete'];
   dataSourceRetailers: MatTableDataSource<Incentive>;
 
   dataSourceConsumers: MatTableDataSource<Incentive>;
-  displayedColumnsConsumers: string[] = ['name', 'type', 'startDate', 'endDate', 'status' , 'edit', 'publish'];
+  displayedColumnsConsumers: string[] = ['name', 'type', 'startDate', 'endDate', 'status' , 'edit', 'publish', 'delete'];
 
 
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
@@ -194,6 +194,35 @@ export class IncentiveManagementComponent implements OnInit {
     }
   }
 
+  openDeleteDialog(row, audience) {
+    const dialogRef = this.dialog.open(CommonDialogComponent, {
+      data: {
+        heading: 'Confirm',
+        message: "Please click confirm to delete the drafted incentive plan.",
+        partner: row.partner,
+        planId: row.id,
+        audience: audience,
+        action: "PROCESS",
+        buttons: this.openSelectCPModalButtons()
+      },
+      maxHeight: '400px'
+    });
+  
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'proceed') {
+        this.deletePlan(row, audience);
+      }
+    });
+  }
+
+  deletePlan(row, audience) {
+    if(audience === "RETAILER") {
+      this.deleteDraftRetailerIncentive(row.id, row.partner);
+    } else {
+      this.deleteDraftConsumerIncentive(row.id);
+    }
+  }
   
 openPublishDialog(row, audience) {
   const dialogRef = this.dialog.open(CommonDialogComponent, {
@@ -232,6 +261,35 @@ openSelectCPModalButtons(): Array<any> {
   }
   ]
 }
+
+deleteDraftRetailerIncentive(id, partner) {
+  this.incentiveService.deleteDraftRetailerIncentivePlan(id, partner).subscribe(
+    res => {
+      this.toastr.success("Retailer Incentive plan deleted successfully");
+      console.log(res),
+      this.getRetailerIncentivePlans();
+    },
+    err =>  {
+      console.log(err);
+      this.toastr.error(err);
+    }
+  );
+}
+
+deleteDraftConsumerIncentive(id){
+  this.incentiveService.deleteDraftConsumerIncentivePlan(id).subscribe(
+    res => {
+      this.toastr.success("Consumer Incentive plan deleted successfully");
+      console.log(res),
+      this.getConsumerIncentivePlans();
+    },
+    err =>  {
+      console.log(err);
+      this.toastr.error(err);
+    }
+  );
+}
+
 
   publishRetailerIncentive(id, partner) {
     this.incentiveService.publishRetailerIncentivePlan(id, partner).subscribe(

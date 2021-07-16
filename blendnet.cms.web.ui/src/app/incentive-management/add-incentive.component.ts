@@ -215,40 +215,7 @@ export class AddIncentiveComponent implements OnInit {
     return new MatTableDataSource(dataSource);
   }
 
-  // createEventbyPlanDetails(eventArray, events) {
-  //   events.forEach(event => {
-  //     var eventForm = this.createEvent();
-  //     if(event.formula.rangeOperand && event.formula.rangeOperand.length > 0) {
-  //       var rangeArray = eventForm.get('ranges') as FormArray;
-  //       eventForm.get('ranges').setValue(this.createRangeByDetails(rangeArray, event.formula.rangeOperand));
-  //     }
-  //     eventForm.get('eventType').setValue(event.eventType);
-  //     eventForm.get('eventTitle').setValue(event.eventTitle);
-  //     eventForm.get('contentProvider').setValue(event.eventSubType);
-  //     eventForm.get('ruleType').setValue(event.ruleType);
-  //     eventForm.get('formula').setValue(event.formula.formulaType);
-  //     eventForm.get('target').setValue(event.formula.secondOperand);
-  //     eventForm.get('incentive').setValue(event.formula.firstOperand);
-  //     eventArray.push(eventForm);
-  //   });
 
-  // }
-
-  // createRangeByDetails(rangeArray, ranges) {
-  //   ranges.forEach( range => {
-  //     var rangeForm = this.createRange();
-  //     rangeForm.get('start').setValue(range.startRange);
-  //     rangeForm.get('end').setValue(range.endRange);
-  //     rangeForm.get('output').setValue(range.output);
-  //     rangeArray.push(rangeForm);
-  //   });
-  //   rangeArray.remove(0);
-  //   return rangeArray;
-  // }
-
-  // createConsumerFilledForm(plan) {
-
-  // }
   createEmptyFormDraft() {
     this.incentiveFormGroup = this.formBuilder.group({
       name :  new FormControl('', [Validators.required]),
@@ -270,38 +237,11 @@ export class AddIncentiveComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
     }
 
-
-
-  // createEvent(): FormGroup {
-  //     return this.formBuilder.group({
-  //       eventType: new FormControl('',[Validators.required]),
-  //       eventTitle: new FormControl('',[Validators.required]),
-  //       contentProvider: new FormControl({value:'', disabled:true}),
-  //       ruleType: new FormControl(''),
-  //       formula: new FormControl('',[Validators.required]),
-  //       target: new FormControl(''),
-  //       incentive: new FormControl(''),
-  //       ranges: this.formBuilder.array([this.createRange()])
-  //   })
-  // }
-
   addPartnerValidator() {
     this.incentiveFormGroup.get('partner').setValidators([Validators.required]);
   }
 
   changePlanType() {
-      // if(this.incentiveFormGroup.get('type').value === "REGULAR") {
-      //   this.dataSource.data.forEach( d => {
-      //     d.ruleType = RuleType.SUM;
-      //     d.formula.formulaType= '';
-      //   });
-      // } else {
-      //   this.dataSource.data.forEach( d => {
-      //     d.formula.formulaType= '';
-      //     d.ruleType = '';
-      //   });
-      // }
-      // this.dataSource._updateChangeSubscription();
       this.dataSource.data = [];
       this.dataSource._updateChangeSubscription();
       this.dataSource.paginator = this.paginator;
@@ -350,16 +290,6 @@ openSelectCPModalButtons(): Array<any> {
 }
 
 
-  // createRange() : FormGroup {
-  //   return this.formBuilder.group({
-  //     start: new FormControl('', [Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
-  //     end: new FormControl('', [Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
-  //     incentive: new FormControl('', [Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)])
-  //   })
-  // }
-
-
-
   getFormDetails() {
     var selectedEndDate;
     if(typeof this.incentiveFormGroup.get('endDate').value === 'string') {
@@ -379,7 +309,7 @@ openSelectCPModalButtons(): Array<any> {
       "endDate": selectedEndDate,
       "audience": {
         "audienceType": this.audience,
-        "subTypeName": this.incentiveFormGroup.get('partner').value,
+        "subTypeName": this.incentiveFormGroup.get('partner') ? this.incentiveFormGroup.get('partner').value : "CONSUMER",
       },
       "planDetails": this.getEventsFromDS()
     }
@@ -394,6 +324,7 @@ openSelectCPModalButtons(): Array<any> {
         eventType : e.eventType,
         eventTitle : e.eventTitle,
         eventSubType: e.eventSubType,
+        ruleType: e.ruleType,
         formula: {
           formulaType: e.formula.formulaType,
           firstOperand: e.formula.firstOperand,
@@ -560,11 +491,12 @@ openSelectCPModalButtons(): Array<any> {
       }
     }
 
-    openDialog(event): void {
+    openDialog(event, rowIndex): void {
       const dialogRef = this.dialog.open(AddEventDialog, {
         width: '50%',
         data: {
           event: event,
+          rowIndex: rowIndex,
           audience : this.audience,
           planType: this.incentiveFormGroup.get('type').value
         }
@@ -585,7 +517,7 @@ openSelectCPModalButtons(): Array<any> {
         } else {
           event.eventSubTypeName = "NA";
         }
-        if(event.index !== undefined) {
+        if(event.index !== undefined && event.index !== null) {
           this.dataSource.data.splice(event.index, 1, event);
           successMsg = "Event updated sucessfully!";
         } else {
