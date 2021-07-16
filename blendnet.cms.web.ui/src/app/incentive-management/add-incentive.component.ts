@@ -368,7 +368,7 @@ openSelectCPModalButtons(): Array<any> {
       this.contentProviderService.getContentProviders().subscribe(
         res => {
           this.contentProviders = res;
-          sessionStorage.setItem("cpList", JSON.stringify(res));
+          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(res));
         },
         err => console.log(err)
       )

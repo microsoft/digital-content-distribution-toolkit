@@ -60,7 +60,7 @@ import { IncentiveService } from "../services/incentive.service";
      } 
 
       var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
-      if(cpList || cpList.length > 0) {
+      if(cpList && cpList.length > 0) {
         this.contentProviders = cpList;
       }
       this.setFormulaConfig();
