@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@ang
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { EventType, RuleType } from "../models/incentive.model";
+import { IncentiveService } from "../services/incentive.service";
 
 
 @Component({
@@ -29,6 +30,7 @@ import { EventType, RuleType } from "../models/incentive.model";
       @Inject(MAT_DIALOG_DATA) public data: any,
       private toastr: ToastrService,
       private formBuilder: FormBuilder,
+      private incentiveService: IncentiveService
       ) {
   
       }
@@ -57,7 +59,7 @@ import { EventType, RuleType } from "../models/incentive.model";
       }
      } 
 
-      var cpList = JSON.parse(localStorage.getItem('cpList'));
+      var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
       if(cpList || cpList.length > 0) {
         this.contentProviders = cpList;
       }
@@ -179,37 +181,32 @@ import { EventType, RuleType } from "../models/incentive.model";
   
 
     setConfigForRetailer() {
-        this.eventTypes = [
-          {
-            name: 'Referral',
-            value: EventType['Retailer Referral']
-          },
-          {
-            name: 'Order Complete',
-            value: EventType['Retailer Order Complete']
-          },
-        ]
+        if(sessionStorage.getItem('RETAILERS_EVENTS')) {
+          this.eventTypes = JSON.parse(sessionStorage.getItem('RETAILERS_EVENTS'))
+        } else {
+          this.incentiveService.getEventList("RETAILER").subscribe(
+            res => {
+              this.eventTypes = res.body;
+              sessionStorage.setItem("RETAILERS_EVENTS",  JSON.stringify(res.body));
+            },
+            err => console.log(err)
+          );
+        }
+        
     }
 
     setConfigForConsumer() {
-        this.eventTypes = [
-          {
-            name: 'App Open Once a Day',
-            value: EventType['Consumer App Open Once a Day']
+      if(sessionStorage.getItem('CONSUMER_EVENTS')) {
+        this.eventTypes = JSON.parse(sessionStorage.getItem('CONSUMER_EVENTS'))
+      } else {
+        this.incentiveService.getEventList("CONSUMER").subscribe(
+          res => {
+            this.eventTypes = res.body;
+            sessionStorage.setItem("CONSUMER_EVENTS",  JSON.stringify(res.body));
           },
-          {
-            name: 'First Sign-In',
-            value: EventType['Consumer First Sign-In']
-          },
-          {
-            name: 'Order Complete',
-            value: EventType['Consumer Order Complete']
-          },
-          {
-            name: 'Redeem Subscription',
-            value: EventType['Consumer Redeem Subscription']
-          },
-        ]
+          err => console.log(err)
+        );
+      }
     }
 
     onFormulaChange() {

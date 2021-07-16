@@ -70,7 +70,7 @@ export class AddIncentiveComponent implements OnInit {
 
   ngOnInit() {
     this.createEmptyFormDraft();
-    var cpList = JSON.parse(localStorage.getItem('cpList'));
+    var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
     if(!cpList || cpList.length < 1) {
       this.getContentProviders();
     }
@@ -123,41 +123,22 @@ export class AddIncentiveComponent implements OnInit {
   }
   
   setConfigForRetailer() {
-    this.configService.getRetailerPartners().subscribe(
-      res => this.partners = this.getPartnerCodes(res),
-      err => console.log(err)
-    );
-      this.eventTypes = [
-        {
-          name: 'Referral',
-          value: EventType['Retailer Referral']
+    if(sessionStorage.getItem("RETAILER_PARTNERS")) {
+      this.partners = JSON.parse(sessionStorage.getItem('RETAILER_PARTNERS'));
+    } else {
+      this.configService.getRetailerPartners().subscribe(
+        res => {
+          this.partners = this.getPartnerCodes(res);
+          sessionStorage.setItem("RETAILER_PARTNERS", JSON.stringify(this.partners));
         },
-        {
-          name: 'Order Complete',
-          value: EventType['Retailer Order Complete']
-        },
-      ]
+        err => console.log(err)
+      );
+    }
+   
   }
 
   setConfigForConsumer() {
-      this.eventTypes = [
-        {
-          name: 'App Open Once a Day',
-          value: EventType['Consumer App Open Once a Day']
-        },
-        {
-          name: 'First Sign-In',
-          value: EventType['Consumer First Sign-In']
-        },
-        {
-          name: 'Order Complete',
-          value: EventType['Consumer Order Complete']
-        },
-        {
-          name: 'Redeem Subscription',
-          value: EventType['Consumer Redeem Subscription']
-        },
-      ]
+    // No config for customer plans
   }
 
   createFilledForm(plan: any) {    
@@ -195,10 +176,10 @@ export class AddIncentiveComponent implements OnInit {
     if(rawDataList) {
       var index = 0;
       rawDataList.forEach( rawData => {
-        var eventName = this.eventTypes.find(e => e.value === rawData.eventType)
-        rawData.eventTypeName = eventName ? eventName.name : "NA";
+        // var eventName = this.eventTypes.find(e => e.value === rawData.eventType)
+        // rawData.eventTypeName = eventName ? eventName.name : "NA";
         if(rawData.eventSubType) {
-          var cpList = JSON.parse(localStorage.getItem('cpList'));
+          var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
           if(cpList && cpList.length > 0) {
             var cp = cpList.find(cp => cp.id === rawData.eventSubType);
             rawData.eventSubTypeName = cp ? cp.name : "NA";
@@ -387,7 +368,7 @@ openSelectCPModalButtons(): Array<any> {
       this.contentProviderService.getContentProviders().subscribe(
         res => {
           this.contentProviders = res;
-          localStorage.setItem("cpList", JSON.stringify(res));
+          sessionStorage.setItem("cpList", JSON.stringify(res));
         },
         err => console.log(err)
       )
@@ -493,7 +474,7 @@ openSelectCPModalButtons(): Array<any> {
 
     openDialog(event, rowIndex): void {
       const dialogRef = this.dialog.open(AddEventDialog, {
-        width: '50%',
+        width: '60%',
         data: {
           event: event,
           rowIndex: rowIndex,
@@ -504,10 +485,10 @@ openSelectCPModalButtons(): Array<any> {
   
       dialogRef.componentInstance.onEventCreate.subscribe(event => {
         var successMsg = "";
-        var eventName = this.eventTypes.find(e => e.value === event.eventType);
-        event.eventTypeName = eventName ? eventName.name : "NA";
+        // var eventName = this.eventTypes.find(e => e.value === event.eventType);
+        // event.eventTypeName = eventName ? eventName.name : "NA";
         if(event.eventSubType) {
-          var cpList = JSON.parse(localStorage.getItem('cpList'));
+          var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
           if(cpList && cpList.length > 0) {
             var cp = cpList.find(cp => cp.id === event.eventSubType);
             event.eventSubTypeName = cp ? cp.name : "NA";
