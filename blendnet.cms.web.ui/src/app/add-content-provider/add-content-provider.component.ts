@@ -28,7 +28,7 @@ export class AddContentProviderComponent implements OnInit {
 
 
   cpForm = new FormGroup({
-    cpname :  new FormControl('', [Validators.required, Validators.maxLength(10)]),
+    cpname :  new FormControl('', [Validators.required, Validators.maxLength(20)]),
     logoUrl : new FormControl(''),
     admins: new FormControl(''),
     // isActive : new FormControl("inactive", [Validators.required]),

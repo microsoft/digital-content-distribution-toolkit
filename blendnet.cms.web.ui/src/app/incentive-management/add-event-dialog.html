@@ -9,8 +9,8 @@
               <mat-label>Event Type</mat-label>
               <mat-select  name="eventType" (ngModelChange)="onEventTypeChange()"
               formControlName="eventType"  [disableControl]="isPublished">
-              <mat-option *ngFor="let event of eventTypes" [value]="event.value">
-                  {{event.name}}
+              <mat-option *ngFor="let event of eventTypes" [value]="event">
+                  {{event}}
               </mat-option>
               </mat-select>
             </mat-form-field>
