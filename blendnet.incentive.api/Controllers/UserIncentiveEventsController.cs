@@ -62,11 +62,11 @@ namespace blendnet.incentive.api.Controllers
             DateTime now = DateTime.UtcNow;
 
             // validation - date can't be from future
-            if (signinUserEventRequest.OriginalTime > now)
+            if (!signinUserEventRequest.OriginalTime.IsCurrentOrPast())
             {
                 // this event is from future, so reject
                 string errorString = string.Format(_stringLocalizer["INC_ERR_0031"], EventType.CONSUMER_INCOME_FIRST_SIGNIN, callerUserId);
-                _logger.LogInformation(errorString);
+                _logger.LogInformation($"errorString  event time : {signinUserEventRequest.OriginalTime}");
                 return BadRequest(new string[] { errorString });
             }
 
@@ -114,11 +114,11 @@ namespace blendnet.incentive.api.Controllers
             DateTime now = DateTime.UtcNow;
 
             // validation - date can't be from future
-            if (appLaunchUserEventRequest.OriginalTime > now)
+            if (!appLaunchUserEventRequest.OriginalTime.IsCurrentOrPast())
             {
                 // this event is from future, so reject
                 string errorString = string.Format(_stringLocalizer["INC_ERR_0031"], EventType.CONSUMER_INCOME_APP_ONCE_OPEN, callerUserId);
-                _logger.LogInformation(errorString);
+                _logger.LogInformation($"errorString  event time : {appLaunchUserEventRequest.OriginalTime}");
                 return BadRequest(new string[] { errorString });
             }
 
@@ -173,11 +173,11 @@ namespace blendnet.incentive.api.Controllers
             DateTime now = DateTime.UtcNow;
 
             // validation - date can't be from future
-            if (contentStreamedUserEventRequest.OriginalTime > now)
+            if (!contentStreamedUserEventRequest.OriginalTime.IsCurrentOrPast())
             {
                 // this event is from future, so reject
                 string errorString = string.Format(_stringLocalizer["INC_ERR_0031"], EventType.CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER, callerUserId);
-                _logger.LogInformation(errorString);
+                _logger.LogInformation($"errorString  event time : {contentStreamedUserEventRequest.OriginalTime}");
                 return BadRequest(new string[] { errorString });
             }
 
@@ -261,11 +261,11 @@ namespace blendnet.incentive.api.Controllers
             DateTime now = DateTime.UtcNow;
 
             // validation - date can't be from future
-            if (onboardingRatingSubmittedUserEventRequest.OriginalTime > now)
+            if (!onboardingRatingSubmittedUserEventRequest.OriginalTime.IsCurrentOrPast())
             {
                 // this event is from future, so reject
                 string errorString = string.Format(_stringLocalizer["INC_ERR_0031"], EventType.CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED, callerUserId);
-                _logger.LogInformation(errorString);
+                _logger.LogInformation($"errorString  event time : {onboardingRatingSubmittedUserEventRequest.OriginalTime}");
                 return BadRequest(new string[] { errorString });
             }
 

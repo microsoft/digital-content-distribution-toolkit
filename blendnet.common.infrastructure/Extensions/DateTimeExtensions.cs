@@ -12,6 +12,11 @@ namespace blendnet.common.infrastructure.Extensions
         private static TimeZoneInfo IndiaTimeZoneInfo { get; }
 
         /// <summary>
+        /// Tolerance for accommodating time difference between server and client
+        /// </summary>
+        private const uint TOLENRANCE_FOR_CURRENT_TIME_MINUTES = 5;
+
+        /// <summary>
         /// Static constructor
         /// </summary>
         static DateTimeExtensions()
@@ -42,6 +47,18 @@ namespace blendnet.common.infrastructure.Extensions
         {
             DateTime dateTimeUtc = TimeZoneInfo.ConvertTimeToUtc(sourceIST, IndiaTimeZoneInfo);
             return dateTimeUtc;
+        }
+
+        /// <summary>
+        /// Validation - date can't be from far future
+        /// Tolerate little into future to accommodate clock difference between server and client
+        /// </summary>
+        /// <param name="dateTime">DateTime to check (should be in UTC)</param>
+        /// <returns></returns>
+        public static Boolean IsCurrentOrPast(this DateTime dateTime)
+        {
+            DateTime now = DateTime.UtcNow;
+            return dateTime < now.AddMinutes(TOLENRANCE_FOR_CURRENT_TIME_MINUTES);
         }
     }
 }
