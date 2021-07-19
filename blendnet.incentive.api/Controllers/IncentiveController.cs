@@ -554,13 +554,13 @@ namespace blendnet.incentive.api.Controllers
 
                 if (!IsRuleTypeValid(planDetail.RuleType, incentivePlanRequest.PlanType))
                 {
-                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0008"], planDetail.EventType.ToString(), audienceType));
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0008"]);
                     return errorInfo;
                 }
 
-                if (!IsFormulaTypeValid(planDetail.Formula.FormulaType, incentivePlanRequest.PlanType))
+                errorInfo = IsFormulaValid(planDetail.Formula, incentivePlanRequest.PlanType);
+                if (errorInfo != null && errorInfo.Count > 0)
                 {
-                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0009"], planDetail.EventType.ToString(), audienceType));
                     return errorInfo;
                 }
 
@@ -612,17 +612,59 @@ namespace blendnet.incentive.api.Controllers
             return eventSubType.ToString().StartsWith(C_RETAILER);
         }
 
-        private bool IsFormulaTypeValid(FormulaType formulaType, PlanType planType)
+        private List<string> IsFormulaValid(Formula formula, PlanType planType)
         {
+            List<string> errorInfo = new List<string>();
+
+            var formulaType = formula.FormulaType;
             if (planType == PlanType.REGULAR)
             {
-                return formulaType == FormulaType.PLUS
+                if(!(formulaType == FormulaType.PLUS
                     || formulaType == FormulaType.MINUS
                     || formulaType == FormulaType.MULTIPLY
-                    || formulaType == FormulaType.PERCENTAGE;
+                    || formulaType == FormulaType.PERCENTAGE))
+                {
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0009"]);
+                    return errorInfo;
+                }
             }
 
-            return true;
+            if(formulaType == FormulaType.RANGE_AND_MULTIPLY)
+            {
+                if(formula.RangeOperand == null || formula.RangeOperand.Count == 0)
+                {
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0035"]);
+                    return errorInfo;
+                }
+
+                HashSet<double> set = new HashSet<double>();
+
+                foreach(var range in formula.RangeOperand)
+                {
+                    if(range.StartRange > range.EndRange)
+                    {
+                        errorInfo.Add(_stringLocalizer["INC_ERR_0036"]);
+                        return errorInfo;
+                    }
+
+                    if(set.Contains(range.StartRange) || set.Contains(range.EndRange))
+                    {
+                        errorInfo.Add(_stringLocalizer["INC_ERR_0037"]);
+                        return errorInfo;
+                    }
+
+                    set.Add(range.StartRange);
+                    set.Add(range.EndRange);
+
+                    if(range.Output <= 0)
+                    {
+                        errorInfo.Add(_stringLocalizer["INC_ERR_0038"]);
+                        return errorInfo;
+                    }
+                }
+            }
+
+            return errorInfo;
         }
         private bool IsRuleTypeValid(RuleType ruleType, PlanType planType)
         {

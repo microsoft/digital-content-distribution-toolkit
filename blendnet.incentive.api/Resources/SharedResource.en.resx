@@ -219,4 +219,16 @@
   <data name="INC_ERR_0034" xml:space="preserve">
     <value>INC_ERR_0034-Received event {0} with unknown content ID {1} for User ID {2}</value>
   </data>
+  <data name="INC_ERR_0035" xml:space="preserve">
+    <value>INC_ERR_0035-Range operand is required for Range and multiply formula type</value>
+  </data>
+  <data name="INC_ERR_0036" xml:space="preserve">
+    <value>INC_ERR_0036-Start range must be lesser than end range</value>
+  </data>
+  <data name="INC_ERR_0037" xml:space="preserve">
+    <value>INC_ERR_0037-Overlapping range values</value>
+  </data>
+  <data name="INC_ERR_0038" xml:space="preserve">
+    <value>INC_ERR_0038-Range output must be greater than 0</value>
+  </data>
 </root>
