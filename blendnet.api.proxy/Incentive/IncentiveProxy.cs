@@ -16,7 +16,7 @@ namespace blendnet.api.proxy.Incentive
     /// <summary>
     /// Proxy to invoke Incentive Browse Controller
     /// </summary>
-    public class IncentiveBrowseProxy : BaseProxy
+    public class IncentiveProxy : BaseProxy
     {
         private readonly HttpClient _incentiveBrowseHttpClient;
 
@@ -27,7 +27,7 @@ namespace blendnet.api.proxy.Incentive
         /// <param name="configuration"></param>
         /// <param name="logger"></param>
         /// <param name="cache"></param>
-        public IncentiveBrowseProxy(IHttpClientFactory clientFactory,
+        public IncentiveProxy(IHttpClientFactory clientFactory,
                            IConfiguration configuration,
                            ILogger<IncentiveEventProxy> logger,
                            IDistributedCache cache)
@@ -43,7 +43,7 @@ namespace blendnet.api.proxy.Incentive
         /// <returns></returns>
         public async Task<IncentivePlan> GetConsumerActivePlan(PlanType planType)
         {
-            string url = $"IncentiveBrowse/consumer/active/{planType}";
+            string url = $"Incentive/consumer/active/{planType}";
 
             string accessToken = await base.GetServiceAccessToken();
 

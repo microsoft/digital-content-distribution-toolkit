@@ -164,7 +164,7 @@ namespace blendnet.oms.api
             services.AddTransient<UserProxy>();
             services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<IncentiveEventProxy>();
-            services.AddTransient<IncentiveBrowseProxy>();
+            services.AddTransient<IncentiveProxy>();
 
             //Configure Service Bus
             string serviceBusConnectionString = Configuration.GetValue<string>("ServiceBusConnectionString");
