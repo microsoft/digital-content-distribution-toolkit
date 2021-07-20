@@ -49,7 +49,11 @@ namespace blendnet.oms.api.Controllers
         private RetailerProxy _retailerProxy;
 
         private RetailerProviderProxy _retailerProviderProxy;
-        
+
+        private IncentiveEventProxy _incentiveEventProxy;
+
+        private IncentiveBrowseProxy _incentiveBrowseProxy;
+
         private IEventBus _eventBus;
 
         private OmsAppSettings _omsAppSettings;
@@ -58,8 +62,6 @@ namespace blendnet.oms.api.Controllers
 
         private TelemetryClient _telemetryClient;
 
-        private IncentiveEventProxy _incentiveEventProxy;
-
         public OrderController(IOMSRepository omsRepository,
                                 ILogger<OrderController> logger,
                                 ContentProxy contentProxy,
@@ -67,6 +69,7 @@ namespace blendnet.oms.api.Controllers
                                 RetailerProviderProxy retailerProviderProxy,
                                 SubscriptionProxy subscriptionProxy,
                                 IncentiveEventProxy incentiveEventProxy,
+                                IncentiveBrowseProxy incentiveBrowseProxy,
                                 IEventBus eventBus,
                                 IOptionsMonitor<OmsAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
@@ -85,6 +88,8 @@ namespace blendnet.oms.api.Controllers
             _retailerProviderProxy = retailerProviderProxy;
 
             _incentiveEventProxy = incentiveEventProxy;
+
+            _incentiveBrowseProxy = incentiveBrowseProxy;
 
             _eventBus = eventBus;
 
@@ -276,6 +281,15 @@ namespace blendnet.oms.api.Controllers
             if (await ActiveOrderExists(userPhoneNumber, orderRequest.ContentProviderId, orderStatusFilter))
             {
                 errorInfo.Add(_stringLocalizer["OMS_ERR_0002"]);
+                return BadRequest(errorInfo);
+            }
+
+            //check if the active incentive plan allows for redemption
+            bool isRedemptionAllowedInActivePlan = await IsRedemptionAllowedInActivePlan();
+
+            if (!isRedemptionAllowedInActivePlan)
+            {
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0019"]);
                 return BadRequest(errorInfo);
             }
 
@@ -732,6 +746,34 @@ namespace blendnet.oms.api.Controllers
 
             return new Tuple<bool, double>(false, actualBalance); ;
 
+        }
+
+        /// <summary>
+        /// Checks if redemption is allowed.
+        /// In case there is no active incentive plan for consumer, dont allow redemption.
+        /// In case there is no plan detail with Expense event, dont allow redemption
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> IsRedemptionAllowedInActivePlan()
+        {
+            IncentivePlan incentivePlan = await _incentiveBrowseProxy.GetConsumerActivePlan(PlanType.REGULAR);
+
+            //in case there is no active incentive plan for consumer, dont allow redemption.
+            //there has to be one active plan for consumer. Atleast with expense.
+            if (incentivePlan == null)
+            {
+                return false;
+            }
+
+            //in case there is no plan detail with Expense event, dont allow redemption
+            PlanDetail planDetail = incentivePlan.PlanDetails.Where(pd => pd.EventType == EventType.CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM).FirstOrDefault();
+
+            if (planDetail == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private Order CreateOrder(Guid userId, string userPhoneNumber, ContentProviderSubscriptionDto subscription)
