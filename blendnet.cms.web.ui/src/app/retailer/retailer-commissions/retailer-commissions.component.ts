@@ -42,10 +42,11 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
   monthsDropDown: Array<any> = [];
   commissionsCarouselArr: Array<any> = [];
   monthSelect: any;
-  partnerCode = 'NOVO';
-  retailerPartnerProvidedId = 'NVP';
+  partnerCode;
+  retailerPartnerProvidedId;
   nestedCommissions = [];
   totalEarnings = 0;
+  baseHref = this.retailerDashboardService.getBaseHref();
   constructor(
     public userService: UserService,
     public router: Router,
@@ -54,6 +55,8 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
   ) { }
 
   ngOnInit(): void {
+    this.partnerCode = this.retailerDashboardService.getpartnerCode();
+    this.retailerPartnerProvidedId = this.retailerDashboardService.getRetailerPartnerProvidedId();
     this.getDates();
     this.getCommissionsSliderInfo();
   }
@@ -116,6 +119,7 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
           const occuredDate = transaction.eventOccuranceTime.split("T")[0];
           transaction.occuredDate = occuredDate;
           transaction.occuredTime = transaction.eventOccuranceTime.split("T")[1].split(".")[0];
+          transaction.occuredTimeReadable = this.retailerDashboardService.generateReadableTime(transaction.eventOccuranceTime);
           transaction.properties.forEach(property => {
             if(property.name === 'OrderItem') {
               const orderItem = JSON.parse(property.value);
@@ -138,6 +142,7 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
             nestedCommissions[index].transactions.push(transaction);
             nestedCommissions[index].amount =  transaction.calculatedValue;
             totalEarnings+=transaction.calculatedValue;
+            nestedCommissions[index].occuredDateReadable = this.retailerDashboardService.generateReadableDate(occuredDate);
           }
         });
         this.nestedCommissions = nestedCommissions;
@@ -153,8 +158,7 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
   getCommissionsSliderInfo() {
     let commissionsCarouselArr = [];
     this.retailerDashboardService.getReferralsCommissionsCarouselInfo(
-      // this.partnerCode, this.retailerPartnerProvidedId
-      'TSTP', 'MHJ'
+      this.partnerCode, this.retailerPartnerProvidedId
       ).subscribe(
       res => {
         res.planDetails.forEach(planDetail => {
@@ -179,10 +183,11 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
     )
   }
 
-  commissionDialog() {
+  commissionDialog(commission, date) {
+    commission.occuredDateReadable = date;
     const dialogRef = this.dialog.open(RetailerCommissionDialogComponent, {
       disableClose: false,
-      data: {},
+      data: commission,
       position: {
         bottom: '0'
       },

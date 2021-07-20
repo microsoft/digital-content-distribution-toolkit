@@ -26,6 +26,7 @@ import { RetailerCommissionDialogComponent } from './retailer-commission-dialog/
 import { RatesIncentivesComponent } from './rates-incentives/rates-incentives.component';
 import { FormsModule } from '@angular/forms';
 import { RetailerMilestonesComponent } from './retailer-milestones/retailer-milestones.component';
+import { SeamlessLoginComponent } from './seamless-login/seamless-login.component';
 
 
 const routes: Routes = [
@@ -84,7 +85,7 @@ const routes: Routes = [
 
 
 @NgModule({
-  declarations: [ReferralsComponent, RetailerHomeComponent, RetailerDashboardComponent, RetailerCommissionsComponent, RetailerCommissionDialogComponent, RatesIncentivesComponent, RetailerMilestonesComponent],
+  declarations: [ReferralsComponent, RetailerHomeComponent, RetailerDashboardComponent, RetailerCommissionsComponent, RetailerCommissionDialogComponent, RatesIncentivesComponent, RetailerMilestonesComponent, SeamlessLoginComponent],
   imports: [
     CommonModule,
     CMSMaterialModule,

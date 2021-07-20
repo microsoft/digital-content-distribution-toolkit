@@ -5,6 +5,7 @@ import { last, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { ContentProviderService } from './content-provider.service';
 import { LogService } from './log.service';
+import jwt_decode from "jwt-decode";
 
 @Injectable({
   providedIn: 'root'
@@ -133,6 +134,22 @@ export class KaizalaService {
       {
         params: params,
         headers: {'accessToken': user.authenticationToken},
+        observe: 'response'
+      });
+  }
+
+  validateRetailerRole(authenticationToken) {
+    const decodedToken = jwt_decode(authenticationToken);
+    const urnCreds = JSON.parse(decodedToken['urn:microsoft:credentials'])
+    const phoneNumber = urnCreds['phoneNumber'];
+    const lastDigit = phoneNumber.charAt(phoneNumber.length-1);
+    var url = this.getURLSuffix(lastDigit).concat(environment.kaizalaGetUserRoles);
+    //.concat(environment.appName);
+    let params = new HttpParams().set(environment.kaizalaAppNameParam, environment.kaizalaAppName);
+    return this.http.get(url, 
+      {
+        params: params,
+        headers: {'accessToken': authenticationToken},
         observe: 'response'
       });
   }

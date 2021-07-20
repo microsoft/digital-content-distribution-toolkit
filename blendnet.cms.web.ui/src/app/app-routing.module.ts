@@ -17,6 +17,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
 
 import { NotificationsComponent } from './notifications/notifications.component';
+import { SeamlessLoginComponent } from './retailer/seamless-login/seamless-login.component';
 
 const appRoutes: Routes = [
   {
@@ -30,6 +31,10 @@ const appRoutes: Routes = [
   {
     path: 'retailer',
     loadChildren: () => import('./retailer/retailer.module').then(m => m.RetailerModule)
+  },
+  {
+    path: 'retailer-login',
+    component: SeamlessLoginComponent
   },
   {
     path: 'unprocessed-content', 

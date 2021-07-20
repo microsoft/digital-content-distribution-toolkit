@@ -1,8 +1,8 @@
 <div class="landing-wrapper">
     <div class="landing-profile-block-wrapper">
-        <div class="landing-profile-image">
-            <img src="../../assets/images/retailer-landing-page/profile-dummy.jpg">
-        </div>
+        <!-- <div class="landing-profile-image">
+            <img src="../../cmsui/assets/images/retailer-landing-page/profile-dummy.jpg">
+        </div> -->
         <div class="landing-profile-name">
             {{partner.userName}}
         </div>
@@ -20,9 +20,9 @@
                     </mat-icon>
                 </div>
             </div>
-            <div class="landing-trophy-image-wrapper">
-                <img src="../../assets/images/retailer-landing-page/blue-trophy.jpg">
-            </div>
+            <!-- <div class="landing-trophy-image-wrapper">
+                <img src="../../cmsui/assets/images/retailer-landing-page/blue-trophy.jpg">
+            </div> -->
         </div>
 
     </div>
@@ -52,15 +52,15 @@
                             <div class="landing-each-offer-milestone-inner">
                                 <div class="each-offer-text-block">
                                     <span class="milestone-heading-1">Earn Rs. {{k.secondOperand}} Bonus</span> <br>
-                                    <span>on every {{k.firstOperand}} Referrals</span>
+                                    <span>on every {{k.firstOperand}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referrals': 'Orders'}}</span>
                                 </div>
                                 <div class="milesone-progress">
-                                    {{k.residualValue}}/{{k.firstOperand}} Remaining
+                                    {{k.residualValue}}/{{k.firstOperand}} Complete
                                     <mat-progress-bar mode="determinate" value="{{k.progress}}"></mat-progress-bar>
                                 </div>
                             </div>
-                            <!-- <img class="offer-decor" src="../../assets/images/retailer-commissions/trophy.png"> -->
-                            <!-- <img class="each-offer-logo" src="../../assets/images/retailer-commissions/each-offer-logo.png"> -->
+                            <!-- <img class="offer-decor" src="../../cmsui/assets/images/retailer-commissions/trophy.png"> -->
+                            <!-- <img class="each-offer-logo" src="../../cmsui/assets/images/retailer-commissions/each-offer-logo.png"> -->
                         </div>
                     </div>
                 </ng-template>  
@@ -71,7 +71,7 @@
     <div class="landing-page-total-block-wrapper">
         <div class="landing-page-total-inner-wrapper">
             <div class="landing-page-currency-image-block">
-                <img src="../../assets/images/retailer-landing-page/rupee.jpg">
+                <img src="../../{{baseHref}}/assets/images/retailer-landing-page/rupee.jpg">
             </div>
             <div class="landing-page-total-value-block">
                 <div class="total-value">

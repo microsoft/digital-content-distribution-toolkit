@@ -4,35 +4,44 @@
 </div> -->
 <div class="commission-heading-block">
     <div class="commission-dialog-heading">
-        Eros Now 20 Days
+        {{data.name}}
     </div>
     <div class="commission-dialog-sub-heading">
-        98672XXXXX
+        {{mobile}}
     </div>
 </div>
 
 <div class="commission-value-block">
     <div class="commission-value-each">
         <div class="commission-value-value">
-            1234567890-098
+            {{data.transactionId}}
         </div>
         <div class="commission-value-attr">
             Transaction ID
         </div>
     </div>
 
-    <div class="commission-value-each">
+    <!-- <div class="commission-value-each">
         <div class="commission-value-value">
-            DD.MM.YYYY HH:MM
+            
         </div>
         <div class="commission-value-attr">
-            Timestamp
+            Time
+        </div>
+    </div> -->
+
+    <div class="commission-value-each">
+        <div class="commission-value-value">
+            {{data.occuredDateReadable}} {{data.occuredTimeReadable}}
+        </div>
+        <div class="commission-value-attr">
+            Date
         </div>
     </div>
 
     <div class="commission-value-each">
         <div class="commission-value-value">
-            Rs 20 
+            Rs {{data.originalValue}}
         </div>
         <div class="commission-value-attr">
             Order Value
@@ -41,7 +50,7 @@
 
     <div class="commission-value-each">
         <div class="commission-value-value commission-dialog-currency">
-            Rs 10 
+            Rs {{data.calculatedValue}}
         </div>
         <div class="commission-value-attr">
             Commission

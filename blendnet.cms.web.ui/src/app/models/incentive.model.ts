@@ -97,3 +97,7 @@ export enum RetailerPartner {
     NOVO = "NOVO",
     TSTP = "TSTP"
 }
+
+export interface Contentproviders {
+    [key: string]: String;
+}

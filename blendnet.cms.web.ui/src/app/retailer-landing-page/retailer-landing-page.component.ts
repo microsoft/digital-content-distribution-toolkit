@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service'
 import { OwlOptions } from 'ngx-owl-carousel-o';
+import { EventType, Contentproviders } from '../models/incentive.model';
+import { ContentProviderService } from 'src/app/services/content-provider.service';
+
 
 @Component({
   selector: 'app-retailer-landing-page',
@@ -13,7 +16,10 @@ export class RetailerLandingPageComponent implements OnInit {
     private toastr: ToastrService,
     private retailerDashboardService: RetailerDashboardService
   ) { }
-  partner: any;
+  baseHref = this.retailerDashboardService.getBaseHref();
+  partner: any = {
+    userName: ''
+  };
   referralTotal = 0;
   commissionsTotal = 0;
   totalMilestoneEarnings = 0
@@ -23,8 +29,9 @@ export class RetailerLandingPageComponent implements OnInit {
   partnerCode = 'NOVO';
   retailerPartnerProvidedId = 'NVP';
   carouselInit = false;
+  contentProviders: any;
   customOptions: OwlOptions = {
-    loop: true,
+    loop: false,
     mouseDrag: true,
     touchDrag: true,
     pullDrag: true,
@@ -52,7 +59,7 @@ export class RetailerLandingPageComponent implements OnInit {
     this.getProfile();
     this.getDates();
     this.getMilestoneTotal();
-
+    // this.getContentProviders();
     //hardcoded remove once flow form novo sends us above data
     // this.getRetailerTotals();
   }
@@ -71,7 +78,7 @@ export class RetailerLandingPageComponent implements OnInit {
             if(planDetail.aggregratedValue) {
               commissionTotal += planDetail.aggregratedValue;
             }
-          } else if(planDetail.eventType === 'RETAILER_INCOME_REFFRAL_COMPLETED') {
+          } else if(planDetail.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED') {
             if(planDetail.aggregratedValue) {
               referralTotal += planDetail.aggregratedValue;
             }
@@ -112,7 +119,8 @@ export class RetailerLandingPageComponent implements OnInit {
                 secondOperand: planDetail.formula.secondOperand,
                 value : planDetail.result.value ? planDetail.result.value : 0,
                 residualValue : planDetail.result.residualValue ? planDetail.result.residualValue : 0,
-                progress: ((planDetail.result.residualValue ? planDetail.result.residualValue : 0))*100/planDetail.formula.firstOperand
+                progress: ((planDetail.result.residualValue ? planDetail.result.residualValue : 0))*100/planDetail.formula.firstOperand,
+                eventType: planDetail.eventType
               });
             } 
           }
@@ -167,6 +175,5 @@ export class RetailerLandingPageComponent implements OnInit {
 
       }
     )
-  }
-
+  } 
 }

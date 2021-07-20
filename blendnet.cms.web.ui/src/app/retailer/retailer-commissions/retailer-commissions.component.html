@@ -1,6 +1,6 @@
 <div class="referrals-main-block">
     <div class="referrals-heading">
-        <img class="back-nav" (click)="navigateToHome()" src="../../assets/images/retailer-referrals/back-nav.jpg">
+        <img class="back-nav" (click)="navigateToHome()" src="../../{{baseHref}}/assets/images/retailer-referrals/back-nav.jpg">
         <div class="referrals-heading-text">Commissions</div>
         <div class="commissions-slider" *ngIf="carouselInit">
             <owl-carousel-o [options]="customOptions">
@@ -9,7 +9,7 @@
                         <div class="each-offer">
                             <div class="each-offer-inner">
                                 <!-- <img class="offer-decor" src="../../assets/images/retailer-commissions/trophy.png"> -->
-                                <img class="each-offer-logo" src="../../assets/images/retailer-commissions/each-offer-logo.png">
+                                <img class="each-offer-logo" src="../../{{baseHref}}/assets/images/retailer-commissions/each-offer-logo.png">
                                 <div class="each-offer-text-block">
                                     {{commission.earnText}}
                                 </div>
@@ -30,7 +30,7 @@
         
         <div class="landing-page-total-inner-wrapper">
             <div class="landing-page-currency-image-block">
-                <img src="../../assets/images/retailer-landing-page/rupee.jpg">
+                <img src="../../{{baseHref}}/assets/images/retailer-landing-page/rupee.jpg">
             </div>
             <div class="landing-page-total-value-block">
                 <div class="referral-total-value">
@@ -59,21 +59,21 @@
               <mat-expansion-panel-header>
                 <mat-panel-title>
                     <div class="accordion-heading">
-                        <div class="accordion-left-content">{{commission.occuredDate}} • {{commission.transactions.length}} Transactions</div>
+                        <div class="accordion-left-content">{{commission.occuredDateReadable}} • {{commission.transactions.length}} Transactions</div>
                         <div class="accordion-right-content">Rs. {{commission.amount}}</div>     
                     </div>
                 </mat-panel-title>
               </mat-expansion-panel-header>
-              <div *ngFor="let transaction of commission.transactions" class="accordion-total-inner-wrapper" (click)="commissionDialog()">
+              <div *ngFor="let transaction of commission.transactions" class="accordion-total-inner-wrapper" (click)="commissionDialog(transaction, commission.occuredDateReadable)">
                 <div class="accordion-currency-image-block">
-                    <img class="accordion-currency" src="../../assets/images/retailer-landing-page/rupee.jpg">
+                    <img class="accordion-currency" src="../../{{baseHref}}/assets/images/retailer-landing-page/rupee.jpg">
                 </div>
                 <div class="accordion-value-block">
                     <div class="accordion-value">
                         {{transaction.name}}
                     </div>
                     <div class="accordion-text">
-                        {{transaction.occuredTime}}
+                        {{transaction.occuredTimeReadable}}
                     </div>
                 </div>
                 <div class="each-value">

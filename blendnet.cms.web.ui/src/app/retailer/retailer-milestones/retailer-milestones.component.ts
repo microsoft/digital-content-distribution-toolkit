@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service'
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { EventType } from 'src/app/models/incentive.model';
 
 @Component({
   selector: 'app-retailer-milestones',
@@ -11,9 +12,9 @@ import { UserService } from '../../services/user.service';
 export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDestroy {
   totalMilestoneEarnings = 0
   milestonesCarouselArr: Array<any> = [];
-  partnerCode = 'NOVO';
-  retailerPartnerProvidedId = 'NVP';
-
+  partnerCode = sessionStorage.getItem('partnerCode');
+  retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
+  baseHref = this.retailerDashboardService.getBaseHref();
   constructor(
     private retailerDashboardService: RetailerDashboardService,
     public router: Router,
@@ -21,7 +22,11 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
   ) { }
 
   ngOnInit(): void {
+    this.partnerCode = this.retailerDashboardService.getpartnerCode();
+    this.retailerPartnerProvidedId = this.retailerDashboardService.getRetailerPartnerProvidedId();
     this.getMilestoneTotal();
+
+    this.getRegularRatesIncentives()
   }
 
   getMilestoneTotal() {
@@ -48,7 +53,8 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
                 secondOperand: planDetail.formula.secondOperand,
                 value : planDetail.result.value ? planDetail.result.value : 0,
                 residualValue : planDetail.result.residualValue ? planDetail.result.residualValue : 0,
-                progress: ((planDetail.result.residualValue ? planDetail.result.residualValue : 0))*100/planDetail.formula.firstOperand
+                progress: ((planDetail.result.residualValue ? planDetail.result.residualValue : 0))*100/planDetail.formula.firstOperand,
+                referral: planDetail.eventType === EventType['Retailer Referral']
               });
             } 
           }
@@ -61,6 +67,17 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
       console.log('error in milestone fetch');
       this.totalMilestoneEarnings = totalMilestoneEarnings;
     });
+  }
+
+  getRegularRatesIncentives() {
+    this.retailerDashboardService.getRegularRatesIncentives(this.partnerCode, this.retailerPartnerProvidedId).subscribe(
+      res => {
+
+      },
+      err => {
+        
+      }
+    )
   }
 
   

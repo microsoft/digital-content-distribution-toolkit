@@ -63,6 +63,7 @@
     color: #101010;
     padding-left: 30px;
     line-height: 70px;
+    padding-right: 85px
 }
 
 .each-offer-text-block {
@@ -85,13 +86,21 @@
 .each-offer-valid-label {
     color: #606060;
     font-size: 12px;
+    padding: 5px;
+    background: white;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
 }
 
 .each-offer-valid-date {
+    padding: 5px;
     color: #1973EB;
     font-size: 12px;
     font-weight: bold;
     padding-left: 3px;
+    background: white;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 .each-offer-conversion {
@@ -128,4 +137,16 @@
     display: inline-block;
     padding-top: 10px;
     padding-bottom: 5px;
+}
+
+.commission-milestone {
+    /* background: lightgray; */
+}
+
+.inline-date {
+    display: inline-block;
+    /* background: white; */
+    border-radius: 10px;
+    height: 70px;
+    float: right;
 }

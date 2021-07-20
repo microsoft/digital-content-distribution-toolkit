@@ -1,13 +1,13 @@
 <div class="referrals-main-block">
     <div class="referrals-heading">
-        <img class="back-nav" (click)="navigateToHome()" src="../../assets/images/retailer-referrals/back-nav.jpg">
+        <img class="back-nav" (click)="navigateToHome()" src="../../{{baseHref}}/assets/images/retailer-referrals/back-nav.jpg">
         <div class="referrals-heading-text">Milestones</div>
     </div>
     <div class="landing-page-total-block-wrapper">
         
         <div class="landing-page-total-inner-wrapper">
             <div class="landing-page-currency-image-block">
-                <img src="../../assets/images/retailer-landing-page/rupee.jpg">
+                <img src="../../{{baseHref}}/assets/images/retailer-landing-page/rupee.jpg">
             </div>
             <div class="landing-page-total-value-block">
                 <div class="referral-total-value">
@@ -27,33 +27,15 @@
                             <div class="landing-each-offer-milestone-inner">
                                 <div class="each-offer-text-block">
                                     <span class="milestone-heading-1">Earn Rs. {{k.secondOperand}} Bonus</span> <br>
-                                    <span>on every {{k.firstOperand}} Referrals</span>
+                                    <span>on every {{k.firstOperand}} {{k.referral ? 'Referrals': 'Orders'}}</span>
                                 </div>
                                 <div class="milesone-progress">
-                                    {{k.residualValue}}/{{k.firstOperand}} Remaining
+                                    {{k.residualValue}}/{{k.firstOperand}} Complete
                                     <mat-progress-bar mode="determinate" value="{{k.progress}}"></mat-progress-bar>
                                 </div>
                             </div>
                         </div>
-                    </div>    
-
-
-
-                    <div class="landing-each-offer">
-                        Below is dummy since no milestones are reached
-                        <div class="each-offer-inner landing-each-offer-milestone">
-                            <div class="landing-each-offer-milestone-inner">
-                                <div class="each-offer-text-block">
-                                    <span class="milestone-heading-1">Earn Rs. 50 Bonus</span> <br>
-                                    <span>on every 20 Referrals</span>
-                                </div>
-                                <div class="milesone-progress">
-                                    13/20 Remaining
-                                    <mat-progress-bar mode="determinate" value="65"></mat-progress-bar>
-                                </div>
-                            </div>
-                        </div>
-                    </div>   
+                    </div> 
         </div>
     </div>
 </div>

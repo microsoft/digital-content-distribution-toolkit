@@ -12,7 +12,7 @@ export class UserService {
   isRetailerRouted = false;
   private loggedInUser = new BehaviorSubject<any>(null);
   loggedInUser$ = this.loggedInUser.asObservable();
-
+  baseHref = 'cmsui'
   constructor(
     private logger: LogService,
     private http: HttpClient

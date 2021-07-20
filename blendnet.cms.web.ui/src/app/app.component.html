@@ -158,7 +158,7 @@
 		</div>
 	</mat-sidenav>
 
-	<div *ngIf="!hasRetailerAccess" class="cms-sidenav-content">
+	<div  class="{{ hasRetailerAccess? '':'cms-sidenav-content'}}">
 		<!-- <router-outlet></router-outlet> -->
 		<router-outlet class="{{(hasRetailerAccess && !isDesktop && !userService.getRetailerRouted()) ? 'hidden': ''}}"></router-outlet>
 	</div>

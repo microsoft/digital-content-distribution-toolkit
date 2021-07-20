@@ -8,11 +8,16 @@ import {MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./retailer-commission-dialog.component.css']
 })
 export class RetailerCommissionDialogComponent {
+  mobile: string;
   constructor(
     public dialogRef: MatDialogRef<RetailerCommissionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { 
-
+    this.data.properties.forEach(obj => {
+      if(obj.name === "UserPhone") {
+        this.mobile = obj.value
+      }
+    });
   }
 
   submit(button): void {

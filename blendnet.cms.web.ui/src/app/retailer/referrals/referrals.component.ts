@@ -16,10 +16,11 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
   monthsDropDown: Array<any> = [];
   milestonesCarouselArr: Array<any> = [];
   monthSelect: any;
-  partnerCode = 'NOVO';
-  retailerPartnerProvidedId = 'NVP';
+  partnerCode = sessionStorage.getItem('partnerCode');
+  retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
   nestedReferrals = [];
   totalEarnings = 0;
+  baseHref = this.retailerDashboardService.getBaseHref();
 
   constructor(
     public userService: UserService,
@@ -28,6 +29,8 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.partnerCode = this.retailerDashboardService.getpartnerCode();
+    this.retailerPartnerProvidedId = this.retailerDashboardService.getRetailerPartnerProvidedId();
     this.getDates();
     this.sixMonthsAgo.setMonth(this.today.getMonth() - 6);
   }
@@ -53,12 +56,13 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
     let occuredDates = [];
     let nestedReferrals = [];
     let totalEarnings = 0;
-    this.retailerDashboardService.getReferralsCommissionsInDetail(partnerCode, retailerPartnerProvidedId, dateObj.firstDateString, dateObj.lastDateString, 'RETAILER_INCOME_REFFRAL_COMPLETED').subscribe(
+    this.retailerDashboardService.getReferralsCommissionsInDetail(partnerCode, retailerPartnerProvidedId, dateObj.firstDateString, dateObj.lastDateString, 'RETAILER_INCOME_REFERRAL_COMPLETED').subscribe(
       res => {
          res.forEach(transaction => {
           console.log(transaction.eventOccuranceTime);
           const occuredDate = transaction.eventOccuranceTime.split("T")[0];
           transaction.occuredTime = transaction.eventOccuranceTime.split("T")[1].split(".")[0];
+          transaction.occuredTimeReadable = this.retailerDashboardService.generateReadableTime(transaction.eventOccuranceTime);
           transaction.properties.forEach(property => {
             if(property.name === 'UserPhone') {
               transaction.mobile = property.value;
@@ -78,6 +82,7 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
             nestedReferrals[index].transactions = [];
             nestedReferrals[index].transactions.push(transaction);
             nestedReferrals[index].amount =  transaction.calculatedValue;
+            nestedReferrals[index].occuredDateReadable = this.retailerDashboardService.generateReadableDate(occuredDate);
             totalEarnings+=transaction.calculatedValue;
           }
           console.log(occuredDate);
