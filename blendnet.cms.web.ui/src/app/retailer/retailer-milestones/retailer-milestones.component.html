@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="ongoing-milestones">
-        <div class="ongoing-text">Ongoing Milestones</div>
+        <!-- <div class="ongoing-text">Ongoing Milestones</div> -->
         <div class="ongoing-milestones-block">
                     <div *ngFor="let k of milestonesCarouselArr" class="landing-each-offer">
                         <div class="each-offer-inner landing-each-offer-milestone">
@@ -29,7 +29,12 @@
                                     <span class="milestone-heading-1">Earn Rs. {{k.secondOperand}} Bonus</span> <br>
                                     <span>on every {{k.firstOperand}} {{k.referral ? 'Referrals': 'Orders'}}</span>
                                 </div>
+                                <div *ngIf="k.value" class="milestones-achieved-block">
+                                    <div class="milestones-achieved"><b>Milestones completed:</b> {{k.value/k.secondOperand}}</div>
+                                    <div class="milestones-achieved"><b>Earnings: </b> {{k.value/k.secondOperand}} x {{k.secondOperand }} = Rs.{{k.value}}</div>    
+                                </div>
                                 <div class="milesone-progress">
+                                    <div>Running Milestone</div>
                                     {{k.residualValue}}/{{k.firstOperand}} Complete
                                     <mat-progress-bar mode="determinate" value="{{k.progress}}"></mat-progress-bar>
                                 </div>

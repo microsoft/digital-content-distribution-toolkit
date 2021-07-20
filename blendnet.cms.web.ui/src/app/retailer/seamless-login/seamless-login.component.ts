@@ -54,8 +54,6 @@ export class SeamlessLoginComponent implements OnInit, AfterViewInit {
   }
 
   fetchRetailer() {
-    console.log('fetch retailer');
-    debugger;
     this.kaizalaService.validateRetailerRole(this.authenticationToken).subscribe( 
       res => {
         var response: any = res.body;

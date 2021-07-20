@@ -116,34 +116,36 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
     this.retailerDashboardService.getReferralsCommissionsInDetail(partnerCode, retailerPartnerProvidedId, dateObj.firstDateString, dateObj.lastDateString, 'RETAILER_INCOME_ORDER_COMPLETED').subscribe(
       res => {
          res.forEach(transaction => {
-          const occuredDate = transaction.eventOccuranceTime.split("T")[0];
-          transaction.occuredDate = occuredDate;
-          transaction.occuredTime = transaction.eventOccuranceTime.split("T")[1].split(".")[0];
-          transaction.occuredTimeReadable = this.retailerDashboardService.generateReadableTime(transaction.eventOccuranceTime);
-          transaction.properties.forEach(property => {
-            if(property.name === 'OrderItem') {
-              const orderItem = JSON.parse(property.value);
-              transaction.name = orderItem.subscriptionTitle;
-              transaction.transactionId = orderItem.transactionId;
-              return;
+           if(transaction.calculatedValue) {
+            const occuredDate = transaction.eventOccuranceTime.split("T")[0];
+            transaction.occuredDate = occuredDate;
+            transaction.occuredTime = transaction.eventOccuranceTime.split("T")[1].split(".")[0];
+            transaction.occuredTimeReadable = this.retailerDashboardService.generateReadableTime(transaction.eventOccuranceTime);
+            transaction.properties.forEach(property => {
+              if(property.name === 'OrderItem') {
+                const orderItem = JSON.parse(property.value);
+                transaction.name = orderItem.subscriptionTitle;
+                transaction.transactionId = orderItem.transactionId;
+                return;
+              }
+            });
+            if(occuredDates.includes(occuredDate)) {
+              const index = occuredDates.indexOf(occuredDate); 
+              nestedCommissions[index].transactions.push(transaction); 
+              nestedCommissions[index].amount+=transaction.calculatedValue;
+              totalEarnings+=transaction.calculatedValue;
+            } else {
+              occuredDates.push(occuredDate);
+              const index = occuredDates.indexOf(occuredDate); 
+              nestedCommissions[index] = {};
+              nestedCommissions[index].occuredDate = occuredDate;
+              nestedCommissions[index].transactions = [];
+              nestedCommissions[index].transactions.push(transaction);
+              nestedCommissions[index].amount =  transaction.calculatedValue;
+              totalEarnings+=transaction.calculatedValue;
+              nestedCommissions[index].occuredDateReadable = this.retailerDashboardService.generateReadableDate(occuredDate);
             }
-          });
-          if(occuredDates.includes(occuredDate)) {
-            const index = occuredDates.indexOf(occuredDate); 
-            nestedCommissions[index].transactions.push(transaction); 
-            nestedCommissions[index].amount+=transaction.calculatedValue;
-            totalEarnings+=transaction.calculatedValue;
-          } else {
-            occuredDates.push(occuredDate);
-            const index = occuredDates.indexOf(occuredDate); 
-            nestedCommissions[index] = {};
-            nestedCommissions[index].occuredDate = occuredDate;
-            nestedCommissions[index].transactions = [];
-            nestedCommissions[index].transactions.push(transaction);
-            nestedCommissions[index].amount =  transaction.calculatedValue;
-            totalEarnings+=transaction.calculatedValue;
-            nestedCommissions[index].occuredDateReadable = this.retailerDashboardService.generateReadableDate(occuredDate);
-          }
+           }
         });
         this.nestedCommissions = nestedCommissions;
         this.totalEarnings = totalEarnings;

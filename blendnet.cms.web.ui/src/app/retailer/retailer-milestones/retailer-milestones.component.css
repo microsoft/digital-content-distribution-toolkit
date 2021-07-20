@@ -151,6 +151,7 @@
 
 .each-offer-text-block {
     color: white;
+    display: inline-block;
 }
 
 .milestone-heading-1 {
@@ -184,4 +185,13 @@
 .landing-page-total-block-wrapper {
     border-bottom: 2px solid #E5E5E5;
     border-top: 2px solid #E5E5E5;
+}
+
+.milestones-achieved {
+    
+}
+
+.milestones-achieved-block {
+    float: right;
+    color: white;
 }

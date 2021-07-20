@@ -106,5 +106,9 @@ export class RetailerDashboardService {
     return moment(new Date(date)).format('DD, MMM, YYYY h:mm A');
   }
 
+  formatDateOnlyDay(date) {
+    return moment(new Date(date)).format('DD MMM, YYYY');
+  }
+
 
 }

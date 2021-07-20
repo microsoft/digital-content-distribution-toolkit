@@ -62,8 +62,11 @@
 .incentive-text-type {
     color: #101010;
     padding-left: 30px;
-    line-height: 70px;
-    padding-right: 85px
+    /* line-height: 70px; */
+    padding-right: 85px;
+    position: relative;
+    height: 70px;
+    padding-top: 16px;
 }
 
 .each-offer-text-block {
@@ -79,15 +82,14 @@
     padding-right: 10px;
     padding-left: 20px;
     padding-top: 25px;
-    padding-bottom: 20px;
+    /* padding-bottom: 20px; */
     position: relative;
 }
 
 .each-offer-valid-label {
     color: #606060;
     font-size: 12px;
-    padding: 5px;
-    background: white;
+    /* background: white; */
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
 }
@@ -98,7 +100,7 @@
     font-size: 12px;
     font-weight: bold;
     padding-left: 3px;
-    background: white;
+    /* background: white; */
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
 }
@@ -148,5 +150,7 @@
     /* background: white; */
     border-radius: 10px;
     height: 70px;
-    float: right;
+    /* float: right; */
+    position: absolute;
+    left: 100px;
 }
