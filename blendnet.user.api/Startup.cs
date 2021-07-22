@@ -29,6 +29,8 @@ using Microsoft.Extensions.Options;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using blendnet.common.infrastructure.Extensions;
+using blendnet.api.proxy;
+using blendnet.user.api.Common;
 
 namespace blendnet.user.api
 {
@@ -156,9 +158,13 @@ namespace blendnet.user.api
 
             //Configure Services
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<RetailerProxy>();
             services.AddTransient<RetailerProviderProxy>();
+
+            //registerations required for authhandler to work
+            services.AddTransient<KaizalaIdentityProxy>();
+            services.AddTransient<UserProxy>();
+            services.AddTransient<IUserDetails, UserDetails>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);

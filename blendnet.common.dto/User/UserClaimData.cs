@@ -17,7 +17,7 @@ namespace blendnet.common.dto.User
         /// <returns></returns>
         public static Guid GetUserId(IEnumerable<Claim> claims)
         {
-            var userClaim = claims.Where(x => x.Type.Equals(ApplicationConstants.KaizalaIdentityClaims.UId));
+            var userClaim = claims.Where(x => x.Type.Equals(ApplicationConstants.BlendNetClaims.UId));
 
             string userIdStr = userClaim.First().Value;
 

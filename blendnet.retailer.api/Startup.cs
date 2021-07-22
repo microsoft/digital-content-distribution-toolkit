@@ -26,6 +26,7 @@ using Microsoft.Extensions.Options;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using blendnet.common.infrastructure.Extensions;
+using blendnet.api.proxy;
 
 namespace blendnet.retailer.api
 {
@@ -155,7 +156,10 @@ namespace blendnet.retailer.api
             services.AddTransient<IRetailerRepository, RetailerRepository>();
             services.AddTransient<IRetailerProviderRepository, RetailerProviderRepository>();
 
+            //registerations required for authhandler to work
             services.AddTransient<KaizalaIdentityProxy>();
+            services.AddTransient<UserProxy>();
+            services.AddTransient<IUserDetails, UserDetailsByProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -273,6 +277,14 @@ namespace blendnet.retailer.api
             //Configure Http Clients
             services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
             {
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+            //Configure Http Client for User Proxy
+            string userBaseUrl = Configuration.GetValue<string>("UserBaseUrl");
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.USER_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(userBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }

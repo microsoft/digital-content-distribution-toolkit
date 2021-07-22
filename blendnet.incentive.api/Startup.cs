@@ -1,3 +1,4 @@
+using blendnet.api.proxy;
 using blendnet.api.proxy.Cms;
 using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.api.proxy.Retailer;
@@ -69,8 +70,6 @@ namespace blendnet.incentive.api
 
             //Configure Localization
             ConfigureLocalization(services);
-
-
 
             services.AddControllers()
                 .AddJsonOptions(options =>
@@ -157,11 +156,15 @@ namespace blendnet.incentive.api
             //Configure Services
             services.AddTransient<IIncentiveRepository, IncentiveRepository>();
             services.AddTransient<IEventRepository, EventRepository>();
-            services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<RetailerProviderProxy>();
             services.AddTransient<RetailerProxy>();
             services.AddTransient<IncentiveCalculationHelper>();
             services.AddTransient<ContentProxy>();
+
+            //registerations required for authhandler to work
+            services.AddTransient<KaizalaIdentityProxy>();
+            services.AddTransient<UserProxy>();
+            services.AddTransient<IUserDetails, UserDetailsByProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -241,7 +244,6 @@ namespace blendnet.incentive.api
         /// <param name="services"></param>
         private void ConfigureHttpClients(IServiceCollection services)
         {
-
             //Configure Http Clients
             services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
             {
@@ -261,6 +263,14 @@ namespace blendnet.incentive.api
             {
                 string cmsBaseUrl = Configuration.GetValue<string>("CmsBaseUrl");
                 c.BaseAddress = new Uri(cmsBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+            //Configure Http Client for User Proxy
+            string userBaseUrl = Configuration.GetValue<string>("UserBaseUrl");
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.USER_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(userBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }

@@ -45,8 +45,12 @@ namespace blendnet.common.dto
 
             public const string TokenValidFrom = "TokenValidFrom";
 
-            public const string UId = "UId";
+            public const string IdentityUId = "IdentityUId";
+        }
 
+        public struct BlendNetClaims
+        {
+            public const string UId = "UId";
         }
 
         /// <summary>

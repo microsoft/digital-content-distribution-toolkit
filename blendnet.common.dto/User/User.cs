@@ -12,7 +12,8 @@ namespace blendnet.common.dto.User
     {
         ConsumerApp = 0,
         NovoRetailerApp = 1,
-        CMSPortal = 2
+        CMSPortal = 2,
+        System = 4
     }
 
     /// <summary>

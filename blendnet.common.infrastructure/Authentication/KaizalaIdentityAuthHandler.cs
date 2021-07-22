@@ -1,6 +1,7 @@
 ﻿using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Identity;
+using blendnet.common.dto.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -24,15 +25,25 @@ namespace blendnet.common.infrastructure.Authentication
 
         KaizalaIdentityAuthOptions _kaizalaIdentityAuthOptions;
 
+        IUserDetails _userDetails;
+
+        ILogger<KaizalaIdentityAuthHandler> _authLogger;
+
         public KaizalaIdentityAuthHandler(  IOptionsMonitor<KaizalaIdentityAuthOptions> options, 
                                             ILoggerFactory logger, 
                                             UrlEncoder encoder, 
                                             ISystemClock clock,
-                                            KaizalaIdentityProxy kaizalaIdentityProxy ) : base(options, logger, encoder, clock)
+                                            KaizalaIdentityProxy kaizalaIdentityProxy,
+                                            ILogger<KaizalaIdentityAuthHandler> authLogger,
+                                            IUserDetails userDetails) : base(options, logger, encoder, clock)
         {
             _kaizalaIdentityProxy = kaizalaIdentityProxy;
 
             _kaizalaIdentityAuthOptions = options.CurrentValue;
+
+            _userDetails = userDetails;
+
+            _authLogger = authLogger;
 
         }
 
@@ -70,10 +81,24 @@ namespace blendnet.common.infrastructure.Authentication
             //If the response is null
             if (response is null)
             {
+                _authLogger.LogInformation($"Kaizala auth returned null for : {headerValue.Parameter}");
+
                 return AuthenticateResult.Fail("Unauthorized");
             }
 
-            var identities = new List<ClaimsIdentity> { new ClaimsIdentity(GetClaims(response, headerValue.Parameter), _kaizalaIdentityAuthOptions.Scheme) };
+            string phoneNumber = response.KiazalaCredentials.PhoneNumber.Replace(ApplicationConstants.CountryCodes.India, "");
+
+            User user = await _userDetails.GetUserDetails(phoneNumber);
+
+            if (user is null)
+            {
+                _authLogger.LogInformation($"Failed to get user details from user collection for {phoneNumber}");
+
+                return AuthenticateResult.Fail("Unauthorized");
+            }
+
+
+            var identities = new List<ClaimsIdentity> { new ClaimsIdentity(GetClaims(response,user, headerValue.Parameter), _kaizalaIdentityAuthOptions.Scheme) };
 
             var ticket = new AuthenticationTicket(new ClaimsPrincipal(identities), _kaizalaIdentityAuthOptions.Scheme);
 
@@ -87,7 +112,7 @@ namespace blendnet.common.infrastructure.Authentication
         /// <param name="response"></param>
         /// <param name="accessToken"></param>
         /// <returns></returns>
-        private List<Claim> GetClaims(ValidatePartnerAccessTokenResponse response, string accessToken)
+        private List<Claim> GetClaims(ValidatePartnerAccessTokenResponse response, User user , string accessToken)
         {
             List<Claim> claims = new List<Claim>();
 
@@ -105,7 +130,12 @@ namespace blendnet.common.infrastructure.Authentication
 
             claims.Add(claim);
 
-            claim = new Claim(ApplicationConstants.KaizalaIdentityClaims.UId, response.UID);
+            claim = new Claim(ApplicationConstants.KaizalaIdentityClaims.IdentityUId, response.UID);
+
+            claims.Add(claim);
+
+            //Add the blendnet user id
+            claim = new Claim(ApplicationConstants.BlendNetClaims.UId, user.Id.ToString());
 
             claims.Add(claim);
 

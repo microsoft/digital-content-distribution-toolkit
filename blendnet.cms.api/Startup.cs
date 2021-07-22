@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Azure.Storage.Blobs;
+using blendnet.api.proxy;
 using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.cms.api.Common;
 using blendnet.cms.repository.CosmosRepository;
@@ -180,7 +181,10 @@ namespace blendnet.cms.api
 
             services.AddTransient<AmsHelper>();
 
+            //registerations required for authhandler to work
             services.AddTransient<KaizalaIdentityProxy>();
+            services.AddTransient<UserProxy>();
+            services.AddTransient<IUserDetails, UserDetailsByProxy>();
 
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
@@ -330,6 +334,14 @@ namespace blendnet.cms.api
             {
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
+
+            //Configure Http Client for User Proxy
+            string userBaseUrl = Configuration.GetValue<string>("UserBaseUrl");
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.USER_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(userBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
         }
 
         /// <summary>
@@ -371,5 +383,7 @@ namespace blendnet.cms.api
 
                });
         }
+
+        
     }
 }
