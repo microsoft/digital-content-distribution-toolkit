@@ -8,8 +8,8 @@
             <mat-form-field>
               <mat-label>Event Type</mat-label>
               <mat-select  name="eventType" (ngModelChange)="onEventTypeChange()"
-              formControlName="eventType"  [disableControl]="isPublished">
-              <mat-option *ngFor="let event of eventTypes" [value]="event">
+              formControlName="eventType"  [disableControl]="isPublished" >
+              <mat-option *ngFor="let event of eventTypes" [value]="event" [disabled]="isExpenseEvent(event)">
                   {{event}}
               </mat-option>
               </mat-select>
@@ -22,12 +22,12 @@
                 <mat-error >{{getErrorMessage()}}</mat-error>
             </mat-form-field>
         </td>
-        <td colspan="2">
-          <mat-form-field *ngIf="showCP">
+        <td>
+          <mat-form-field >
             <mat-label>Content Provider</mat-label>
             <mat-select  name="contentProvider" 
             formControlName="eventSubType"
-            [disableControl]="isPublished">
+            [disableControl]="isPublished || !showCP">
             <mat-option *ngFor="let cp of contentProviders" [value]="cp.id">
                 {{cp.name}}
             </mat-option>
@@ -67,21 +67,29 @@
               </mat-select>
           </mat-form-field>
           </td>
-         
-        <td *ngIf="!isRangeFormulaType()">
+          <td *ngIf="!isMileStonePlanType()">
             <mat-form-field >
-                <input matInput placeholder="Incentive" 
-                formControlName="incentive" required  [disableControl]="isPublished">
+                <input matInput placeholder="First Operand" 
+                formControlName="firstOperand" required  [disableControl]="isPublished">
                 <mat-error >{{getErrorMessage()}}</mat-error>
             </mat-form-field>
-        </td>
-        <td *ngIf="isDivideFormulaType()">
-          <mat-form-field >
-              <input matInput placeholder="Milestone target" 
-              formControlName="milestoneTarget" required  [disableControl]="isPublished">
-              <mat-error >{{getErrorMessage()}}</mat-error>
-          </mat-form-field>
-      </td>
+          </td>
+        </tr>
+        <tr  *ngIf="isDivideFormulaType()">
+            <td>
+              <mat-form-field >
+                  <input matInput placeholder="First Operand" 
+                  formControlName="firstOperand" required  [disableControl]="isPublished || isRangeFormulaType()">
+                  <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>
+            <td >
+              <mat-form-field >
+                  <input matInput placeholder="Second Operand" 
+                  formControlName="secondOperand" required  [disableControl]="isPublished || isRangeFormulaType()">
+                  <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>           
         </tr>
       </table>
       <br>
@@ -111,8 +119,8 @@
             </td> 
             <td>
               <mat-form-field>
-                <input matInput placeholder="Incentive" 
-                formControlName="incentive" required  [disableControl]="isPublished">
+                <input matInput placeholder="Output" 
+                formControlName="output" required  [disableControl]="isPublished">
               </mat-form-field>
             </td>   
             <td>

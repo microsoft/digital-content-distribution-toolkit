@@ -1,11 +1,10 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EventType} from '../models/incentive.model';
+import { EventType, FormulaType, RuleType} from '../models/incentive.model';
 import { ContentProviderService } from '../services/content-provider.service';
 import { IncentiveService } from '../services/incentive.service';
 import { Output, EventEmitter } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { MatStepper } from '@angular/material/stepper';
 import { ConfigService } from '../services/config.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -25,7 +24,7 @@ export class AddIncentiveComponent implements OnInit {
   @Input() plan: any;
   @Output() newIncentiveEvent = new EventEmitter<any>();
 
-  displayedColumns: string[] = ['eventType','eventTitle','contentProvider', 'ruleType', 'formula',  'incentive', 'milestoneTarget', 'edit', 'delete'];
+  displayedColumns: string[] = ['eventType','eventTitle','contentProvider', 'ruleType', 'formula',  'firstOperand', 'secondOperand', 'edit', 'delete'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -46,7 +45,7 @@ export class AddIncentiveComponent implements OnInit {
   contentProviders = [];
 
 
-  partnerDisabled = false;
+  disablePlanTypePartner = false;
   isPublished = false;
   isDraft = false;
 
@@ -103,6 +102,8 @@ export class AddIncentiveComponent implements OnInit {
     }
   }
 
+
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -146,7 +147,7 @@ export class AddIncentiveComponent implements OnInit {
     this.incentiveFormGroup.get('type').setValue(plan.planType);
     if(this.audience === "RETAILER"){
       this.incentiveFormGroup.get('partner').setValue(plan.audience.subTypeName);
-      this.partnerDisabled = true;
+      //this.partnerDisabled = true;
     } else {
       this.incentiveFormGroup.removeControl('partner');
     }
@@ -163,6 +164,7 @@ export class AddIncentiveComponent implements OnInit {
     }
     
     if(plan.publishMode === 'DRAFT') {
+      this.disablePlanTypePartner = true;
       this.isDraft = true;
     } else {
       this.isDraft = false;
@@ -309,13 +311,61 @@ openSelectCPModalButtons(): Array<any> {
         formula: {
           formulaType: e.formula.formulaType,
           firstOperand: e.formula.firstOperand,
-          secondOperand: e.formula.seondOperand,
+          secondOperand: e.formula.secondOperand,
           rangeOperand: e.formula.rangeOperand
         }
       }
       planDetails.push(event);
     })
+    if(this.audience === 'CONSUMER') {
+      if(sessionStorage.getItem('CONSUMER_EVENTS')) {
+        this.eventTypes = JSON.parse(sessionStorage.getItem('CONSUMER_EVENTS'))
+      } else {
+        this.incentiveService.getEventList("CONSUMER").subscribe(
+          res => {
+            this.eventTypes = res.body;
+            sessionStorage.setItem("CONSUMER_EVENTS",  JSON.stringify(res.body));
+          },
+          err => console.log(err)
+        );
+      }
+
+      this.eventTypes.forEach(type => {
+          if(type.includes("EXPENSE")) {
+            var event: any = {
+              eventType: type,
+              eventTitle: "Expense",
+              ruleType: RuleType.SUM,
+              // formula : FormulaType.PLUS
+            }
+            planDetails.push(event)
+          }
+        });
+      }
+    
     return planDetails;
+  }
+
+
+  createDefaultExpenseEvents() {
+    var events: any[] = [];
+    if(sessionStorage.getItem('CONSUMER_EVENTS') && JSON.parse(sessionStorage.getItem('CONSUMER_EVENTS')).length > 0) {
+      JSON.parse(sessionStorage.getItem('CONSUMER_EVENTS')).forEach(type => {
+        if(type.includes("EXPENSE")) {
+          // ['eventType','eventTitle','contentProvider', 'ruleType', 'formula',  'firstOperand', 'secondOperand', 'edit', 'delete'];
+          var event: any = {
+            eventType: type,
+            eventTitle: "Expense",
+            ruleType: RuleType.SUM,
+            eventSubTypeName: "NA",
+            formula : null
+
+          }
+          events.push(event)
+        }
+      });
+      return events;
+    }
   }
   
   createIncentive() {
@@ -377,13 +427,17 @@ openSelectCPModalButtons(): Array<any> {
 
 
     changeDate() {
-      var selectedEndDate = this.incentiveFormGroup.get('endDate').value;
-      var month = (selectedEndDate.getMonth()+'').length == 1 ? 
-                  '0'+ selectedEndDate.getMonth() : selectedEndDate.getMonth();
-
-      var newEndDateUTCString = selectedEndDate.getFullYear() + '-' +
-                                month + '-' +
-                                selectedEndDate.getDate() + 'T23:59:59Z';
+      var newEndDateUTCString;
+      if(typeof this.incentiveFormGroup.get('endDate').value === "string") {
+        newEndDateUTCString = this.incentiveFormGroup.get('endDate').value;
+      } else {
+        var selectedEndDate = this.incentiveFormGroup.get('endDate').value;
+        selectedEndDate.setHours(selectedEndDate.getHours() + 23);
+        selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
+        selectedEndDate.setSeconds(selectedEndDate.getSeconds() + 59);
+        newEndDateUTCString  = selectedEndDate.toISOString()
+      }
+      
       if(this.audience === "RETAILER") {
         var partner = this.incentiveFormGroup.get('partner').value;
         this.changeRetailerPlanEndDate(partner, newEndDateUTCString);
@@ -453,6 +507,9 @@ openSelectCPModalButtons(): Array<any> {
 
     isIncentiveFormNotValid() {
       return !this.incentiveFormGroup.valid;
+      // return !this.incentiveFormGroup.get('type').valid || !this.incentiveFormGroup.get('name').valid ||
+      // !this.incentiveFormGroup.get('startDate').valid || !this.incentiveFormGroup.get('endDate').valid  ||
+      // (this.audience === "RETAILER" ? !this.incentiveFormGroup.get('startDate').valid: true) ;
     }
 
     isFormUpdated(){

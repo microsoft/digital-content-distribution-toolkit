@@ -11,7 +11,7 @@
     <form [formGroup]="incentiveFormGroup">
         <div>
                 <label class="type-label">Incentive Plan Type: </label>&nbsp;&nbsp;&nbsp;
-                <mat-radio-group  formControlName="type" [disableControl]="isPublished" aria-label="Select plan type">
+                <mat-radio-group  formControlName="type" [disableControl]="isPublished || disablePlanTypePartner" aria-label="Select plan type">
                 <!-- (ngModelChange)="onPlanTypeChange()"> -->
                     <mat-radio-button value="REGULAR" (click)="onPlanTypeChange()">REGULAR PLAN</mat-radio-button>
                     <mat-radio-button value="MILESTONE" (click)="onPlanTypeChange()">MILESTONE PLAN</mat-radio-button>
@@ -30,7 +30,7 @@
                     <mat-form-field *ngIf="audience === 'RETAILER'">
                         <mat-label>Retailer Partner</mat-label>
                         <mat-select  name="partner" formControlName="partner"
-                        [disableControl]="partnerDisabled || isPublished">
+                        [disableControl]="disablePlanTypePartner || isPublished">
                         <mat-option *ngFor="let partner of partners" [value]="partner">
                             {{partner}}
                         </mat-option>
@@ -66,7 +66,9 @@
 
 
     <button mat-stroked-button color="primary" type="button" [disabled]="isPublished || isIncentiveFormNotValid()" (click)="openDialog(null, null)"><mat-icon>add</mat-icon>Add Event</button>
-    <br> <br>
+    <br><br>
+    <mat-error *ngIf="audience === 'CONSUMER'"><b>Please Note: Expense event/s will be added by default to every CONSUMER Incentive Plan</b></mat-error>
+    <br>
 
     <div class="mat-elevation-z8">
         <div class="cms-table-container">
@@ -94,17 +96,17 @@
             <!-- formula Column -->
             <ng-container matColumnDef="formula">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Formula </th>
-                <td mat-cell *matCellDef="let row"> {{row.formula.formulaType}} </td>
+                <td mat-cell *matCellDef="let row"> {{row.formula?.formulaType}} </td>
             </ng-container>
                 <!-- Incentive Column -->
-                <ng-container matColumnDef="incentive">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Incentive </th>
-                <td mat-cell *matCellDef="let row"> {{row.formula.firstOperand}} </td>
+                <ng-container matColumnDef="firstOperand">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> First Operand </th>
+                <td mat-cell *matCellDef="let row"> {{row.formula?.firstOperand}} </td>
             </ng-container>
             <!-- milestoneTarget Column -->
-                <ng-container matColumnDef="milestoneTarget">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Milestone Target</th>
-                <td mat-cell *matCellDef="let row"> {{row.formula.secondOperand}} </td>
+                <ng-container matColumnDef="secondOperand">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Second Operand</th>
+                <td mat-cell *matCellDef="let row"> {{row.formula?.secondOperand}} </td>
             </ng-container>
                 <!-- edit Column -->
                 <ng-container matColumnDef="edit">
