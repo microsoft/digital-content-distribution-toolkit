@@ -52,7 +52,7 @@ namespace blendnet.oms.api.Controllers
 
         private IncentiveEventProxy _incentiveEventProxy;
 
-        private IncentiveBrowseProxy _incentiveBrowseProxy;
+        private IncentiveProxy _incentiveProxy;
 
         private IEventBus _eventBus;
 
@@ -69,7 +69,7 @@ namespace blendnet.oms.api.Controllers
                                 RetailerProviderProxy retailerProviderProxy,
                                 SubscriptionProxy subscriptionProxy,
                                 IncentiveEventProxy incentiveEventProxy,
-                                IncentiveBrowseProxy incentiveBrowseProxy,
+                                IncentiveProxy incentiveProxy,
                                 IEventBus eventBus,
                                 IOptionsMonitor<OmsAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
@@ -89,7 +89,7 @@ namespace blendnet.oms.api.Controllers
 
             _incentiveEventProxy = incentiveEventProxy;
 
-            _incentiveBrowseProxy = incentiveBrowseProxy;
+            _incentiveProxy = incentiveProxy;
 
             _eventBus = eventBus;
 
@@ -756,7 +756,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         private async Task<bool> IsRedemptionAllowedInActivePlan()
         {
-            IncentivePlan incentivePlan = await _incentiveBrowseProxy.GetConsumerActivePlan(PlanType.REGULAR);
+            IncentivePlan incentivePlan = await _incentiveProxy.GetConsumerActivePlan(PlanType.REGULAR);
 
             //in case there is no active incentive plan for consumer, dont allow redemption.
             //there has to be one active plan for consumer. Atleast with expense.

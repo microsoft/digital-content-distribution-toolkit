@@ -1,4 +1,5 @@
-﻿using blendnet.api.proxy.Retailer;
+﻿using AutoMapper;
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
 using blendnet.common.dto.Retailer;
@@ -41,12 +42,15 @@ namespace blendnet.incentive.api.Controllers
 
         private IncentiveCalculationHelper _incentiveCalculationHelper;
 
+        private IMapper _mapper;
+
         public IncentiveController(IIncentiveRepository incentiveRepository,
                                 ILogger<IncentiveController> logger,
                                 IOptionsMonitor<IncentiveAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
                                 RetailerProviderProxy retailerProviderProxy,
-                                IncentiveCalculationHelper incentiveCalculationHelper)
+                                IncentiveCalculationHelper incentiveCalculationHelper,
+                                IMapper mapper)
         {
             _incentiveRepository = incentiveRepository;
 
@@ -59,6 +63,8 @@ namespace blendnet.incentive.api.Controllers
             _retailerProviderProxy = retailerProviderProxy;
 
             _incentiveCalculationHelper = incentiveCalculationHelper;
+
+            _mapper = mapper;
         }
 
         #region Incentive management methods
@@ -410,6 +416,25 @@ namespace blendnet.incentive.api.Controllers
             }
 
             return Ok(eventTypes);
+        }
+
+        /// <summary>
+        /// Returns current active consumer incentive plan with given plan type
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        [HttpGet("consumer/active/{planType}", Name = nameof(GetConsumerActiveIncentivePlan))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<IncentivePlanDto>> GetConsumerActiveIncentivePlan(PlanType planType)
+        {
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(planType);
+
+            if (incentivePlan == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(incentivePlan);
         }
 
         #endregion
