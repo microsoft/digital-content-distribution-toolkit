@@ -434,9 +434,7 @@ namespace blendnet.incentive.api.Controllers
                 return NotFound();
             }
 
-            IncentivePlanDto incentivePlanDto = _mapper.Map<IncentivePlan, IncentivePlanDto>(incentivePlan);
-
-            return Ok(incentivePlanDto);
+            return Ok(incentivePlan);
         }
 
         #endregion
