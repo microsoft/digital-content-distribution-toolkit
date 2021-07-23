@@ -5,7 +5,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
-import { Incentive } from '../models/incentive.model';
+import { Incentive, PlanType, PublishMode } from '../models/incentive.model';
+import { ConfigService } from '../services/config.service';
 import { IncentiveService } from '../services/incentive.service';
 
 @Component({
@@ -33,10 +34,16 @@ export class IncentiveManagementComponent implements OnInit {
   selectedStatusRetailer;
   selectedStatusConsumer;
   selectedPlan = null;
+  missingListPartner: any[] = [];
+  missingListConsumer: any ={};
+  partners = [];
+  selectedPartner;
+  missingPlansforPartner;
 
   constructor( private incentiveService: IncentiveService,
     public dialog: MatDialog,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private configService: ConfigService
     ) { }
 
   ngOnInit(): void {
@@ -62,15 +69,145 @@ export class IncentiveManagementComponent implements OnInit {
           this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
           this.dataSourceRetailers.sort = this.sort.toArray()[0];  
           this.selectedStatusRetailer= this.statuses[0]; 
-          this.applyFilterRetailer(null);           
+          this.applyFilterRetailer(null);   
+          this.getMissingPlans(this.dataSourceRetailers.data);
+
         },
       err => {
         this.dataSourceRetailers = this.createDataSource([]);
-        // this.toastr.error(err);
         console.log('HTTP Error', err);
       }
     );
   }
+
+  getMissingPlans(plans) {
+    var missingListPartner: any [] = [];
+    this.configService.getRetailerPartners().subscribe(
+      res => {
+        this.partners = this.getPartnerCodes(res);
+        sessionStorage.setItem("RETAILER_PARTNERS", JSON.stringify(this.partners));
+        var partnerwisePlanList: any[] = [];
+        this.partners.forEach( partner => {
+           
+          var partnerwisePlan = {
+            partner : partner,
+            regularPlans: plans.filter(plan => (plan.partner === partner && plan.type === PlanType.REGULAR && plan.status === PublishMode.PUBLISHED))
+            .sort((p1, p2) => {
+              return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+            }),
+            milestonePlans: plans.filter(plan => (plan.partner === partner && plan.type === PlanType.MILESTONE && plan.status === PublishMode.PUBLISHED))
+            .sort((p1, p2) => {
+              return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+            })
+          }
+          partnerwisePlanList.push(partnerwisePlan);
+        })
+
+        partnerwisePlanList.forEach(partner => {
+          var missingListRegular = [];
+          var missingListMilestone = [];
+          for(let i=0; i < partner.regularPlans.length-1; i ++ ){
+            if(new Date(partner.regularPlans[i+1].startDate).getTime()- new Date(partner.regularPlans[i].endDate).getTime() > 1000){
+              var missingStartDate = new Date(partner.regularPlans[i].endDate);
+              missingStartDate.setDate(missingStartDate.getDate()+1);
+              var missingEndDate = new Date(partner.regularPlans[i+1].startDate)
+              missingEndDate.setDate(missingEndDate.getDate()-1);
+              var missingPlan = {
+                startDate: missingStartDate,
+                endDate: missingEndDate
+              }
+              missingListRegular.push(missingPlan);
+            }
+          }
+
+          for(let i=0; i < partner.milestonePlans.length-1; i ++ ){
+            if(new Date(partner.milestonePlans[i+1].startDate).getTime() - new Date(partner.milestonePlans[i].endDate).getTime()    > 1000){
+              var missingStartDate = new Date(partner.milestonePlans[i].endDate);
+              missingStartDate.setDate(missingStartDate.getDate()+1);
+              var missingEndDate = new Date(partner.milestonePlans[i+1].startDate)
+              missingEndDate.setDate(missingEndDate.getDate()-1);
+              var missingPlan = {
+                startDate: missingStartDate,
+                endDate: missingEndDate
+              }
+              missingListMilestone.push(missingPlan);
+            }
+          }
+          var partnerList ={
+            partner: partner.partner,
+            missingListRegular: missingListRegular,
+            missingListMilestone: missingListMilestone
+          }
+          missingListPartner.push(partnerList);
+        });
+    
+        this.missingListPartner =  missingListPartner;
+      },
+      err => console.log(err)
+    );
+  }
+
+  getMissingPlansConsumer(plans) {
+    var cosumerPlansbyType = {
+      regularPlans: plans.filter(plan => (plan.type === PlanType.REGULAR && plan.status === PublishMode.PUBLISHED))
+      .sort((p1, p2) => {
+        return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+      }),
+      milestonePlans: plans.filter(plan => (plan.type === PlanType.MILESTONE && plan.status === PublishMode.PUBLISHED))
+      .sort((p1, p2) => {
+        return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+      })
+    };
+
+          var missingListRegular = [];
+          var missingListMilestone = [];
+          for(let i=0; i < cosumerPlansbyType.regularPlans.length-1; i ++ ){
+            if(new Date(cosumerPlansbyType.regularPlans[i+1].startDate).getTime()- new Date(cosumerPlansbyType.regularPlans[i].endDate).getTime() > 1000){
+              var missingStartDate = new Date(cosumerPlansbyType.regularPlans[i].endDate);
+              missingStartDate.setDate(missingStartDate.getDate()+1);
+              var missingEndDate = new Date(cosumerPlansbyType.regularPlans[i+1].startDate)
+              missingEndDate.setDate(missingEndDate.getDate()-1);
+              var missingPlan = {
+                startDate: missingStartDate,
+                endDate: missingEndDate
+              }
+              missingListRegular.push(missingPlan);
+            }
+          }
+
+          for(let i=0; i < cosumerPlansbyType.milestonePlans.length-1; i ++ ){
+            if(new Date(cosumerPlansbyType.milestonePlans[i+1].startDate).getTime() - new Date(cosumerPlansbyType.milestonePlans[i].endDate).getTime()    > 1000){
+              var missingStartDate = new Date(cosumerPlansbyType.milestonePlans[i].endDate);
+              missingStartDate.setDate(missingStartDate.getDate()+1);
+              var missingEndDate = new Date(cosumerPlansbyType.milestonePlans[i+1].startDate)
+              missingEndDate.setDate(missingEndDate.getDate()-1);
+              var missingPlan = {
+                startDate: missingStartDate,
+                endDate: missingEndDate
+              }
+              missingListMilestone.push(missingPlan);
+            }
+          }
+          this.missingListConsumer = {
+            missingListRegular: missingListRegular,
+            missingListMilestone: missingListMilestone
+          }
+  }
+
+  getMissingPlansforPartner(event){
+    this.missingPlansforPartner = this.missingListPartner.find( p => p.partner === event.value);
+  }
+
+  getPartnerCodes(partners) {
+    var partnerCodes = [];
+    if(partners && Array.isArray(partners)){
+      partners.forEach(partner => {
+        partnerCodes.push(partner.partnerCode);
+      })
+    }
+    return partnerCodes;
+  }
+  
 
   createDataSource(response) {
     var dataSource: Incentive[] =[];
@@ -113,11 +250,11 @@ export class IncentiveManagementComponent implements OnInit {
           this.dataSourceConsumers.paginator = this.paginator.toArray()[1];;
           this.dataSourceConsumers.sort = this.sort.toArray()[1];   
           this.selectedStatusConsumer= this.statuses[0];     
-          this.applyFilterConsumer(null);    
+          this.applyFilterConsumer(null);  
+          this.getMissingPlansConsumer(this.dataSourceConsumers.data);  
         },
       err => {
         this.dataSourceConsumers = this.createDataSource([]);
-        // this.toastr.error(err);
         console.log('HTTP Error', err);
       }
     );
@@ -266,7 +403,6 @@ deleteDraftRetailerIncentive(id, partner) {
   this.incentiveService.deleteDraftRetailerIncentivePlan(id, partner).subscribe(
     res => {
       this.toastr.success("Retailer Incentive plan deleted successfully");
-      console.log(res),
       this.getRetailerIncentivePlans();
     },
     err =>  {
@@ -280,7 +416,6 @@ deleteDraftConsumerIncentive(id){
   this.incentiveService.deleteDraftConsumerIncentivePlan(id).subscribe(
     res => {
       this.toastr.success("Consumer Incentive plan deleted successfully");
-      console.log(res),
       this.getConsumerIncentivePlans();
     },
     err =>  {
@@ -295,7 +430,6 @@ deleteDraftConsumerIncentive(id){
     this.incentiveService.publishRetailerIncentivePlan(id, partner).subscribe(
       res => {
         this.toastr.success("Retailer Incentive plan published successfully");
-        console.log(res),
         this.getRetailerIncentivePlans();
       },
       err =>  {
@@ -309,7 +443,6 @@ deleteDraftConsumerIncentive(id){
     this.incentiveService.publishConsumerIncentivePlan(id).subscribe(
       res => {
         this.toastr.success("Consumer Incentive plan published successfully");
-        console.log(res),
         this.getConsumerIncentivePlans();
       },
       err =>  {

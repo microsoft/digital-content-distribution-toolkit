@@ -17,24 +17,11 @@
                         </mat-button-toggle-group>
                     </h4>
                     
-                    
-                    <div mat-dialog-actions align="end">
-                        
-                    </div>
                     <mat-form-field>
                         <mat-label>Search Incentive</mat-label>
                         <input matInput (keyup)="applyFilterRetailer($event)" placeholder="Ex. Incentive Plan">
                         <mat-icon matSuffix>search</mat-icon>
                     </mat-form-field>
-                    <!-- <span class="cms-spacer"></span>
-                    <mat-form-field appearance="outline" >
-                        <mat-label>Status</mat-label>
-                        <mat-select [(ngModel)]="selectedStatusRetailer" name="status" (selectionChange)="applyFilterRetailer($event)">
-                            <mat-option *ngFor="let s of statuses" [value]="s">
-                            {{s}}
-                            </mat-option>
-                        </mat-select>
-                        </mat-form-field> -->
                     <div class="mat-elevation-z8">
                         <div class="cms-table-container">
                             <table mat-table [dataSource]="dataSourceRetailers" class="incentive-table" matSort>
@@ -111,7 +98,56 @@
                         <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 
                     </div>
+                    <br><br>
+                    <mat-card>
+                        <mat-form-field>
+                            <mat-label>Select Retailer Partner to see the date range where incentive plans are not Publised:</mat-label>
+                            <mat-select  name="partner" (selectionChange)="getMissingPlansforPartner($event)" [(ngModel)]="selectedPartner">
+                            <mat-option *ngFor="let partner of partners" [value]="partner">
+                                {{partner}}
+                            </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <span  *ngIf="missingPlansforPartner">
+                            <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                                <mat-card fxFlex="0 1 calc(50% - 32px)">
+                                    <table >
+                                        <tr> 
+                                            <td colspan="2"><mat-error>REGULAR  </mat-error></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Start Date</b></td>
+                                            <td><b>End Date</b></td>
+                                        </tr>
+                                        <tr *ngFor="let reg of missingPlansforPartner.missingListRegular">
+                                            <td>{{reg.startDate | date: 'dd-MMM-yyy'}}</td>
+                                            <td>{{reg.endDate | date: 'dd-MMM-yyy'}}</td>
+                                        </tr>
+                                    </table>
+                                </mat-card>
+                                <mat-card  fxFlex="0 1 calc(50% - 32px)">
+                                    <table >
+                                        <tr> 
+                                            <td colspan="2"><mat-error>MILESTONE  </mat-error></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Start Date</b></td>
+                                            <td><b>End Date</b></td>
+                                        </tr>
+                                        <tr *ngFor="let reg of missingPlansforPartner.missingListMilestone">
+                                            <td>{{reg.startDate | date: 'dd-MMM-yyy'}}</td>
+                                            <td>{{reg.endDate | date: 'dd-MMM-yyy'}}</td>
+                                        </tr>
+                                    </table>
+                                </mat-card>
+                                </div>
+                        </span>
+                    </mat-card>
+                    
+                    
                 </div>
+
+
             </span>
             <span *ngIf="createRetailerIncentive">
                 <!-- <button mat-icon-button color="primary" (click)="showIncentivePage('RETAILER')"><mat-icon>back</mat-icon></button> -->
@@ -136,34 +172,11 @@
                         </mat-button-toggle>
                     </mat-button-toggle-group>
                 </h4>
-                <!-- <div align="end">
-                    <button mat-raised-button color="primary" class="create-incentive"
-                    (click)="openNewIncentivePage('CONSUMER')">Create Incentive</button>
-                </div> -->
-                <!-- <br>
-                <div mat-dialog-actions align="end">
-                    <b>Filter: </b> <mat-button-toggle-group (change)="applyFilterConsumer($event)" #planTypeToggle="matButtonToggleGroup">
-                        <mat-button-toggle value="REGULAR" aria-label="REGULAR">
-                          REGULAR
-                        </mat-button-toggle>
-                        <mat-button-toggle value="MILESTONE" aria-label="MILESTONE">
-                          MILESTONE
-                        </mat-button-toggle>
-                    </mat-button-toggle-group>
-                </div> -->
                 <mat-form-field>
                     <mat-label>Search Incentive</mat-label>
                         <input matInput (keyup)="applyFilterConsumer($event)" placeholder="Ex. Incentive Plan">
                         <mat-icon matSuffix>search</mat-icon>
                   </mat-form-field>
-                  <!-- <mat-form-field appearance="outline" >
-                    <mat-label>Status</mat-label>
-                    <mat-select [(ngModel)]="selectedStatusConsumer" name="status" (selectionChange)="applyFilterConsumer($event)">
-                      <mat-option *ngFor="let s of statuses" [value]="s">
-                        {{s}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field> -->
                   
                 <div class="mat-elevation-z8">
                     <div class="cms-table-container">
@@ -235,6 +248,45 @@
                     </div>
                     <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
                 </div>
+                <br><br>
+            <mat-card>
+                <mat-label>Date range where Consumer incentive plans are not Publised:</mat-label>
+                <br><br>
+                <span  *ngIf="missingListConsumer">
+                    <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <mat-card fxFlex="0 1 calc(50% - 32px)">
+                            <table >
+                                <tr> 
+                                    <td colspan="2"><mat-error>REGULAR  </mat-error></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Start Date</b></td>
+                                    <td><b>End Date</b></td>
+                                </tr>
+                                <tr *ngFor="let reg of missingListConsumer.missingListRegular">
+                                    <td>{{reg.startDate | date: 'dd-MMM-yyy'}}</td>
+                                    <td>{{reg.endDate | date: 'dd-MMM-yyy'}}</td>
+                                </tr>
+                            </table>
+                        </mat-card>
+                        <mat-card  fxFlex="0 1 calc(50% - 32px)">
+                            <table >
+                                <tr> 
+                                    <td colspan="2"><mat-error>MILESTONE  </mat-error></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Start Date</b></td>
+                                    <td><b>End Date</b></td>
+                                </tr>
+                                <tr *ngFor="let reg of missingListConsumer.missingListMilestone">
+                                    <td>{{reg.startDate | date: 'dd-MMM-yyy'}}</td>
+                                    <td>{{reg.endDate | date: 'dd-MMM-yyy'}}</td>
+                                </tr>
+                            </table>
+                        </mat-card>
+                        </div>
+                </span>
+            </mat-card>
             </div>
             </span>
                 

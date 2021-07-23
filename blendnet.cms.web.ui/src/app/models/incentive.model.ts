@@ -76,7 +76,7 @@ export enum EventType {
 
 
 
-enum PublishMode {
+export enum PublishMode {
     DRAFT = "DRAFT",
     PUBLISHED = "PUBLISHED"
 }

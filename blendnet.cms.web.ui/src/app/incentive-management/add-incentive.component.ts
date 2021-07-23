@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EventType, FormulaType, RuleType} from '../models/incentive.model';
+import { FormulaType, PublishMode, RuleType} from '../models/incentive.model';
 import { ContentProviderService } from '../services/content-provider.service';
 import { IncentiveService } from '../services/incentive.service';
 import { Output, EventEmitter } from '@angular/core';
@@ -317,7 +317,7 @@ openSelectCPModalButtons(): Array<any> {
       }
       planDetails.push(event);
     })
-    if(this.audience === 'CONSUMER') {
+    if(this.audience === 'CONSUMER' && this.plan?.status !== PublishMode.DRAFT) {
       if(sessionStorage.getItem('CONSUMER_EVENTS')) {
         this.eventTypes = JSON.parse(sessionStorage.getItem('CONSUMER_EVENTS'))
       } else {
@@ -336,7 +336,9 @@ openSelectCPModalButtons(): Array<any> {
               eventType: type,
               eventTitle: "Expense",
               ruleType: RuleType.SUM,
-              // formula : FormulaType.PLUS
+              formula : {
+                formulaType: FormulaType.MINUS
+              }
             }
             planDetails.push(event)
           }
@@ -346,6 +348,9 @@ openSelectCPModalButtons(): Array<any> {
     return planDetails;
   }
 
+  isExpensePlan(plan) {
+    return plan.eventType.includes("EXPENSE");
+  }
 
   createDefaultExpenseEvents() {
     var events: any[] = [];
