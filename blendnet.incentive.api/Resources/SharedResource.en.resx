@@ -231,4 +231,13 @@
   <data name="INC_ERR_0038" xml:space="preserve">
     <value>INC_ERR_0038-Range output must be greater than 0</value>
   </data>
+  <data name="INC_ERR_0039" xml:space="preserve">
+    <value>INC_ERR_0039-Event subtype should be null for given event type {0}</value>
+  </data>
+  <data name="INC_ERR_0040" xml:space="preserve">
+    <value>INC_ERR_0040-Formula for DIVIDE_AND_MULTIPLY should have both first and second operands</value>
+  </data>
+  <data name="INC_ERR_0041" xml:space="preserve">
+    <value>INC_ERR_0041-Missing first operand for given formula type {0}</value>
+  </data>
 </root>

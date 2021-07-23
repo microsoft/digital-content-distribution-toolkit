@@ -68,7 +68,7 @@ namespace blendnet.common.dto.Incentive
         /// <summary>
         /// First Operand to use during calculation of summary
         /// </summary>
-        public double FirstOperand { get; set; }
+        public double? FirstOperand { get; set; }
 
         /// <summary>
         /// Second Operand to use during calculation of summary
