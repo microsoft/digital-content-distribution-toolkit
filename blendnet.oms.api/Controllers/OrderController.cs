@@ -151,6 +151,8 @@ namespace blendnet.oms.api.Controllers
             //Insert order object in db
             Guid orderId = await _omsRepository.CreateOrder(order);
 
+            SendOrderCreatedAIEvent(order);
+
             // return order id to caller
 
             return Ok(orderId);
@@ -995,6 +997,39 @@ namespace blendnet.oms.api.Controllers
             }
 
             _telemetryClient.TrackEvent(orderCompletedAIEvent);
+        }
+
+        /// <summary>
+        /// Sends order created AI event 
+        /// </summary>
+        /// <param name="order"></param>
+        private void SendOrderCreatedAIEvent(Order order)
+        {
+            List<Model.OrderItem> orderItems = new List<Model.OrderItem>();
+
+            foreach (var orderItem in order.OrderItems)
+            {
+                var orderItemDetail = new Model.OrderItem()
+                {
+                    SubscriptionId = orderItem.Subscription.Id.Value,
+                    SubscriptionName = orderItem.Subscription.Title,
+                    ContentProviderId = orderItem.Subscription.ContentProviderId,
+                    SubscriptionValue = orderItem.Subscription.Price,
+                    RedemptionValue = orderItem.RedeemedValue
+                };
+
+                orderItems.Add(orderItemDetail);
+            }
+
+            OrderCreatedAIEvent orderCreatedAIEvent = new OrderCreatedAIEvent()
+            {
+                OrderId = order.Id.Value,
+                UserId = order.UserId,
+                OrderPlacedDateTime = System.Text.Json.JsonSerializer.Serialize(order.OrderCreatedDate),
+                OrderItems = System.Text.Json.JsonSerializer.Serialize(orderItems)
+            };
+            
+            _telemetryClient.TrackEvent(orderCreatedAIEvent);
         }
 
         #endregion
