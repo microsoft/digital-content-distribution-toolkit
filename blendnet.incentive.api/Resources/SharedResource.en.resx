@@ -240,4 +240,7 @@
   <data name="INC_ERR_0041" xml:space="preserve">
     <value>INC_ERR_0041-Missing first operand for given formula type {0}</value>
   </data>
+  <data name="INC_ERR_0042" xml:space="preserve">
+    <value>INC_ERR_0042-Operand value must be greater than 0</value>
+  </data>
 </root>
