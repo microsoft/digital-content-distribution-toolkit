@@ -26,13 +26,13 @@ namespace blendnet.incentive.listener.Util
             switch (formula.FormulaType)
             {
                 case FormulaType.PLUS:
-                    return originalValue + formula.FirstOperand;
+                    return originalValue + formula.FirstOperand.Value;
                 case FormulaType.MINUS:
-                    return originalValue - formula.FirstOperand;
+                    return originalValue - formula.FirstOperand.Value;
                 case FormulaType.MULTIPLY:
-                    return originalValue * formula.FirstOperand;
+                    return originalValue * formula.FirstOperand.Value;
                 case FormulaType.PERCENTAGE:
-                    return originalValue * formula.FirstOperand / 100.0;
+                    return originalValue * formula.FirstOperand.Value / 100.0;
             }
 
             return 0;

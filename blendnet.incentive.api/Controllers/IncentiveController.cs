@@ -565,9 +565,17 @@ namespace blendnet.incentive.api.Controllers
                     return errorInfo;
                 }
 
-                if ((planDetail.EventType == EventType.RETAILER_INCOME_ORDER_COMPLETED || planDetail.EventType == EventType.CONSUMER_INCOME_ORDER_COMPLETED) && string.IsNullOrEmpty(planDetail.EventSubType))
+                if ((planDetail.EventType == EventType.RETAILER_INCOME_ORDER_COMPLETED || planDetail.EventType == EventType.CONSUMER_INCOME_ORDER_COMPLETED))
                 {
-                    errorInfo.Add(_stringLocalizer["INC_ERR_0010"]);
+                    if (string.IsNullOrEmpty(planDetail.EventSubType))
+                    {
+                        errorInfo.Add(_stringLocalizer["INC_ERR_0010"]);
+                        return errorInfo;
+                    }
+                } 
+                else if(planDetail.EventSubType != null)
+                {
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0039"], planDetail.EventType));
                     return errorInfo;
                 }
 
@@ -654,7 +662,15 @@ namespace blendnet.incentive.api.Controllers
                 }
             }
 
-            if(formulaType == FormulaType.RANGE_AND_MULTIPLY)
+            if(formulaType == FormulaType.DIVIDE_AND_MULTIPLY)
+            {
+                if(formula.FirstOperand == null || formula.SecondOperand == null)
+                {
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0040"]);
+                    return errorInfo;
+                }
+            } 
+            else if(formulaType == FormulaType.RANGE_AND_MULTIPLY)
             {
                 if(formula.RangeOperand == null || formula.RangeOperand.Count == 0)
                 {
@@ -663,6 +679,7 @@ namespace blendnet.incentive.api.Controllers
                 }
 
                 HashSet<double> set = new HashSet<double>();
+                SortedDictionary<double, int> sortedRange = new SortedDictionary<double, int>();
 
                 foreach(var range in formula.RangeOperand)
                 {
@@ -672,14 +689,19 @@ namespace blendnet.incentive.api.Controllers
                         return errorInfo;
                     }
 
-                    if(set.Contains(range.StartRange) || set.Contains(range.EndRange))
-                    {
-                        errorInfo.Add(_stringLocalizer["INC_ERR_0037"]);
-                        return errorInfo;
-                    }
+                    /* if(set.Contains(range.StartRange) || set.Contains(range.EndRange))
+                     {
+                         errorInfo.Add(_stringLocalizer["INC_ERR_0037"]);
+                         return errorInfo;
+                     }
 
-                    set.Add(range.StartRange);
-                    set.Add(range.EndRange);
+                     set.Add(range.StartRange);
+                     set.Add(range.EndRange);
+
+                     */
+
+                    sortedRange.Add(range.StartRange, 1);
+                    sortedRange.Add(range.EndRange, -1);
 
                     if(range.Output <= 0)
                     {
@@ -687,10 +709,43 @@ namespace blendnet.incentive.api.Controllers
                         return errorInfo;
                     }
                 }
+
+                if(isOverlappingRangeExists(sortedRange))
+                {
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0037"]);
+                    return errorInfo;
+                }
+            } 
+            else
+            {
+                if (formula.FirstOperand == null)
+                {
+                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0041"], formulaType));
+                    return errorInfo;
+                }
             }
 
             return errorInfo;
         }
+
+        /// <summary>
+        /// Checks if overlapping range exists for given range of values
+        /// </summary>
+        /// <param name="sortedRange"></param>
+        /// <returns></returns>
+        private bool isOverlappingRangeExists(SortedDictionary<double, int> sortedRange)
+        {
+            int count = 0;
+
+            foreach(var key in sortedRange.Keys)
+            {
+                count += sortedRange[key];
+                if (count > 1) return true;
+            }
+
+            return false;
+        }
+
         private bool IsRuleTypeValid(RuleType ruleType, PlanType planType)
         {
             if (planType == PlanType.REGULAR)
