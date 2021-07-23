@@ -20,8 +20,6 @@ namespace blendnet.api.proxy
     {
         private readonly HttpClient _userHttpClient;
 
-        ILogger<UserProxy> _logger;
-
         public UserProxy(IHttpClientFactory clientFactory,
                           IConfiguration configuration,
                           ILogger<UserProxy> logger,
