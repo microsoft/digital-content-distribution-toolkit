@@ -1,13 +1,12 @@
 <h1 mat-dialog-title>Create Notification</h1>
 
-<mat-horizontal-stepper [linear]="false" #stepper> 
-  <mat-step [stepControl]="firstFormGroup">  
-    <form [formGroup]="firstFormGroup">  
-      <ng-template matStepLabel>Add Details</ng-template>  
+    <form [formGroup]="notifFormGroup">  
+      <ng-template>Add Details</ng-template>  
       <table class="notif-dialog-table">
         <tr>
           <td>
             <mat-form-field appearance = "outline" fxFlex = 100%>
+              <mat-label>Title</mat-label>
               <input matInput placeholder="Title" 
               formControlName="title" required>
               <mat-error *ngIf="errorHandling('title', 'required')"> 
@@ -19,15 +18,86 @@
         <tr>
           <td>
             <mat-form-field appearance = "outline" >
+              <mat-label>Message</mat-label>
               <textarea matInput placeholder = "Message" class="notif-text-area" [(ngModel)]="notif" 
-              cdkTextareaAutosize formControlName="string" ></textarea>
-              <mat-error *ngIf="errorHandling('text', 'required') || errorHandling('text', 'required')"> 
+              cdkTextareaAutosize formControlName="body" ></textarea>
+              <mat-error *ngIf="errorHandling('body', 'required') || errorHandling('body', 'required')"> 
                You must provide text
               </mat-error>
             </mat-form-field>
           </td>
         </tr>
         <tr>
+          <td>
+            <mat-form-field appearance = "outline" fxFlex = 100%>
+              <mat-label>Attachment</mat-label>
+              <input matInput placeholder="attachmentUrl" 
+              formControlName="attachmentUrl" required>
+              <mat-error *ngIf="errorHandling('attachmentUrl', 'required')"> 
+                You must provide a attachment url
+              </mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+        <td>
+          <mat-form-field appearance = "outline" fxFlex = 100%>
+            <mat-label>Topic</mat-label>
+            <input matInput placeholder="topic" 
+            formControlName="topic" required>
+            <mat-error *ngIf="errorHandling('topic', 'required')"> 
+              You must provide a topic
+            </mat-error>
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <mat-form-field appearance = "outline" fxFlex = 100%>
+            <mat-label>Type</mat-label>
+            <input matInput placeholder="type" 
+            formControlName="type" required>
+            <mat-error *ngIf="errorHandling('type', 'required')"> 
+              You must provide a type
+            </mat-error>
+          </mat-form-field>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <!-- <mat-form-field appearance = "outline" fxFlex = 100%>
+            <input matInput placeholder="tags" 
+            formControlName="tags" required>
+            <mat-error *ngIf="errorHandling('tags', 'required')"> 
+              You must provide a tags
+            </mat-error>
+          </mat-form-field> -->
+
+
+
+
+          <mat-form-field class="example-chip-list" appearance="fill">
+            <mat-label>Tags</mat-label>
+            <mat-chip-list #chipList aria-label="Tags selection">
+              <mat-chip *ngFor="let tag of tags" [selectable]="selectable"
+                       [removable]="removable" (removed)="remove(tag)">
+                {{tag}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="New tag..."
+                     [matChipInputFor]="chipList"
+                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                     [matChipInputAddOnBlur]="addOnBlur"
+                     (matChipInputTokenEnd)="add($event)"
+                     formControlName="tags"
+                     >
+            </mat-chip-list>
+          </mat-form-field>
+
+
+        </td>
+      </tr>
+        <!-- <tr>
           <td>
             <div mat-dialog-actions class="form-group">
               <input
@@ -40,7 +110,6 @@
           <button mat-raised-button color="primary"   (click)="fileUpload.click()">Upload</button>
           <span class="file-cta">
             <span class="file-icon">
-              <!-- <fa-icon [icon]="['fas', 'upload']"></fa-icon> -->
             </span>
           </span>
           <span class="file-name">
@@ -50,52 +119,38 @@
               <div class="file-upload-error">
                   {{fileUploadError}}
               </div>
-               <!--change onNoClick() to openUploadConfirmModal() and add an uploadConfirmModal() this-->
                <div>
                 <figure class="image-is-128x128" >
                   <img [src]="imageUrl" height="130" align="left"/>
                 </figure>
               </div>
           </td>
-        </tr>
-        <tr>
-          <td>
-            <div mat-dialog-actions align="end">
-              <button mat-raised-button (click)="onNoClick()" mat-dialog-close class="discard-btn" >Cancel</button>
-              <button mat-raised-button matStepperNext color="primary" type="button" cdkFocusInitial [disabled]="!firstFormGroup.valid">Next</button>
-            </div>
-          </td>
-        </tr>       
-      </table>  
+        </tr> -->
+        <!-- <tr>
+        </tr>        -->
+      </table> 
+      <div mat-dialog-actions align="end">
+        <!-- <button mat-raised-button (click)="onNoClick()" mat-dialog-close class="discard-btn">Cancel</button> -->
+        <button [disabled]="!notifFormGroup.valid" mat-raised-button color="primary" (click)="createNotif()" >Create</button>
+      </div>  
     </form>  
-  </mat-step>
-
-  <mat-step [stepControl]="secondFormGroup" label="Select Target">  
+<!-- 
     <form [formGroup]="secondFormGroup">  
       <mat-form-field appearance="outline" >
         <mat-label >User Segment</mat-label>
         <mat-select>
           <mat-option value="one">Users</mat-option>
-          <!--<mat-option value="two">Second option</mat-option>-->
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="outline" required>
         <mat-label>Target App</mat-label>
         <mat-select>
           <mat-option value="one">User Mishtu App</mat-option>
-          <!--<mat-option value="two">Second option</mat-option>-->
         </mat-select>
       </mat-form-field>
-      <div  mat-dialog-actions align="end">  
-        <button mat-raised-button matStepperPrevious>Back</button>  
-        <button mat-raised-button color="primary" matStepperNext>Next</button>  
-      </div>  
-    </form>  
-  </mat-step> 
+    </form>   -->
 
-  <mat-step >    
-    <ng-template matStepLabel>Schedule</ng-template>  
-    <mat-slide-toggle color="primary" [checked] = "scheduleChecked" [(ngModel)] = "scheduleChecked">Schedule Now </mat-slide-toggle>
+    <!-- <mat-slide-toggle color="primary" [checked] = "scheduleChecked" [(ngModel)] = "scheduleChecked">Schedule Now </mat-slide-toggle>
     <div *ngIf="!scheduleChecked; else elseBlock">
       <mat-form-field appearance="outline" >
         <mat-label>Date</mat-label>
@@ -121,9 +176,7 @@
         <button mat-raised-button (click)="onNoClick()" mat-dialog-close class="discard-btn">Cancel</button>
         <button mat-raised-button color="primary"  >Create</button>
       </div> 
-    </ng-template> 
-  </mat-step>  
+    </ng-template>  -->
 <!-- </form> -->
-</mat-horizontal-stepper>  
 
   
