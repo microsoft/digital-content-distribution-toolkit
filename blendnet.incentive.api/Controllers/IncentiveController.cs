@@ -669,6 +669,12 @@ namespace blendnet.incentive.api.Controllers
                     errorInfo.Add(_stringLocalizer["INC_ERR_0040"]);
                     return errorInfo;
                 }
+
+                if(formula.FirstOperand.Value <= 0 || formula.SecondOperand.Value <= 0)
+                {
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0042"]);
+                    return errorInfo;
+                }
             } 
             else if(formulaType == FormulaType.RANGE_AND_MULTIPLY)
             {
@@ -688,17 +694,6 @@ namespace blendnet.incentive.api.Controllers
                         errorInfo.Add(_stringLocalizer["INC_ERR_0036"]);
                         return errorInfo;
                     }
-
-                    /* if(set.Contains(range.StartRange) || set.Contains(range.EndRange))
-                     {
-                         errorInfo.Add(_stringLocalizer["INC_ERR_0037"]);
-                         return errorInfo;
-                     }
-
-                     set.Add(range.StartRange);
-                     set.Add(range.EndRange);
-
-                     */
 
                     sortedRange.Add(range.StartRange, 1);
                     sortedRange.Add(range.EndRange, -1);
@@ -721,6 +716,12 @@ namespace blendnet.incentive.api.Controllers
                 if (formula.FirstOperand == null)
                 {
                     errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0041"], formulaType));
+                    return errorInfo;
+                }
+
+                if (formula.FirstOperand.Value <= 0)
+                {
+                    errorInfo.Add(_stringLocalizer["INC_ERR_0042"]);
                     return errorInfo;
                 }
             }
@@ -907,6 +908,9 @@ namespace blendnet.incentive.api.Controllers
             plan.EndDate = updatePlanRequest.EndDate;
             plan.Audience = updatePlanRequest.Audience;
             plan.PlanDetails = updatePlanRequest.PlanDetails;
+
+            plan.ModifiedByByUserId = UserClaimData.GetUserId(User.Claims);
+            plan.ModifiedDate = DateTime.UtcNow;
 
             int statusCode = await _incentiveRepository.UpdateIncentivePlan(plan);
 
