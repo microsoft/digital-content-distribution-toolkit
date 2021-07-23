@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace blendnet.oms.api.Model
 {
-    public class OrderCompletedAIEvent : BaseAIEvent
+    public class OrderCompletedAIEvent : OrderAIEvent
     {
-        /// <summary>
-        /// User Id
-        /// </summary>
-        public Guid UserId { get; set; }
 
         /// <summary>
-        /// Order Id
+        /// payment deposit date time
         /// </summary>
-        public Guid OrderId { get; set; }
+        public string PaymentDepositDateTime { get; set; }
+
+        /// <summary>
+        /// order completed date time
+        /// </summary>
+        public string OrderCompletedDateTime { get; set; }
 
         /// <summary>
         /// Marks if its redemmed
@@ -42,55 +43,7 @@ namespace blendnet.oms.api.Model
         /// Retailer additional attributes
         /// </summary>
         public Dictionary<string, string> RetailerAdditionalAttributes { get; set; }
-        
-        /// <summary>
-        /// List of subscriptions bought in the order
-        /// </summary>
-        public string OrderItems { get; set; }
-
-        /// <summary>
-        /// order created date time
-        /// </summary>
-        public string OrderPlacedDateTime { get; set; }
-
-        /// <summary>
-        /// payment deposit date time
-        /// </summary>
-        public string PaymentDepositDateTime { get; set; }
-
-        /// <summary>
-        /// order completed date time
-        /// </summary>
-        public string OrderCompletedDateTime { get; set; }
-
     }
 
-    public class OrderItem
-    {
-        /// <summary>
-        /// Subscription id
-        /// </summary>
-        public Guid SubscriptionId { get; set; }
-
-        /// <summary>
-        /// Content provider id
-        /// </summary>
-        public Guid ContentProviderId { get; set; }
-
-        /// <summary>
-        /// Subscription name
-        /// </summary>
-        public string SubscriptionName { get; set; }
-
-        /// <summary>
-        /// Subscription value
-        /// </summary>
-        public float SubscriptionValue { get; set; }
-
-        /// <summary>
-        /// Qty of points required to redeem
-        /// </summary>
-        public int RedemptionValue { get; set; }
-    }
 
 }
