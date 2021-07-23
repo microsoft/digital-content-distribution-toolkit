@@ -92,7 +92,7 @@ namespace blendnet.common.infrastructure.Authentication
 
             if (user is null)
             {
-                _authLogger.LogInformation($"Failed to get user details from user collection for {phoneNumber}");
+                _authLogger.LogInformation($"Failed to get user details from user collection for {headerValue.Parameter}");
 
                 return AuthenticateResult.Fail("Unauthorized");
             }
