@@ -63,12 +63,9 @@ namespace blendnet.user.api
             });
 
             //Kaizala Auth Setup
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = KaizalaIdentityAuthOptions.DefaultScheme;
-                options.DefaultChallengeScheme = KaizalaIdentityAuthOptions.DefaultScheme;
-            })
-            .AddKaizalaIdentityAuth();
+            services.AddAuthentication()
+            .AddKaizalaIdentityAuth()
+            .AddKaizalaBasicIdentityAuth();
 
             //Configure Localization
             ConfigureLocalization(services);

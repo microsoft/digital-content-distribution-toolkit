@@ -20,5 +20,22 @@ namespace blendnet.common.infrastructure.Authentication
             // Add custom authentication scheme with custom options and custom handler
             return builder.AddScheme<KaizalaIdentityAuthOptions, KaizalaIdentityAuthHandler>(KaizalaIdentityAuthOptions.DefaultScheme, configureOptions);
         }
+
+        public static AuthenticationBuilder AddKaizalaBasicIdentityAuth(this AuthenticationBuilder builder)
+        {
+            //return builder.AddScheme<KaizalaIdentityAuthOptions, KaizalaBasicIdentityAuthHandler>(KaizalaIdentityAuthOptions.BasicIdentityScheme, _ => { });
+
+            return builder.AddScheme<KaizalaIdentityAuthOptions, KaizalaBasicIdentityAuthHandler>(KaizalaIdentityAuthOptions.BasicIdentityScheme, bia => 
+                                                                                                                            { 
+                                                                                                                                bia.Scheme = KaizalaIdentityAuthOptions.BasicIdentityScheme;
+                                                                                                                            });
+
+        }
+
+        public static AuthenticationBuilder AddKaizalaBasicIdentityAuth(this AuthenticationBuilder builder, Action<KaizalaIdentityAuthOptions> configureOptions)
+        {
+            // Add custom authentication scheme with custom options and custom handler
+            return builder.AddScheme<KaizalaIdentityAuthOptions, KaizalaBasicIdentityAuthHandler>(KaizalaIdentityAuthOptions.BasicIdentityScheme, configureOptions);
+        }
     }
 }

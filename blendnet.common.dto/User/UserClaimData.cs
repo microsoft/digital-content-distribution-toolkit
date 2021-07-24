@@ -27,6 +27,22 @@ namespace blendnet.common.dto.User
         }
 
         /// <summary>
+        /// Returns identity user id guid from claims list. 
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <returns></returns>
+        public static Guid GetIdentityUserId(IEnumerable<Claim> claims)
+        {
+            var userClaim = claims.Where(x => x.Type.Equals(ApplicationConstants.KaizalaIdentityClaims.IdentityUId));
+
+            string userIdStr = userClaim.First().Value;
+
+            Guid userId = new Guid(userIdStr);
+
+            return userId;
+        }
+
+        /// <summary>
         /// Returns user phone number from claims. Country code if present is retained
         /// </summary>
         /// <param name="claims"></param>

@@ -22,7 +22,7 @@ namespace blendnet.user.api.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = KaizalaIdentityAuthOptions.DefaultScheme)]
     public class UserController : ControllerBase
     {
         private readonly ILogger _logger;
