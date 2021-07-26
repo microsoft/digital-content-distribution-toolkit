@@ -1,0 +1,40 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- manual
+
+resources:
+- repo: self
+  fetchDepth: 1
+
+variables:
+  runNumber: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build
+  jobs:
+  - job: Build
+    displayName: Buddy Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: Build API Code
+      inputs:
+        command: 'build'
+        projects: 'blendnet.crm.contentprovider.api.sln'
+        configuration: Release
+    - task: Npm@1
+      displayName: npm install in web.ui
+      inputs:
+        command: 'install'
+        workingDir: 'blendnet.cms.web.ui'
+    - task: Npm@1
+      displayName: Build web.ui - dev
+      inputs:
+        command: 'custom'
+        workingDir: 'blendnet.cms.web.ui'
+        customCommand: 'run build-dev'
