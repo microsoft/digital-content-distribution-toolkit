@@ -11,7 +11,7 @@ namespace blendnet.retailer.repository.Interfaces
         /// Creates a retailer provider in database
         /// </summary>
         /// <param name="retailerProvider"></param>
-        /// <returns>Service Account ID of the created retailer</returns>
+        /// <returns>User ID of the created retailer provider</returns>
         Task<Guid> CreateRetailerProvider(RetailerProviderDto retailerProvider);
 
         /// <summary>
@@ -22,11 +22,11 @@ namespace blendnet.retailer.repository.Interfaces
         Task<RetailerProviderDto> GetRetailerProviderByPartnerCode(string partnerCode);
 
         /// <summary>
-        /// Gets Retailer Provider by Service Account ID
+        /// Gets Retailer Provider by User ID
         /// </summary>
-        /// <param name="serviceAccountId"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        Task<RetailerProviderDto> GetRetailerProviderByServiceAccountId(Guid serviceAccountId);
+        Task<RetailerProviderDto> GetRetailerProviderByUserId(Guid userId);
 
         /// <summary>
         /// Gets all Retailer Providers

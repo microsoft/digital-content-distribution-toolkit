@@ -110,7 +110,7 @@ namespace blendnet.retailer.api.Controllers
             RetailerDto retailer = await this._retailerRepository.GetRetailerByPartnerId(partnerId);
 
             // for ME, we also match the caller details
-            if (retailer != null && retailer.Id == callerUserId)
+            if (retailer != null && retailer.UserId == callerUserId)
             {
                 return Ok(retailer);
             }

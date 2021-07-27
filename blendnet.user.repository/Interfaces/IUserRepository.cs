@@ -30,13 +30,6 @@ namespace blendnet.user.repository.Interfaces
         public Task<common.dto.User.User> GetUserByPhoneNumber(string phoneNumber);
 
         /// <summary>
-        /// Returns the BlendNet User By KMS user id
-        /// </summary>
-        /// <param name="phoneNumber"></param>
-        /// <returns>User object</returns>
-        public Task<common.dto.User.User> GetUserById(string Id);
-
-        /// <summary>
         /// Get Referral data based on retailer partner id and given date range
         /// </summary>
         /// <param name="retailerPartnerId"></param>

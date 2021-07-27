@@ -33,11 +33,11 @@ namespace blendnet.retailer.repository.CosmosRepository
         /// Creates a retailer provider in database
         /// </summary>
         /// <param name="retailerProvider"></param>
-        /// <returns>Service Account ID of the created retailer</returns>
+        /// <returns>User ID of the created retailer provider</returns>
         async Task<Guid> IRetailerProviderRepository.CreateRetailerProvider(RetailerProviderDto retailerProvider)
         {
             await _container.CreateItemAsync<RetailerProviderDto>(retailerProvider);
-            return retailerProvider.ServiceAccountId;
+            return retailerProvider.UserId;
         }
 
         /// <summary>
@@ -59,13 +59,13 @@ namespace blendnet.retailer.repository.CosmosRepository
         /// <summary>
         /// Gets Retailer Provider by Service Account ID
         /// </summary>
-        /// <param name="serviceAccountId"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        async Task<RetailerProviderDto> IRetailerProviderRepository.GetRetailerProviderByServiceAccountId(Guid serviceAccountId)
+        async Task<RetailerProviderDto> IRetailerProviderRepository.GetRetailerProviderByUserId(Guid userId)
         {
-            const string queryString = "SELECT TOP 1 VALUE root FROM root WHERE root.serviceAccountId = @serviceAccountId";
+            const string queryString = "SELECT TOP 1 VALUE root FROM root WHERE root.userId = @userId";
             var queryDef = new QueryDefinition(queryString)
-                                .WithParameter("@serviceAccountId", serviceAccountId);
+                                .WithParameter("@userId", userId);
 
             var list = await _container.ExtractDataFromQueryIterator<RetailerProviderDto>(queryDef);
             var result = list.FirstOrDefault();

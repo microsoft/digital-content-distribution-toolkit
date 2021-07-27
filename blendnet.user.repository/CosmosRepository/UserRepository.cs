@@ -55,7 +55,7 @@ namespace blendnet.user.repository.CosmosRepository
         {
             try
             {
-                var response = await this._container.ReplaceItemAsync<User>(user, user.Id.ToString(), new PartitionKey(user.PhoneNumber));
+                var response = await this._container.ReplaceItemAsync<User>(user, user.UserId.ToString(), new PartitionKey(user.PhoneNumber));
                 return (int)response.StatusCode;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -77,21 +77,6 @@ namespace blendnet.user.repository.CosmosRepository
                                                 .WithParameter("@phoneNumber", phoneNumber)
                                                 .WithParameter("@type", UserContainerType.User);
 
-
-            return await _container.ExtractFirstDataFromQueryIterator<User>(queryDef);
-        }
-
-        /// <summary>
-        /// Returns the BlendNet User By userId
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns>User Object</returns>
-        public async Task<User> GetUserById(string id)
-        {
-            var queryString = "select * from c where c.id = @id and c.type = @type";
-            var queryDef = new QueryDefinition(queryString)
-                                .WithParameter("@id", id)
-                                .WithParameter("@type", UserContainerType.User);
 
             return await _container.ExtractFirstDataFromQueryIterator<User>(queryDef);
         }

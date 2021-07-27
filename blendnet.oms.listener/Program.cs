@@ -1,19 +1,20 @@
-using System;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using blendnet.api.proxy;
+using blendnet.api.proxy.Kaizala;
+using blendnet.common.dto;
+using blendnet.common.dto.Oms;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.KeyVault;
 using blendnet.common.infrastructure.ServiceBus;
+using blendnet.oms.listener.IntegrationEventHandling;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using blendnet.common.infrastructure.KeyVault;
-using Microsoft.Extensions.Azure;
-using blendnet.common.dto;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using blendnet.api.proxy.Kaizala;
-using blendnet.oms.listener.IntegrationEventHandling;
-using blendnet.common.dto.Oms;
+using System;
 
 namespace blendnet.oms.listener
 {
@@ -91,6 +92,9 @@ namespace blendnet.oms.listener
 
                     //Configure Distribute Cache
                     ConfigureDistributedCache(hostContext, services);
+
+                    //Configure User Proxy
+                    services.AddTransient<UserProxy>();
 
                     //Configure Kaizala Notification Proxy
                     services.AddTransient<NotificationProxy>();

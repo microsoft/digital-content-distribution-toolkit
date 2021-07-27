@@ -11,29 +11,13 @@ namespace blendnet.common.dto.User
     public class UserClaimData
     {
         /// <summary>
-        /// Returns user id guid from claims list. This removes scale unit information from claim
+        /// Returns (Blendnet-generated) user id guid from claims list.
         /// </summary>
         /// <param name="claims"></param>
         /// <returns></returns>
         public static Guid GetUserId(IEnumerable<Claim> claims)
         {
             var userClaim = claims.Where(x => x.Type.Equals(ApplicationConstants.BlendNetClaims.UId));
-
-            string userIdStr = userClaim.First().Value;
-
-            Guid userId = new Guid(userIdStr);
-
-            return userId;
-        }
-
-        /// <summary>
-        /// Returns identity user id guid from claims list. 
-        /// </summary>
-        /// <param name="claims"></param>
-        /// <returns></returns>
-        public static Guid GetIdentityUserId(IEnumerable<Claim> claims)
-        {
-            var userClaim = claims.Where(x => x.Type.Equals(ApplicationConstants.KaizalaIdentityClaims.IdentityUId));
 
             string userIdStr = userClaim.First().Value;
 

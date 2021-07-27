@@ -16,6 +16,12 @@ namespace blendnet.user.api.Models
         public Guid UserId { get; set; }
 
         /// <summary>
+        /// User's Identity ID
+        /// </summary>
+        /// <value></value>
+        public Guid IdentityId { get; set; }
+
+        /// <summary>
         /// Retailer ID as provided by partner
         /// </summary>
         /// <value></value>

@@ -24,10 +24,10 @@ namespace blendnet.common.dto.Retailer
         public string PartnerCode {get; set;}
 
         /// <summary>
-        /// Service Account ID, this maps to corresponding Kaizala Identity user ID
+        /// User ID (corresponding User's ID)
         /// </summary>
         /// <value></value>
-        public Guid ServiceAccountId { get; set;}
+        public Guid UserId { get; set;}
 
         /// <summary>
         /// Start Date of the retailer provider

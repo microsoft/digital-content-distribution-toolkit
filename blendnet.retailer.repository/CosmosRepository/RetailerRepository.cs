@@ -58,7 +58,7 @@ namespace blendnet.retailer.repository.CosmosRepository
             try
             {
                 var response = await this._container.ReplaceItemAsync<RetailerDto>( updatedRetailer,
-                                                                                    updatedRetailer.Id.ToString(),
+                                                                                    updatedRetailer.RetailerId.ToString(),
                                                                                     new PartitionKey(updatedRetailer.PartnerId));
                 return (int)response.StatusCode;
             }

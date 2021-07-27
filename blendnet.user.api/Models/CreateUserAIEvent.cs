@@ -16,6 +16,8 @@ namespace blendnet.user.api.Models
     {
         public Guid UserId { get; set; }
 
+        public Guid IdentityId { get; set; }
+
         public Channel ChannelId { get; set; }
     }
 }

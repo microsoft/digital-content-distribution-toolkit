@@ -24,13 +24,13 @@ namespace blendnet.api.proxy.Retailer
         }
 
         /// <summary>
-        /// Get Retailer provider by Service Account ID
+        /// Get Retailer provider by User ID
         /// </summary>
-        /// <param name="serviceAccountId">Service Account ID</param>
+        /// <param name="userId">Service Account ID</param>
         /// <returns></returns>
-        public async Task<RetailerProviderDto> GetRetailerProviderByServiceAccountId(Guid serviceAccountId)
+        public async Task<RetailerProviderDto> GetRetailerProviderByUserId(Guid userId)
         {
-            string url = $"RetailerProvider/byServiceAccountId/{serviceAccountId}";
+            string url = $"RetailerProvider/byUserId/{userId}";
             string accessToken = await base.GetServiceAccessToken();
 
             RetailerProviderDto retailerProvider = null;

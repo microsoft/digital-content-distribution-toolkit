@@ -25,7 +25,12 @@ namespace blendnet.common.dto.User
         /// Id of the person
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+
+        /// <summary>
+        /// Associated Identity ID (from KMS)
+        /// </summary>
+        public Guid IdentityId { get; set; }
 
         /// <summary>
         /// Phone number of the person
@@ -36,11 +41,6 @@ namespace blendnet.common.dto.User
         /// Name of the user
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// UserName of the user
-        /// </summary>
-        public string UserName { get; set; }
 
         /// <summary>
         /// Channel ID who creates the user

@@ -1,0 +1,15 @@
+[
+    {
+        "id": "TSTP",
+        "name": "TSTP",
+        "partnerCode": "TSTP",
+        "userId": "99d41ad0-9281-4899-a2a4-24fa2b446074",
+        "startDate": "2021-07-26T08:04:16.345078Z",
+        "endDate": "9999-12-31T23:59:59.9999999",
+        "type": "RetailerProvider",
+        "createdByUserId": "ab49bdad-498a-4b74-9695-bc08479b558c",
+        "modifiedByByUserId": null,
+        "createdDate": "2021-07-26T08:04:16.345078Z",
+        "modifiedDate": null
+    }
+]

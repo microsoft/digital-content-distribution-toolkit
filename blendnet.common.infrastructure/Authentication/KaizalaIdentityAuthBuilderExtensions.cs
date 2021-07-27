@@ -12,7 +12,6 @@ namespace blendnet.common.infrastructure.Authentication
         public static AuthenticationBuilder AddKaizalaIdentityAuth(this AuthenticationBuilder builder)
         {
             return builder.AddScheme<KaizalaIdentityAuthOptions, KaizalaIdentityAuthHandler>(KaizalaIdentityAuthOptions.DefaultScheme, _ => { });
-                                     
         }
 
         public static AuthenticationBuilder AddKaizalaIdentityAuth(this AuthenticationBuilder builder, Action<KaizalaIdentityAuthOptions> configureOptions)
@@ -29,7 +28,6 @@ namespace blendnet.common.infrastructure.Authentication
                                                                                                                             { 
                                                                                                                                 bia.Scheme = KaizalaIdentityAuthOptions.BasicIdentityScheme;
                                                                                                                             });
-
         }
 
         public static AuthenticationBuilder AddKaizalaBasicIdentityAuth(this AuthenticationBuilder builder, Action<KaizalaIdentityAuthOptions> configureOptions)

@@ -56,10 +56,10 @@ namespace blendnet.retailer.api.Controllers
                 }
 
                 // check account ID should not exist
-                RetailerProviderDto byServiceAccountId = await _retailerProviderRepository.GetRetailerProviderByServiceAccountId(retailerProvider.ServiceAccountId);
+                RetailerProviderDto byServiceAccountId = await _retailerProviderRepository.GetRetailerProviderByUserId(retailerProvider.UserId);
                 if (byServiceAccountId != null)
                 {
-                    listOfValidationErrors.Add(string.Format(_stringLocalizer["RMS_ERR_0004"], retailerProvider.ServiceAccountId));
+                    listOfValidationErrors.Add(string.Format(_stringLocalizer["RMS_ERR_0004"], retailerProvider.UserId));
                 }
 
                 if (listOfValidationErrors.Count > 0)
@@ -84,15 +84,15 @@ namespace blendnet.retailer.api.Controllers
         }
 
         /// <summary>
-        /// Gets Retailer Provider by Service Account ID
+        /// Gets Retailer Provider by User ID
         /// </summary>
-        /// <param name="serviceAccountId"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpGet("byServiceAccountId/{serviceAccountId:guid}")]
+        [HttpGet("byUserId/{userId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<RetailerProviderDto>> GetRetailerProviderByServiceAccountId(Guid serviceAccountId)
+        public async Task<ActionResult<RetailerProviderDto>> GetRetailerProviderByServiceAccountId(Guid userId)
         {
-            RetailerProviderDto retailerProvider = await _retailerProviderRepository.GetRetailerProviderByServiceAccountId(serviceAccountId);
+            RetailerProviderDto retailerProvider = await _retailerProviderRepository.GetRetailerProviderByUserId(userId);
             return retailerProvider == null ? NotFound() : Ok(retailerProvider);
         }
 

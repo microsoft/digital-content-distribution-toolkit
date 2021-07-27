@@ -464,7 +464,7 @@ namespace blendnet.incentive.api.Controllers
 
             Guid userId = UserClaimData.GetUserId(User.Claims);
 
-            if(!userId.Equals(retailer.Id))
+            if(!userId.Equals(retailer.UserId))
             {
                 errorInfo.Add(_stringLocalizer["INC_ERR_0026"]);
                 return errorInfo;

@@ -171,7 +171,7 @@ namespace blendnet.oms.api.Controllers
             List<string> errorInfo = new List<string>();
 
             Guid callerUserId = UserClaimData.GetUserId(User.Claims);
-            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(callerUserId);
+            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByUserId(callerUserId);
             if (retailerProvider == null)
             {
                 errorInfo.Add(_stringLocalizer["OMS_ERR_0016"]);
@@ -439,7 +439,7 @@ namespace blendnet.oms.api.Controllers
             }
 
             Guid callerUserId = UserClaimData.GetUserId(User.Claims);
-            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(callerUserId);
+            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByUserId(callerUserId);
             if (retailerProvider == null)
             {
                 errorDetails.Add(_stringLocalizer["OMS_ERR_0016"]);
@@ -858,7 +858,7 @@ namespace blendnet.oms.api.Controllers
         {
             var currentDate = DateTime.UtcNow;
 
-            order.RetailerId = retailer.Id;
+            order.RetailerId = retailer.RetailerId;
             order.RetailerPartnerId = retailer.PartnerId;
             order.RetailerPartnerCode = retailer.PartnerCode;
             order.PaymentDepositDate = currentDate.Year * 10000 + currentDate.Month * 100 + currentDate.Day;

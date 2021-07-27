@@ -1,0 +1,28 @@
+[
+    {
+        "id": "ab49bdad-498a-4b74-9695-bc08479b558c",
+        "kaizalaIdentityId": "0583d21a-1245-4158-8b62-629b24a08797",
+        "phoneNumber": "1111111110",
+        "name": "SUPER ADMIN",
+        "channelId": "System",
+        "referralInfo": null,
+        "type": "User",
+        "createdByUserId": "ab49bdad-498a-4b74-9695-bc08479b558c",
+        "modifiedByByUserId": null,
+        "createdDate": "2021-07-26T05:59:48.157342Z",
+        "modifiedDate": null
+    },
+    {
+        "id": "99d41ad0-9281-4899-a2a4-24fa2b446074",
+        "kaizalaIdentityId": "404002c4-3b2b-4255-b838-ed38ce2696f3",
+        "phoneNumber": "1111111120",
+        "name": "RetailerProvider Test Account",
+        "channelId": "System",
+        "referralInfo": null,
+        "type": "User",
+        "createdByUserId": "99d41ad0-9281-4899-a2a4-24fa2b446074",
+        "modifiedByByUserId": null,
+        "createdDate": "2021-07-26T07:29:30.163958Z",
+        "modifiedDate": null
+    }
+]

@@ -1,5 +1,4 @@
 ﻿using blendnet.api.proxy.Common;
-using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Notification;
 using Microsoft.Extensions.Caching.Distributed;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -23,7 +21,9 @@ namespace blendnet.api.proxy.Kaizala
 
         private readonly IConfiguration _configuration;
 
-        ILogger<NotificationProxy> _logger;
+        private readonly ILogger<NotificationProxy> _logger;
+
+        private readonly UserProxy _userProxy;
 
         /// <summary>
         /// Constructor
@@ -33,6 +33,7 @@ namespace blendnet.api.proxy.Kaizala
         public NotificationProxy(IHttpClientFactory clientFactory,
                                     IConfiguration configuration,
                                     ILogger<NotificationProxy> logger,
+                                    UserProxy userProxy,
                                     IDistributedCache cache
                                 )
         : base(configuration, clientFactory, logger, cache)
@@ -43,6 +44,7 @@ namespace blendnet.api.proxy.Kaizala
 
             _logger = logger;
 
+            _userProxy = userProxy;
         }
 
         public async Task SendNotification(NotificationRequest notificationRequest)
@@ -111,7 +113,17 @@ namespace blendnet.api.proxy.Kaizala
 
         private Dictionary<char, List<Guid>> GetUserIdBatchBasedOnPhoneLastDigit(List<UserData> userData)
         {
-            var userIdBatch = userData.GroupBy(data => data.PhoneNumber[data.PhoneNumber.Length - 1]
+            // map the user ID to Kaizala ID 
+            // queries each user 
+            // TODO: SAMEERA: This can cause a lot of (sequential) User Proxy calls. Need to optimize.
+            var userDataWithMappedIds = userData.Select(x => {
+                return new UserData() { // creating new, so that original UserData is preserved.
+                    PhoneNumber = x.PhoneNumber,
+                    UserId = (_userProxy.GetUserByPhoneNumber(x.PhoneNumber)).Result.IdentityId, // explicit wait on userProxy call so that subsequent calls run sequentially
+                };
+            });
+
+            var userIdBatch = userDataWithMappedIds.GroupBy(data => data.PhoneNumber[data.PhoneNumber.Length - 1]
             , (key, val) => (key, val.Select(x => x.UserId).ToList()))
                 .ToDictionary(x => x.key, y => y.Item2);
 

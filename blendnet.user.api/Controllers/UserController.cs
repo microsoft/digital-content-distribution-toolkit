@@ -61,51 +61,6 @@ namespace blendnet.user.api.Controllers
         }
 
         /// <summary>
-        /// Create BlendNet User
-        /// </summary>
-        /// <param name="User"></param>
-        /// <returns>Status</returns>
-        [HttpPost("user", Name = nameof(CreateUser))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult> CreateUser(CreateUserRequest request)
-        {
-            List<string> errorInfo = new List<string>();
-
-            Guid userId = UserClaimData.GetUserId(User.Claims);
-            String phoneNumber = this.User.Identity.Name;
-
-            if (await _userRepository.GetUserByPhoneNumber(phoneNumber) != null)
-            {
-                errorInfo.Add(String.Format(_stringLocalizer["USR_ERR_001"], phoneNumber));
-                return BadRequest(errorInfo);
-            }
-
-            User user = new User
-            {
-                    Id = userId, 
-                    PhoneNumber = phoneNumber, 
-                    UserName = request.UserName,
-                    ChannelId = request.ChannelId,
-                    CreatedDate = DateTime.UtcNow,
-                    CreatedByUserId = userId,
-                    Type = UserContainerType.User
-            };
-
-            await _userRepository.CreateUser(user);
-
-            //Track the user created event to Application Insights
-            CreateUserAIEvent createUserAIEvent = new CreateUserAIEvent()
-            {
-                UserId = userId,
-                ChannelId = request.ChannelId,
-            };
-
-            _telemetryClient.TrackEvent(createUserAIEvent);
-
-            return Ok(user.Id);
-        }
-
-        /// <summary>
         /// Creates a new retailer - to be called by partner
         /// </summary>
         /// <param name="retailerRequest">Request containg retailer details</param>
@@ -219,7 +174,8 @@ namespace blendnet.user.api.Controllers
             var currentDate = DateTime.UtcNow;
             user.ReferralInfo = new ReferralDto
             {
-                RetailerId = retailerDto.Id,
+                RetailerId = retailerDto.RetailerId,
+                RetailerUserId = retailerDto.UserId,
                 RetailerPartnerCode = retailerDto.PartnerCode,
                 RetailerPartnerId = retailerDto.PartnerId,
                 RetailerReferralCode = retailerDto.ReferralCode,
@@ -246,7 +202,8 @@ namespace blendnet.user.api.Controllers
                     PartnerCode = retailerDto.PartnerCode,
                     PartnerProvidedId = retailerDto.PartnerProvidedId,
                     RetailerPartnerId = retailerDto.PartnerId,
-                    UserId = user.Id,
+                    UserId = user.UserId,
+                    IdentityId = user.IdentityId,
                     RetailerAdditionalAttributes = retailerDto.AdditionalAttibutes,
                 };
 
@@ -287,7 +244,7 @@ namespace blendnet.user.api.Controllers
             }
 
             Guid callerUserId = UserClaimData.GetUserId(User.Claims);
-            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(callerUserId);
+            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByUserId(callerUserId);
             if (retailerProvider == null)
             {
                 errorDetails.Add(string.Format(_stringLocalizer["USR_ERR_013"], callerUserId));
@@ -306,21 +263,6 @@ namespace blendnet.user.api.Controllers
         }
 
         #region private methods
-        /// <summary>
-        /// Creates the user, if not already exists
-        /// </summary>
-        /// <param name="user">user to be created</param>
-        /// <returns>true if the user was created, false otherwise</returns>
-        private async Task<bool> CreateUserIfNotExist(User user)
-        {
-            if (await _userRepository.GetUserByPhoneNumber(user.PhoneNumber) == null)
-            {
-                await _userRepository.CreateUser(user);
-                return true;
-            }
-
-            return false;
-        }
 
         /// <summary>
         /// Logic for creating retailer from the request
@@ -330,7 +272,7 @@ namespace blendnet.user.api.Controllers
         private async Task<ActionResult<string>> CreateRetailerInternal(CreateRetailerRequest retailerRequest)
         {
             Guid callerUserId = UserClaimData.GetUserId(User.Claims);
-            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByServiceAccountId(callerUserId);
+            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByUserId(callerUserId);
 
             // validations
             {
@@ -369,18 +311,23 @@ namespace blendnet.user.api.Controllers
             DateTime now = DateTime.UtcNow;
 
             // create user if not exists
-            User user = new User
+            var user = await _userRepository.GetUserByPhoneNumber(retailerRequest.PhoneNumber);
+            if (user is null)
             {
-                Id = retailerRequest.UserId, 
-                PhoneNumber = retailerRequest.PhoneNumber, 
-                UserName = retailerRequest.Name,
-                ChannelId = Channel.NovoRetailerApp, // TODO: this should be from the Claim / partnerCode
-                CreatedDate = now,
-                CreatedByUserId = callerUserId,
-                Type = UserContainerType.User
-            };
+                user = new User
+                {
+                    UserId = Guid.NewGuid(),
+                    IdentityId = retailerRequest.UserId, 
+                    PhoneNumber = retailerRequest.PhoneNumber, 
+                    Name = "",
+                    ChannelId = Channel.NovoRetailerApp, // TODO: this should be from the Claim / partnerCode
+                    CreatedDate = now,
+                    CreatedByUserId = callerUserId,
+                    Type = UserContainerType.User,
+                };
 
-            await this.CreateUserIfNotExist(user);
+                await _userRepository.CreateUser(user);
+            }
 
             // create RetailerDto from request
             RetailerDto retailer = new RetailerDto()
@@ -389,13 +336,11 @@ namespace blendnet.user.api.Controllers
                 CreatedByUserId = callerUserId,
                 CreatedDate = now,
 
-                // Person Properties
-                Id = retailerRequest.UserId,
-                PhoneNumber = retailerRequest.PhoneNumber,
-                UserName = retailerRequest.Name,
-
-                // User properties
                 // Retailer properties
+                RetailerId = Guid.NewGuid(),
+                PhoneNumber = retailerRequest.PhoneNumber,
+                Name = retailerRequest.Name,
+                UserId = user.UserId, 
                 PartnerProvidedId = retailerRequest.RetailerId,
                 PartnerCode = retailerProvider.PartnerCode,
                 Address = retailerRequest.Address,
@@ -419,7 +364,7 @@ namespace blendnet.user.api.Controllers
                 City = retailer.Address.City,
                 Latitude = retailer.Address.MapLocation.Latitude,
                 Longitude = retailer.Address.MapLocation.Longitude,
-                Name = retailer.UserName,
+                Name = retailer.Name,
                 PartnerCode = retailer.PartnerCode,
                 PartnerProvidedId = retailer.PartnerProvidedId,
                 PinCode = retailer.Address.PinCode,

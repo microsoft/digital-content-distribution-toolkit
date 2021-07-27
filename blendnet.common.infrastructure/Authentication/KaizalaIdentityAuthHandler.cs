@@ -64,7 +64,7 @@ namespace blendnet.common.infrastructure.Authentication
             }
             
             //Add the blendnet user id
-            Claim claim = new Claim(ApplicationConstants.BlendNetClaims.UId, user.Id.ToString());
+            Claim claim = new Claim(ApplicationConstants.BlendNetClaims.UId, user.UserId.ToString());
 
             additionalValidationResponse.ValidationPassed = true;
 

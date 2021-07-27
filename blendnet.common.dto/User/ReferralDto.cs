@@ -10,7 +10,12 @@ namespace blendnet.common.dto.User
         public Guid RetailerId { get; set; }
 
         /// <summary>
-        /// Retailer partner code of the retailer
+        /// Associated User ID of the retailer who referred the customer
+        /// </summary>
+        public Guid RetailerUserId { get; set; }
+
+        /// <summary>
+        /// Retailer partner code of the retailer who referred the customer
         /// </summary>
         public string RetailerPartnerCode { get; set; }
 

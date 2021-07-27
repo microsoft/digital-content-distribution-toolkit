@@ -1,19 +1,20 @@
 ﻿using blendnet.common.dto;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.user.api.Models;
 using blendnet.user.repository.Interfaces;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.user.api.Controllers
 {
@@ -54,29 +55,26 @@ namespace blendnet.user.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult> CreateUserNew(CreateUserRequest request)
         {
-            List<string> errorInfo = new List<string>();
-
-            Guid userId = UserClaimData.GetIdentityUserId(User.Claims);
-
+            Guid identityId = GetIdentityUserId(User.Claims);
             String phoneNumber = this.User.Identity.Name;
 
             User existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
-
             if (existingUser != null)
             {
-                return Ok(existingUser.Id);
+                return Ok(existingUser.UserId);
             }
 
-            //to do set identity user id
+            var generatedId = Guid.NewGuid();
             User user = new User
             {
-                Id = Guid.NewGuid(),
+                UserId = generatedId,
                 PhoneNumber = phoneNumber,
-                UserName = request.UserName,
+                Name = request.UserName,
                 ChannelId = request.ChannelId,
                 CreatedDate = DateTime.UtcNow,
-                CreatedByUserId = userId,
-                Type = UserContainerType.User
+                CreatedByUserId = generatedId,
+                Type = UserContainerType.User,
+                IdentityId = identityId,
             };
 
             await _userRepository.CreateUser(user);
@@ -84,13 +82,33 @@ namespace blendnet.user.api.Controllers
             //Track the user created event to Application Insights
             CreateUserAIEvent createUserAIEvent = new CreateUserAIEvent()
             {
-                UserId = userId,
+                UserId = generatedId,
+                IdentityId = identityId,
                 ChannelId = request.ChannelId,
             };
 
             _telemetryClient.TrackEvent(createUserAIEvent);
 
-            return Ok(user.Id);
+            return Ok(user.UserId);
         }
+
+        #region Private methods
+
+        /// <summary>
+        /// Returns user's Identity id guid from claims list.
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <returns></returns>
+        private static Guid GetIdentityUserId(IEnumerable<Claim> claims)
+        {
+            Guid identityId = claims
+                                .Where(x => x.Type.Equals(ApplicationConstants.KaizalaIdentityClaims.IdentityUId))
+                                .Select(x => new Guid(x.Value))
+                                .First();
+
+            return identityId;
+        }
+
+        #endregion
     }
 }

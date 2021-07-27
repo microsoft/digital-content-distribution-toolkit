@@ -1,12 +1,37 @@
-using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.common.dto.Retailer
 {
-    public class RetailerDto : User.User
+    public class RetailerDto : BaseDto
     {
+        /// <summary>
+        /// Id of the retailer
+        /// </summary>
+        /// <value></value>
+        [JsonProperty(PropertyName = "id")]
+        public Guid RetailerId { get; set; }
+
+        /// <summary>
+        /// Associated User ID (into User table)
+        /// </summary>
+        /// <value></value>
+        public Guid UserId { get; set; }
+
+        /// <summary>
+        /// Retailer's phone number (same as that in User table)
+        /// </summary>
+        /// <value></value>
+        public string PhoneNumber { get; set; }
+
+        /// <summary>
+        /// Name of the retailer
+        /// </summary>
+        /// <value></value>
+        public string Name { get; set; }
+
         /// <summary>
         /// Original ID provided by the onboarding partner
         /// </summary>
@@ -55,7 +80,7 @@ namespace blendnet.common.dto.Retailer
         [Required]
         public DateTime EndDate { get; set; }
 
-        public new RetailerContainerType Type => RetailerContainerType.Retailer;
+        public RetailerContainerType Type => RetailerContainerType.Retailer;
 
         /// <summary>
         /// Additional attributes as a property bag
