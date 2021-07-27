@@ -47,26 +47,14 @@
     font-size: 20px;
     line-height: 32px;
     color: #101010;
+    font-weight: bold;
 }
 
 .total-earnings-text {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 16px;
     color: #5D6973;
-    font-weight: 700;
-}
-
-.accordion-left-content {
-    display: inline-block;
-    /* float: right; */
-    color: #101010;
-    font-size: 14px;
-}
-
-.accordion-right-content {
-    float: right;
-    font-weight: bold;
-    font-size: 14px;
+    /* font-weight: 700; */
 }
 
 .accordion-heading {

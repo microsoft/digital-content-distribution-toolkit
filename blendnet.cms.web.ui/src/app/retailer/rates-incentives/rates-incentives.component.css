@@ -67,6 +67,7 @@
     position: relative;
     height: 70px;
     padding-top: 16px;
+    font-size: 16px;
 }
 
 .each-offer-text-block {
@@ -88,7 +89,7 @@
 
 .each-offer-valid-label {
     color: #606060;
-    font-size: 12px;
+    font-size: 14px;
     /* background: white; */
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
@@ -97,7 +98,7 @@
 .each-offer-valid-date {
     padding: 5px;
     color: #1973EB;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     padding-left: 3px;
     /* background: white; */
@@ -106,7 +107,7 @@
 }
 
 .each-offer-conversion {
-    font-size: 12px;
+    font-size: 14px;
     color: #606060;
 }
 

@@ -1,0 +1,14 @@
+.no-transactions-block img {
+    /* width: 80%; */
+}
+
+.no-transactions-block {
+    text-align: center;
+    margin-top: 60px;
+}
+
+.no-trans-text {
+    font-size: 18px;
+    color: #5D6973;
+    margin-top: 10px;
+}

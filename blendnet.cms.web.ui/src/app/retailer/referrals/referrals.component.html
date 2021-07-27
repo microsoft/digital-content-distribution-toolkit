@@ -30,7 +30,8 @@
             </div>
         </div>
     </div>
-    <div class="accordion-block">
+    <app-no-transactions *ngIf="!totalEarnings"></app-no-transactions>
+    <div *ngIf="totalEarnings" class="accordion-block">
         <mat-accordion>
             <mat-expansion-panel *ngFor="let referral of nestedReferrals;first as isFirst" [expanded]="isFirst">
               <mat-expansion-panel-header>

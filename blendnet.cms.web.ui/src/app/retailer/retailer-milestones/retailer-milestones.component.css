@@ -56,18 +56,6 @@
     font-weight: 700;
 }
 
-.accordion-left-content {
-    display: inline-block;
-    /* float: right; */
-    color: #101010;
-    font-size: 14px;
-}
-
-.accordion-right-content {
-    float: right;
-    font-weight: bold;
-    font-size: 14px;
-}
 
 .accordion-heading {
     width: 100%;
@@ -120,7 +108,7 @@
 }
 
 .landing-each-offer {
-    height: 150px;
+    height: 160px;
     padding-right: 20px;
     padding-left: 20px;
 }
@@ -131,7 +119,7 @@
 }
 
 .landing-each-offer-milestone {
-    height: 150px;
+    height: 160px;
     background: #90C0FF;
     border-radius: 8px;
     /* padding-top: 22px;

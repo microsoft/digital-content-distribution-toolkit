@@ -125,10 +125,10 @@
 
 .milestones-route-inner {
     background-color: #FFFACB;
-    height: 150px;
+    height: 110px;
     background-image: url('../../assets/images/retailer-landing-page/milestones.png');
     background-repeat: no-repeat;
-    background-position: 100% 67px;
+    background-position: 100% 28px;
     box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
     border-radius: 8px;
     cursor: pointer;
@@ -168,13 +168,13 @@
 }
 
 .landing-each-offer {
-    height: 150px;
+    height: 160px;
     padding-right: 20px;
     padding-left: 20px;
 }
 
 .landing-each-offer-milestone {
-    height: 150px;
+    height: 160px;
     background: #90C0FF;
     border-radius: 8px;
     /* padding-top: 22px;
@@ -220,4 +220,8 @@
 .milestones-achieved-block {
     float: right;
     color: white;
+}
+
+.landing-total-milestone {
+    margin-bottom: 20px;
 }

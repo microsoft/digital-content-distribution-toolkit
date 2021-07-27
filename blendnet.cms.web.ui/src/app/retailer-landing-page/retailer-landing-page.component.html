@@ -28,23 +28,24 @@
     </div>
 
     <div class="landing-page-slider" *ngIf="carouselInit">
-        <owl-carousel-o [options]="customOptions">
-            <ng-container>
-                <ng-template carouselSlide>
-                    <div class="milestones-route-wrapper landing-each-offer" [routerLink]="['retailer/milestones']">
-                        <div class="milestones-route-inner">
-                            <div class="milestones-value-wrapper">
-                                <div class="milestones-value">
-                                    Rs. {{totalMilestoneEarnings}}
-                                </div>
-                                <div class="milestones-text">
-                                    Milestone <br> Earnings
-                                </div>
+        <ng-container>
+            <!-- <ng-template> -->
+                <div class="milestones-route-wrapper landing-total-milestone" [routerLink]="['retailer/milestones']">
+                    <div class="milestones-route-inner">
+                        <div class="milestones-value-wrapper">
+                            <div class="milestones-value">
+                                Rs. {{totalMilestoneEarnings}}
+                            </div>
+                            <div class="milestones-text">
+                                Milestone <br> Earnings
                             </div>
                         </div>
-                    </div>    
-                </ng-template>
-            </ng-container>
+                    </div>
+                </div>    
+            <!-- </ng-template> -->
+        </ng-container>
+
+        <owl-carousel-o [options]="customOptions">
             <ng-container *ngFor="let k of milestonesCarouselArr">
                 <ng-template carouselSlide>
                     <div class="landing-each-offer">

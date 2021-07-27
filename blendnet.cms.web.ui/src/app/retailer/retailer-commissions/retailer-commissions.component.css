@@ -68,19 +68,6 @@
     font-weight: 700;
 }
 
-.accordion-left-content {
-    display: inline-block;
-    /* float: right; */
-    color: #101010;
-    font-size: 14px;
-}
-
-.accordion-right-content {
-    float: right;
-    font-weight: bold;
-    font-size: 14px;
-}
-
 .accordion-heading {
     width: 100%;
 }
