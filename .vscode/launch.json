@@ -142,5 +142,19 @@
                 "DOTNET_ENVIRONMENT": "Development"
             },
         },
+        {
+            "name": "OMS Listener",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build oms.listener",
+            "program": "${workspaceFolder}/blendnet.oms.listener/bin/Debug/net5.0/blendnet.oms.listener.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/blendnet.oms.listener",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "env": {
+                "DOTNET_ENVIRONMENT": "Development"
+            },
+        },
     ]
 }

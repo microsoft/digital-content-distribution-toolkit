@@ -85,5 +85,17 @@
             ],
             "problemMatcher": "$msCompile"
         },
+        {
+            "label": "build oms.listener",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/blendnet.oms.listener/blendnet.oms.listener.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
     ]
 }
