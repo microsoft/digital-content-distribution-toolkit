@@ -1,35 +1,16 @@
-﻿using System;
+﻿using blendnet.common.dto.Notification;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace blendnet.common.dto.Notification
+namespace blendnet.notification.api.Model
 {
-    public class NotificationRequest
+    public class NotificationRequest : BaseNotificationRequest
     {
-        public string PartnerName { get; set; }
-
-        public string Payload { get; set; }
-
+        [Required]
         public List<UserData> UserData { get; set; }
-    }
 
-    public class KaizalaNotificationRequest
-    {
-        public string PartnerName { get; set; }
-
-        public string Payload { get; set; }
-
-        public List<Guid> UserIds { get; set; }
-
-        public int ScaleUnit { get; set; }
-    }
-
-    public class UserData
-    {
-        public string PhoneNumber { get; set; }
-
-        public Guid UserId { get; set; }
     }
 }

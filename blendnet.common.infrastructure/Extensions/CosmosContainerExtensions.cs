@@ -57,26 +57,26 @@ namespace blendnet.common.infrastructure.Extensions
         /// <param name="queryDef">the SELECT query</param>
         /// <param name="continuationToken">continuation token</param>
         /// <returns></returns>
-        public static async Task<ContentApiResult<T>> ExtractDataFromQueryIteratorWithToken<T>(this Container container, QueryDefinition queryDef, string continuationToken)
+        public static async Task<ResultData<T>> ExtractDataFromQueryIteratorWithToken<T>(this Container container, QueryDefinition queryDef, string continuationToken)
         {
-            ContentApiResult<T> contentResult = null;
             List<T> returnList = new List<T>();
 
             QueryRequestOptions options = new QueryRequestOptions { MaxItemCount = 1000 }; // should make it configurable in future
 
             var query = container.GetItemQueryIterator<T>(queryDef, continuationToken: continuationToken, requestOptions: options);
 
+            ResultData<T> contentResult;
             if (query.HasMoreResults)
             {
                 var response = await query.ReadNextAsync();
 
                 returnList.AddRange(response.ToList());
 
-                contentResult = new ContentApiResult<T>(returnList, response.ContinuationToken);
+                contentResult = new ResultData<T>(returnList, response.ContinuationToken);
             }
             else
             {
-                contentResult = new ContentApiResult<T>(returnList, null);
+                contentResult = new ResultData<T>(returnList, null);
             }
 
             return contentResult;

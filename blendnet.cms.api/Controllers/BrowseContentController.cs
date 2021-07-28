@@ -53,7 +53,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/processed")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<ContentApiResult<ContentDto>>> GetProcessedAssets(Guid contentProviderId, string continuationToken)
+        public async Task<ActionResult<ResultData<ContentDto>>> GetProcessedAssets(Guid contentProviderId, string continuationToken)
         {
             List<string> errorInfo = new List<string>();
 
@@ -63,9 +63,9 @@ namespace blendnet.cms.api.Controllers
 
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
 
-            ContentApiResult<ContentDto> result = new ContentApiResult<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult._data), contentApiResult._continuationToken);
+            ResultData<ContentDto> result = new ResultData<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult.Data), contentApiResult.ContinuationToken);
 
-            if (result._data == null || result._data.Count == 0)
+            if (result.Data == null || result.Data.Count == 0)
             {
                 errorInfo.Add(_stringLocalizer["CMS_ERR_0017"]);
 
@@ -83,7 +83,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/broadcasted")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<ContentApiResult<Content>>> GetBroadcastedAssets(Guid contentProviderId, string continuationToken)
+        public async Task<ActionResult<ResultData<Content>>> GetBroadcastedAssets(Guid contentProviderId, string continuationToken)
         {
             List<string> errorInfo = new List<string>();
 
@@ -95,9 +95,9 @@ namespace blendnet.cms.api.Controllers
 
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
 
-            ContentApiResult<ContentDto> result = new ContentApiResult<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult._data), contentApiResult._continuationToken);
+            ResultData<ContentDto> result = new ResultData<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult.Data), contentApiResult.ContinuationToken);
 
-            if(result._data == null || result._data.Count == 0)
+            if(result.Data == null || result.Data.Count == 0)
             {
                 errorInfo.Add(_stringLocalizer["CMS_ERR_0017"]);
 

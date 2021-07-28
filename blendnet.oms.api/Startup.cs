@@ -289,7 +289,6 @@ namespace blendnet.oms.api
                 c.BaseAddress = new Uri(userBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
-
         }
 
         /// <summary>

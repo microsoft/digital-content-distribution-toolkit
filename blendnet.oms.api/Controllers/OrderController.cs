@@ -116,7 +116,7 @@ namespace blendnet.oms.api.Controllers
             string userPhoneNumber = User.Identity.Name;
 
             // Get Subscription
-            ContentProviderSubscriptionDto subscription = await _subscriptionProxy.GetSubscription(orderRequest.ContentProviderId, orderRequest.SubscriptionId);
+           ContentProviderSubscriptionDto subscription = await _subscriptionProxy.GetSubscription(orderRequest.ContentProviderId, orderRequest.SubscriptionId);
 
             if (subscription == null)
             {

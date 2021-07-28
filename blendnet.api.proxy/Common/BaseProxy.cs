@@ -157,6 +157,17 @@ namespace blendnet.api.proxy.Common
             return int.Parse(scaleUnit);
         }
 
+        public List<int> GetScaleUnitsForCurrentEnv()
+        {
+            Dictionary<string, string> settings = new Dictionary<string, string>();
+
+            _configuration.GetSection("KaizalaIdentity").Bind(settings);
+
+            HashSet<int> scaleUnits = new HashSet<int>(settings.Values.ToList().Select(x => int.Parse(x)).ToList());
+
+            return new List<int>(scaleUnits);
+        }
+
         private string GetScaleUnit(string scaleUnit)
         {
             return "0".Equals(scaleUnit) ? "" : scaleUnit;

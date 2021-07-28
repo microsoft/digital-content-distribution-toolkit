@@ -1,9 +1,14 @@
 using blendnet.api.proxy;
+using blendnet.api.proxy.Kaizala;
 using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Notification;
+using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
+using blendnet.common.infrastructure.ServiceBus;
+using blendnet.notification.repository;
+using blendnet.notification.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -12,6 +17,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -153,12 +159,13 @@ namespace blendnet.notification.api
             services.AddHealthChecks();
 
             //Configure Services
-            //services.AddTransient<IContentProviderRepository, ContentProviderRepository>();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
 
             
             //registerations required for authhandler to work
             services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<UserProxy>();
+            services.AddTransient<KaizalaNotificationProxy>();
             services.AddTransient<IUserDetails, UserDetailsByProxy>();
 
             //Configure Cosmos DB
@@ -170,6 +177,9 @@ namespace blendnet.notification.api
             //Configure Redis Cache
             ConfigureDistributedCache(services);
 
+            // Configure mapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -178,6 +188,7 @@ namespace blendnet.notification.api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseForwardedHeaders();
             }
             else
             {
@@ -209,7 +220,6 @@ namespace blendnet.notification.api
                 // specifying the Swagger JSON endpoint.
                 app.UseSwaggerUI(c =>
                 {
-                    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlendNet API V1");
                     c.SwaggerEndpoint("v1/swagger.json", "BlendNet Notification API V1");
                 });
             }
@@ -252,7 +262,7 @@ namespace blendnet.notification.api
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
-                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Notification, "/id").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Notification, "/notificationId").Result;
 
                 return client;
             });

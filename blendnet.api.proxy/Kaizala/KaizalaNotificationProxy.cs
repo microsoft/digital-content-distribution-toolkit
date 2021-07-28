@@ -15,13 +15,13 @@ using System.Threading.Tasks;
 
 namespace blendnet.api.proxy.Kaizala
 {
-    public class NotificationProxy : BaseProxy
+    public class KaizalaNotificationProxy : BaseProxy
     {
         private readonly HttpClient _kaizalaNotificationHttpClient;
 
         private readonly IConfiguration _configuration;
 
-        private readonly ILogger<NotificationProxy> _logger;
+        ILogger<KaizalaNotificationProxy> _logger;
 
         private readonly UserProxy _userProxy;
 
@@ -30,9 +30,9 @@ namespace blendnet.api.proxy.Kaizala
         /// </summary>
         /// <param name="clientFactory"></param>
         /// <param name="configuration"></param>
-        public NotificationProxy(IHttpClientFactory clientFactory,
+        public KaizalaNotificationProxy(IHttpClientFactory clientFactory,
                                     IConfiguration configuration,
-                                    ILogger<NotificationProxy> logger,
+                                    ILogger<KaizalaNotificationProxy> logger,
                                     UserProxy userProxy,
                                     IDistributedCache cache
                                 )
@@ -47,7 +47,7 @@ namespace blendnet.api.proxy.Kaizala
             _userProxy = userProxy;
         }
 
-        public async Task SendNotification(NotificationRequest notificationRequest)
+        public async Task SendNotification(NotificationPayloadData notificationRequest)
         {
             string kaizalaApplicationName = _configuration.GetValue<string>("KaizalaIdentityAppName");
 
@@ -93,6 +93,44 @@ namespace blendnet.api.proxy.Kaizala
                 _logger.LogInformation($" Time taken to send notification (userIds - {string.Join(",", batch.Value)}) is {stopwatch.ElapsedMilliseconds} (ms)");
 
             }
+        }
+
+        public async Task SendBroadcastNotification(BroadcastNotificationPayloadData broadcastNotificationPayloadData)
+        {
+            string accessToken = await base.GetServiceAccessToken();
+
+            string urlToInvoke = $"v1/sendExternalBroadcastNotification";
+
+            KaizalaBroadcastNotificationRequest kzBroadcastNotificationRequest = new KaizalaBroadcastNotificationRequest
+            {
+                PartnerName = broadcastNotificationPayloadData.PartnerName,
+                Payload = broadcastNotificationPayloadData.Payload,
+                Topic = broadcastNotificationPayloadData.Topic,
+                ScaleUnits = GetScaleUnitsForCurrentEnv()
+            };
+
+            string url = PrepareHttpClient(accessToken, urlToInvoke);
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            try
+            {
+                JsonSerializerOptions jsonSerializerOptions = Utilties.GetJsonSerializerOptions();
+
+                jsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+
+                await _kaizalaNotificationHttpClient.Post<KaizalaBroadcastNotificationRequest, object>(url, kzBroadcastNotificationRequest, false, jsonSerializerOptions);
+
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                _logger.LogInformation($"401 from sendExternalBroadcastNotification - {kzBroadcastNotificationRequest.Topic}  Exception {ex} ");
+                throw;
+            }
+
+            stopwatch.Stop();
+
+            _logger.LogInformation($" Time taken to send notification {kzBroadcastNotificationRequest.Topic} is {stopwatch.ElapsedMilliseconds} (ms)");
         }
 
         private string PrepareHttpClient(string accessToken,

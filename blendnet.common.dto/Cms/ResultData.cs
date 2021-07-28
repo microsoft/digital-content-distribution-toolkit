@@ -10,17 +10,17 @@ namespace blendnet.cms.repository.CosmosRepository
 /// <summary>
 /// Generic class which represents content result from any query and corresponding continuation token to query further 
 /// </summary>
-    public class ContentApiResult<T>
+    public class ResultData<T>
     {
-        public List<T> _data { get; set; }
+        public List<T> Data { get; set; }
 
-        public string _continuationToken { get; set; }
+        public string ContinuationToken { get; set; }
 
-        public ContentApiResult(List<T> data, string continuationToken)
+        public ResultData(List<T> data, string continuationToken)
         {
-            _data = data;
+            Data = data;
 
-            _continuationToken = continuationToken;
+            ContinuationToken = continuationToken;
         }
     }
 }

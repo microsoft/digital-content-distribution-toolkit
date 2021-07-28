@@ -1,19 +1,16 @@
-﻿using blendnet.api.proxy.Kaizala;
-using blendnet.common.dto;
-using blendnet.common.dto.Events;
+﻿using blendnet.api.proxy.Notification;
 using blendnet.common.dto.Notification;
+using blendnet.common.dto.Events;
 using blendnet.common.dto.Oms;
 using blendnet.common.infrastructure;
+using blendnet.notification.api.Model;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static blendnet.common.dto.ApplicationConstants;
 
 namespace blendnet.oms.listener.IntegrationEventHandling
 {
@@ -64,13 +61,14 @@ namespace blendnet.oms.listener.IntegrationEventHandling
 
         private async Task SendOrderCompleteNotification(Order order)
         {
-            string payload = GetOrderCompletePayload(order);
             List<UserData> userdata = new List<UserData>();
             userdata.Add(new UserData { UserId = order.UserId, PhoneNumber = order.PhoneNumber });
 
-            NotificationRequest notificationRequest = new NotificationRequest
+            NotificationRequest notificationRequest = new NotificationRequest()
             {
-                Payload = payload,
+                Title = "Order Completed",
+                Body = "Your order has been completed",
+                Type = PushNotificationType.OrderComplete,
                 UserData = userdata
             };
 
@@ -84,39 +82,5 @@ namespace blendnet.oms.listener.IntegrationEventHandling
             }
 
         }
-
-        private string GetOrderCompletePayload(Order order)
-        {
-            dynamic message = new JObject();
-
-            dynamic android = new JObject();
-
-            dynamic notification = new JObject();
-
-            notification.body = "Your order has been completed";
-            notification.title = "Order Completed";
-
-            android.notification = notification;
-
-            message.android = android;
-
-            dynamic gcmObject = new JObject();
-
-            dynamic gcm = new JObject();
-            dynamic data = new JObject();
-            gcm.pushNotificationKey = "newMsgPushNotification";
-            gcm.appname = _appSettings.KaizalaIdentityAppName;
-
-            data.message = gcm;
-            data.type = PushNotificationType.OrderComplete;
-            data.orderId = order.Id;
-            gcmObject.priority = "high";
-
-            gcmObject.data = data;
-            gcmObject.message = message;
-            string msg = JsonConvert.SerializeObject(gcmObject);
-            return msg;
-        }
-
     }
 }

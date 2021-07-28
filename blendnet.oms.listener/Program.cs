@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
+using blendnet.api.proxy.Notification;
 
 namespace blendnet.oms.listener
 {
@@ -88,7 +89,7 @@ namespace blendnet.oms.listener
                     ConfigureEventBus(hostContext, services);
 
                     //Configure Http Clients
-                    ConfigureHttpClients(services);
+                    ConfigureHttpClients(hostContext, services);
 
                     //Configure Distribute Cache
                     ConfigureDistributedCache(hostContext, services);
@@ -140,11 +141,18 @@ namespace blendnet.oms.listener
         /// Configure Required Http Clients
         /// </summary>
         /// <param name="services"></param>
-        private static void ConfigureHttpClients(IServiceCollection services)
+        private static void ConfigureHttpClients(HostBuilderContext hostContext, IServiceCollection services)
         {
             //Configure Http Clients
             services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
             {
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+            string notificationBaseUrl = hostContext.Configuration.GetValue<string>("NotificationBaseUrl");
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.NOTIFICATION_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(notificationBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }

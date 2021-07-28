@@ -66,7 +66,7 @@ namespace blendnet.cms.repository.Interfaces
         /// <param name="contentStatusFilter">Lists of Upload status, Transform status and broadcast status</param>
         /// <param name="continuationToken">continuation token to query</param>
         /// <returns>Content result which holds list of results and continuation token</returns>
-        Task<ContentApiResult<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter, string continuationToken);
+        Task<ResultData<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter, string continuationToken);
 
 
         /// <summary>

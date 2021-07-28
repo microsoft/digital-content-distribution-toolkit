@@ -13,5 +13,6 @@ namespace blendnet.common.dto.User
         public string AccountKey { get; set; }
 
         public string DatabaseName { get; set; }
+
     }
 }

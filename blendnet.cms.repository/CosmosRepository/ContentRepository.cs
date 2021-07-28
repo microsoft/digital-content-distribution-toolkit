@@ -198,9 +198,9 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <param name="contentStatusFilter">Lists of Upload status, Transform status and broadcast status</param>
         /// <param name="continuationToken">continuation token to query</param>
         /// <returns>Content result which holds list of results and continuation token</returns>
-        public async Task<ContentApiResult<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter, string continuationToken)
+        public async Task<ResultData<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter, string continuationToken)
         {
-            ContentApiResult<Content> contentResult;
+            ResultData<Content> contentResult;
             
             QueryDefinition queryDef = GetQueryDefinitionWithStatusFilter(contentProviderId, contentStatusFilter);
 
