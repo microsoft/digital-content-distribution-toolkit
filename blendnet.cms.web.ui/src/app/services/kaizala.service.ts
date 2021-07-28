@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { ContentProviderService } from './content-provider.service';
 import { LogService } from './log.service';
 import jwt_decode from "jwt-decode";
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class KaizalaService {
   private currentUserNameSubject: BehaviorSubject<any>;
   public currentUserName: Observable<any>;
 
+
   
   baseUrl0 = environment.kaizalaApi0;
   baseUrl1 = environment.kaizalaApi1;
@@ -24,12 +26,14 @@ export class KaizalaService {
   constructor(
     private logger: LogService,
     private http: HttpClient,
-    private contentProviderService: ContentProviderService
+    private contentProviderService: ContentProviderService,
+    private userService: UserService
   ) {
     this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(sessionStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
     this.currentUserNameSubject = new BehaviorSubject<any>(sessionStorage.getItem('currentUserName'));
     this.currentUserName = this.currentUserNameSubject.asObservable();
+
    }
 
   public get currentUserValue() {
@@ -39,6 +43,8 @@ export class KaizalaService {
   public get currentUserNameValue() {
     return this.currentUserNameSubject.value;
   }
+
+
 
   getURLSuffix (lastDigit) {
     var url = "";
@@ -77,30 +83,7 @@ export class KaizalaService {
         'AppName': environment.kaizalaAppName},
       observe: 'response'
     });
-    // var myHeaders = new Headers();
-    // myHeaders.append("Content-Type", "application/json");
-    // myHeaders.append("appName", environment.appName);
-    // var raw = JSON.stringify({"phoneNumber":contact,"useVoice":false});
-    // var requestOptions = {
-    //   mode: "no-cors",      
-    //   method: 'POST',
-    //   headers: myHeaders,
-    //   body: raw,
-    //   redirect: 'follow'
-    // };
-    // fetch("https://api-alpha2.kaiza.la/api/Authentication/LoginWithPhoneForPartners", 
-    // {
-    //   mode: "no-cors",      
-    //   method: 'POST',
-    //   headers: myHeaders,
-    //   body: raw,
-    //   redirect: 'follow'
-    // })
-    // .then(response => {
-    //   return response.text()}
-    //   )
-    // .then(result => console.log(result))
-    // .catch(error => console.log('error', error));
+
   }
 
   verifyOTP(otp: string, countryCode: string, contact: string) {
@@ -156,14 +139,10 @@ export class KaizalaService {
 
   logout() {
     // remove the selected Content Provider from the local storage
-    sessionStorage.removeItem("contentProviderId");
-    sessionStorage.removeItem("contentProviderName");
-    sessionStorage.removeItem("roles");
-
+    sessionStorage.clear();
     this.contentProviderService.changeDefaultCP(null);
     // remove user from local storage and set current user to null
-    sessionStorage.removeItem('currentUser');
-    sessionStorage.removeItem('currentUserName');
+    this.userService.resetRegisteredUserValue();
     this.currentUserSubject.next(null);
   }
 }

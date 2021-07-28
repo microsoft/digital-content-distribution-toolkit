@@ -101,7 +101,7 @@
                     <br><br>
                     <mat-card>
                         <mat-form-field>
-                            <mat-label>Select Retailer Partner to see the date range where incentive plans are not Publised:</mat-label>
+                            <mat-label>Select Retailer Partner to see the date range where incentive plans are not Published:</mat-label>
                             <mat-select  name="partner" (selectionChange)="getMissingPlansforPartner($event)" [(ngModel)]="selectedPartner">
                             <mat-option *ngFor="let partner of partners" [value]="partner">
                                 {{partner}}
@@ -250,7 +250,7 @@
                 </div>
                 <br><br>
             <mat-card>
-                <mat-label>Date range where Consumer incentive plans are not Publised:</mat-label>
+                <mat-label>Date range where Consumer incentive plans are not Published:</mat-label>
                 <br><br>
                 <span  *ngIf="missingListConsumer">
                     <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start">

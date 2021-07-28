@@ -9,6 +9,7 @@ import { KaizalaService } from '../services/kaizala.service';
 import { UserService } from '../services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 
 @Component({
@@ -40,6 +41,8 @@ export class LoginComponent implements OnInit {
   countryCodes;
   returnUrl: string;
 
+
+
   constructor(
     // private authService: MsalService, 
     // private msalBroadcastService: MsalBroadcastService,
@@ -49,8 +52,9 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     ) { 
+
       // redirect to home if already logged in
-      if (this.kaizalaService.currentUserValue) { 
+      if (this.kaizalaService.currentUserValue && this.userService.registeredUserValue) { 
         this.router.navigate(['/']);
       }
     }
@@ -122,8 +126,6 @@ export class LoginComponent implements OnInit {
   verifyOTP () {
     this.kaizalaService.verifyOTP(this.otp.value, this.selectedCountryCodeValue, this.contact.value).subscribe(
       res => {
-        var response : any = res;
-        if(response.isNewUser) {
           var user: any;
           user = {
             userName : this.contact.value,
@@ -131,27 +133,29 @@ export class LoginComponent implements OnInit {
           }
           this.userService.createUser(user).subscribe(res => {
             console.log("User created successfully");
+            console.log(res);
+            this.kaizalaService.getUserRoles(this.contact.value).subscribe(
+              res => {
+                var response: any = res.body;
+                sessionStorage.setItem("roles", response.userRole);
+                this.roles =  sessionStorage.getItem("roles");
+                this.isContactOnlySection = true;
+                this.isCountryCodeSection = false;
+                this.isOTPSection = false; 
+                this.userService.setLoggedInUser(this.contact.value);
+                this.router.navigate([this.returnUrl]);
+              },
+              err => {
+                
+                this.otpVerifyErrorMessage = err;
+              }
+            )
           },
           err => {
             console.log(err);
-            this.toastr.warning("User could not be created in CMS. Please contact admin.")
-          })
-        }
-        this.kaizalaService.getUserRoles(this.contact.value).subscribe(
-          res => {
-            var response: any = res.body;
-            sessionStorage.setItem("roles", response.userRole);
-            this.roles =  sessionStorage.getItem("roles");
-            this.isContactOnlySection = true;
-            this.isCountryCodeSection = false;
-            this.isOTPSection = false; 
-            this.userService.setLoggedInUser(this.contact.value);
-            this.router.navigate([this.returnUrl]);
-          },
-          err => {
-            this.otpVerifyErrorMessage = err;
-          }
-        )
+            this.toastr.error("User could not be resgitered. Please contact admin.")
+            this.otpVerifyErrorMessage ="User could not be resgitered. Please contact admin";
+          });
       },
       err => {
         this.otpVerifyErrorMessage = err;
