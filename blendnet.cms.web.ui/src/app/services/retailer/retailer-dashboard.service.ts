@@ -99,7 +99,7 @@ export class RetailerDashboardService {
   }
 
   getBaseHref() {
-    return 'cmsui'
+    return 'portal'
   }
 
   formatDate(date) {

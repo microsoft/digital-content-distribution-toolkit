@@ -1,0 +1,61 @@
+<div class="commission-heading-block">
+    <div class="commission-dialog-heading">
+        data.name
+    </div>
+    <div class="commission-dialog-sub-heading">
+        mobile
+    </div>
+</div>
+
+<div class="commission-value-block">
+    <div class="commission-value-each">
+        <div class="commission-value-value">
+            data.transactionId
+        </div>
+        <div class="commission-value-attr">
+            Transaction ID
+        </div>
+    </div>
+
+    <!-- <div class="commission-value-each">
+        <div class="commission-value-value">
+            
+        </div>
+        <div class="commission-value-attr">
+            Time
+        </div>
+    </div> -->
+
+    <div class="commission-value-each">
+        <div class="commission-value-value">
+            data.occuredTimeReadable
+        </div>
+        <div class="commission-value-attr">
+            Date
+        </div>
+    </div>
+
+    <div class="commission-value-each">
+        <div class="commission-value-value">
+            Rs data.originalValue
+        </div>
+        <div class="commission-value-attr">
+            Order Value
+        </div>
+    </div>
+
+    <div class="commission-value-each">
+        <div class="commission-value-value commission-dialog-currency">
+            Rs data.calculatedValue
+        </div>
+        <div class="commission-value-attr">
+            Commission
+        </div>
+    </div>
+</div>
+<!-- 
+<div class="commission-dialog-support-block">
+    Problem with the transaction ? <span class="get-help-link">Get Help</span>
+</div> -->
+
+<button class="commission-dialog-close" (click)="closeDialog()">Close</button>

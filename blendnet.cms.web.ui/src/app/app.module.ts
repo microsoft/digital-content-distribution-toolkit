@@ -38,6 +38,7 @@ import { DisableControlDirective } from './custom-directives/disable-control.dir
 import { AddEventDialog } from './incentive-management/add-event-dialog';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { NotificationsDialog } from './notifications/notifications-dialog';
+import { RetailerPlanDetailsDialogComponent } from './retailer-plan-details-dialog/retailer-plan-details-dialog.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { NotificationsDialog } from './notifications/notifications-dialog';
     DisableControlDirective,
     AddEventDialog,
     NotificationsComponent,
-    NotificationsDialog
+    NotificationsDialog,
+    RetailerPlanDetailsDialogComponent
   ],
   imports: [
     HttpClientModule,

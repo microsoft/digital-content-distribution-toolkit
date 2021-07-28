@@ -225,3 +225,26 @@
 .landing-total-milestone {
     margin-bottom: 20px;
 }
+
+.referral-card {
+    background: linear-gradient(104.36deg, #3C8FFE -3.84%, #83B8FF 49.88%, #4394FF 93.64%);
+}
+
+.commission-card {
+    background-color: red; /* For browsers that do not support gradients */
+    background: linear-gradient(104.36deg, #279B95 -3.84%, #6AC7C4 49.88%, #67AEAA 93.64%);
+}
+
+.referral-card img {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    width: 200px;
+}
+
+.commission-card img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+}

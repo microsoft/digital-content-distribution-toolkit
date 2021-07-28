@@ -132,6 +132,7 @@ export class RetailerLandingPageComponent implements OnInit {
     } ,err => {
       console.log('error in milestone fetch');
       this.totalMilestoneEarnings = totalMilestoneEarnings;
+      this.carouselInit =true;
     });
   }
 
