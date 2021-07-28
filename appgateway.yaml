@@ -26,7 +26,7 @@ spec:
         backend:
           serviceName: blendnet-oms-api
           servicePort: 80
-      - path: /cmsui/*
+      - path: /portal/*
         backend:
           serviceName: blendnet-cms-web-ui
           servicePort: 80
