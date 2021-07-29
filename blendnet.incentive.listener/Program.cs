@@ -173,6 +173,12 @@ namespace blendnet.incentive.listener
                            })
                            .Build();
 
+                DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
+
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.IncentivePlan, ApplicationConstants.CosmosContainers.IncentivePlanPartitionKey).Result;
+
+                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.IncentiveEvent, ApplicationConstants.CosmosContainers.IncentiveEventPartitionKey).Result;
+
                 return client;
             });
         }

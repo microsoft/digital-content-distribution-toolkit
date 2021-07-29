@@ -164,6 +164,11 @@ namespace blendnet.retailer.listener
                                PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
                            })
                            .Build();
+                
+                DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
+
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Retailer, ApplicationConstants.CosmosContainers.RetailerPartitionKey).Result;
+                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.RetailerProvider, ApplicationConstants.CosmosContainers.RetailerProviderPartitionKey).Result;
 
                 return client;
             });

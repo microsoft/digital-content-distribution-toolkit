@@ -315,7 +315,7 @@ namespace blendnet.oms.api
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
-                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Order, "/phoneNumber").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Order, ApplicationConstants.CosmosContainers.OrderPartitionKey).Result;
 
                 return client;
             });

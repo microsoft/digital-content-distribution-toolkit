@@ -247,6 +247,12 @@ namespace blendnet.cms.listener
                            })
                            .Build();
 
+                DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
+
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.ContentProvider, ApplicationConstants.CosmosContainers.ContentProviderPartitionKey).Result;
+
+                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Content, ApplicationConstants.CosmosContainers.ContentPartitionKey).Result;
+
                 return client;
             });
         }

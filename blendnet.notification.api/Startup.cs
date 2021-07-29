@@ -262,7 +262,7 @@ namespace blendnet.notification.api
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
 
-                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Notification, "/notificationId").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Notification, ApplicationConstants.CosmosContainers.NotificationPartitionKey).Result;
 
                 return client;
             });

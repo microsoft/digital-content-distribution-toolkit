@@ -11,15 +11,31 @@ namespace blendnet.common.dto
         public struct CosmosContainers
         {
             public const string ContentProvider = "ContentProvider";
-            public const string Content = "Content";
-            public const string Order = "Order";
-            public const string User = "User";
-            public const string Retailer = "Retailer";
-            public const string RetailerProvider = "RetailerProvider";
-            public const string IncentivePlan = "IncentivePlan";
-            public const string IncentiveEvent = "IncentiveEvent";
-            public const string Notification = "Notification";
+            public const string ContentProviderPartitionKey = "/contentProviderId";
 
+            public const string Content = "Content";
+            public const string ContentPartitionKey = "/contentId";
+
+            public const string Order = "Order";
+            public const string OrderPartitionKey = "/phoneNumber";
+
+            public const string User = "User";
+            public const string UserPartitionKey = "/phoneNumber";
+
+            public const string Retailer = "Retailer";
+            public const string RetailerPartitionKey = "/partnerId";
+
+            public const string RetailerProvider = "RetailerProvider";
+            public const string RetailerProviderPartitionKey = "/partnerCode";
+
+            public const string IncentivePlan = "IncentivePlan";
+            public const string IncentivePlanPartitionKey = "/audience/subTypeName";
+
+            public const string IncentiveEvent = "IncentiveEvent";
+            public const string IncentiveEventPartitionKey = "/eventCreatedFor";
+
+            public const string Notification = "Notification";
+            public const string NotificationPartitionKey = "/notificationId";
         }
 
         public struct Policy

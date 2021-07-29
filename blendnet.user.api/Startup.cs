@@ -278,7 +278,7 @@ namespace blendnet.user.api
                            .Build();
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
-                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.User, "/phoneNumber").Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.User, ApplicationConstants.CosmosContainers.UserPartitionKey).Result;
 
                 return client;
             });
