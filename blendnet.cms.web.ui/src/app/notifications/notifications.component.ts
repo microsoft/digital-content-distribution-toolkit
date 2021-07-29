@@ -11,23 +11,11 @@ import {MatTableDataSource} from '@angular/material/table';
 import { Content } from '../models/content.model';
 import { ContentStatus } from '../models/content-status.enum';
 import { SubscriptionService } from '../services/subscription.service';
+import { NotificationService } from '../services/notification.service';
+import { MatSort } from '@angular/material/sort';
 
-export interface PeriodicElement {
-  Title: string;
-  Preview: string;
-  Status: number;
-  CreatedOn: string;
-}
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  {Preview: "https://th.bing.com/th/id/OIP.GnqZiwU7k5f_kRYkw8FNNwHaF3?pid=ImgDet&rs=1", Title: 'New Incentives', Status: 1, CreatedOn: '2021-06-14'},
-  {Preview: "https://th.bing.com/th/id/OIP.GnqZiwU7k5f_kRYkw8FNNwHaF3?pid=ImgDet&rs=1", Title: 'Policy Update', Status: 4, CreatedOn: '2021-06-13'},
-  {Preview: "https://th.bing.com/th/id/OIP.GnqZiwU7k5f_kRYkw8FNNwHaF3?pid=ImgDet&rs=1", Title: 'New Content Uploaded', Status: 6, CreatedOn: '2021-06-12'},
-  {Preview: "https://th.bing.com/th/id/OIP.GnqZiwU7k5f_kRYkw8FNNwHaF3?pid=ImgDet&rs=1", Title: 'Content Uploaded', Status: 9, CreatedOn: '2021-06-10'},
-  {Preview: "https://th.bing.com/th/id/OIP.GnqZiwU7k5f_kRYkw8FNNwHaF3?pid=ImgDet&rs=1", Title: 'New Feature', Status: 10, CreatedOn: '2021-06-09'},
-  {Preview: "https://th.bing.com/th/id/OIP.GnqZiwU7k5f_kRYkw8FNNwHaF3?pid=ImgDet&rs=1", Title: 'App Update', Status: 12, CreatedOn: '2021-06-07'},
-  {Preview: "https://th.bing.com/th/id/OIP.GnqZiwU7k5f_kRYkw8FNNwHaF3?pid=ImgDet&rs=1", Title: 'Test Notification', Status: 14, CreatedOn: '2021-06-06'},
-];
+
 
 @Component({
   selector: 'app-notifications',
@@ -37,20 +25,20 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export class NotificationsComponent implements OnInit {
   expiresIn:string= "";
   selectedNotifications: number=0;
-  allowedMaxSelection: number = environment.allowedMaxSelection;
-  deleteConfirmMessage: string = "Content once deleted can not be restored. Please press Continue to begin the deletion.";
-  displayedColumns: string[] = ['Preview', 'Title', 'Description', 'Status', 'CreatedOn'];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = [ 'title', 'body', 'type', 'attachmentUrl', 'tags','createdDate'];
 
   @ViewChild(MatAccordion) accordion: MatAccordion;
   cpSubscriptions;
   today;
   sendDate: Date;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   
-  //  dataSource = ELEMENT_DATA;
+  dataSource: MatTableDataSource<any>;
 
   constructor( 
-    private subscriptionService: SubscriptionService,
+    private notificationService: NotificationService,
     private toastr: ToastrService,
     public dialog: MatDialog
     ) {
@@ -61,31 +49,46 @@ export class NotificationsComponent implements OnInit {
       const currentDay = new Date().getDate();
      }
 
-     ngOnInit(): void { }
+     ngOnInit(): void {
+       this.getAllNotifications();
+      }
+
+      getAllNotifications() {
+
+        this.notificationService.getAllNotifications().subscribe(
+          res => {
+            this.dataSource = this.createDataSource(res.data);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          },
+          err => {
+            this.dataSource = this.createDataSource([]);
+            this.toastr.error(err);
+            console.log('HTTP Error', err)
+          }
+          );
+
+      }
   
-  //Can be uncommented once the API is integrated
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    // this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    // if (this.dataSource.paginator) {
-    //   this.dataSource.paginator.firstPage();
-    // }
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
-  allowSelection(row) {
-    return (!row.isSelected && this.selectedNotifications >= this.allowedMaxSelection);
-  }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(NotificationsDialog, {
       width: '500px',
-      height: '650px',
       data: {}
     });
 
-    dialogRef.componentInstance.onNotifCreate.subscribe(data => {
+    dialogRef.componentInstance.onNotificationBroadcast.subscribe(data => {
       this.toastr.success("Notification sent successfully!");
-      //this.getSubscriptions(); 
+      this.getAllNotifications(); 
       dialogRef.close();
     })
 
@@ -98,13 +101,11 @@ export class NotificationsComponent implements OnInit {
     var dataSource: Content[] =[];
     if(rawData) {
       rawData.forEach( data => {
-        data.status = data.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED ? 
-        data.contentTransformStatus : data.contentUploadStatus;
-        data.isSelected = false;
         dataSource.push(data);
       });
     }
     return new MatTableDataSource(dataSource);
   }
+
   
 }

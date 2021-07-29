@@ -5,7 +5,7 @@
       <table class="notif-dialog-table">
         <tr>
           <td>
-            <mat-form-field appearance = "outline" fxFlex = 100%>
+            <mat-form-field  fxFlex = 100%>
               <mat-label>Title</mat-label>
               <input matInput placeholder="Title" 
               formControlName="title" required>
@@ -17,11 +17,11 @@
         </tr>
         <tr>
           <td>
-            <mat-form-field appearance = "outline" >
+            <mat-form-field  >
               <mat-label>Message</mat-label>
-              <textarea matInput placeholder = "Message" class="notif-text-area" [(ngModel)]="notif" 
+              <textarea matInput placeholder = "Message" class="notif-text-area"
               cdkTextareaAutosize formControlName="body" ></textarea>
-              <mat-error *ngIf="errorHandling('body', 'required') || errorHandling('body', 'required')"> 
+              <mat-error *ngIf="errorHandling('body', 'required') "> 
                You must provide text
               </mat-error>
             </mat-form-field>
@@ -29,19 +29,19 @@
         </tr>
         <tr>
           <td>
-            <mat-form-field appearance = "outline" fxFlex = 100%>
+            <mat-form-field  fxFlex = 100%>
               <mat-label>Attachment</mat-label>
               <input matInput placeholder="attachmentUrl" 
-              formControlName="attachmentUrl" required>
+              formControlName="attachmentUrl">
               <mat-error *ngIf="errorHandling('attachmentUrl', 'required')"> 
                 You must provide a attachment url
               </mat-error>
             </mat-form-field>
           </td>
         </tr>
-        <tr>
+        <!-- <tr>
         <td>
-          <mat-form-field appearance = "outline" fxFlex = 100%>
+          <mat-form-field  fxFlex = 100%>
             <mat-label>Topic</mat-label>
             <input matInput placeholder="topic" 
             formControlName="topic" required>
@@ -53,7 +53,7 @@
       </tr>
       <tr>
         <td>
-          <mat-form-field appearance = "outline" fxFlex = 100%>
+          <mat-form-field  fxFlex = 100%>
             <mat-label>Type</mat-label>
             <input matInput placeholder="type" 
             formControlName="type" required>
@@ -62,21 +62,10 @@
             </mat-error>
           </mat-form-field>
         </td>
-      </tr>
+      </tr> -->
       <tr>
         <td>
-          <!-- <mat-form-field appearance = "outline" fxFlex = 100%>
-            <input matInput placeholder="tags" 
-            formControlName="tags" required>
-            <mat-error *ngIf="errorHandling('tags', 'required')"> 
-              You must provide a tags
-            </mat-error>
-          </mat-form-field> -->
-
-
-
-
-          <mat-form-field class="example-chip-list" appearance="fill">
+          <mat-form-field >
             <mat-label>Tags</mat-label>
             <mat-chip-list #chipList aria-label="Tags selection">
               <mat-chip *ngFor="let tag of tags" [selectable]="selectable"
@@ -97,86 +86,9 @@
 
         </td>
       </tr>
-        <!-- <tr>
-          <td>
-            <div mat-dialog-actions class="form-group">
-              <input
-            class="file-input"
-            type="file"
-            name="file"
-            #fileInput #fileUpload hidden
-            (change)="onChange(fileInput.files[0])"
-          />
-          <button mat-raised-button color="primary"   (click)="fileUpload.click()">Upload</button>
-          <span class="file-cta">
-            <span class="file-icon">
-            </span>
-          </span>
-          <span class="file-name">
-            {{ fileName }}
-          </span>
-              </div> 
-              <div class="file-upload-error">
-                  {{fileUploadError}}
-              </div>
-               <div>
-                <figure class="image-is-128x128" >
-                  <img [src]="imageUrl" height="130" align="left"/>
-                </figure>
-              </div>
-          </td>
-        </tr> -->
-        <!-- <tr>
-        </tr>        -->
+     
       </table> 
       <div mat-dialog-actions align="end">
-        <!-- <button mat-raised-button (click)="onNoClick()" mat-dialog-close class="discard-btn">Cancel</button> -->
-        <button [disabled]="!notifFormGroup.valid" mat-raised-button color="primary" (click)="createNotif()" >Create</button>
+        <button [disabled]="!notifFormGroup.valid || tags.length < 1" mat-raised-button color="primary" (click)="createNotif()" >Create</button>
       </div>  
     </form>  
-<!-- 
-    <form [formGroup]="secondFormGroup">  
-      <mat-form-field appearance="outline" >
-        <mat-label >User Segment</mat-label>
-        <mat-select>
-          <mat-option value="one">Users</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline" required>
-        <mat-label>Target App</mat-label>
-        <mat-select>
-          <mat-option value="one">User Mishtu App</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </form>   -->
-
-    <!-- <mat-slide-toggle color="primary" [checked] = "scheduleChecked" [(ngModel)] = "scheduleChecked">Schedule Now </mat-slide-toggle>
-    <div *ngIf="!scheduleChecked; else elseBlock">
-      <mat-form-field appearance="outline" >
-        <mat-label>Date</mat-label>
-        <input matInput  [matDatepicker]="startpicker"
-        formControlName="sendDate" required [min]="minStart">
-        <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
-        <mat-datepicker #startpicker disabled="false"></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field appearance="outline" >
-        <mat-label>Time</mat-label>
-        <input matInput  [matDatepicker]="endpicker"
-        formControlName="sendTime" required >
-        <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
-        <mat-datepicker #endpicker disabled="false"></mat-datepicker>
-      </mat-form-field>
-      <div mat-dialog-actions align="end">
-        <button mat-raised-button (click)="onNoClick()" mat-dialog-close class="discard-btn" >Cancel</button>
-        <button mat-raised-button color="primary" type="button">Create</button>
-      </div>
-    </div>
-    <ng-template #elseBlock> 
-      <div mat-dialog-actions align="end">
-        <button mat-raised-button (click)="onNoClick()" mat-dialog-close class="discard-btn">Cancel</button>
-        <button mat-raised-button color="primary"  >Create</button>
-      </div> 
-    </ng-template>  -->
-<!-- </form> -->
-
-  
