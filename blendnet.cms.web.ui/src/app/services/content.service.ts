@@ -57,4 +57,10 @@ export class ContentService {
     return this.http.delete(url);
   }
 
+  cancelBroadcast(id) {
+    let url = this.baseUrl + "/" + id  + "/cancelbroadcast";
+    this.logger.log(`Cancelling the broadcast`);
+    return this.http.post(url, id);
+  }
+
 }

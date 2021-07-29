@@ -59,7 +59,11 @@ export class ProcessedComponent {
         ContentStatus.BROADCAST_NOT_INITIALIZED, 
         ContentStatus.BROADCAST_SUBMITTED,
         ContentStatus.BROADCAST_INPROGRESS,
-        ContentStatus.BROADCAST_FAILED
+        ContentStatus.BROADCAST_FAILED,
+        ContentStatus.BROADCAST_CANCEL_COMPLETE,
+        ContentStatus.BROADCAST_ORDER_CANCELLED,
+        ContentStatus.BROADCAST_ORDER_REJECTED,
+        ContentStatus.BROADCAST_ORDER_FAILED
       ]
     }
     this.contentService.getContentByCpIdAndFilters(processedContentFilters).subscribe(
@@ -109,7 +113,11 @@ export class ProcessedComponent {
   isContentNotBroadcastable(row) {
     return row.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
     || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_FAILED);
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_FAILED 
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_FAILED
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_REJECTED
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_CANCELLED);
   }
 
   isContentNotDeletable(row) {
@@ -171,15 +179,22 @@ openBroadcastConfirmDialog(content): void {
     },
     width: '60%'
   });
-  dialogRef.componentInstance.onSuccessfulSubmission.subscribe(res => {
-    this.toastr.success("Content/s submitted for broadcast for successfully");
-    this.getProcessedContent();
-    dialogRef.close();
-  })
+  dialogRef.componentInstance.onSuccessfulSubmission.subscribe(res => 
+    this.successEmit(res),
+    err => this.toastr.error(err));
 
   dialogRef.afterClosed().subscribe(result => {
     console.log('The dialog was closed');
   });
+}
+
+successEmit(res) {
+  if(res.body.length == 0) {
+    this.toastr.success("Content/s submitted successfully for broadcast");
+  } else {
+    this.toastr.warning(res.body[0]);
+  }
+  this.getProcessedContent();
 }
 
 openDeleteConfirmModal(row): void {

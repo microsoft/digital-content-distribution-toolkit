@@ -10,6 +10,7 @@ import { ContentService } from '../services/content.service';
 import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
+import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 
 export interface DialogData {
   message: string;
@@ -27,7 +28,7 @@ export class BroadcastComponent {
   dataSource: MatTableDataSource<Content>;
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";
-  processConfirmMessage: string = "Please press Continue to begin the transformation.";
+  cancelConfirmMessage: string = "Please press Continue to CANCEL the broadcast.";
   initialSelection = [];
   allowMultiSelect = true;
   selection = new SelectionModel<Content>(this.allowMultiSelect, this.initialSelection);
@@ -129,11 +130,7 @@ export class BroadcastComponent {
   
   isBroadcastCancellable(row) {
     return row.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
-    || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_FAILED
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_SUBMITTED
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_INPROGRESS
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE);
+    || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE);
   }
 
   applyFilter(event: Event) {
@@ -145,164 +142,51 @@ export class BroadcastComponent {
     }
   }
 
-  openBroadcastConfirmModal(row): void {
-    var rows = [];
-    if(row) {
-      rows.push(row);
-      this.openBroadcastConfirmDialog(rows);
-    } else {
-      rows = this.dataSource ? this.dataSource.data.filter(d => d.isSelected) : [];
-      if(rows.length <1) {
-        this.toastr.warning("Please select one or more content/s for broadcasting");
-      } else {
-        var notEligibleForBroadcast= rows.filter(d => 
-          (d.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
-            || d.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
-          || (d.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED
-          && d.contentBroadcastStatus!== ContentStatus.BROADCAST_FAILED)));
-          if(notEligibleForBroadcast.length > 0) {
-            this.toastr.warning("One or more selected content/s cannot be broadcast");
-          } else {
-              this.openBroadcastConfirmDialog(rows);          
-          }
-      }    
-    }
+  openBroadcastCancelModal(row) {
+    const dialogRef = this.dialog.open(CommonDialogComponent, {
+      data: {
+        heading: 'Confirm',
+        message: this.cancelConfirmMessage,
+        contents: row,
+        action: "PROCESS",
+        buttons: this.openSelectCPModalButtons()
+      },
+      maxHeight: '400px'
+    });
+  
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'proceed') {
+        this.onConfirmCancelBroadcast(row);
+      }
+    });
   }
 
-openBroadcastConfirmDialog(content): void {
-  // const dialogRef = this.dialog.open(BroadcastConfirmDialog, {
-  //   data: {
-  //     message: this.processConfirmMessage,
-  //     contents : content
-  //   },
-  //   width: '60%'
-  // });
-
-  // dialogRef.afterClosed().subscribe(result => {
-  //   console.log('The dialog was closed');
-  // });
-}
-
-openDeleteConfirmModal(): void {
-  // const dialogRef = this.dialog.open(BroadcastConfirmDialog, {
-  //   data: {
-  //     message: this.deleteConfirmMessage
-  //   },
-  //   width: '40%'
-  // });
-
-  // dialogRef.afterClosed().subscribe(result => {
-  //   console.log('The dialog was closed');
-  // });
-
-}
-
-viewURL(selectedContent) : void {
-//   const dialogRef = this.dialog.open(TokenDialog, {
-//     data: {content: selectedContent},
-//     width: '60%'
-//   });
-
-//   dialogRef.afterClosed().subscribe(result => {
-//     console.log('The dialog was closed');
-//   });
-// }
-}
-
-// @Component({
-//   selector: 'broadcast-token-dialog',
-//   templateUrl: 'broadcast.component.html',
-//   styleUrls: ['broadcast.component.css']
-// })
-// export class TokenDialog {
-
-//   constructor(
-//     public dialogRef: MatDialogRef<TokenDialog>,
-//     @Inject(MAT_DIALOG_DATA) public data: any,
-//     public contentService: ContentService,
-//     private toastr: ToastrService) {}
-//     contentToken;
-//     dashUrl: string;
-
-//   ngOnInit(): void {
-//     this.contentService.getContentToken(this.data.content.id).subscribe(
-//       res => {
-//         this.contentToken = res;
-//         this.dashUrl =  environment.dashUrlPrefix + this.data.content.dashUrl +
-//          + environment.widewineTokenPrefix + this.contentToken;
-//       },
-//       err => this.toastr.error(err));
-//     //this.data.content;
-//   }
-//   onCancelUpload(): void {
-//     this.dialogRef.close();
-//   }
-
-//   onConfirmUpload(): void {
-//     this.dialogRef.close();
-//   }
-
-// }
+  
+  onConfirmCancelBroadcast(content): void {
+  this.contentService.cancelBroadcast(content.id).subscribe(
+    res => {
+      this.toastr.success("Cancellation request for the broadcast submitted successfully");
+      this.getBroadcastContent();
+    },
+    err => this.toastr.error(err));
+  }
 
 
-// @Component({
-//   selector: 'broadcast-confirm-dialog',
-//   templateUrl: 'broadcast.component.html',
-//   styleUrls: ['broadcast.component.css']
-// })
-// export class BroadcastConfirmDialog {
-
-//   filters;
-//   initialSelection = [];
-//   allowMultiSelect = true;
-//   selection = new SelectionModel<Content>(this.allowMultiSelect, this.initialSelection);
-//   appliedFilters =[];
-//   range = new FormGroup({
-//     start: new FormControl(null, [Validators.required]),
-//     end: new FormControl(null, [Validators.required])
-//   });
-
-//   constructor(
-//     public dialogRef: MatDialogRef<BroadcastConfirmDialog>,
-//     @Inject(MAT_DIALOG_DATA) public data: any,
-//     public contentService: ContentService,
-//     private toastr: ToastrService) {
-//       this.filters = environment.filters;
-//     }
-
-//   onCancel(): void {
-//     this.dialogRef.close();
-//   }
-
-//   onConfirm(): void {
-//     if(this.appliedFilters.length < 1) {
-//       this.toastr.warning("Please select one or more filter/s");
-//     } else {
-//       var selectedIds = this.data.contents.map(content => 
-//         {return content.id});
-//       var broadcastRequest = {
-//         "contentIds": selectedIds,
-//         "filters": this.appliedFilters,
-//         "startDate": this.range.controls.start.value,
-//         "endDate": this.range.controls.end.value
-//       }
-//       this.contentService.boradcastContent(broadcastRequest).subscribe(
-//         res => this.toastr.success("Content/s submitted for broadcast sucessfully!!"),
-//         err => this.toastr.error(err));
-//       this.dialogRef.close();
-//     }
-    
-//   }
-
-//   toggleSelection(event, f) {
-//     if(event.checked){
-//       this.appliedFilters.push(f)
-//     }else{
-//       this.appliedFilters =  this.appliedFilters.filter(filter => {
-//         return filter !== f;
-//       });
-//     }
-//   }
-// }
+  openSelectCPModalButtons(): Array<any> {
+    return [{
+      label: 'Cancel',
+      type: 'basic',
+      value: 'cancel',
+      class: 'discard-btn'
+    },
+    {
+      label: 'Continue',
+      type: 'primary',
+      value: 'submit',
+      class: 'update-btn'
+    }
+    ]
+  }
 
 }
