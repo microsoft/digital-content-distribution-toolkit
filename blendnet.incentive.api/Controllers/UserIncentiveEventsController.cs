@@ -80,12 +80,14 @@ namespace blendnet.incentive.api.Controllers
 
             if (existingEvents == null || existingEvents.Count == 0) // no event exist
             {
-                // create event from request
+                // Create event in repository
+                var incentiveEvent = CreateUserIncentiveEvent(callerPhoneNumber, callerUserId, EventType.CONSUMER_INCOME_FIRST_SIGNIN, signinUserEventRequest.OriginalTime);
+                await _eventRepository.CreateIncentiveEvent(incentiveEvent);
+
+                // create integration event
                 var integrationEvent = new UserSigninIncentiveIntegrationEvent()
                 {
-                    UserId = callerUserId,
-                    UserPhone = callerPhoneNumber,
-                    OriginalTime = signinUserEventRequest.OriginalTime,
+                    IncentiveEvent = incentiveEvent,
                 };
 
                 await _eventBus.Publish(integrationEvent);
@@ -139,12 +141,14 @@ namespace blendnet.incentive.api.Controllers
 
             if (existingEvents == null || existingEvents.Count == 0) // no event exist
             {
-                // create event from request
+                // Create event in repository
+                var incentiveEvent = CreateUserIncentiveEvent(callerPhoneNumber, callerUserId, EventType.CONSUMER_INCOME_APP_ONCE_OPEN, appLaunchUserEventRequest.OriginalTime);
+                await _eventRepository.CreateIncentiveEvent(incentiveEvent);
+
+                // create integration event
                 UserAppOpenIncentiveIntegrationEvent integrationEvent = new UserAppOpenIncentiveIntegrationEvent()
                 {
-                    UserId = callerUserId,
-                    UserPhone = callerPhoneNumber,
-                    OriginalTime = appLaunchUserEventRequest.OriginalTime,
+                    IncentiveEvent = incentiveEvent,
                 };
 
                 await _eventBus.Publish(integrationEvent);
@@ -226,13 +230,28 @@ namespace blendnet.incentive.api.Controllers
                                     )).ToList();
             if (existingEvents.Count == 0)
             {
-                // no event exists already, so create a new one
+                // Create event in repository
+                var incentiveEvent = CreateUserIncentiveEvent(callerPhoneNumber, callerUserId, EventType.CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER, contentStreamedUserEventRequest.OriginalTime);
+                incentiveEvent.Properties.AddRange(new Property[]
+                {
+                    new Property()
+                    {
+                        Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.ContentId,
+                        Value = streamedContent.ContentId.ToString(),
+                    },
+                    new Property()
+                    {
+                        Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.ContentProviderId,
+                        Value = streamedContent.ContentProviderId.ToString(),
+                    },
+                });
+
+                await _eventRepository.CreateIncentiveEvent(incentiveEvent);
+
+                // create integration event
                 UserStreamContentIncentiveIntegrationEvent integrationEvent = new UserStreamContentIncentiveIntegrationEvent()
                 {
-                    UserId = callerUserId,
-                    UserPhone = callerPhoneNumber,
-                    OriginalTime = contentStreamedUserEventRequest.OriginalTime,
-                    Content = streamedContent,
+                    IncentiveEvent = incentiveEvent,
                 };
 
                 await _eventBus.Publish(integrationEvent);
@@ -279,12 +298,14 @@ namespace blendnet.incentive.api.Controllers
 
             if (existingEvents == null || existingEvents.Count == 0) // no event exist
             {
-                // create event from request
+                // Create event in repository
+                var incentiveEvent = CreateUserIncentiveEvent(callerPhoneNumber, callerUserId, EventType.CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED, onboardingRatingSubmittedUserEventRequest.OriginalTime);
+                await _eventRepository.CreateIncentiveEvent(incentiveEvent);
+
+                // create integration event
                 var integrationEvent = new UserOnbrdngRtngSbmttdIncentiveIntegrationEvent()
                 {
-                    UserId = callerUserId,
-                    UserPhone = callerPhoneNumber,
-                    OriginalTime = onboardingRatingSubmittedUserEventRequest.OriginalTime,
+                    IncentiveEvent = incentiveEvent,
                 };
 
                 await _eventBus.Publish(integrationEvent);
@@ -302,6 +323,48 @@ namespace blendnet.incentive.api.Controllers
         #endregion
 
         #region private methods
+
+        /// <summary>
+        /// Creates basic incentive event for User Events
+        /// </summary>
+        /// <param name="userPhoneNumber">Phone number of the user</param>
+        /// <param name="userId">User Id of the user</param>
+        /// <param name="eventType">Event Type</param>
+        /// <param name="eventOriginalTime">Event's original time</param>
+        /// <returns></returns>
+        private IncentiveEvent CreateUserIncentiveEvent(string userPhoneNumber, Guid userId, EventType eventType, DateTime eventOriginalTime)
+        {
+            var incentiveEvent = new IncentiveEvent()
+            {
+                EventCreatedFor = userPhoneNumber,
+                EventType = eventType,
+                Audience = new Audience()
+                {
+                    AudienceType = AudienceType.CONSUMER,
+                    SubTypeName = ApplicationConstants.Common.CONSUMER,
+                },
+                CreatedByUserId = userId,
+                CreatedDate = DateTime.UtcNow,
+                EventCategoryType = EventCategoryType.INCOME,
+                EventOccuranceTime = eventOriginalTime,
+                EventSubType = null,
+                EventId = Guid.NewGuid(),
+                CalculatedValue = 0, // will be calculated later
+                OriginalValue = 0,
+                ModifiedByByUserId = null,
+                ModifiedDate = null,
+                Properties = new List<Property>()
+                {
+                    new Property()
+                    {
+                        Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.UserId,
+                        Value = userId.ToString(),
+                    }
+                },
+            };
+
+            return incentiveEvent;
+        }
 
         #endregion
     }

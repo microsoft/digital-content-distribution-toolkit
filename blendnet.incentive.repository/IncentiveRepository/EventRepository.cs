@@ -42,6 +42,24 @@ namespace blendnet.incentive.repository.IncentiveRepository
         }
 
         /// <summary>
+        /// Updates the incentive event in container
+        /// </summary>
+        /// <param name="incentiveEvent"></param>
+        /// <returns></returns>
+        async Task<int> IEventRepository.UpdateIncentiveEvent(IncentiveEvent incentiveEvent)
+        {
+            try
+            {
+                var response = await this._container.ReplaceItemAsync<IncentiveEvent>(incentiveEvent, incentiveEvent.EventId.Value.ToString(), new PartitionKey(incentiveEvent.EventCreatedFor));
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
+        }
+
+        /// <summary>
         /// Retrieves the event based on criteria.
         /// Event Generator id and Audience Type is mandatory. Rest all are optional
         /// </summary>

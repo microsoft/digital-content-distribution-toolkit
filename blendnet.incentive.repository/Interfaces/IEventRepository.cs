@@ -15,6 +15,13 @@ namespace blendnet.incentive.repository.Interfaces
         /// <param name="incentiveEvent"></param>
         /// <returns></returns>
         public Task<Guid> CreateIncentiveEvent(IncentiveEvent incentiveEvent);
+        
+        /// <summary>
+        /// Updates the incentive event in container
+        /// </summary>
+        /// <param name="incentiveEvent"></param>
+        /// <returns></returns>
+        public Task<int> UpdateIncentiveEvent(IncentiveEvent incentiveEvent);
 
         /// <summary>
         /// Retreives events for given audience in selected date range

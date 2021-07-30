@@ -32,11 +32,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
         {
             const string operationName = "UserOnboardingRatingSubmittedIncentiveIntegrationEventHandler.Handle";
 
-            IncentiveEvent incentiveEvent = IncentiveUtil.CreateUserIncentiveEvent(integrationEvent.UserPhone, 
-                                                                                            integrationEvent.UserId, 
-                                                                                            EventType.CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED, 
-                                                                                            integrationEvent.OriginalTime);
-            await _userIntegrationEventHandler.Handle(incentiveEvent, operationName);
+            await _userIntegrationEventHandler.Handle(integrationEvent.IncentiveEvent, operationName);
         }
     }
 }

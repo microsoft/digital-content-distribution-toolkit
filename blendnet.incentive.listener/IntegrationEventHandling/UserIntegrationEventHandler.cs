@@ -49,20 +49,35 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             {
                 using (_telemetryClient.StartOperation<RequestTelemetry>(operationName))
                 {
-                    _logger.LogInformation($"Adding {incentiveEvent.EventType} event for user {userId}");
+                    _logger.LogInformation($"Updating {incentiveEvent.EventType} event for user {userId}");
 
                     var activePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
 
+                    var oldCalculatedValue = incentiveEvent.CalculatedValue;
                     CalculateValue(incentiveEvent, activePlan);
+                    var newCalculatedValue = incentiveEvent.CalculatedValue;
 
-                    await _eventRepository.CreateIncentiveEvent(incentiveEvent);
-                    
-                    _logger.LogInformation($"Done Adding {incentiveEvent.EventType} event for user {userId}");
+                    // skip update if calculated value is not changed
+                    if (oldCalculatedValue == newCalculatedValue)
+                    {
+                        _logger.LogInformation($"Skipping {incentiveEvent.EventType} event for user {userId} as value not changed");
+                    }
+
+                    int response = await _eventRepository.UpdateIncentiveEvent(incentiveEvent);
+                    if (response == (int)System.Net.HttpStatusCode.OK)
+                    {
+                        _logger.LogInformation($"Done Updating {incentiveEvent.EventType} event for user {userId}");
+                    }
+                    else
+                    {
+                        _logger.LogError($"Failed Updating {incentiveEvent.EventType} event for user {userId}, Response Code : {response}");
+                    }
                 }
 
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
-                _logger.LogError(e, $"{operationName} failed for user {userId}");
+                _logger.LogError(e, $"{operationName} failed for user {userId} for Event {incentiveEvent.EventType}");
             }
         }
 

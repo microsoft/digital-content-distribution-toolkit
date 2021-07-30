@@ -52,47 +52,5 @@ namespace blendnet.incentive.listener.Util
             incentiveEvent.EventCategoryType = eventCategoryType;
             return incentiveEvent;
         }
-
-        /// <summary>
-        /// Creates basic incentive event for User Events
-        /// </summary>
-        /// <param name="userPhoneNumber">Phone number of the user</param>
-        /// <param name="userId">User Id of the user</param>
-        /// <param name="eventType">Event Type</param>
-        /// <param name="eventOriginalTime">Event's original time</param>
-        /// <returns></returns>
-        public static IncentiveEvent CreateUserIncentiveEvent(string userPhoneNumber, Guid userId, EventType eventType, DateTime eventOriginalTime)
-        {
-            var incentiveEvent = new IncentiveEvent()
-            {
-                EventCreatedFor = userPhoneNumber,
-                EventType = eventType,
-                Audience = new Audience()
-                {
-                    AudienceType = AudienceType.CONSUMER,
-                    SubTypeName = ApplicationConstants.Common.CONSUMER,
-                },
-                CreatedByUserId = userId,
-                CreatedDate = DateTime.UtcNow,
-                EventCategoryType = EventCategoryType.INCOME,
-                EventOccuranceTime = eventOriginalTime,
-                EventSubType = null,
-                EventId = Guid.NewGuid(),
-                CalculatedValue = 0, // will be calculated later
-                OriginalValue = 0,
-                ModifiedByByUserId = null,
-                ModifiedDate = null,
-                Properties = new List<Property>() 
-                {
-                    new Property()
-                    {
-                        Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.UserId,
-                        Value = userId.ToString(),
-                    }
-                },
-            };
-
-            return incentiveEvent;
-        }
     }
 }

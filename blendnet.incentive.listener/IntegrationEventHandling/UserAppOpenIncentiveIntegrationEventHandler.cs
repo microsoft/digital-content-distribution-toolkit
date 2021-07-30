@@ -35,11 +35,8 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
         public async Task Handle(UserAppOpenIncentiveIntegrationEvent integrationEvent)
         {
             const string operationName = "UserAppOpenIncentiveIntegrationEventHandler.Handle";
-            IncentiveEvent incentiveEvent = IncentiveUtil.CreateUserIncentiveEvent(integrationEvent.UserPhone, 
-                                                                                        integrationEvent.UserId, 
-                                                                                        EventType.CONSUMER_INCOME_APP_ONCE_OPEN, 
-                                                                                        integrationEvent.OriginalTime);
-            await _userIntegrationEventHandler.Handle(incentiveEvent, operationName);
+
+            await _userIntegrationEventHandler.Handle(integrationEvent.IncentiveEvent, operationName);
         }
     }
 }

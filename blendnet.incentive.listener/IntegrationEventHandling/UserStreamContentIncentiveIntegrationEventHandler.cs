@@ -32,22 +32,8 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
         public async Task Handle(UserStreamContentIncentiveIntegrationEvent integrationEvent)
         {
             const string operationName = "UserStreamContentIncentiveIntegrationEventHandler.Handle";
-            IncentiveEvent incentiveEvent = IncentiveUtil.CreateUserIncentiveEvent(integrationEvent.UserPhone, integrationEvent.UserId, EventType.CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER, integrationEvent.OriginalTime);
-            incentiveEvent.Properties.AddRange(new Property[]
-            {
-                new Property()
-                {
-                    Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.ContentId,
-                    Value = integrationEvent.Content.ContentId.ToString(),
-                },
-                new Property()
-                {
-                    Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.ContentProviderId,
-                    Value = integrationEvent.Content.ContentProviderId.ToString(),
-                },
-            });
 
-            await _userIntegrationEventHandler.Handle(incentiveEvent, operationName);
+            await _userIntegrationEventHandler.Handle(integrationEvent.IncentiveEvent, operationName);
         }
     }
 }
