@@ -23,7 +23,7 @@ td.mat-footer-cell:last-of-type {
 
   .cms-table-container {
     position: relative;
-    max-height: 400px;
+    max-height: 550px;
     overflow: auto;
   }
   .btn-sec {

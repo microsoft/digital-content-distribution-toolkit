@@ -6,7 +6,7 @@
   }
   .cms-table-container {
     position: relative;
-    max-height: 350px;
+    max-height: 550px;
     overflow: auto;
   }
   table {
