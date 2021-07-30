@@ -436,7 +436,8 @@ namespace blendnet.cms.api.Controllers
                          content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderCancelled ||
                          content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderFailed ||
                          content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderRejected ||
-                         content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastFailed))
+                         content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastFailed ||
+                         content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastCancelComplete))
                     {
                         content.ContentBroadcastStatus = ContentBroadcastStatus.BroadcastSubmitted;
 
@@ -472,7 +473,7 @@ namespace blendnet.cms.api.Controllers
                         errorList.Add(String.Format(_stringLocalizer["CMS_ERR_0009"], content.Id.Value, ContentUploadStatus.UploadComplete,
                             ContentTransformStatus.TransformComplete, ContentBroadcastStatus.BroadcastNotInitialized, ContentBroadcastStatus.BroadcastFailed,
                             ContentBroadcastStatus.BroadcastOrderCancelled, ContentBroadcastStatus.BroadcastOrderFailed,
-                            ContentBroadcastStatus.BroadcastOrderRejected));
+                            ContentBroadcastStatus.BroadcastOrderRejected, ContentBroadcastStatus.BroadcastCancelComplete));
                     }
                 }
             }

@@ -111,6 +111,7 @@ namespace blendnet.common.infrastructure.Authentication
                                                                 ValidatePartnerAccessTokenResponse response,
                                                                 AuthenticationHeaderValue headerValue)
         {
+            _authLogger.LogInformation($"Performing base additional validation for : KID : {response.UID}");
 
             AdditionalValidationResponse additionalValidationResponse = new AdditionalValidationResponse() { ValidationPassed = true };
 

@@ -62,7 +62,9 @@ namespace blendnet.common.infrastructure.Authentication
                 
                 return additionalValidationResponse;
             }
-            
+
+            _authLogger.LogInformation($"Performing additional validation for : KID : {response.UID} UID : {user.UserId} ");
+
             //Add the blendnet user id
             Claim claim = new Claim(ApplicationConstants.BlendNetClaims.UId, user.UserId.ToString());
 
