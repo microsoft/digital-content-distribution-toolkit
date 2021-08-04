@@ -713,16 +713,19 @@ namespace blendnet.incentive.api.Controllers
             } 
             else
             {
-                if (formula.FirstOperand == null)
+                if (formula.FormulaType == FormulaType.PLUS || formula.FormulaType == FormulaType.PERCENTAGE || formula.FormulaType == FormulaType.MULTIPLY)
                 {
-                    errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0041"], formulaType));
-                    return errorInfo;
-                }
+                    if (formula.FirstOperand == null)
+                    {
+                        errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0041"], formulaType));
+                        return errorInfo;
+                    }
 
-                if (formula.FirstOperand.Value <= 0)
-                {
-                    errorInfo.Add(_stringLocalizer["INC_ERR_0042"]);
-                    return errorInfo;
+                    if (formula.FirstOperand.Value <= 0)
+                    {
+                        errorInfo.Add(_stringLocalizer["INC_ERR_0042"]);
+                        return errorInfo;
+                    }
                 }
             }
 
