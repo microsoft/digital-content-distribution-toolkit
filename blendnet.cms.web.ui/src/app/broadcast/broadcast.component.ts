@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, ViewChild} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Inject, ViewChild} from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { ContentTokenDialog } from '../processed/processed.component';
 
 export interface DialogData {
   message: string;
@@ -24,7 +25,7 @@ export interface DialogData {
   templateUrl: 'broadcast.component.html',
 })
 export class BroadcastComponent {
-  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'manageDevices', 'isBroadcastCancellable', 'view'];
+  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'manageDevices', 'isBroadcastCancellable', 'view', 'url', 'broadcastDetails'];
   dataSource: MatTableDataSource<Content>;
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";
@@ -100,6 +101,30 @@ export class BroadcastComponent {
     });
   
   }
+
+  
+viewURL(selectedContent) : void {
+  const dialogRef = this.dialog.open(ContentTokenDialog, {
+    data: {content: selectedContent},
+    width: '60%'
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+  });
+}
+
+getBroadcastDetails(selectedContent) {
+  const dialogRef = this.dialog.open(BroadcastDetailsDialog, {
+    data: {content: selectedContent},
+    width: '60%'
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+  });
+}
+  
 
   toggleSelection(event, row) {
     if(event.checked){
@@ -188,5 +213,38 @@ export class BroadcastComponent {
     }
     ]
   }
+
+}
+
+@Component({
+  selector: 'broadcast-details-dialog',
+  templateUrl: 'broadcast-details-dialog.html',
+  styleUrls: ['broadcast.component.css']
+})
+
+export class BroadcastDetailsDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<ContentTokenDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public contentService: ContentService,
+    private toastr: ToastrService) {}
+    startDate;
+    endDate;
+    filters;
+
+  ngOnInit(): void {
+    
+    // this.contentService.getBroadcastDetails(this.data.content.id).subscribe(
+    //   res => {
+    //     this.startDate = res;
+    //     this.endDate = res;
+    //     this.filters = res;
+    //   },
+    //   err => this.toastr.error(err));
+  }
+  onClose(): void {
+    this.dialogRef.close();
+    }
 
 }

@@ -21,7 +21,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpErrorInterceptor } from './interceptor/http-error.interceptor';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
 import { SpinnerInterceptor } from './interceptor/spinner.interceptor';
-import { BroadcastComponent } from './broadcast/broadcast.component';
+import { BroadcastComponent, BroadcastDetailsDialog } from './broadcast/broadcast.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { HomeComponent } from './home/home.component';
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
@@ -69,7 +69,8 @@ import { RetailerPlanDetailsDialogComponent } from './retailer-plan-details-dial
     AddEventDialog,
     NotificationsComponent,
     NotificationsDialog,
-    RetailerPlanDetailsDialogComponent
+    RetailerPlanDetailsDialogComponent,
+    BroadcastDetailsDialog
   ],
   imports: [
     HttpClientModule,
