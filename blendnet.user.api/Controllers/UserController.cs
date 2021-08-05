@@ -78,12 +78,13 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="User"></param>
         /// <returns>User Object</returns>
-        [HttpGet("user/{phoneNumber}", Name = nameof(GetUserByPhoneNumber))]
+        [HttpPost("user", Name = nameof(GetUserByPhoneNumber))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<User>> GetUserByPhoneNumber(string phoneNumber)
+        public async Task<ActionResult<User>> GetUserByPhoneNumber(UserByPhoneRequest request)
         {
-            User user = await _userRepository.GetUserByPhoneNumber(phoneNumber);
+            User user = await _userRepository.GetUserByPhoneNumber(request.PhoneNumber);
+
             if (user == null)
             {
                 return NotFound();
@@ -103,8 +104,9 @@ namespace blendnet.user.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<User>> GetUser()
         {
-            List<string> errorInfo = new List<string>();
-            return await GetUserByPhoneNumber(this.User.Identity.Name);
+            UserByPhoneRequest userByPhoneRequest = new UserByPhoneRequest() { PhoneNumber = this.User.Identity.Name };
+
+            return await GetUserByPhoneNumber(userByPhoneRequest);
         }
 
         /// <summary>

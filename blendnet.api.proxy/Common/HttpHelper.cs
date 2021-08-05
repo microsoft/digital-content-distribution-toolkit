@@ -54,9 +54,16 @@ namespace blendnet.api.proxy.Common
                                                 string url, 
                                                 I inputrequest, 
                                                 bool parseOutput = true, 
-                                                JsonSerializerOptions jsonSerializerOptions = null)
+                                                JsonSerializerOptions jsonSerializerOptions = null,
+                                                string accessToken = "")
         {
             HttpResponseMessage httpResponseMessage = null;
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                httpClient.DefaultRequestHeaders.Authorization = 
+                       new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
+            }
 
             if (inputrequest != null)
             {

@@ -37,7 +37,9 @@ namespace blendnet.api.proxy
         /// <returns></returns>
         public async Task<User> GetUserByPhoneNumber(string phoneNumber)
         {
-            string url = $"User/user/{phoneNumber}";
+            UserByPhoneRequest request = new UserByPhoneRequest() { PhoneNumber = phoneNumber };
+
+            string url = $"User/user";
 
             string accessToken = await base.GetServiceAccessToken();
 
@@ -45,7 +47,7 @@ namespace blendnet.api.proxy
 
             try
             {
-                user = await _userHttpClient.Get<User>(url, accessToken);
+                user = await _userHttpClient.Post<UserByPhoneRequest,User>(url,request, true,null,accessToken);
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {}
