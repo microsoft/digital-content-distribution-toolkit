@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace blendnet.user.api.Models
 {
     /// <summary>
-    /// Create Retailer event for Application Insights
+    /// Link Retailer event for Application Insights
     /// </summary>
-    public class CreateRetailerAIEvent : BaseCreateRetailerAIEvent
+    public class LinkRetailerAIEvent : BaseCreateRetailerAIEvent
     {
     }
 }

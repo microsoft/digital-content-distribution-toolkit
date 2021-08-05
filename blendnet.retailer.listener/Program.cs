@@ -140,7 +140,7 @@ namespace blendnet.retailer.listener
             services.AddSingleton<IEventBus, EventServiceBus>();
 
             services.AddTransient<RetailerCreatedIntegrationEventHandler>();
-
+            services.AddTransient<LinkRetailerIntegrationEventHandler>();
         }
 
         /// <summary>

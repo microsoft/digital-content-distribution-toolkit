@@ -132,4 +132,13 @@
   <data name="RMS_ERR_0005" xml:space="preserve">
     <value>RMS_ERR_0005-Invalid location co-ordinates</value>
   </data>
+  <data name="RMS_ERR_0006" xml:space="preserve">
+    <value>RMS_ERR_0006-Retailer Already Exists ID : {0} for Partner Code : {1}</value>
+  </data>
+  <data name="RMS_ERR_0007" xml:space="preserve">
+    <value>RMS_ERR_0007-Retailer Provider not found for Partner Code : {0}</value>
+  </data>
+  <data name="RMS_ERR_0008" xml:space="preserve">
+    <value>RMS_ERR_0008-Map Location is not valid</value>
+  </data>
 </root>

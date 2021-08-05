@@ -1,7 +1,11 @@
-﻿using blendnet.common.dto;
+﻿using blendnet.api.proxy.Retailer;
+using blendnet.common.dto;
+using blendnet.common.dto.Events;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
+using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.retailer.api.Models;
 using blendnet.retailer.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -19,15 +23,15 @@ namespace blendnet.retailer.api.Controllers
     public class RetailerController : ControllerBase
     {
         private readonly ILogger _logger;
+        private readonly IRetailerRepository _retailerRepository;
+        private readonly IStringLocalizer<SharedResource> _stringLocalizer;
+        private readonly IRetailerProviderRepository _retailerProviderRepository;
 
-        private IRetailerRepository _retailerRepository;
-
-        IStringLocalizer<SharedResource> _stringLocalizer;
-
-        public RetailerController(ILogger<RetailerController> logger, IRetailerRepository retailerRepository, IStringLocalizer<SharedResource> stringLocalizer)
+        public RetailerController(ILogger<RetailerController> logger, IRetailerRepository retailerRepository, IStringLocalizer<SharedResource> stringLocalizer, IRetailerProviderRepository retailerProviderRepository)
         {
             this._logger = logger;
             this._retailerRepository = retailerRepository;
+            this._retailerProviderRepository = retailerProviderRepository;
             _stringLocalizer = stringLocalizer;
         }
 
@@ -37,7 +41,8 @@ namespace blendnet.retailer.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<RetailerDto>> GetRetailerByPartnerId(string retailerPartnerId /* composed */)
         {
-            RetailerDto retailer = await this._retailerRepository.GetRetailerByPartnerId(retailerPartnerId);
+            bool isSuperAdmin = UserClaimData.isSuperAdmin(this.User.Claims);
+            RetailerDto retailer = await this._retailerRepository.GetRetailerByPartnerId(retailerPartnerId, shouldGetInactiveRetailer: isSuperAdmin);
             return retailer != null ? Ok(retailer) : NotFound();
         }
 
@@ -118,6 +123,75 @@ namespace blendnet.retailer.api.Controllers
             {
                 return NotFound();
             }
+        }
+
+        /// <summary>
+        /// API to create unlinked retailer
+        /// </summary>
+        /// <param name="partnerCode">Partner Code</param>
+        /// <param name="retailerRequest">Request</param>
+        /// <returns></returns>
+        [HttpPost("{partnerCode}/unlinkedRetailer", Name = nameof(CreateUnlinkedRetailer))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult> CreateUnlinkedRetailer(string partnerCode, CreateUnlinkedRetailerRequest retailerRequest)
+        {
+            var callerUserId = UserClaimData.GetUserId(this.User.Claims);
+
+            string requestedPartnerId = RetailerDto.CreatePartnerId(partnerCode, retailerRequest.PartnerProvidedId);
+            
+            var existingRetailer = await _retailerRepository.GetRetailerByPartnerId(requestedPartnerId, shouldGetInactiveRetailer: true);
+            if (existingRetailer != null) 
+            {
+                // retailer already exists, error out
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0006"], retailerRequest.PartnerProvidedId, partnerCode),
+                });
+            }
+
+            var retailerProvider = await _retailerProviderRepository.GetRetailerProviderByPartnerCode(partnerCode);
+            if (retailerProvider == null)
+            {
+                // retailer provider not found, error out
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0007"], partnerCode),
+                });
+            }
+
+            // map validation
+            if (!retailerRequest.Address.MapLocation.isValid())
+            {
+                // retailer provider not found, error out
+                return BadRequest(new string[] {
+                    _stringLocalizer["RMS_ERR_0008"],
+                });
+            }
+
+            var now = DateTime.UtcNow;
+            // Create the retailer
+            RetailerDto retailerToCreate = new RetailerDto()
+            {
+                AdditionalAttibutes = retailerRequest.AdditionalAttibutes,
+                Address = retailerRequest.Address,
+                CreatedByUserId = callerUserId,
+                CreatedDate = now,
+                EndDate = DateTime.MinValue,
+                Name = retailerRequest.Name,
+                PartnerCode = retailerProvider.PartnerCode,
+                PartnerProvidedId = retailerRequest.PartnerProvidedId,
+                PhoneNumber = null,
+                Services = new List<ServiceType>() { ServiceType.Media },
+                ModifiedByByUserId = null,
+                ModifiedDate = null,
+                RetailerId = Guid.NewGuid(),
+                StartDate = DateTime.MinValue,
+                UserId = Guid.Empty,
+                ReferralCode = null,
+            };
+
+            await _retailerRepository.CreateRetailer(retailerToCreate);
+
+            return Ok(retailerToCreate.RetailerId);
         }
 
         #endregion

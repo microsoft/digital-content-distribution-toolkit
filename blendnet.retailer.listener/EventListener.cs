@@ -40,6 +40,7 @@ namespace blendnet.retailer.listener
             _logger.LogInformation("Starting Eventlistner of blendnet.retailer.listener");
 
             _eventBus.Subscribe<RetailerCreatedIntegrationEvent, RetailerCreatedIntegrationEventHandler>();
+            _eventBus.Subscribe<LinkRetailerIntegrationEvent, LinkRetailerIntegrationEventHandler>();
 
             await _eventBus.StartProcessing();
 

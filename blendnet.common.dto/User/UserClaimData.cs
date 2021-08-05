@@ -37,5 +37,18 @@ namespace blendnet.common.dto.User
 
             return userClaim.First().Value;
         }
+
+        /// <summary>
+        /// Tells whether the Claims contains SuperAdmin role
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <returns></returns>
+        public static bool isSuperAdmin(IEnumerable<Claim> claims)
+        {
+            int superAdminClaimCount = claims
+                                        .Where(x => x.Type == ClaimTypes.Role && x.Value == ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)
+                                        .Count();
+            return superAdminClaimCount != 0;
+        }
     }
 }
