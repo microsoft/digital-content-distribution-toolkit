@@ -104,6 +104,30 @@ namespace blendnet.cms.api.Controllers
 
         }
 
+
+        /// <summary>
+        /// Get Content 
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpGet("{contentId:guid}/command/{commandId:guid}", Name = nameof(GetCommand))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<ContentCommand>> GetCommand(Guid contentId, Guid commandId)
+        {
+            var contentCommand = await _contentRepository.GetContentCommandById(commandId,contentId);
+
+            if (contentCommand != default(ContentCommand))
+            {
+                return Ok(contentCommand);
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
         /// <summary>
         /// Upload Contents
         /// </summary>
@@ -540,6 +564,9 @@ namespace blendnet.cms.api.Controllers
 
             return Ok();
         }
+
+
+
 
         #endregion
 
