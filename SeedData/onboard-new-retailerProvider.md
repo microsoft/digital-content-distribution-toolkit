@@ -35,10 +35,12 @@
 
 | Container | file path | Contents |
 | - | - | - |
-| User |  | SuperAdmin, TSTP |
+| User | [User-stage.json](User-stage.json) | SuperAdmin, TSTP, Novopay |
+| RetailerProvider | [RetailerProvider-stage.json](RetailerProvider-stage.json) | TSTP, Novopay |
 
 ### Prod
 
 | Container | file path | Contents |
 | - | - | - |
 | User | | SuperAdmin |
+| RetailerProvider | |  |

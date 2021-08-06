@@ -1,0 +1,24 @@
+[
+    {
+        "id": "TSTP",
+        "name": "TSTP",
+        "partnerCode": "TSTP",
+        "userId": "a3e5f336-fe53-4c16-a78e-b8f18d73967b",
+        "startDate": "2021-07-26T08:04:16.345078Z",
+        "endDate": "9999-12-31T23:59:59.9999999",
+        "type": "RetailerProvider",
+        "createdByUserId": "89000eb5-f18b-40e6-a5b8-756ab42ba870",
+        "createdDate": "2021-07-26T08:04:16.345078Z"
+    },
+    {
+        "id": "NVPY",
+        "name": "Novopay",
+        "partnerCode": "NVPY",
+        "userId": "b50b71a7-be4a-4728-95cd-8087d1ead18f",
+        "startDate": "2021-07-26T08:04:16.345078Z",
+        "endDate": "9999-12-31T23:59:59.9999999",
+        "type": "RetailerProvider",
+        "createdByUserId": "89000eb5-f18b-40e6-a5b8-756ab42ba870",
+        "createdDate": "2021-07-26T08:04:16.345078Z"
+    }
+]
