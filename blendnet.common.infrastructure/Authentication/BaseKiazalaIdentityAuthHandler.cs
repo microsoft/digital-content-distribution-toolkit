@@ -1,7 +1,7 @@
 ﻿using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
+using blendnet.common.dto.Extensions;
 using blendnet.common.dto.Identity;
-using blendnet.common.dto.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -74,7 +74,7 @@ namespace blendnet.common.infrastructure.Authentication
             //If the response is null
             if (response is null)
             {
-                _authLogger.LogInformation($"Kaizala auth returned null for : {headerValue.Parameter}");
+                _authLogger.LogInformation($"Kaizala auth returned null for : {headerValue.Parameter.Mask()}");
 
                 return AuthenticateResult.Fail("Unauthorized");
             }
@@ -83,7 +83,7 @@ namespace blendnet.common.infrastructure.Authentication
 
             if (!additionalResponse.ValidationPassed)
             {
-                _authLogger.LogInformation($"Additional authentication validation failed for : {headerValue.Parameter}");
+                _authLogger.LogInformation($"Additional authentication validation failed for : {headerValue.Parameter.Mask()}");
 
                 return AuthenticateResult.Fail("Unauthorized");
             }

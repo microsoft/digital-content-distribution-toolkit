@@ -65,19 +65,15 @@ namespace blendnet.api.proxy.Common
                        new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
             }
 
+            JsonSerializerOptions serializerOptions = _jsonSerializerOptions;
+
+            if (jsonSerializerOptions != null)
+            {
+                serializerOptions = jsonSerializerOptions;
+            }
+
             if (inputrequest != null)
             {
-                JsonSerializerOptions serializerOptions = null;
-
-                if(jsonSerializerOptions == null )
-                {
-                    serializerOptions = _jsonSerializerOptions;
-                }
-                else
-                {
-                    serializerOptions = jsonSerializerOptions;
-                }
-
                 var postRequest = new StringContent(
                                            JsonSerializer.Serialize(inputrequest, serializerOptions),
                                            Encoding.UTF8,
@@ -96,7 +92,7 @@ namespace blendnet.api.proxy.Common
 
             if (parseOutput)
             {
-                return JsonSerializer.Deserialize<O>(successResponse);
+                return JsonSerializer.Deserialize<O>(successResponse, serializerOptions);
             }
             else
             {

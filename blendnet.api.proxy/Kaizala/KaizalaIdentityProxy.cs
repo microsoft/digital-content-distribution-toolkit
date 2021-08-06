@@ -1,10 +1,8 @@
 ﻿using blendnet.common.dto;
 using blendnet.common.dto.Identity;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,8 +12,8 @@ using System.Security.Claims;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Text.Encodings.Web;
-using System.Text.Unicode;
 using Microsoft.Extensions.Caching.Distributed;
+using blendnet.common.dto.Extensions;
 
 namespace blendnet.api.proxy.KaizalaIdentity
 {
@@ -91,14 +89,14 @@ namespace blendnet.api.proxy.KaizalaIdentity
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                _logger.LogInformation($"401 from ValidatePartnerAccessToken - {accessToken}.  Exception {ex} ");
+                _logger.LogInformation($"401 from ValidatePartnerAccessToken - {accessToken.Mask()}.  Exception {ex} ");
 
                 validationPassed = false;
             }
 
             stopwatch.Stop();
 
-            _logger.LogInformation($" Time taken to validate ({validationPassed}) {accessToken} is {stopwatch.ElapsedMilliseconds} (ms)");
+            _logger.LogInformation($" Time taken to validate ({validationPassed}) {accessToken.Mask()} is {stopwatch.ElapsedMilliseconds} (ms)");
 
             return successResponse;
         }
@@ -138,7 +136,7 @@ namespace blendnet.api.proxy.KaizalaIdentity
             }
             catch (Exception ex) 
             {
-                _logger.LogInformation($"Bad Request from AddPartnerUsersRole for {accessToken}. Exception {ex}");
+                _logger.LogInformation($"Bad Request from AddPartnerUsersRole for {accessToken.Mask()}. Exception {ex}");
 
                 throw;
             }
@@ -185,7 +183,7 @@ namespace blendnet.api.proxy.KaizalaIdentity
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Bad Request from DeletePartnerUsersRole for {accessToken}. Exception {ex}");
+                _logger.LogInformation($"Bad Request from DeletePartnerUsersRole for {accessToken.Mask()}. Exception {ex}");
 
                 throw;
             }
