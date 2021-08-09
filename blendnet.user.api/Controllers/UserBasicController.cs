@@ -194,7 +194,7 @@ namespace blendnet.user.api.Controllers
                 IdentityId = identityId,
             };
 
-            await _userRepository.CreateUser(existingUser);
+            await _userRepository.CreateUser(user);
 
             // Track the user created event to Application Insights
             CreateUserAIEvent createUserAIEvent = new CreateUserAIEvent()
