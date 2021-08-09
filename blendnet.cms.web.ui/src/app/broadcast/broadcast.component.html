@@ -119,9 +119,9 @@
                     Broadcast Details
                 </th>
                 <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button  (click)="getBroadcastDetails(row)">
+                    <button mat-icon-button  (click)="getBroadcastDetails(row)" [disabled]="showBroadcastDetails(row)">
                         <mat-icon mat-list-icon 
-                        matTooltip="Broadcast Details">info</mat-icon> 
+                        matTooltip="Broadcast Details">info</mat-icon>  
                     </button>
                 </td>
             </ng-container>

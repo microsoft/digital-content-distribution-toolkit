@@ -1,15 +1,15 @@
 <h1>Broadcast Details</h1>
 <mat-form-field>
 <input matInput placeholder="startDate" 
-        required disabled >
+        required disabled [(ngModel)]="startDate">
 </mat-form-field>
 <mat-form-field>
 <input matInput placeholder="endDate" 
-    required disabled >
+    required disabled [(ngModel)]="endDate" >
 </mat-form-field>
 <mat-form-field>
 <input matInput placeholder="Filters" 
-        required disabled >
+        required disabled [(ngModel)]="filters">
 </mat-form-field>
 
 <div mat-dialog-actio>

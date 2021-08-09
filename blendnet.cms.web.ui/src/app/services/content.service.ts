@@ -63,9 +63,9 @@ export class ContentService {
     return this.http.post(url, id);
   }
 
-  getBroadcastDetails(id) {
-    let url = this.baseUrl + "/broadcastDetails/" + id ;
-    this.logger.log(`Getting the information for content broadcast `);
+  getContentDetails(contentId, commandId) {
+    let url = this.baseUrl + '/' +contentId  + '/command/' + commandId;
+    this.logger.log(`Getting the details for the content `);
     return this.http.get(url);
   }
 

@@ -158,6 +158,12 @@ getBroadcastDetails(selectedContent) {
     || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE);
   }
 
+  showBroadcastDetails(row) {
+    return row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE 
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_FAILED && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_INPROGRESS
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_SUBMITTED;
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -235,13 +241,14 @@ export class BroadcastDetailsDialog {
 
   ngOnInit(): void {
     
-    // this.contentService.getBroadcastDetails(this.data.content.id).subscribe(
-    //   res => {
-    //     this.startDate = res;
-    //     this.endDate = res;
-    //     this.filters = res;
-    //   },
-    //   err => this.toastr.error(err));
+    this.contentService.getContentDetails(this.data.content.id, this.data.content.contentBroadcastedBy).subscribe(
+      res => {
+        var broadcastDetails: any = res;
+        this.startDate = broadcastDetails.broadcastRequest.startDate;
+        this.endDate = broadcastDetails.broadcastRequest.endDate;
+        this.filters = broadcastDetails.broadcastRequest.filters.join();;
+      },
+      err => this.toastr.error(err));
   }
   onClose(): void {
     this.dialogRef.close();

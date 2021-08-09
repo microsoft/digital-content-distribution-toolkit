@@ -28,9 +28,12 @@ export class UserService {
   }
 
   getUserDetails(upn): Observable<any>{
-    let url = this.userBaseUrl + '/user/' + upn;
+    let url = this.userBaseUrl + '/user';
     this.logger.log(`Fetching user details`);
-    return this.http.get(url);
+    var contact = {
+      phoneNumber : upn
+    }
+    return this.http.post(url, contact );
   }
 
   public get registeredUserValue() {
