@@ -99,9 +99,9 @@ export class AddContentProviderComponent implements OnInit {
     } else {
       this.userService.getUserDetails(upn).subscribe(res => {
           var newAdmin = {
-            id : res.id,
+            id : res.identityId,
             phoneNumber: res.phoneNumber,
-            userId: res.id
+            userId: res.userId
           }
           this.contentAdministrators.push(newAdmin);
           this.adminFoundSuccessMsg="Please click save to add the user as admin";
