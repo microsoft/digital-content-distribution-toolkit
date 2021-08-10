@@ -327,7 +327,7 @@ namespace blendnet.cms.api.Controllers
                 return actionResult;
             }
 
-            List<Content> contentlist = await _contentRepository.GetContentByContentProviderId(contentProviderId,statusFilter);
+            List<Content> contentlist = await _contentRepository.GetContentByContentProviderId(contentProviderId,statusFilter,false);
 
             if (contentlist.Count() > 0)
             {
@@ -566,7 +566,61 @@ namespace blendnet.cms.api.Controllers
         }
 
 
+        /// <summary>
+        /// Activate / DeActivate content id
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpPost("{contentId:guid}/changeactivestatus")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult> ActivateDeactivateContent(Guid contentId, ChangeActiveStatusRequest statusRequest)
+        {
+            List<string> errorInfo = new List<string>();
 
+            Content existingContent = await _contentRepository.GetContentById(contentId);
+
+            if (existingContent == null)
+            {
+                return NotFound();
+            }
+
+            if (existingContent.ContentTransformStatus != ContentTransformStatus.TransformComplete)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0028"], ContentTransformStatus.TransformComplete,
+                     ContentBroadcastStatus.BroadcastOrderComplete));
+
+                return BadRequest(errorInfo);
+            }
+
+            if (existingContent.ContentBroadcastStatus != ContentBroadcastStatus.BroadcastNotInitialized &&
+                existingContent.ContentBroadcastStatus != ContentBroadcastStatus.BroadcastOrderComplete)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0028"], ContentTransformStatus.TransformComplete,
+                     ContentBroadcastStatus.BroadcastOrderComplete));
+
+                return BadRequest(errorInfo);
+            }
+
+            //if it's already in same state, reject it.
+            if (existingContent.IsActive == statusRequest.Status)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["CMS_ERR_0029"], statusRequest.Status ));
+
+                return BadRequest(errorInfo);
+            }
+
+            
+            existingContent.IsActive = statusRequest.Status;
+
+            existingContent.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
+
+            existingContent.ModifiedDate = DateTime.UtcNow;
+
+            await _contentRepository.UpdateContent(existingContent);
+
+            return NoContent();
+        }
 
         #endregion
 
@@ -754,7 +808,7 @@ namespace blendnet.cms.api.Controllers
 
             }
 
-            List<Content> dbcontents = await _contentRepository.GetContentByContentProviderId(contentProviderId,null);
+            List<Content> dbcontents = await _contentRepository.GetContentByContentProviderId(contentProviderId,null,false);
 
             HashSet<string> dbcontentIds = new HashSet<string>();
 

@@ -198,4 +198,10 @@
   <data name="CMS_ERR_0027" xml:space="preserve">
     <value>CMS_ERR_0004-The content broadcast status should be in {0} {1}</value>
   </data>
+  <data name="CMS_ERR_0028" xml:space="preserve">
+    <value>CMS_ERR_0028-The content transform status should be {0} OR Content broadcast status should be : {1}</value>
+  </data>
+  <data name="CMS_ERR_0029" xml:space="preserve">
+    <value>CMS_ERR_0029-The current active status is already set to {0}</value>
+  </data>
 </root>

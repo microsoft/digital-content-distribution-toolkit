@@ -127,6 +127,11 @@ namespace blendnet.common.dto.Cms
         public bool IsExclusiveContent { get; set; }
 
         /// <summary>
+        /// Is Active
+        /// </summary>
+        public bool IsActive { get; set; } = true;
+
+        /// <summary>
         /// Artist list
         /// </summary>
         public List<People> People { get; set; }

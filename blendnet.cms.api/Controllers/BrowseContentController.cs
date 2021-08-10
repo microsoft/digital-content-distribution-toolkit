@@ -61,7 +61,7 @@ namespace blendnet.cms.api.Controllers
             
             contentStatusFilter.ContentTransformStatuses = new string[] { ContentTransformStatus.TransformComplete.ToString() };
 
-            var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
+            var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken,true);
 
             ResultData<ContentDto> result = new ResultData<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult.Data), contentApiResult.ContinuationToken);
 
@@ -93,7 +93,7 @@ namespace blendnet.cms.api.Controllers
             
             contentStatusFilter.ContentBroadcastStatuses = new string[] { ContentBroadcastStatus.BroadcastOrderComplete.ToString() };
 
-            var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken);
+            var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken, true);
 
             ResultData<ContentDto> result = new ResultData<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult.Data), contentApiResult.ContinuationToken);
 
