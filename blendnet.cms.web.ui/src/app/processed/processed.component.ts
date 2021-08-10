@@ -12,6 +12,7 @@ import { ContentStatus } from '../models/content-status.enum';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
+import { ThemePalette } from '@angular/material/core';
 
 
 export interface DialogData {
@@ -24,7 +25,7 @@ export interface DialogData {
   templateUrl: 'processed.component.html',
 })
 export class ProcessedComponent {
-  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'url', 'view', 'isBroadcastable'];
+  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'url', 'view', 'isBroadcastable', 'activeStatus'];
   dataSource: MatTableDataSource<Content>;
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";
@@ -36,6 +37,7 @@ export class ProcessedComponent {
   allowedMaxSelection: number = environment.allowedMaxSelection;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  color: ThemePalette = 'primary';
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
@@ -169,6 +171,46 @@ export class ProcessedComponent {
       console.log('The dialog was closed');
     });
   
+  }
+
+  toggleButtons(): Array<any> {
+    return [{
+      label: 'Cancel',
+      type: 'basic',
+      value: 'cancel',
+      class: 'discard-btn'
+    },
+    {
+      label: 'Confirm',
+      type: 'primary',
+      value: 'submit',
+      class: 'update-btn'
+    }
+    ]
+  }
+  onToggleChange($event, row) {
+    if(!(row.contentTransformStatus === 'TransformComplete' && row.contentBroadcastStatus === 'BroadcastNotInitialized')) {
+      $event.stopPropagation();
+    } else{
+      $event.preventDefault();
+      var newStatus = row.isActive ? "INACTIVATE" : "ACTIVATE";
+      var newStatusValue = !row.isActive;
+      const dialogRef = this.dialog.open(CommonDialogComponent, {
+        disableClose: true,
+        data: {message: "Are you sure you want to " +newStatus+ " the content ?" , heading:'Warning',
+          buttons: this.toggleButtons()
+        },
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'proceed') {
+          this.contentService.changeContentActiveStatus(row.id, newStatusValue).subscribe(res =>{
+            this.getProcessedContent();
+          });
+        }
+      });
+    }
+   
   }
 
 openBroadcastConfirmDialog(content): void {

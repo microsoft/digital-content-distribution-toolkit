@@ -93,7 +93,7 @@ import { NotificationService } from "../services/notification.service";
             "body": this.notifFormGroup.get('body').value,
             "attachmentUrl": this.notifFormGroup.get('attachmentUrl').value,
             "type": 1,
-            "topic": "com.microsoft.mobile.polymer.mishtu",
+            "topic": "mishtu_entertainment",
             "tags": this.tags?.join()
           }
         return notification;

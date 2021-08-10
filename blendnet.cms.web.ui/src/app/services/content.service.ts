@@ -69,4 +69,13 @@ export class ContentService {
     return this.http.get(url);
   }
 
+  changeContentActiveStatus(contentId, status) {
+    let url = this.baseUrl + '/' + contentId  + '/changeactivestatus';
+    var payload = {
+      status: status
+    }
+    this.logger.log(`Changing the content active status`);
+    return this.http.post(url, payload);
+  }
+
 }

@@ -122,7 +122,21 @@
                     matTooltip="View content">visibility</mat-icon> 
                 </button>
             </td>
+        </ng-container> <ng-container matColumnDef="activeStatus">
+            <th mat-header-cell *matHeaderCellDef> 
+                Content Active Status
+             </th>
+            <td mat-cell *matCellDef="let row" >
+                    <mat-slide-toggle [color]="color"
+                        [checked]="row.isActive"
+                        [disabled]="!(row.contentTransformStatus === 'TransformComplete' && row.contentBroadcastStatus === 'BroadcastNotInitialized')"
+                        (click)="onToggleChange($event, row)"
+                        (keyup.space)="onToggleChange($event, row)">
+                    {{row.isActive ? "Deactivate" : "Activate"}} 
+                </mat-slide-toggle>
+            </td>
         </ng-container>
+
         
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
