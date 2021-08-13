@@ -109,6 +109,16 @@ namespace blendnet.common.dto.Cms
         public string DashUrl { get; set; }
 
         /// <summary>
+        /// Audio Tar File Size
+        /// </summary>
+        public long? AudioTarFileSize { get; set; }
+
+        /// <summary>
+        /// Video Tar File Size
+        /// </summary>
+        public long? VideoTarFileSize { get; set; }
+
+        /// <summary>
         /// If it will appear on home page
         /// </summary>
         [Required]

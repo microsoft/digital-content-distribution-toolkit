@@ -419,7 +419,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.AUDIO_FILE_SIZE, audioSet.Length.ToString());
 
+            content.AudioTarFileSize = audioSet.Length;
+
             AdaptiveSetInfo videoSet = segmentInfo.AdaptiveSets.Where(audio => (audio.Type == ApplicationConstants.AdaptiveSetTypes.Video)).FirstOrDefault();
+
+            content.VideoTarFileSize = videoSet.Length;
 
             xmlContent = xmlContent.Replace(ApplicationConstants.XMLTokens.VIDEO_FILE_CHECKSUM, videoSet.Checksum);
 
