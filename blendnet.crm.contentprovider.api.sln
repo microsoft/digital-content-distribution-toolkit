@@ -56,9 +56,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.incentive.reposito
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.incentive.listener", "blendnet.incentive.listener\blendnet.incentive.listener.csproj", "{89FD4EAD-D3E5-4BF4-967D-0ECE4418D20A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.notification.api", "blendnet.notification.api\blendnet.notification.api.csproj", "{072BA82E-D2CB-4575-AE85-83905BE0EF21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.notification.api", "blendnet.notification.api\blendnet.notification.api.csproj", "{072BA82E-D2CB-4575-AE85-83905BE0EF21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.notification.repository", "blendnet.notification.repository\blendnet.notification.repository.csproj", "{938DF3AD-305D-432B-AA36-7BE04C26E840}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.notification.repository", "blendnet.notification.repository\blendnet.notification.repository.csproj", "{938DF3AD-305D-432B-AA36-7BE04C26E840}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.device.api", "blendnet.device.api\blendnet.device.api.csproj", "{CF9A6F8C-8EEF-4352-9968-FB61C6ED617E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.device.listener", "blendnet.device.listener\blendnet.device.listener.csproj", "{0648C641-9241-48B6-9BC1-704A308EF1E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.device.repository", "blendnet.device.repository\blendnet.device.repository.csproj", "{2014E0E9-E165-4A43-9642-F1980BD33AFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -150,6 +156,18 @@ Global
 		{938DF3AD-305D-432B-AA36-7BE04C26E840}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{938DF3AD-305D-432B-AA36-7BE04C26E840}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{938DF3AD-305D-432B-AA36-7BE04C26E840}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF9A6F8C-8EEF-4352-9968-FB61C6ED617E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF9A6F8C-8EEF-4352-9968-FB61C6ED617E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF9A6F8C-8EEF-4352-9968-FB61C6ED617E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF9A6F8C-8EEF-4352-9968-FB61C6ED617E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0648C641-9241-48B6-9BC1-704A308EF1E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0648C641-9241-48B6-9BC1-704A308EF1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0648C641-9241-48B6-9BC1-704A308EF1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0648C641-9241-48B6-9BC1-704A308EF1E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2014E0E9-E165-4A43-9642-F1980BD33AFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2014E0E9-E165-4A43-9642-F1980BD33AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2014E0E9-E165-4A43-9642-F1980BD33AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2014E0E9-E165-4A43-9642-F1980BD33AFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

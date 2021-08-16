@@ -36,6 +36,9 @@ namespace blendnet.common.dto
 
             public const string Notification = "Notification";
             public const string NotificationPartitionKey = "/notificationId";
+
+            public const string Device = "Device";
+            public const string DevicePartitionKey = "/deviceid";
         }
 
         public struct Policy
