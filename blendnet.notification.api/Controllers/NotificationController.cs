@@ -5,6 +5,7 @@ using blendnet.common.dto.Notification;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.notification.api.Model;
 using blendnet.notification.repository.Interfaces;
 using Microsoft.ApplicationInsights;
@@ -16,6 +17,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using static blendnet.common.dto.ApplicationConstants;
 
@@ -95,6 +97,18 @@ namespace blendnet.notification.api
 
             await _notificationProxy.SendBroadcastNotification(payloadData);
             await _notificationRepository.CreateNotification(notificationDto);
+
+            NotificationAIEvent notificationAIEvent = new NotificationAIEvent()
+            {
+                NotificationTitle = broadcastNotificationRequest.Title,
+                NotificationBody = broadcastNotificationRequest.Body,
+                NotificationDateTime = System.Text.Json.JsonSerializer.Serialize(DateTime.UtcNow),
+                Topic = broadcastNotificationRequest.Topic,
+                PushNotificationType = broadcastNotificationRequest.Type
+            };
+
+            _telemetryClient.TrackEvent(notificationAIEvent);
+
             return Ok(notificationDto.Id);
 
         }
@@ -131,6 +145,18 @@ namespace blendnet.notification.api
             };
 
             await _notificationProxy.SendNotification(payloadData);
+
+            NotificationAIEvent notificationAIEvent = new NotificationAIEvent()
+            {
+                NotificationTitle = notificationRequest.Title,
+                NotificationBody = notificationRequest.Body,
+                NotificationDateTime = System.Text.Json.JsonSerializer.Serialize(DateTime.UtcNow),
+                UserIds = notificationRequest.UserData.Select(x => x.UserId).ToList(),
+                PushNotificationType = notificationRequest.Type
+            };
+
+            _telemetryClient.TrackEvent(notificationAIEvent);
+
             return Ok(notificationDto.Id);
 
         }
