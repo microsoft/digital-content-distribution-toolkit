@@ -34,12 +34,18 @@ namespace blendnet.common.dto.Device
         /// <summary>
         /// Date when the device state is updated
         /// </summary>
-        public DateTime? DeviceStatusUpdatedOn { get; set; } 
+        public DateTime? DeviceStatusUpdatedOn { get; set; }
 
         /// <summary>
         /// Type
         /// </summary>
-        public DeviceContainerType DeviceContainerType { get; set; }
+        public DeviceContainerType DeviceContainerType 
+        {
+            get
+            {
+                return DeviceContainerType.Device;
+            }
+        }
 
         /// <summary>
         /// Current filter update command status
