@@ -19,6 +19,11 @@ parameters:
     displayName: Number of Pods
     default: 1
     type: string
+  
+  - name: deployAgw
+    displayName: Deploy App gateway (only if changes in app gateway)
+    default: false
+    type: boolean
 
 trigger:
 - manual
@@ -77,6 +82,7 @@ stages:
       inputs:
         script: 'sed -i ''s|pod_count|${{ parameters.podCount }}|g'' blendnet.incentive.listener/blendnet.incentive.listener.yaml'
     - task: KubernetesManifest@0
+      condition: eq('${{ parameters.deployAgw }}', true)
       inputs:
         action: 'deploy'
         kubernetesServiceConnection: 'aks-blendnet-${{ parameters.environment }}-default'

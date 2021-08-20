@@ -20,6 +20,11 @@ parameters:
     default: 1
     type: string
 
+  - name: deployAgw
+    displayName: Deploy App gateway (only if changes in app gateway)
+    default: false
+    type: boolean
+
 trigger:
 - manual
 
@@ -82,6 +87,7 @@ stages:
         kubernetesServiceConnection: 'aks-blendnet-${{ parameters.environment }}-default'
         manifests: 'blendnet.retailer.api/blendnet.retailer.api.yaml'
     - task: KubernetesManifest@0
+      condition: eq('${{ parameters.deployAgw }}', true)
       inputs:
         action: 'deploy'
         kubernetesServiceConnection: 'aks-blendnet-${{ parameters.environment }}-default'
