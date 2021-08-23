@@ -1,5 +1,7 @@
 ﻿using blendnet.common.dto;
 using blendnet.common.dto.Device;
+using blendnet.common.dto.Exceptions;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.device.repository.Interfaces;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Azure;
@@ -158,6 +160,77 @@ namespace blendnet.device.repository.CosmosRepository
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Get Device By Ids
+        /// </summary>
+        /// <param name="deviceIds"></param>
+        /// <returns></returns>
+        public async Task<List<Device>> GetDeviceByIds(List<string> deviceIds)
+        {
+            List<Device> deviceList = new List<Device>();
+
+            string deviceIdsData = string.Join(",", deviceIds.Select(item => "'" + item.ToString() + "'"));
+
+            var queryString = $"SELECT * FROM c WHERE c.deviceId in ({deviceIdsData}) AND c.deviceContainerType = @type";
+
+            var queryDef = new QueryDefinition(queryString);
+
+            queryDef.WithParameter("@type", DeviceContainerType.Device);
+
+            deviceList = await this._container.ExtractDataFromQueryIterator<Device>(queryDef);
+
+            return deviceList;
+        }
+
+        /// <summary>
+        /// https://github.com/Azure/azure-cosmos-dotnet-v3/issues/1162
+        /// https://docs.microsoft.com/en-us/azure/cosmos-db/transactional-batch
+        /// </summary>
+        /// <returns></returns>
+        public async Task UpdateInBatch(Device device, DeviceCommand deviceCommand)
+        {
+            TransactionalBatchResponse batchResponse = await this._container.CreateTransactionalBatch(new PartitionKey(device.DeviceId))
+                .ReplaceItem<Device>(device.Id, device)
+                .ReplaceItem<DeviceCommand>(deviceCommand.Id.Value.ToString(),deviceCommand)
+                .ExecuteAsync();
+            
+            using (batchResponse)
+            {
+                if (!batchResponse.IsSuccessStatusCode)
+                {
+                    string errorMessage = $"Batch update failed for Device {device.Id} and Device Command Id {deviceCommand.Id}";
+
+                    throw GetTransactionalBatchException(batchResponse,errorMessage);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get Exception.
+        /// </summary>
+        /// <param name="batchResponse"></param>
+        /// <param name="errorMessage"></param>
+        /// <returns></returns>
+        private BlendNetCosmosTransactionalBatchException GetTransactionalBatchException(TransactionalBatchResponse batchResponse ,
+                                                                                          string errorMessage)
+        {
+            List<string> operationStatus = new List<string>();
+
+            for (var i = 0; i < batchResponse.Count; i++)
+            {
+                var result = batchResponse.GetOperationResultAtIndex<dynamic>(i);
+
+                operationStatus.Add($"Status code for index {i} is {result.StatusCode}");
+            }
+
+            BlendNetCosmosTransactionalBatchException batchException =
+                            new BlendNetCosmosTransactionalBatchException(errorMessage, 
+                                                                          batchResponse.StatusCode, 
+                                                                          batchResponse.ErrorMessage, 
+                                                                          operationStatus);
+            return batchException;
         }
     }
 }

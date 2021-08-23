@@ -38,7 +38,7 @@ namespace blendnet.common.dto
             public const string NotificationPartitionKey = "/notificationId";
 
             public const string Device = "Device";
-            public const string DevicePartitionKey = "/deviceid";
+            public const string DevicePartitionKey = "/deviceId";
         }
 
         public struct Policy
@@ -88,6 +88,11 @@ namespace blendnet.common.dto
             public const string ContentAdmin = "ContentAdmin";
 
             public const string RetailerManagement = "RetailerManagement";
+
+            public const string DeviceManagement = "DeviceManagement";
+
+            public const string Device = "Device";
+
         }
 
         /// <summary>
@@ -111,6 +116,7 @@ namespace blendnet.common.dto
             public const string INCENTIVE_HTTP_CLIENT = "incentive";
             public const string NOTIFICATION_HTTP_CLIENT = "notification";
             public const string SESVODE_HTTP_CLIENT = "ses";
+            public const string IOTCENTRAL_HTTP_CLIENT = "iotcentral";
         }
 
         public struct StorageContainerPolicyNames
@@ -250,5 +256,18 @@ namespace blendnet.common.dto
         {
             public const int NameMaxLength = 20;
         }
+
+
+        public struct HubProxyModuleCommandNames
+        {
+            public const string FilterUpdate = "FilterUpdate";
+        }
+
+        public struct HubProxyModuleClientNames
+        {
+            public const string HubServer = "HUBServer";
+        }
+
+
     }
 }

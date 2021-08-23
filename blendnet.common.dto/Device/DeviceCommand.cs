@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +32,17 @@ namespace blendnet.common.dto.Device
                 return DeviceContainerType.Command;
             }
         }
-        
+
+        /// <summary>
+        /// Failure Details
+        /// </summary>
+        public List<string> FailureDetails { get; set; }
+
+        /// <summary>
+        /// Device Command Execution Details
+        /// </summary>
+        public List<DeviceCommandExecutionDetails> ExecutionDetails { get; set; }
+
         /// <summary>
         /// Device Command Type
         /// </summary>
@@ -46,6 +57,18 @@ namespace blendnet.common.dto.Device
         /// Details about Filter Update Request
         /// </summary>
         public FilterUpdateRequest FilterUpdateRequest { get; set; }
+    }
+
+
+    /// <summary>
+    /// Device Command Execution Details
+    /// </summary>
+    public class DeviceCommandExecutionDetails
+    {
+        public string EventName { get; set; }
+
+        public DateTime EventDateTime { get; set; }
+
     }
 
     /// <summary>

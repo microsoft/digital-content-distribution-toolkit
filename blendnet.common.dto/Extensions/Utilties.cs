@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace blendnet.api.proxy.Common
+namespace blendnet.common.dto.Extensions
 {
     public class Utilties
     {

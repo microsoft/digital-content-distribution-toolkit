@@ -1,5 +1,6 @@
 ﻿using blendnet.api.proxy.Common;
 using blendnet.common.dto;
+using blendnet.common.dto.Extensions;
 using blendnet.common.dto.Notification;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;

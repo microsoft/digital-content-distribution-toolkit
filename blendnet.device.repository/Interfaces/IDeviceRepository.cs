@@ -13,7 +13,7 @@ namespace blendnet.device.repository.Interfaces
     /// Id is Device Id or Command Id.
     /// Partition key is Device Id.
     /// </summary>
-    interface IDeviceRepository
+    public interface IDeviceRepository
     {
         /// <summary>
         /// Create Device
@@ -35,6 +35,13 @@ namespace blendnet.device.repository.Interfaces
         /// <param name="deviceId"></param>
         /// <returns></returns>
         Task<Device> GetDeviceById(string deviceId);
+
+        /// <summary>
+        /// Returns the list of device by Ids
+        /// </summary>
+        /// <param name="deviceIds"></param>
+        /// <returns></returns>
+        Task<List<Device>> GetDeviceByIds(List<string> deviceIds);
 
         /// <summary>
         /// Update Device
@@ -64,5 +71,13 @@ namespace blendnet.device.repository.Interfaces
         /// <param name="deviceId"></param>
         /// <returns></returns>
         Task<DeviceCommand> GetDeviceCommandById(Guid commandId, string deviceId);
+
+        /// <summary>
+        /// Updates both in once batch / transaction
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="deviceCommand"></param>
+        /// <returns></returns>
+        Task UpdateInBatch(Device device, DeviceCommand deviceCommand);
     }
 }

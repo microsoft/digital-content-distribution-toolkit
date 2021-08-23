@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace blendnet.common.dto.Device
 {
+    /// <summary>
+    /// Device App Settings
+    /// </summary>
     public class DeviceAppSettings
     {
         public string AccountEndPoint { get; set; }
@@ -23,6 +26,46 @@ namespace blendnet.common.dto.Device
         public string CloudApiServiceAccountCertName { get; set; }
 
         public string KaizalaIdentityAppName { get; set; }
+
+        /// <summary>
+        /// IOT Central Authentication Token
+        /// </summary>
+        public string IOTCAPIToken { get; set; }
+        
+        /// <summary>
+        /// IOT Central API Version
+        /// </summary>
+        public string IOTCAPIVersion { get; set; }
+
+        /// <summary>
+        /// IOT Central API Connection Timeout in Secs
+        /// </summary>
+        public int IOTCAPIConnectionTimeOutInSecs { get; set; }
+
+        /// <summary>
+        /// IOT Central API Response Timeout in Secs
+        /// </summary>
+        public int IOTCAPIResponseTimeOutInSecs { get; set; }
+
+        /// <summary>
+        /// IOT Central Proxy Module Name
+        /// </summary>
+        public string IOTCAPIProxyModuleName { get; set; }
+
+        /// <summary>
+        /// IOT Central Proxy Command Name
+        /// </summary>
+        public string IOTCAPIProxyCommandName { get; set; }
+
+        /// <summary>
+        /// Timeout for call from Proxy to Hub for command execution
+        /// </summary>
+        public int IOTCAPIProxyTimeOutInMts { get; set; }
+
+        /// <summary>
+        /// IOT Central Base Url
+        /// </summary>
+        public string IOTCAPIBaseUrl { get; set; }
 
     }
 }

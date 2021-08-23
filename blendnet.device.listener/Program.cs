@@ -16,6 +16,12 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
 using blendnet.common.dto;
 using blendnet.device.repository.CosmosRepository;
+using blendnet.device.listener.IntegrationEventHandling;
+using blendnet.device.repository.Interfaces;
+using blendnet.api.proxy.IOTCentral;
+using System.Net.Http;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace blendnet.device.listener
 {
@@ -98,7 +104,10 @@ namespace blendnet.device.listener
                     ConfigureDistributedCache(hostContext, services);
 
                     //Configure Repository
-                    services.AddTransient<DeviceRepository, DeviceRepository>();
+                    services.AddTransient<IDeviceRepository, DeviceRepository>();
+
+                    //Configure IOT Central Proxy
+                    services.AddTransient<IOTCentralProxy>();
 
                     //Configure Kaizala Identity Proxy
                     services.AddTransient<KaizalaIdentityProxy>();
@@ -138,7 +147,7 @@ namespace blendnet.device.listener
             services.AddSingleton<IEventBus, EventServiceBus>();
 
             //todo : add device based event handler
-            //services.AddTransient<ContentProviderCreatedIntegrationEventHandler>();
+            services.AddTransient<FilterUpdateIntegrationEventHandler>();
             
         }
 
@@ -184,6 +193,17 @@ namespace blendnet.device.listener
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 
+            string iotCentralBaseUrl = hostContext.Configuration.GetValue<string>("IOTCAPIBaseUrl");
+            int httpHandlerLifeTimeInMts = hostContext.Configuration.GetValue<int>("HttpHandlerLifeTimeInMts");
+            int httpClientRetryCount = hostContext.Configuration.GetValue<int>("HttpClientRetryCount");
+
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.IOTCENTRAL_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(iotCentralBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            }).SetHandlerLifetime(TimeSpan.FromMinutes(httpHandlerLifeTimeInMts))  //Set lifetime to five minutes
+              .AddPolicyHandler(GetRetryPolicy(httpClientRetryCount)); ;
+
         }
 
         /// <summary>
@@ -199,5 +219,19 @@ namespace blendnet.device.listener
             });
 
         }
+
+        /// <summary>
+        /// Retry Policy
+        /// </summary>
+        /// <param name="httpClientRetryCount"></param>
+        /// <returns></returns>
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(int httpClientRetryCount)
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(httpClientRetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        }
+
     }
 }

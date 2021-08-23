@@ -7,6 +7,7 @@ using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.device.repository.CosmosRepository;
+using blendnet.device.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -159,7 +160,7 @@ namespace blendnet.device.api
             string cmsStorageConnectionString = Configuration.GetValue<string>("CMSStorageConnectionString");
 
             //Configure Services
-            services.AddTransient<DeviceRepository, DeviceRepository>();
+            services.AddTransient<IDeviceRepository, DeviceRepository>();
 
 
             //registerations required for authhandler to work

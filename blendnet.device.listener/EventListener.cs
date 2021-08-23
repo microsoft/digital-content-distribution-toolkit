@@ -1,5 +1,7 @@
 ﻿using blendnet.common.dto.Device;
+using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
+using blendnet.device.listener.IntegrationEventHandling;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -40,14 +42,13 @@ namespace blendnet.device.listener
         {
             _logger.LogInformation("Starting Eventlistner of blendnet.device.listener");
 
-            ////todo : add device based event handler
-            //_eventBus.Subscribe<ContentProviderCreatedIntegrationEvent, ContentProviderCreatedIntegrationEventHandler>();
+            //add device based event handler
+            _eventBus.Subscribe<FilterUpdateIntegrationEvent, FilterUpdateIntegrationEventHandler>();
 
             await _eventBus.StartProcessing();
 
             _logger.LogInformation("Subscribe complete by blendnet.device.listener");
 
-            //return Task.CompletedTask;
         }
 
         /// <summary>
