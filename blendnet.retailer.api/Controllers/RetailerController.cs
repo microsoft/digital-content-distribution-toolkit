@@ -19,7 +19,7 @@ namespace blendnet.retailer.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Retailer)]
     public class RetailerController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -39,6 +39,7 @@ namespace blendnet.retailer.api.Controllers
 
         [HttpGet("byPartnerId/{retailerPartnerId}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<RetailerDto>> GetRetailerByPartnerId(string retailerPartnerId /* composed */)
         {
             bool isSuperAdmin = UserClaimData.isSuperAdmin(this.User.Claims);
@@ -48,6 +49,7 @@ namespace blendnet.retailer.api.Controllers
 
         [HttpGet("byReferralCode/{referralCode}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<RetailerDto>> GetRetailerByReferralCode(string referralCode)
         {
             RetailerDto retailer = await this._retailerRepository.GetRetailerByReferralCode(referralCode);
@@ -56,6 +58,7 @@ namespace blendnet.retailer.api.Controllers
 
         [HttpPut("{retailerPartnerId}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<string>> UpdateRetailer(string retailerPartnerId /* composed */,
                                                                 RetailerDto retailer)
         {
