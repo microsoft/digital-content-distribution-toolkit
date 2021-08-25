@@ -167,9 +167,9 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
           if(planDetail.eventType === 'RETAILER_INCOME_ORDER_COMPLETED') {
             console.log(planDetail.formula.formulaType);
             if(planDetail.formula.formulaType === 'PERCENTAGE') {
-              planDetail.earnText = 'Earn ' + planDetail.formula.firstOperand + '% for each' + planDetail.eventTitle;
+              planDetail.earnText = 'Earn ' + planDetail.formula.firstOperand + '% for each ' + planDetail.eventTitle;
             } else if(planDetail.formula.formulaType === 'PLUS') {
-              planDetail.earnText = 'Earn Rs.' + planDetail.formula.firstOperand + ' for each' + planDetail.eventTitle;
+              planDetail.earnText = 'Earn Rs.' + planDetail.formula.firstOperand + ' for each ' + planDetail.eventTitle;
 
             }
             planDetail.validTillText = res.endDate;
