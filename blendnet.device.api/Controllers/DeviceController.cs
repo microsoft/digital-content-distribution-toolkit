@@ -150,15 +150,101 @@ namespace blendnet.device.api.Controllers
         }
 
 
+        /// <summary>
+        /// Marks the device command status to complete or failed
+        /// </summary>
+        /// <param name="filterUpdateRequest"></param>
+        /// <returns></returns>
+        [HttpPost("completecommand", Name = nameof(CompleteCommand))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Device)]
+        public async Task<ActionResult> CompleteCommand(DeviceCommandUpdateRequest filterUpdateRequest)
+        {
+            DeviceCommand deviceCommand = await _deviceRepository.GetDeviceCommandById(filterUpdateRequest.CommandId.Value, filterUpdateRequest.DeviceId);
+
+            List<string> errorInfo = new List<string>();
+
+            //get the device command
+            if (deviceCommand == null)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["DVC_ERR_0005"],filterUpdateRequest.DeviceId, filterUpdateRequest.CommandId));
+
+                return BadRequest(errorInfo);
+            }
+
+            Device device = await _deviceRepository.GetDeviceById(filterUpdateRequest.DeviceId);
+            
+            //should never occur but added the check as we need to read device anyway
+            if (device == null)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["DVC_ERR_0006"], filterUpdateRequest.DeviceId));
+
+                return BadRequest(errorInfo);
+            }
+
+            //allow only if broadcasted or broadcast cancellation has failed
+            if (deviceCommand.DeviceCommandStatus != DeviceCommandStatus.DeviceCommandPushedToDevice)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["DVC_ERR_0007"], DeviceCommandStatus.DeviceCommandPushedToDevice));
+
+                return BadRequest(errorInfo);
+            }
+
+            if (filterUpdateRequest.IsFailed.Value)
+            {
+                device.FilterUpdateStatus = DeviceCommandStatus.DeviceCommandFailed;
+
+                deviceCommand.DeviceCommandStatus = DeviceCommandStatus.DeviceCommandFailed;
+            
+                if (!string.IsNullOrEmpty(filterUpdateRequest.FailureReason))
+                {
+                    if (deviceCommand.FailureDetails == null)
+                    {
+                        deviceCommand.FailureDetails = new List<string>();
+                    }
+
+                    deviceCommand.FailureDetails.Add(filterUpdateRequest.FailureReason);
+                }
+
+            }
+            else
+            {
+                device.FilterUpdateStatus = DeviceCommandStatus.DeviceCommandComplete;
+                
+                deviceCommand.DeviceCommandStatus = DeviceCommandStatus.DeviceCommandComplete;
+                
+                device.FilterUpdatedBy = deviceCommand.Id;
+            }
+
+            DateTime currentDateTime = DateTime.UtcNow;
+            
+            device.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
+            
+            device.ModifiedDate = currentDateTime;
+            
+            deviceCommand.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
+            
+            deviceCommand.ModifiedDate = currentDateTime;
+
+            DeviceCommandExecutionDetails deviceCommandExecutionDetails = 
+                    new DeviceCommandExecutionDetails() { EventName = deviceCommand.DeviceCommandStatus.ToString(), EventDateTime = currentDateTime };
+
+            deviceCommand.ExecutionDetails.Add(deviceCommandExecutionDetails);
+
+            await _deviceRepository.UpdateInBatch(device, deviceCommand);
+
+            return NoContent();
+        }
+
         #region Private Methods
 
-        /// <summary>
-        /// Validates if the give device id exists in database
-        /// </summary>
-        /// <param name="parentIds"></param>
-        /// <param name="retrievedDevicess"></param>
-        /// <param name="errorList"></param>
-        private void ValidateDeviceIds(List<string> parentIds, List<Device> retrievedDevicess, List<string> errorList)
+            /// <summary>
+            /// Validates if the give device id exists in database
+            /// </summary>
+            /// <param name="parentIds"></param>
+            /// <param name="retrievedDevicess"></param>
+            /// <param name="errorList"></param>
+            private void ValidateDeviceIds(List<string> parentIds, List<Device> retrievedDevicess, List<string> errorList)
         {
             List<string> invalidIds = GetInvalidDeviceIds(parentIds, retrievedDevicess);
 

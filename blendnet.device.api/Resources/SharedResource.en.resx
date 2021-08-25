@@ -129,4 +129,13 @@
   <data name="DVC_ERR_0004" xml:space="preserve">
     <value>DVC_ERR_0004-For {0} no valid details found in application database.</value>
   </data>
+  <data name="DVC_ERR_0005" xml:space="preserve">
+    <value>DVC_ERR_0005-Given Device {0} and Command {1} combination is invlalid.</value>
+  </data>
+  <data name="DVC_ERR_0006" xml:space="preserve">
+    <value>DVC_ERR_0006-Given Device {0} is invalid.</value>
+  </data>
+  <data name="DVC_ERR_0007" xml:space="preserve">
+    <value>DVC_ERR_0007-DeviceCommandStatus should be {0}</value>
+  </data>
 </root>
