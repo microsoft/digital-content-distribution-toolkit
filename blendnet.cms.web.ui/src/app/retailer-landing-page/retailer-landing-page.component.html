@@ -1,10 +1,8 @@
 <div class="landing-wrapper">
     <div class="landing-profile-block-wrapper">
-        <!-- <div class="landing-profile-image">
-            <img src="../../cmsui/assets/images/retailer-landing-page/profile-dummy.jpg">
-        </div> -->
         <div class="landing-profile-name">
-            {{partner.userName}}
+            {{partner.userName}}  &nbsp;({{partnerCode}})
+            
         </div>
         <div class="landing-profile-id">
             {{partner.partnerId}}
@@ -20,16 +18,13 @@
                     </mat-icon>
                 </div>
             </div>
-            <!-- <div class="landing-trophy-image-wrapper">
-                <img src="../../cmsui/assets/images/retailer-landing-page/blue-trophy.jpg">
-            </div> -->
+
         </div>
 
     </div>
 
     <div class="landing-page-slider" *ngIf="carouselInit">
         <ng-container>
-            <!-- <ng-template> -->
                 <div class="milestones-route-wrapper landing-total-milestone" [routerLink]="['retailer/milestones']">
                     <div class="milestones-route-inner">
                         <div class="milestones-value-wrapper">
@@ -42,38 +37,9 @@
                         </div>
                     </div>
                 </div>    
-            <!-- </ng-template> -->
         </ng-container>
 
         <owl-carousel-o [options]="customOptions">
-            <!-- dummy card
-            <ng-container>
-                <ng-template carouselSlide>
-                    <div class="landing-each-offer">
-                        <div class="each-offer-inner landing-each-offer-milestone {{ 'RETAILER_INCOME_REFERRAL_COMPLETED' === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'referral-card':'commission-card'}}">
-                            <img src="../../{{baseHref}}/assets/images/retailer/{{ 'RETAILER_INCOME_REFERRAL_COMPLETED' === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'referral-trophy.png':'commission-trophy.png'}}">
-                            <div class="landing-each-offer-milestone-inner">
-                                <div class="each-offer-text-block">
-                                    <span class="milestone-heading-1">Earn Rs. k.secondOperand Bonus</span> <br>
-                                    <span>on every Referrals</span>
-                                </div>
-                                <div  class="milestones-achieved-block">
-                                    <div class="milestones-achieved"><b>Milestones completed:</b></div>
-                                    <div class="milestones-achieved"><b>Earnings: </b> </div>    
-                                </div>
-                                <div class="milesone-progress">
-                                    <div>Active Milestone</div>
-                                    Complete
-                                    <mat-progress-bar mode="determinate" value="10"></mat-progress-bar>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>  
-    
-            </ng-container> -->
-
-
             <ng-container *ngFor="let k of milestonesCarouselArr">
                 <ng-template carouselSlide>
                     <div class="landing-each-offer">
@@ -94,8 +60,6 @@
                                     <mat-progress-bar mode="determinate" value="{{k.progress}}"></mat-progress-bar>
                                 </div>
                             </div>
-                            <!-- <img class="offer-decor" src="../../cmsui/assets/images/retailer-commissions/trophy.png"> -->
-                            <!-- <img class="each-offer-logo" src="../../cmsui/assets/images/retailer-commissions/each-offer-logo.png"> -->
                         </div>
                     </div>
                 </ng-template>  
@@ -117,9 +81,7 @@
                 </div>
             </div>
             <div class="landing-page-total-image-block">
-                <!-- <img src="../../assets/images/retailer-landing-page/total.jpg"> -->
                 <mat-form-field appearance="fill" class="landing-page-total-image-block-field">
-                    <!-- <mat-label>Month</mat-label> -->
                     <mat-select (selectionChange)="monthSelected($event)" [(ngModel)]="monthSelect">
                       <mat-option *ngFor="let month of monthsDropDown" [value]="month">
                          {{month.monthName}}
@@ -168,23 +130,4 @@
             </div>
         </div>
     </div>
-
-
-    <!-- <div class="referrals-route-wrapper">
-        <div class="referrals-value-wrapper">
-            <div class="referrals-value">
-
-            </div>
-            <div class="referrals-text">
-
-            </div>
-            <div class="referrals-image-wrapper">
-                <img src="../../assets/images/retailer-landing-page/blue-trophy.png">
-            </div>
-        </div>
-    </div> -->
-    <!-- <a
-    [routerLink]="['retailer/referrals']">
-           <div class="menu-small-text">Referrals</div>
-    </a> -->
 </div>

@@ -10,6 +10,7 @@ import { environment } from '../../environments/environment';
 })
 export class ContentProviderService {
   baseUrl = environment.contentProviderApiUrl;
+  browseContentBaseUrl = environment.browrseContent;
   private selectedCP = new BehaviorSubject<Contentprovider>(null);
   sharedSelectedCP$ = this.selectedCP.asObservable();
   
@@ -21,6 +22,12 @@ export class ContentProviderService {
   getContentProviders() : Observable<Contentprovider[]>{
     let url = this.baseUrl;
     this.logger.log(`Fetching content providers`);
+    return this.http.get<Contentprovider[]>(url);
+  }
+
+  browseContentProviders() {
+    let url = this.browseContentBaseUrl + '/contentproviders';
+    this.logger.log(`Browsing the content providers`);
     return this.http.get<Contentprovider[]>(url);
   }
 

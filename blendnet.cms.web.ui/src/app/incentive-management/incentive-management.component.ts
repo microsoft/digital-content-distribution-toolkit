@@ -63,15 +63,17 @@ export class IncentiveManagementComponent implements OnInit {
   getRetailerIncentivePlans() {
     this.incentiveService.getRetailerIncentives().subscribe(
       res => {
-          const validResult = res.filter((result) => Array.isArray(result));
-          var mergedResult = [].concat.apply([], validResult);
-          this.dataSourceRetailers = this.createDataSource(mergedResult);
-          this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
-          this.dataSourceRetailers.sort = this.sort.toArray()[0];  
-          this.selectedStatusRetailer= this.statuses[0]; 
-          this.applyFilterRetailer(null);   
-          this.getMissingPlans(this.dataSourceRetailers.data);
-
+            const validResult = res.filter((result) => Array.isArray(result));
+            var mergedResult = [].concat.apply([], validResult);
+            this.dataSourceRetailers = this.createDataSource(mergedResult);
+            this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
+            this.dataSourceRetailers.sort = this.sort.toArray()[0];  
+            this.selectedStatusRetailer= this.statuses[0]; 
+            this.applyFilterRetailer(null);   
+            this.getMissingPlans(this.dataSourceRetailers.data);
+            if(validResult.length != res.length) {
+              this.toastr.warning("Incentive Plans for one or more retailer partner/s are not loaded");
+            }
         },
       err => {
         this.dataSourceRetailers = this.createDataSource([]);

@@ -65,7 +65,7 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   getContentProviders() {
-    this.contentProviderService.getContentProviders().subscribe(
+    this.contentProviderService.browseContentProviders().subscribe(
       res => {
         this.retailerDashboardService.getRegularRatesIncentives(this.partnerCode, this.retailerPartnerProvidedId).subscribe(
           res => {
@@ -79,18 +79,6 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
                   this.ratesIncentivesCommissions.push(eachEvent);
                 }
               });
-              // this.ratesIncentivesCommissions.push({
-              //   "eventType":"RETAILER_INCOME_ORDER_COMPLETED",
-              //   "eventTitle":"Zee5 10 orders",
-              //   "eventSubType":"6790061e-f62c-4b5c-8476-29a17f3fe9ef",
-              //   "ruleType":"COUNT",
-              //   "formula":{
-              //   "formulaType":"PERCENTAGE",
-              //   "firstOperand":"10",
-              //   "rangeOperand":[
-              //   ]
-              //   }
-              //   })
             }
           },
           err => {

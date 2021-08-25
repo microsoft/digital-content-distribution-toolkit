@@ -26,8 +26,8 @@ export class RetailerLandingPageComponent implements OnInit {
   monthsDropDown: Array<any> = [];
   milestonesCarouselArr: Array<any> = [];
   monthSelect: any;
-  partnerCode = 'NOVO';
-  retailerPartnerProvidedId = 'NVP';
+  partnerCode: string;
+  retailerPartnerProvidedId: string;
   carouselInit = false;
   contentProviders: any;
   customOptions: OwlOptions = {
@@ -56,6 +56,8 @@ export class RetailerLandingPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.partnerCode = this.retailerDashboardService.getpartnerCode();
+    this.retailerPartnerProvidedId = this.retailerDashboardService.getRetailerPartnerProvidedId();;
     this.getProfile();
     this.getDates();
     this.getMilestoneTotal();

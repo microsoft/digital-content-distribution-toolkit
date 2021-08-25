@@ -45,7 +45,7 @@ export class ContentProviderComponent implements OnInit {
           sessionStorage.setItem("contentProviderId", this.selectedCP.id);
           sessionStorage.setItem("contentProviderName", this.selectedCP.name);
         }
-      sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(cps));
+      // sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(cps));
       return this.createCPList(cps);
     }))
     .pipe(

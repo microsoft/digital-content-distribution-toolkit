@@ -77,7 +77,6 @@ export class RetailerDashboardService {
     return this.http.get(url);  
   }
 
-  // api/v1/IncentiveBrowse/retailer/all/NVP/REGULAR/NOVO
   getRegularRatesIncentives(partnerCode: string, retailerPartnerProvidedId: string) {
     let url = this.retailerIncentive + 'IncentiveBrowse/retailer/active/'+ retailerPartnerProvidedId + '/REGULAR/' + partnerCode;
     return this.http.get(url);  

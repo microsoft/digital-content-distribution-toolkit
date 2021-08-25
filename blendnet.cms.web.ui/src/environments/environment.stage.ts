@@ -5,6 +5,7 @@ export const environment = {
     fileAllowedType: 'application/json',
     channelName: "CMSPortal",
     contentProviderApiUrl: "https://blendnet-stage.kaiza.la/cmsapi/api/v1/ContentProvider",
+    browrseContent: "https://blendnet-stage.kaiza.la/cmsapi/api/v1/BrowseContent",
     contentApiUrl: "https://blendnet-stage.kaiza.la/cmsapi/api/v1/Content",
     userApiUrl: "https://blendnet-stage.kaiza.la/userapi/api/v1/User",
     createUserApiUrl: "https://blendnet-stage.kaiza.la/userapi/api/v1/UserBasic",

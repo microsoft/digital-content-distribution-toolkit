@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Incentive, PlanType, RetailerPartner } from '../models/incentive.model';
+import { ConfigService } from './config.service';
 import { LogService } from './log.service';
 
 @Injectable({
@@ -15,7 +16,8 @@ export class IncentiveService {
 
   constructor(
     private logger: LogService,
-    private http: HttpClient
+    private http: HttpClient,
+    private configService: ConfigService
   ) {
     
    }
@@ -35,27 +37,23 @@ export class IncentiveService {
 
   }
 
-  getRetailerIncentives(): Observable<any[]> {
-    let regularIncentiveUrl1 = this.baseUrl + "/retailer/" + PlanType.REGULAR +"/" + RetailerPartner.NOVO;
-    let milestoneIncentiveUrl1 = this.baseUrl + "/retailer/" + PlanType.MILESTONE +"/" + RetailerPartner.NOVO;
+  getRetailerIncentives(): Observable<any> {
+    return this.configService.getRetailerPartners().pipe(mergeMap((res : any) => {
+      var regularPlanUrls = {};
+      var milestonePlanUrls = {};
+      var planResponse = [];
+      res.forEach(partner => {
+        regularPlanUrls[partner.partnerCode] = this.baseUrl + "/retailer/" + PlanType.REGULAR +"/" + partner.partnerCode;
+        milestonePlanUrls[partner.partnerCode] = this.baseUrl + "/retailer/" + PlanType.MILESTONE +"/" + partner.partnerCode;
+        planResponse.push(this.http.get(regularPlanUrls[partner.partnerCode]).pipe(
+             catchError(error => of(error))));
+        planResponse.push(this.http.get(milestonePlanUrls[partner.partnerCode]).pipe(
+              catchError(error => of(error))));
+      });
+      return forkJoin(planResponse);
+    }));
+    
 
-    let regularIncentiveUrl2 = this.baseUrl + "/retailer/" + PlanType.REGULAR +"/" + RetailerPartner.TSTP;
-    let milestoneIncentiveUrl2 = this.baseUrl + "/retailer/" + PlanType.MILESTONE +"/" + RetailerPartner.TSTP;
-
-    let regularIncentives1 = this.http.get(regularIncentiveUrl1).pipe(
-      catchError(error => of(error)));
-    let milestoneIncentives1 = this.http.get(milestoneIncentiveUrl1).pipe(
-      catchError(error => of(error)));
-
-    let regularIncentives2 = this.http.get(regularIncentiveUrl2).pipe(
-      catchError(error => of(error)));
-    let milestoneIncentives2 = this.http.get(milestoneIncentiveUrl2).pipe(
-      catchError(error => of(error)));
-
-    this.logger.log(`Getting incentive plans for retailer`);
-    // return forkJoin([regularIncentives1, milestoneIncentives1]);
-
-    return forkJoin([regularIncentives1, milestoneIncentives1, regularIncentives2, milestoneIncentives2]);
   }
 
 

@@ -420,7 +420,7 @@ openSelectCPModalButtons(): Array<any> {
 
   getContentProviders() {
     if(this.contentProviders.length === 0) {
-      this.contentProviderService.getContentProviders().subscribe(
+      this.contentProviderService.browseContentProviders().subscribe(
         res => {
           this.contentProviders = res;
           sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(res));

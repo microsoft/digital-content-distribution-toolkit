@@ -5,6 +5,7 @@ export const environment = {
   fileAllowedType: 'application/json',
   channelName: "CMSPortal",
   contentProviderApiUrl: "/cmsapi/api/v1/ContentProvider",
+  browrseContent: "/cmsapi/api/v1/BrowseContent",
   contentApiUrl: "/cmsapi/api/v1/Content",
   userApiUrl: "/userapi/api/v1/User",
   createUserApiUrl: "/userapi/api/v1/UserBasic",
