@@ -73,6 +73,14 @@ namespace blendnet.device.repository.Interfaces
         Task<DeviceCommand> GetDeviceCommandById(Guid commandId, string deviceId);
 
         /// <summary>
+        /// Returns the list of commands based on given device id and command type
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="deviceCommandType"></param>
+        /// <returns></returns>
+        Task<List<DeviceCommand>> GetDeviceCommands(string deviceId, DeviceCommandType deviceCommandType);
+
+        /// <summary>
         /// Updates both in once batch / transaction
         /// </summary>
         /// <param name="device"></param>

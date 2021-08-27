@@ -236,15 +236,64 @@ namespace blendnet.device.api.Controllers
             return NoContent();
         }
 
+
+        /// <summary>
+        /// Get Device Command
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="commandId"></param>
+        /// <returns></returns>
+        [HttpGet("{deviceId}/command/{commandId:guid}", Name = nameof(GetCommand))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<DeviceCommand>> GetCommand(string deviceId, Guid commandId)
+        {
+            var deviceCommand = await _deviceRepository.GetDeviceCommandById(commandId, deviceId);
+
+            if (deviceCommand != default(DeviceCommand))
+            {
+                return Ok(deviceCommand);
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        /// <summary>
+        /// Returns the command list
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="deviceCommandType"></param>
+        /// <returns></returns>
+        [HttpGet("{deviceId}/commands", Name = nameof(GetCommands))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<DeviceCommand>> GetCommands(string deviceId, DeviceCommandType deviceCommandType)
+        {
+            var deviceCommands = await _deviceRepository.GetDeviceCommands(deviceId,deviceCommandType);
+
+            if (deviceCommands != null && deviceCommands.Count > 0 )
+            {
+                return Ok(deviceCommands);
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
         #region Private Methods
 
-            /// <summary>
-            /// Validates if the give device id exists in database
-            /// </summary>
-            /// <param name="parentIds"></param>
-            /// <param name="retrievedDevicess"></param>
-            /// <param name="errorList"></param>
-            private void ValidateDeviceIds(List<string> parentIds, List<Device> retrievedDevicess, List<string> errorList)
+        /// <summary>
+        /// Validates if the give device id exists in database
+        /// </summary>
+        /// <param name="parentIds"></param>
+        /// <param name="retrievedDevicess"></param>
+        /// <param name="errorList"></param>
+        private void ValidateDeviceIds(List<string> parentIds, List<Device> retrievedDevicess, List<string> errorList)
         {
             List<string> invalidIds = GetInvalidDeviceIds(parentIds, retrievedDevicess);
 

@@ -163,6 +163,29 @@ namespace blendnet.device.repository.CosmosRepository
         }
 
         /// <summary>
+        /// Returns the list of given commands based on device and command type
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="deviceCommandType"></param>
+        /// <returns></returns>
+        public async Task<List<DeviceCommand>> GetDeviceCommands(string deviceId, DeviceCommandType deviceCommandType)
+        {
+            List<DeviceCommand> deviceCommandList = new List<DeviceCommand>();
+
+            var queryString = $"SELECT * FROM c WHERE c.deviceId = @deviceId AND c.deviceContainerType = @type AND c.deviceCommandType = @commandType";
+
+            var queryDef = new QueryDefinition(queryString);
+
+            queryDef.WithParameter("@deviceId", deviceId);
+            queryDef.WithParameter("@type", DeviceContainerType.Command);
+            queryDef.WithParameter("@commandType", deviceCommandType);
+
+            deviceCommandList = await this._container.ExtractDataFromQueryIterator<DeviceCommand>(queryDef);
+
+            return deviceCommandList;
+        }
+
+        /// <summary>
         /// Get Device By Ids
         /// </summary>
         /// <param name="deviceIds"></param>
