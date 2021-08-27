@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.common.dto.Device
 {
@@ -9,11 +10,24 @@ namespace blendnet.common.dto.Device
     /// </summary>
     public class Device:BaseDto
     {
+        private string _id;
         /// <summary>
         /// Unique Content Id
         /// </summary>
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        [Required]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumeric)]
+        public string Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value.ToUpper();
+            }
+        }
 
         /// <summary>
         /// Same as Id
@@ -61,6 +75,22 @@ namespace blendnet.common.dto.Device
         /// Command which updated the filter sucessfully
         /// </summary>
         public Guid? FilterUpdatedBy { get; set; }
+
+        /// <summary>
+        /// Sets the default values
+        /// </summary>
+        public void SetDefaults()
+        {
+            this.ModifiedByByUserId = null;
+
+            this.ModifiedDate = null;
+
+            this.FilterUpdatedBy = null;
+
+            this.FilterUpdateStatus = DeviceCommandStatus.DeviceCommandNotInitialized;
+
+            this.FilterUpdateStatusUpdatedBy = null;
+        }
 
     }
 

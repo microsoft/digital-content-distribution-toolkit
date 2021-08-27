@@ -268,6 +268,10 @@ namespace blendnet.common.dto
             public const string HubServer = "HUBServer";
         }
 
+        public struct ValidationRegularExpressions
+        {
+            public const string AlphaNumeric = "^[a-zA-Z0-9]*$";
+        }
 
     }
 }

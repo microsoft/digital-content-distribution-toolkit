@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 
 namespace blendnet.device.api.Controllers
 {
+    /// <summary>
+    /// Device Controller
+    /// </summary>
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
@@ -52,6 +55,78 @@ namespace blendnet.device.api.Controllers
             _eventBus = eventBus;
 
             _stringLocalizer = stringLocalizer;
+        }
+
+
+        /// <summary>
+        /// List all devices
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<List<Device>>> GetDevices()
+        {
+            var devices = await _deviceRepository.GetDevices();
+
+            return Ok(devices);
+        }
+
+       
+        /// <summary>
+        /// Returns the device based on device id
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        [HttpGet("{deviceId}", Name = nameof(GetDevice))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<ContentProviderDto>> GetDevice(string deviceId)
+        {
+            var device = await _deviceRepository.GetDeviceById(deviceId);
+
+            if (device != default(Device))
+            {
+                return Ok(device);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Create Device
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<string>> CreateDevice(Device device)
+        {
+            device.SetDefaults();
+
+            device.CreatedByUserId = UserClaimData.GetUserId(this.User.Claims);
+
+            DateTime currentTime = DateTime.UtcNow;
+
+            device.CreatedDate = currentTime;
+
+            device.DeviceStatus = DeviceStatus.Registered;
+
+            device.DeviceStatusUpdatedOn = currentTime;
+
+            var deviceId = await _deviceRepository.CreateDevice(device);
+
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                return Conflict();
+            }
+
+            return CreatedAtAction(nameof(GetDevice),
+                                    new { deviceId = device.DeviceId, Version = ApiVersion.Default.MajorVersion.ToString() },
+                                    device.DeviceId);
         }
 
         /// <summary>
@@ -149,94 +224,6 @@ namespace blendnet.device.api.Controllers
             return Ok(errorList);
         }
 
-
-        /// <summary>
-        /// Marks the device command status to complete or failed
-        /// </summary>
-        /// <param name="filterUpdateRequest"></param>
-        /// <returns></returns>
-        [HttpPost("completecommand", Name = nameof(CompleteCommand))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Device)]
-        public async Task<ActionResult> CompleteCommand(DeviceCommandUpdateRequest filterUpdateRequest)
-        {
-            DeviceCommand deviceCommand = await _deviceRepository.GetDeviceCommandById(filterUpdateRequest.CommandId.Value, filterUpdateRequest.DeviceId);
-
-            List<string> errorInfo = new List<string>();
-
-            //get the device command
-            if (deviceCommand == null)
-            {
-                errorInfo.Add(String.Format(_stringLocalizer["DVC_ERR_0005"],filterUpdateRequest.DeviceId, filterUpdateRequest.CommandId));
-
-                return BadRequest(errorInfo);
-            }
-
-            Device device = await _deviceRepository.GetDeviceById(filterUpdateRequest.DeviceId);
-            
-            //should never occur but added the check as we need to read device anyway
-            if (device == null)
-            {
-                errorInfo.Add(String.Format(_stringLocalizer["DVC_ERR_0006"], filterUpdateRequest.DeviceId));
-
-                return BadRequest(errorInfo);
-            }
-
-            //allow only if broadcasted or broadcast cancellation has failed
-            if (deviceCommand.DeviceCommandStatus != DeviceCommandStatus.DeviceCommandPushedToDevice)
-            {
-                errorInfo.Add(String.Format(_stringLocalizer["DVC_ERR_0007"], DeviceCommandStatus.DeviceCommandPushedToDevice));
-
-                return BadRequest(errorInfo);
-            }
-
-            if (filterUpdateRequest.IsFailed.Value)
-            {
-                device.FilterUpdateStatus = DeviceCommandStatus.DeviceCommandFailed;
-
-                deviceCommand.DeviceCommandStatus = DeviceCommandStatus.DeviceCommandFailed;
-            
-                if (!string.IsNullOrEmpty(filterUpdateRequest.FailureReason))
-                {
-                    if (deviceCommand.FailureDetails == null)
-                    {
-                        deviceCommand.FailureDetails = new List<string>();
-                    }
-
-                    deviceCommand.FailureDetails.Add(filterUpdateRequest.FailureReason);
-                }
-
-            }
-            else
-            {
-                device.FilterUpdateStatus = DeviceCommandStatus.DeviceCommandComplete;
-                
-                deviceCommand.DeviceCommandStatus = DeviceCommandStatus.DeviceCommandComplete;
-                
-                device.FilterUpdatedBy = deviceCommand.Id;
-            }
-
-            DateTime currentDateTime = DateTime.UtcNow;
-            
-            device.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
-            
-            device.ModifiedDate = currentDateTime;
-            
-            deviceCommand.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
-            
-            deviceCommand.ModifiedDate = currentDateTime;
-
-            DeviceCommandExecutionDetails deviceCommandExecutionDetails = 
-                    new DeviceCommandExecutionDetails() { EventName = deviceCommand.DeviceCommandStatus.ToString(), EventDateTime = currentDateTime };
-
-            deviceCommand.ExecutionDetails.Add(deviceCommandExecutionDetails);
-
-            await _deviceRepository.UpdateInBatch(device, deviceCommand);
-
-            return NoContent();
-        }
-
-
         /// <summary>
         /// Get Device Command
         /// </summary>
@@ -272,9 +259,9 @@ namespace blendnet.device.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<DeviceCommand>> GetCommands(string deviceId, DeviceCommandType deviceCommandType)
         {
-            var deviceCommands = await _deviceRepository.GetDeviceCommands(deviceId,deviceCommandType);
+            var deviceCommands = await _deviceRepository.GetDeviceCommands(deviceId, deviceCommandType);
 
-            if (deviceCommands != null && deviceCommands.Count > 0 )
+            if (deviceCommands != null && deviceCommands.Count > 0)
             {
                 return Ok(deviceCommands);
             }
@@ -283,6 +270,92 @@ namespace blendnet.device.api.Controllers
                 return NotFound();
             }
 
+        }
+
+        /// <summary>
+        /// Marks the device command status to complete or failed
+        /// </summary>
+        /// <param name="filterUpdateRequest"></param>
+        /// <returns></returns>
+        [HttpPost("completecommand", Name = nameof(CompleteCommand))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Device)]
+        public async Task<ActionResult> CompleteCommand(DeviceCommandUpdateRequest filterUpdateRequest)
+        {
+            DeviceCommand deviceCommand = await _deviceRepository.GetDeviceCommandById(filterUpdateRequest.CommandId.Value, filterUpdateRequest.DeviceId);
+
+            List<string> errorInfo = new List<string>();
+
+            //get the device command
+            if (deviceCommand == null)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["DVC_ERR_0005"], filterUpdateRequest.DeviceId, filterUpdateRequest.CommandId));
+
+                return BadRequest(errorInfo);
+            }
+
+            Device device = await _deviceRepository.GetDeviceById(filterUpdateRequest.DeviceId);
+
+            //should never occur but added the check as we need to read device anyway
+            if (device == null)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["DVC_ERR_0006"], filterUpdateRequest.DeviceId));
+
+                return BadRequest(errorInfo);
+            }
+
+            //allow only if broadcasted or broadcast cancellation has failed
+            if (deviceCommand.DeviceCommandStatus != DeviceCommandStatus.DeviceCommandPushedToDevice)
+            {
+                errorInfo.Add(String.Format(_stringLocalizer["DVC_ERR_0007"], DeviceCommandStatus.DeviceCommandPushedToDevice));
+
+                return BadRequest(errorInfo);
+            }
+
+            if (filterUpdateRequest.IsFailed.Value)
+            {
+                device.FilterUpdateStatus = DeviceCommandStatus.DeviceCommandFailed;
+
+                deviceCommand.DeviceCommandStatus = DeviceCommandStatus.DeviceCommandFailed;
+
+                if (!string.IsNullOrEmpty(filterUpdateRequest.FailureReason))
+                {
+                    if (deviceCommand.FailureDetails == null)
+                    {
+                        deviceCommand.FailureDetails = new List<string>();
+                    }
+
+                    deviceCommand.FailureDetails.Add(filterUpdateRequest.FailureReason);
+                }
+
+            }
+            else
+            {
+                device.FilterUpdateStatus = DeviceCommandStatus.DeviceCommandComplete;
+
+                deviceCommand.DeviceCommandStatus = DeviceCommandStatus.DeviceCommandComplete;
+
+                device.FilterUpdatedBy = deviceCommand.Id;
+            }
+
+            DateTime currentDateTime = DateTime.UtcNow;
+
+            device.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
+
+            device.ModifiedDate = currentDateTime;
+
+            deviceCommand.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
+
+            deviceCommand.ModifiedDate = currentDateTime;
+
+            DeviceCommandExecutionDetails deviceCommandExecutionDetails =
+                    new DeviceCommandExecutionDetails() { EventName = deviceCommand.DeviceCommandStatus.ToString(), EventDateTime = currentDateTime };
+
+            deviceCommand.ExecutionDetails.Add(deviceCommandExecutionDetails);
+
+            await _deviceRepository.UpdateInBatch(device, deviceCommand);
+
+            return NoContent();
         }
 
         #region Private Methods

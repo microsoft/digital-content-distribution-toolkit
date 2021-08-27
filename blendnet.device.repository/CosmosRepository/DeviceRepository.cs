@@ -42,9 +42,16 @@ namespace blendnet.device.repository.CosmosRepository
         /// <returns></returns>
         public async Task<string> CreateDevice(Device device)
         {
-            await this._container.CreateItemAsync<Device>(device, new PartitionKey(device.DeviceId));
+            try
+            {
+                await this._container.CreateItemAsync<Device>(device, new PartitionKey(device.DeviceId));
 
-            return device.Id;
+                return device.Id;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                return string.Empty;
+            }
         }
 
         /// <summary>
@@ -107,6 +114,45 @@ namespace blendnet.device.repository.CosmosRepository
 
         }
 
+        /// <summary>
+        /// Returns all the devices
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Device>> GetDevices()
+        {
+            var queryString = $"select * from c where c.deviceContainerType = @type order by c.createdDate desc";
+            var queryDef = new QueryDefinition(queryString)
+                                .WithParameter("@type", DeviceContainerType.Device);
+
+            var devices = await this._container.ExtractDataFromQueryIterator<Device>(queryDef);
+
+            return devices;
+        }
+
+        /// <summary>
+        /// Get Device By Ids
+        /// https://github.com/Azure/azure-cosmosdb-node/issues/156
+        /// </summary>
+        /// <param name="deviceIds"></param>
+        /// <returns></returns>
+        public async Task<List<Device>> GetDeviceByIds(List<string> deviceIds)
+        {
+            List<Device> deviceList = new List<Device>();
+
+            var queryString = $"SELECT * FROM c WHERE ARRAY_CONTAINS(@deviceIds, c.deviceId) AND c.deviceContainerType = @type";
+
+            var queryDef = new QueryDefinition(queryString);
+
+            queryDef.WithParameter("@type", DeviceContainerType.Device);
+
+            queryDef.WithParameter("@deviceIds", deviceIds);
+
+            deviceList = await this._container.ExtractDataFromQueryIterator<Device>(queryDef);
+
+            return deviceList;
+        }
+
+        #region Device Commands
         /// <summary>
         /// Create device commad.
         /// Partition key is device id
@@ -186,28 +232,6 @@ namespace blendnet.device.repository.CosmosRepository
         }
 
         /// <summary>
-        /// Get Device By Ids
-        /// </summary>
-        /// <param name="deviceIds"></param>
-        /// <returns></returns>
-        public async Task<List<Device>> GetDeviceByIds(List<string> deviceIds)
-        {
-            List<Device> deviceList = new List<Device>();
-
-            string deviceIdsData = string.Join(",", deviceIds.Select(item => "'" + item.ToString() + "'"));
-
-            var queryString = $"SELECT * FROM c WHERE c.deviceId in ({deviceIdsData}) AND c.deviceContainerType = @type";
-
-            var queryDef = new QueryDefinition(queryString);
-
-            queryDef.WithParameter("@type", DeviceContainerType.Device);
-
-            deviceList = await this._container.ExtractDataFromQueryIterator<Device>(queryDef);
-
-            return deviceList;
-        }
-
-        /// <summary>
         /// https://github.com/Azure/azure-cosmos-dotnet-v3/issues/1162
         /// https://docs.microsoft.com/en-us/azure/cosmos-db/transactional-batch
         /// </summary>
@@ -229,6 +253,8 @@ namespace blendnet.device.repository.CosmosRepository
                 }
             }
         }
+
+        #endregion
 
         /// <summary>
         /// Gets content by device id and content id

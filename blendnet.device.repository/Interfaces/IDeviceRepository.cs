@@ -51,6 +51,12 @@ namespace blendnet.device.repository.Interfaces
         Task<int> UpdateDevice(Device updatedDevice);
 
         /// <summary>
+        /// Returns the list of all devices
+        /// </summary>
+        /// <returns></returns>
+        Task<List<Device>> GetDevices();
+
+        /// <summary>
         /// Create Device Command. Id is command id, partion key is device id
         /// </summary>
         /// <param name="deviceCommand"></param>
