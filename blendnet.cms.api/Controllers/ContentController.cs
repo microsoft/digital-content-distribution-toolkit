@@ -25,6 +25,7 @@ using blendnet.common.dto.User;
 using Microsoft.Extensions.Localization;
 using blendnet.cms.api;
 using System.Reflection;
+using AutoMapper;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -48,12 +49,15 @@ namespace blendnet.cms.api.Controllers
 
         IStringLocalizer<SharedResource> _stringLocalizer;
 
+        private readonly IMapper _mapper;
+
         public ContentController(   IContentRepository contentRepository,
                                     IContentProviderRepository contentProviderRepository,
                                     ILogger<ContentController> logger,
                                     IEventBus eventBus,
                                     IAzureClientFactory<BlobServiceClient> blobClientFactory,
                                     AmsHelper amshelper,
+                                    IMapper mapper,
                                     IStringLocalizer<SharedResource> stringLocalizer)
             :base(contentProviderRepository)
         {
@@ -70,6 +74,8 @@ namespace blendnet.cms.api.Controllers
             _amsHelper = amshelper;
 
             _stringLocalizer = stringLocalizer;
+
+            _mapper = mapper;
 
         }
 
@@ -113,7 +119,7 @@ namespace blendnet.cms.api.Controllers
         [HttpPost("contentIds", Name = nameof(GetContentProviderIds))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<Dictionary<Guid, Guid>>> GetContentProviderIds(List<Guid> contentIds)
+        public async Task<ActionResult<List<ContentInfo>>> GetContentProviderIds(List<Guid> contentIds)
         {
             if(contentIds == null || contentIds.Count == 0)
             {
@@ -122,21 +128,14 @@ namespace blendnet.cms.api.Controllers
 
             var contents = await _contentRepository.GetContentByIds(contentIds);
 
-            Dictionary<Guid, Guid> contentProviderIds = new Dictionary<Guid, Guid>();
-
-            if (contents != null && contents.Count > 0)
-            {
-                foreach(var content in contents)
-                {
-                    contentProviderIds.Add(content.ContentId.Value, content.ContentProviderId);
-                }
-
-                return Ok(contentProviderIds);
-            }
-            else
+            if(contents == null || contents.Count == 0)
             {
                 return NotFound();
             }
+
+            var contentInfos = _mapper.Map<List<Content>, List<ContentInfo>>(contents);
+
+            return Ok(contentInfos);
 
         }
 
@@ -791,7 +790,7 @@ namespace blendnet.cms.api.Controllers
         {
             List<string> errorList = new List<string>();
 
-            ValidationContext validationContext;
+            System.ComponentModel.DataAnnotations.ValidationContext validationContext;
 
             List<ValidationResult> validationResults;
 
@@ -801,7 +800,7 @@ namespace blendnet.cms.api.Controllers
 
             foreach (Content content in contents)
             {
-                validationContext = new ValidationContext(content, null, null);
+                validationContext = new System.ComponentModel.DataAnnotations.ValidationContext(content, null, null);
 
                 validationResults = new List<ValidationResult>();
 

@@ -99,11 +99,13 @@ namespace blendnet.device.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            Dictionary<Guid, Guid> contentProviderData = await _contentProxy.GetContentProviderIds(updateRequest.Contents.Select(x => x.ContentId).ToList());
+            List<ContentInfo> contentInfos = await _contentProxy.GetContentProviderIds(updateRequest.Contents.Select(x => x.ContentId).ToList());
 
             foreach (var contentdata in updateRequest.Contents)
             {
-                if (contentProviderData == null || !contentProviderData.ContainsKey(contentdata.ContentId))
+                Guid contentProviderId = contentInfos.Where(x => x.ContentId == contentdata.ContentId).Select(x => x.ContentProviderId).FirstOrDefault();
+
+                if (contentProviderId == default(Guid))
                 {
                     failedItems.Add(string.Format(_stringLocalizer["DVC_ERR_0008"], contentdata.ContentId));
                     continue;
@@ -116,7 +118,7 @@ namespace blendnet.device.api.Controllers
                 {
                     DeviceId = deviceId,
                     ContentId = contentdata.ContentId,
-                    ContentProviderId = contentProviderData[contentdata.ContentId],
+                    ContentProviderId = contentProviderId,
                     IsDeleted = isDeleted,
                     OperationTimeStamp = contentdata.OperationTime,
                     CreatedByUserId = userId,
