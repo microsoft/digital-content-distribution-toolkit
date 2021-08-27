@@ -87,5 +87,27 @@ namespace blendnet.device.repository.Interfaces
         /// <param name="deviceCommand"></param>
         /// <returns></returns>
         Task UpdateInBatch(Device device, DeviceCommand deviceCommand);
+
+        /// <summary>
+        /// Adds or updates content for a particular device
+        /// </summary>
+        /// <param name="deviceContent"></param>
+        /// <returns></returns>
+        Task<int> UpsertDeviceContent(DeviceContent deviceContents);
+
+        /// <summary>
+        /// Returns list of contents available for this device id
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        Task<List<DeviceContent>> GetContentsByDeviceId(string deviceId);
+
+        /// <summary>
+        /// Gets device content by device id and content id
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        Task<DeviceContent> GetContentByDeviceIdContentId(Guid contentId, string deviceId);
     }
 }

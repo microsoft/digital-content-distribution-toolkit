@@ -204,4 +204,7 @@
   <data name="CMS_ERR_0029" xml:space="preserve">
     <value>CMS_ERR_0029-The current active status is already set to {0}</value>
   </data>
+  <data name="CMS_ERR_0030" xml:space="preserve">
+    <value>CMS_ERR_0030-Atleast one content id should be passed</value>
+  </data>
 </root>

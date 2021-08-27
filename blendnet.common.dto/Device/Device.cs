@@ -69,7 +69,8 @@ namespace blendnet.common.dto.Device
     {
         Device = 0,
         Command = 1,
-        Content = 2
+        Content = 2,
+        DeviceContent = 3
     }
 
     [JsonConverter(typeof(StringEnumConverter))]

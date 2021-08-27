@@ -70,6 +70,7 @@ namespace blendnet.cms.api.Controllers
             _amsHelper = amshelper;
 
             _stringLocalizer = stringLocalizer;
+
         }
 
         #region Content Management Methods
@@ -96,6 +97,41 @@ namespace blendnet.cms.api.Controllers
                 }
 
                 return Ok(content);
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        /// <summary>
+        /// Get Contents by content ids 
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
+        [HttpPost("contentIds", Name = nameof(GetContentProviderIds))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<Dictionary<Guid, Guid>>> GetContentProviderIds(List<Guid> contentIds)
+        {
+            if(contentIds == null || contentIds.Count == 0)
+            {
+                return BadRequest(_stringLocalizer["CMS_ERR_0030"]);
+            }
+
+            var contents = await _contentRepository.GetContentByIds(contentIds);
+
+            Dictionary<Guid, Guid> contentProviderIds = new Dictionary<Guid, Guid>();
+
+            if (contents != null && contents.Count > 0)
+            {
+                foreach(var content in contents)
+                {
+                    contentProviderIds.Add(content.ContentId.Value, content.ContentProviderId);
+                }
+
+                return Ok(contentProviderIds);
             }
             else
             {

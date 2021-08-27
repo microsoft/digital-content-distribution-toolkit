@@ -1,4 +1,5 @@
 using blendnet.api.proxy;
+using blendnet.api.proxy.Cms;
 using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Device;
@@ -162,10 +163,10 @@ namespace blendnet.device.api
             //Configure Services
             services.AddTransient<IDeviceRepository, DeviceRepository>();
 
-
             //registerations required for authhandler to work
             services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<UserProxy>();
+            services.AddTransient<ContentProxy>();
             services.AddTransient<IUserDetails, UserDetailsByProxy>();
 
             //Configure Cosmos DB
@@ -319,6 +320,14 @@ namespace blendnet.device.api
             services.AddHttpClient(ApplicationConstants.HttpClientKeys.USER_HTTP_CLIENT, c =>
             {
                 c.BaseAddress = new Uri(userBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+            //Configure Http Client for cms Proxy
+            string cmsBaseUrl = Configuration.GetValue<string>("CmsBaseUrl");
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(cmsBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }

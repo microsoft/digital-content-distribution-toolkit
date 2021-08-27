@@ -231,12 +231,61 @@ namespace blendnet.device.repository.CosmosRepository
         }
 
         /// <summary>
+        /// Gets content by device id and content id
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        public async Task<DeviceContent> GetContentByDeviceIdContentId(Guid contentId, string deviceId)
+        {
+            try
+            {
+                ItemResponse<DeviceContent> response = await this._container.ReadItemAsync<DeviceContent>(contentId.ToString(), new PartitionKey(deviceId));
+
+                return response.Resource;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets list of device contents by device id
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        public async Task<List<DeviceContent>> GetContentsByDeviceId(string deviceId)
+        {
+            var query = $"SELECT * FROM c WHERE c.deviceId = @deviceId";
+
+            var queryDef = new QueryDefinition(query);
+
+            queryDef.WithParameter("@deviceId", deviceId);
+
+            var deviceContentList = await this._container.ExtractDataFromQueryIterator<DeviceContent>(queryDef);
+
+            return deviceContentList;
+        }
+
+        /// <summary>
+        /// Returns list of failed upsert device contents 
+        /// </summary>
+        /// <param name="deviceContent"></param>
+        /// <returns></returns>
+        public async Task<int> UpsertDeviceContent(DeviceContent deviceContent)
+        {
+            var response = await _container.UpsertItemAsync<DeviceContent>(deviceContent, new PartitionKey(deviceContent.DeviceId));
+            return (int)response.StatusCode;
+        }
+
+        /// <summary>
         /// Get Exception.
         /// </summary>
         /// <param name="batchResponse"></param>
         /// <param name="errorMessage"></param>
         /// <returns></returns>
-        private BlendNetCosmosTransactionalBatchException GetTransactionalBatchException(TransactionalBatchResponse batchResponse ,
+        private BlendNetCosmosTransactionalBatchException GetTransactionalBatchException(TransactionalBatchResponse batchResponse,
                                                                                           string errorMessage)
         {
             List<string> operationStatus = new List<string>();
@@ -249,11 +298,12 @@ namespace blendnet.device.repository.CosmosRepository
             }
 
             BlendNetCosmosTransactionalBatchException batchException =
-                            new BlendNetCosmosTransactionalBatchException(errorMessage, 
-                                                                          batchResponse.StatusCode, 
-                                                                          batchResponse.ErrorMessage, 
+                            new BlendNetCosmosTransactionalBatchException(errorMessage,
+                                                                          batchResponse.StatusCode,
+                                                                          batchResponse.ErrorMessage,
                                                                           operationStatus);
             return batchException;
         }
+
     }
 }

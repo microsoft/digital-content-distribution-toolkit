@@ -52,5 +52,28 @@ namespace blendnet.api.proxy.Cms
 
             return content;
         }
+
+        /// <summary>
+        /// Returns list of content data containing content id and content provider id for given content ids
+        /// </summary>
+        /// <param name="contentIds"></param>
+        /// <returns></returns>
+        public async Task<Dictionary<Guid, Guid>> GetContentProviderIds(List<Guid> contentIds)
+        {
+            string url = $"Content/contentIds";
+
+            Dictionary<Guid, Guid> contents = new Dictionary<Guid, Guid>();
+
+            string accessToken = await base.GetServiceAccessToken();
+
+            try
+            {
+                contents = await _cmsHttpClient.Post<List<Guid>, Dictionary<Guid, Guid>>(url, contentIds, accessToken:accessToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { }
+
+            return contents;
+        }
     }
 }

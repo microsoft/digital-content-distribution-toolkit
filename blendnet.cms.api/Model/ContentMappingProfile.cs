@@ -13,7 +13,6 @@ namespace blendnet.common.dto.Cms
             CreateMap<ContentDto, Content>();
             CreateMap<ContentProviderDto, ContentProviderItem>();
             CreateMap<ContentProviderItem, ContentProviderDto>();
-
         }
     }
 }
