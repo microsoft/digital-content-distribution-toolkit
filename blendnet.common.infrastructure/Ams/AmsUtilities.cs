@@ -87,7 +87,8 @@ namespace blendnet.common.infrastructure.Ams
                                            amsData.AmsTokenAudience,
                                            keyIdentifier,
                                            amsData.AmsTokenExpiryInMts,
-                                           tokenSigningKey);
+                                           tokenSigningKey,
+                                           amsData.AmsTokenMaxUses);
             }
             
             return token;
@@ -103,12 +104,14 @@ namespace blendnet.common.infrastructure.Ams
         /// <param name="audience">The audience, sometimes called scope, describes the intent of the token or the resource the token authorizes access to. </param>
         /// <param name="keyIdentifier">The content key ID.</param>
         /// <param name="tokenVerificationKey">Contains the key that the token was signed with. </param>
+        /// <param name="tokenReplayMaxUses">To set a limit on how many times the same token can be used to request a key or a license.. </param>
         /// <returns></returns>
         private static string GenerateTokenAsync(string issuer,
                                             string audience,
                                             string keyIdentifier,
                                             int tokenExpiryInMts,
-                                            byte[] tokenVerificationKey)
+                                            byte[] tokenVerificationKey,
+                                            int tokenReplayMaxUses)
         {
             var tokenSigningKey = new SymmetricSecurityKey(tokenVerificationKey);
 
@@ -120,7 +123,8 @@ namespace blendnet.common.infrastructure.Ams
 
             Claim[] claims = new Claim[]
             {
-                new Claim(ContentKeyPolicyTokenClaim.ContentKeyIdentifierClaim.ClaimType, keyIdentifier)
+                new Claim(ContentKeyPolicyTokenClaim.ContentKeyIdentifierClaim.ClaimType, keyIdentifier),
+                new Claim("urn:microsoft:azure:mediaservices:maxuses", tokenReplayMaxUses.ToString())
             };
 
             JwtSecurityToken token = new JwtSecurityToken(
@@ -150,7 +154,7 @@ namespace blendnet.common.infrastructure.Ams
         public string AmsSubscriptionId { get; set; }
         
         public string AmsTokenSigningKey { get; set; }
-        
+
         public string AmsResourceGroupName { get; set; }
         
         public string AmsAccountName { get; set; }
@@ -160,5 +164,7 @@ namespace blendnet.common.infrastructure.Ams
         public string AmsTokenAudience { get; set; }
         
         public int AmsTokenExpiryInMts { get; set; }
+
+        public int AmsTokenMaxUses { get; set; }
     }
 }

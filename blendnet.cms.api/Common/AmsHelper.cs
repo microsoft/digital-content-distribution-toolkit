@@ -52,6 +52,7 @@ namespace blendnet.cms.api.Common
             amsData.AmsTokenExpiryInMts = _appSettings.AmsTokenExpiryInMts;
             amsData.AmsTokenIssuer = _appSettings.AmsTokenIssuer;
             amsData.AmsTokenSigningKey = _appSettings.AmsTokenSigningKey;
+            amsData.AmsTokenMaxUses = _appSettings.AmsTokenMaxUses;
 
             string token = await AmsUtilities.GetContentToken(amsData, contentId, commandId);
 

@@ -96,6 +96,8 @@ namespace blendnet.common.dto.cms
         public string AmsStreamingEndpointName { get; set; }
 
         public int AmsTokenExpiryInMts { get; set; }
+        
+        public int AmsTokenMaxUses { get; set; }
 
         public string IngestFileName { get; set; }
 

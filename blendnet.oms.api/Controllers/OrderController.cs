@@ -949,6 +949,7 @@ namespace blendnet.oms.api.Controllers
             amsData.AmsTokenExpiryInMts = _omsAppSettings.AmsTokenExpiryInMts;
             amsData.AmsTokenIssuer = _omsAppSettings.AmsTokenIssuer;
             amsData.AmsTokenSigningKey = _omsAppSettings.AmsTokenSigningKey;
+            amsData.AmsTokenMaxUses = _omsAppSettings.AmsTokenMaxUses;
 
             string token = await AmsUtilities.GetContentToken(amsData, contentId, commandId);
 
