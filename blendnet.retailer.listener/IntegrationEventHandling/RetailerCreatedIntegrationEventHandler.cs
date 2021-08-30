@@ -53,6 +53,13 @@ namespace blendnet.retailer.listener.IntegrationEventHandling
             {
                 using (_telemetryClient.StartOperation<RequestTelemetry>("RetailerCreatedIntegrationEvent.Handle"))
                 {
+                    var existingRetailer = await _retailerRepository.GetRetailerByPartnerId(integrationEvent.Retailer.PartnerId);
+                    if (existingRetailer is not null)
+                    {
+                        _logger.LogInformation($"Skipping as retailer already exists for PartnerID: {integrationEvent.Retailer.PartnerId}");
+                        return;
+                    }
+
                     _logger.LogInformation($"Assigning Retailer role for Retailer {integrationEvent.Retailer.PartnerId}");
                     await AssignRoleInKaizalaIdentity(integrationEvent);
 
