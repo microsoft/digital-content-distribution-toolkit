@@ -74,7 +74,7 @@
          <!-- ModifiedDate Column -->
          <ng-container matColumnDef="modifiedDate">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Modified Date </th>
-            <td mat-cell *matCellDef="let row"> {{row.modifiedDate | date: 'short'}} </td>
+            <td mat-cell *matCellDef="let row"> {{(row.modifiedDate ?  row.modifiedDate : row.createdDate) | date: 'short'}} </td>
         </ng-container>
 
     
