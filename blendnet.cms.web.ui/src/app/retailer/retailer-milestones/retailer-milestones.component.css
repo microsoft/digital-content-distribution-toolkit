@@ -113,11 +113,14 @@
     padding-left: 20px;
 }
 
-.landing-each-offer {
+/* .landing-each-offer {
     margin-top: 10px;
     margin-bottom: 10px;
+} */
+.milestone-heading {
+    font-weight: 600;
+    color: black;
 }
-
 .landing-each-offer-milestone {
     height: 160px;
     background: #90C0FF;
@@ -125,9 +128,35 @@
     /* padding-top: 22px;
     padding-bottom: 22px; */
     position: relative;
-    background-image: url('../../../assets/images/retailer-landing-page/milestones.png');
+    /* background-image: url('../../../assets/images/retailer/commission-trophy.png'); */
     background-repeat: no-repeat;
     background-position: 100% 67px;
+}
+.referral-card {
+    background: linear-gradient(104.36deg, #3C8FFE -3.84%, #83B8FF 49.88%, #4394FF 93.64%);
+}
+
+.commission-card {
+    background-color: red; /* For browsers that do not support gradients */
+    background: linear-gradient(104.36deg, #279B95 -3.84%, #6AC7C4 49.88%, #67AEAA 93.64%);
+}
+
+.detailed-milestone-info {
+    font-size: xx-small;
+    font-weight: lighter;
+}
+.referral-card img {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    width: 200px;
+}
+
+.commission-card img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
 }
 
 .landing-each-offer-milestone-inner {

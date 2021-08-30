@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { Incentive, PlanType, PublishMode } from '../models/incentive.model';
 import { ConfigService } from '../services/config.service';
+import { ContentProviderService } from '../services/content-provider.service';
 import { IncentiveService } from '../services/incentive.service';
 
 @Component({
@@ -43,13 +44,26 @@ export class IncentiveManagementComponent implements OnInit {
   constructor( private incentiveService: IncentiveService,
     public dialog: MatDialog,
     private toastr: ToastrService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private contentProviderService: ContentProviderService
     ) { }
 
   ngOnInit(): void {
+    this.getContentProviders()
     this.statuses = ['REGULAR', 'MILESTONE'];
     this.getRetailerIncentivePlans();
+  }
 
+  getContentProviders() {
+    var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
+    if(!cpList || cpList.length < 1) {
+      this.contentProviderService.browseContentProviders().subscribe(
+        res => {
+          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(res));
+        },
+        err => this.toastr.warning("Unable to fetch content providers. Please contact admin")
+      )
+    } 
   }
 
   tabClick(event) {
@@ -231,6 +245,7 @@ export class IncentiveManagementComponent implements OnInit {
 
 
   addIncentive(audience) {
+    this.getContentProviders();
     this.selectedPlan = null;
     if(audience === "RETAILER") {
       this.createRetailerIncentive = false;

@@ -4,6 +4,9 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import { ToastrService } from 'ngx-toastr';
+import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { DeviceDialogComponent } from './device-dialog.component';
 
 export interface UserData {
   id: string;
@@ -42,7 +45,7 @@ export class DevicesComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(public dialog: MatDialog
+  constructor(public dialog: MatDialog, private toastr: ToastrService
     ) {
     // Create 100 users
     const users = Array.from({length: 100}, (_, k) => createNewUser(k + 1));
@@ -52,8 +55,12 @@ export class DevicesComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.getDevices();
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+  getDevices() {
+
   }
 
   applyFilter(event: Event) {
@@ -65,28 +72,59 @@ export class DevicesComponent implements AfterViewInit {
     }
   }
 
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected == numRows;
-  }
 
-  masterToggle() {
-    this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DeviceDialogComponent, {
+      width: '500px',
+      data: {heading : "Add a Device"},
+      
+    });
+
+    // dialogRef.componentInstance.onNotificationBroadcast.subscribe(data => {
+    //   this.toastr.success("Notification sent successfully!");
+    //   this.getAllNotifications(); 
+    //   dialogRef.close();
+    // })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
 
 
   openDeleteConfirmModal(): void {
-  const dialogRef = this.dialog.open(DeviceConfirmDialog, {
-    data: {message: this.message}
-  });
+    const dialogRef = this.dialog.open(CommonDialogComponent, {
+      disableClose: true,
+      data: {message: "Please confirm to continue with your selection", heading:'Confirm',
+        buttons: this.deleteDeviceButtons()
+      },
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-    console.log('The dialog was closed');
-  });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'proceed') {
+        console.log('proceed');
+        this.toastr.success("Successfully deleted device");
+        this.getDevices();
+      }
+    });
+
+  }
+
+  deleteDeviceButtons(): Array<any> {
+    return [{
+      label: 'Cancel',
+      type: 'basic',
+      value: 'cancel',
+      class: 'discard-btn'
+    },
+    {
+      label: 'Continue',
+      type: 'primary',
+      value: 'submit',
+      class: 'update-btn'
+    }
+    ]
 }
 
 openFiltersConfirmModal(): void {

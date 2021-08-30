@@ -31,18 +31,11 @@ export class AddContentProviderComponent implements OnInit {
     cpname :  new FormControl('', [Validators.required, Validators.maxLength(20)]),
     logoUrl : new FormControl(''),
     admins: new FormControl(''),
-    // isActive : new FormControl("inactive", [Validators.required]),
-    // activationDate : new FormControl(null, [Validators.required]),
-    // deactivationDate : new FormControl(null, [Validators.required]),
     contentAdministrators : new FormControl(this.contentAdministrators),
     adminUpn: new FormControl('',  [Validators.maxLength(10), Validators.minLength(10), Validators.pattern(/^-?(0|[1-9]\d*)?$/)])
   });
 
 
-  // aminDate: Date;
-  // amaxDate: Date;
-  // dminDate: Date;
-  // dmaxDate: Date;
 
   constructor(
     public dialogRef: MatDialogRef<AddContentProviderComponent>,
@@ -51,13 +44,7 @@ export class AddContentProviderComponent implements OnInit {
     private toastr: ToastrService,
     private userService: UserService
   ) {
-    // const currentYear = new Date().getFullYear();
-    // const currentDate= new Date().getDate();
-    // const currentMonth= new Date().getMonth();
-    // this.aminDate = new Date(currentYear, currentMonth, currentDate-5);
-    // this.amaxDate = new Date(currentYear , currentMonth, currentDate+10);
-    // this.dminDate = new Date(currentYear, currentMonth, currentDate+1);
-    // this.dmaxDate = new Date(currentYear+1, 11, 31);
+
     this.isSuperAdmin = sessionStorage.getItem("roles")?.includes(environment.roles.SuperAdmin);
     if(this.isSuperAdmin) {
       this.removable = true;
@@ -71,14 +58,10 @@ export class AddContentProviderComponent implements OnInit {
     this.cp = this.data.cp;
     this.cpForm.get("cpname").setValue(this.cp.name);
     this.cpForm.get("logoUrl").setValue(this.cp.logoUrl);
-    // this.cpForm.get("isActive").setValue(this.cp.isActive? "active" : "inactive");
-    // this.cpForm.get("activationDate").setValue(this.cp.activationDate);
-    // this.cpForm.get("deactivationDate").setValue(this.cp.deactivationDate);
     this.contentAdministrators = this.cp.contentAdministrators ? this.cp.contentAdministrators :[];
     this.cpForm.get("admins").setValue(this.contentAdministrators);
   }
 
-  // convenience getter for easy access to form fields
   get f() { 
     return this.cpForm.controls; 
   }
@@ -125,18 +108,13 @@ export class AddContentProviderComponent implements OnInit {
     }
   }
 
-  // public errorHandling = (control: string, error: string) => {
-  //   return this.cpForm.controls[control].hasError(error);
-  // }
+
 
   saveOrUpdate() {
     var newUpdatedCP = {
       id: this.cp.id,
       name: this.cpForm.get("cpname").value,
       logoUrl: this.cpForm.get("logoUrl").value,
-      // activationDate: this.cpForm.get("activationDate").value,
-      // deactivationDate: this.cpForm.get("deactivationDate").value,
-      // isActive: this.cpForm.get("isActive").value === "active" ? true : false,
       contentAdministrators: this.contentAdministrators
     }
     if(newUpdatedCP.id) {

@@ -14,11 +14,6 @@
                                     <span class="each-offer-valid-label">Valid till :</span>
                                     <span class="each-offer-valid-date">{{referralsValid}}</span>       
                                 </div>
-                                <!-- <div class="each-offer-text-block-date inline-date">
-                                    <div class="each-offer-text-block-date-inner">
- 
-                                    </div>
-                                </div> -->
                         </div>
                     </div>
                 </div>
@@ -49,12 +44,6 @@
                                     <span class="each-offer-valid-label">Valid till :</span>
                                     <span class="each-offer-valid-date">{{milestonesValid}}</span>    
                                 </div>
-                                <!-- <div class="each-offer-text-block-date inline-date">
-                                    <div class="each-offer-text-block-date-inner">
-                                            <span class="each-offer-valid-label">Valid till :</span>
-                                            <span class="each-offer-valid-date">{{milestonesValid}}</span>    
-                                    </div>
-                                </div> -->
                         </div>
                     </div>
                 </div>
@@ -63,19 +52,15 @@
                 <div class="each-offer" *ngIf="milestone.eventType === eventType['Retailer Referral']">
                     <div class="each-offer-inner milestones-each-offer-inner referral-milestone">
                         <div class="each-offer-text-block">
-                            Earn Rs {{milestone.formula.firstOperand}} Bonus for every {{milestone.eventTitle}}
+                            Earn Rs {{milestone.formula.secondOperand}} Bonus for every {{milestone.eventTitle}}
                         </div>
-                        <!-- <div class="each-offer-text-block-date">
-                            <span class="each-offer-valid-label">Valid till :</span>
-                            <span class="each-offer-valid-date">{{milestonesValid}}</span>
-                        </div> -->
                         <div class="each-offer-conversion">
-                            {{milestone.eventTitle}}  = Rs {{milestone.formula.firstOperand}} Earning
+                            {{milestone.eventTitle}}  = Rs {{milestone.formula.secondOperand}} Earning
                         </div>
                     </div>
                 </div>
                 <div class="each-offer" *ngIf="milestone.eventType === eventType['Retailer Order Complete']">
-                    <div class="each-offer-inner milestones-each-offer-inner commission-milestone"*ngIf="milestone.formula.formulaType === 'RANGE_AND_MULTIPLY'">
+                    <div class="each-offer-inner milestones-each-offer-inner commission-milestone" *ngIf="milestone.formula.formulaType === 'RANGE_AND_MULTIPLY'">
                         <div class="each-offer-text-block">
                             {{milestone.eventTitle}}
                         </div>
@@ -86,10 +71,10 @@
                     </div>
                     <div class="each-offer-inner milestones-each-offer-inner commission-milestone" *ngIf="milestone.formula.formulaType === 'DIVIDE_AND_MULTIPLY'">
                         <div class="each-offer-text-block">
-                            Earn Rs {{milestone.formula.firstOperand}} Bonus for every {{milestone.eventTitle}}
+                            Earn Rs {{milestone.formula.secondOperand}} Bonus for every  {{milestone.formula.firstOperand}} {{milestone.eventTitle}}
                         </div>
                         <div class="each-offer-conversion">
-                            {{milestone.eventTitle}} = Rs {{milestone.formula.firstOperand}} Earning
+                            {{milestone.eventTitle}} = Rs {{milestone.formula.secondOperand}} Earning
                         </div>
                     </div>
                 </div>
@@ -109,12 +94,6 @@
                                     <span class="each-offer-valid-label">Valid till :</span>
                                     <span class="each-offer-valid-date">{{incentivesValid}}</span>    
                                 </div>
-                                <!-- <div class="each-offer-text-block-date inline-date">
-                                    <div class="each-offer-text-block-date-inner">
-                                        <span class="each-offer-valid-label">Valid till :</span>
-                                        <span class="each-offer-valid-date">{{incentivesValid}}</span>    
-                                    </div>
-                                </div> -->
                         </div>
                     </div>
                 </div>
@@ -128,11 +107,6 @@
                             for every
                             {{contentProviders[ratesIncentivesCommission.eventSubType]}} order
                         </div>
-
-                        <!-- <div>
-                            <div class="commission-left text-left"><b>Pack Name</b></div>
-                            <div class="commission-right text-right"><b>Commission</b></div>
-                        </div> -->
                     </div>
                 </div>
             </div>

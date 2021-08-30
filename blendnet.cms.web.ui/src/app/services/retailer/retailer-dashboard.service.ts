@@ -98,7 +98,7 @@ export class RetailerDashboardService {
   }
 
   getBaseHref() {
-    return 'portal'
+    return environment.baseHref;
   }
 
   formatDate(date) {

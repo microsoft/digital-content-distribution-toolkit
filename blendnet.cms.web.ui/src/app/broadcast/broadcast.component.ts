@@ -25,7 +25,7 @@ export interface DialogData {
   templateUrl: 'broadcast.component.html',
 })
 export class BroadcastComponent {
-  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'manageDevices', 'isBroadcastCancellable', 'view', 'url', 'broadcastDetails'];
+  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate',  'isBroadcastCancellable', 'view', 'url', 'broadcastDetails'];
   dataSource: MatTableDataSource<Content>;
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";

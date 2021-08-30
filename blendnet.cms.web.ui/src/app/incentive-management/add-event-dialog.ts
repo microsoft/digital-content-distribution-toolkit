@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Inject, Output } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { ToastrService } from "ngx-toastr";
-import { EventType, FormulaType, PlanType, RuleType } from "../models/incentive.model";
+import { FormulaType, PlanType, RuleType } from "../models/incentive.model";
 import { IncentiveService } from "../services/incentive.service";
 
 
@@ -28,7 +27,6 @@ import { IncentiveService } from "../services/incentive.service";
     constructor(
       public dialogRef: MatDialogRef<any>,
       @Inject(MAT_DIALOG_DATA) public data: any,
-      private toastr: ToastrService,
       private formBuilder: FormBuilder,
       private incentiveService: IncentiveService
       ) {

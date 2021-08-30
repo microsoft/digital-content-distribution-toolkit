@@ -3,6 +3,7 @@ import { RetailerDashboardService } from 'src/app/services/retailer/retailer-das
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { EventType } from 'src/app/models/incentive.model';
+import { ContentProviderService } from 'src/app/services/content-provider.service';
 
 @Component({
   selector: 'app-retailer-milestones',
@@ -15,19 +16,42 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
   partnerCode = sessionStorage.getItem('partnerCode');
   retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
   baseHref = this.retailerDashboardService.getBaseHref();
+  contentProviders;
   constructor(
     private retailerDashboardService: RetailerDashboardService,
     public router: Router,
-    public userService: UserService
+    public userService: UserService,
+    private contentProviderService: ContentProviderService
   ) { }
 
   ngOnInit(): void {
+    this.getContentProviders();
     this.partnerCode = this.retailerDashboardService.getpartnerCode();
     this.retailerPartnerProvidedId = this.retailerDashboardService.getRetailerPartnerProvidedId();
     this.getMilestoneTotal();
-
-    this.getRegularRatesIncentives()
+    // this.getRegularRatesIncentives();
   }
+
+
+  getContentProviders() {
+    if(sessionStorage.getItem("CONTENT_PROVIDERS")) {
+      this.contentProviders =  JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
+      this.contentProviders.forEach(contentProvider => {
+        this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+      }); 
+    } else {
+      this.contentProviderService.browseContentProviders().subscribe(res => {
+        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(res));
+        this.contentProviders = res;
+        this.contentProviders.forEach(contentProvider => {
+          this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+        }); 
+      });
+    }
+  }
+
+
+ 
 
   getMilestoneTotal() {
     let totalMilestoneEarnings = 0;
@@ -49,19 +73,21 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
             }
             if(planDetail.formula.firstOperand && planDetail.formula.secondOperand && planDetail.result) {
               milestonesCarouselArr.push({
+                ruleType: planDetail.ruleType,
                 firstOperand: planDetail.formula.firstOperand,
                 secondOperand: planDetail.formula.secondOperand,
                 value : planDetail.result.value ? planDetail.result.value : 0,
                 residualValue : planDetail.result.residualValue ? planDetail.result.residualValue : 0,
                 progress: ((planDetail.result.residualValue ? planDetail.result.residualValue : 0))*100/planDetail.formula.firstOperand,
-                referral: planDetail.eventType === EventType['Retailer Referral']
+                referral: planDetail.eventType === EventType['Retailer Referral'],
+                contentProviderId: planDetail.eventSubType
               });
             } 
           }
         });
         this.totalMilestoneEarnings = totalMilestoneEarnings;
         this.milestonesCarouselArr = milestonesCarouselArr;
-        console.log(this.milestonesCarouselArr);
+        // console.log(this.milestonesCarouselArr);
       }
     } ,err => {
       console.log('error in milestone fetch');

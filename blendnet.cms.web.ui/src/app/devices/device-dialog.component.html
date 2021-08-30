@@ -1,0 +1,33 @@
+<form [formGroup]="deviceForm">
+    <h2>{{data.heading}}</h2>
+  <div>
+    <mat-form-field>
+      <input matInput placeholder="Name" 
+      formControlName="devicename" required >
+    </mat-form-field>
+    <div class="cms-validation"
+    *ngIf="f.devicename.invalid && (f.devicename.dirty || f.devicename.touched)">
+      <mat-error>
+        You must provide a name (max length 10)
+      </mat-error>
+    </div>
+
+    <mat-form-field>
+        <input matInput placeholder="Device ID" 
+        formControlName="deviceid" required >
+      </mat-form-field>
+      <div class="cms-validation"
+      *ngIf="f.deviceid.invalid && (f.deviceid.dirty || f.deviceid.touched)">
+        <mat-error>
+          You must provide a device serial ID 
+        </mat-error>
+      </div>
+  
+      <div class="btn-sec">
+        <button mat-raised-button type="button" class="discard-btn" (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button type="submit" color="primary" class="update-btn" 
+        [disabled]="deviceForm.invalid" (click)="saveOrUpdate()"> Save </button>
+      </div>
+
+  </div>
+</form>

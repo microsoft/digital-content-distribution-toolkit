@@ -43,20 +43,25 @@
             <ng-container *ngFor="let k of milestonesCarouselArr">
                 <ng-template carouselSlide>
                     <div class="landing-each-offer">
-                        <div class="each-offer-inner landing-each-offer-milestone {{ k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'referral-card':'commission-card'}}">
-                            <img src="../../{{baseHref}}/assets/images/retailer/{{ k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'referral-trophy.png':'commission-trophy.png'}}">
-                            <div class="landing-each-offer-milestone-inner">
+                        <div class="each-offer-inner landing-each-offer-milestone {{ k.referral ? 'referral-card':'commission-card'}}">
+                            <img src="../../{{baseHref}}/assets/images/retailer/{{ k.referral ? 'referral-trophy.png':'commission-trophy.png'}}">
+                            <div class="landing-each-offer-milestone-inner"> 
                                 <div class="each-offer-text-block">
-                                    <span class="milestone-heading-1">Earn Rs. {{k.secondOperand}} Bonus</span> <br>
-                                    <span>on every {{k.firstOperand}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referrals': 'Orders'}}</span>
+                                    <!-- <span class="milestone-heading-1">Earn Rs. {{k.secondOperand}} Bonus</span> <br> -->
+                                    <span class="milestone-heading">{{k.referral ? "" : contentProviders[k.contentProviderId] }} {{k.referral ? 'Referrals': 'Orders'}}</span> <br>
+
+                                    <span class="milestone-heading-1">Rs. {{k.value}}</span> Earned <br> 
+
+                                    <!-- <span>on every {{k.firstOperand}}  {{k.ruleType === 'SUM' ? "Rs of earned on ": ""}}</span><br>
+                                    <span>{{k.referral ? 'Referrals': 'Orders'}}</span> -->
                                 </div>
                                 <div *ngIf="k.value" class="milestones-achieved-block">
-                                    <div class="milestones-achieved"><b>Milestones completed:</b> {{k.value/k.secondOperand}}</div>
-                                    <div class="milestones-achieved"><b>Earnings: </b> {{k.value/k.secondOperand}} x {{k.secondOperand }} = Rs.{{k.value}}</div>    
+                                    <div class="milestones-achieved"><b>{{k.value/k.secondOperand}} </b>Completed</div>
+                                    <!-- <div class="milestones-achieved"><b>Earnings: </b> {{k.value/k.secondOperand}} x {{k.secondOperand }} = Rs.{{k.value}}</div>     -->
                                 </div>
                                 <div class="milesone-progress">
-                                    <div>Active Milestone</div>
-                                    {{k.residualValue}}/{{k.firstOperand}} Complete
+                                    <!-- <div>Active Milestone</div> -->
+                                    {{k.firstOperand-k.residualValue}} more for the next Rs. {{k.secondOperand}}
                                     <mat-progress-bar mode="determinate" value="{{k.progress}}"></mat-progress-bar>
                                 </div>
                             </div>

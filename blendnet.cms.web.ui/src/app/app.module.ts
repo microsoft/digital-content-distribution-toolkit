@@ -39,6 +39,7 @@ import { AddEventDialog } from './incentive-management/add-event-dialog';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { NotificationsDialog } from './notifications/notifications-dialog';
 import { RetailerPlanDetailsDialogComponent } from './retailer-plan-details-dialog/retailer-plan-details-dialog.component';
+import { DeviceDialogComponent } from './devices/device-dialog.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { RetailerPlanDetailsDialogComponent } from './retailer-plan-details-dial
     NotificationsComponent,
     NotificationsDialog,
     RetailerPlanDetailsDialogComponent,
-    BroadcastDetailsDialog
+    BroadcastDetailsDialog,
+    DeviceDialogComponent
   ],
   imports: [
     HttpClientModule,

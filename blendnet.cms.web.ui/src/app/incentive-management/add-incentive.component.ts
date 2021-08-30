@@ -42,7 +42,6 @@ export class AddIncentiveComponent implements OnInit {
   selectedEventType: any;
   selectedRuleType;
   partners = [];
-  contentProviders = [];
 
 
   disablePlanTypePartner = false;
@@ -71,8 +70,19 @@ export class AddIncentiveComponent implements OnInit {
     this.createEmptyFormDraft();
     var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
     if(!cpList || cpList.length < 1) {
-      this.getContentProviders();
+      this.contentProviderService.browseContentProviders().subscribe(
+        res => {
+          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(res));
+          this.initializeValues();
+        },
+        err => this.toastr.error("Unable to fetch content providers. Please contact admin")
+      )
+    } else {
+      this.initializeValues();
     }
+  }
+
+  initializeValues() {
     if(this.plan) {
       // call get plan details
       if(this.audience === "RETAILER") {
@@ -183,7 +193,7 @@ export class AddIncentiveComponent implements OnInit {
         if(rawData.eventSubType) {
           var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
           if(cpList && cpList.length > 0) {
-            var cp = cpList.find(cp => cp.id === rawData.eventSubType);
+            var cp = cpList.find(cp => cp.contentProviderId === rawData.eventSubType);
             rawData.eventSubTypeName = cp ? cp.name : "NA";
           } else {
             rawData.eventSubTypeName = "Loading...";
@@ -418,17 +428,6 @@ openSelectCPModalButtons(): Array<any> {
   }
 
 
-  getContentProviders() {
-    if(this.contentProviders.length === 0) {
-      this.contentProviderService.browseContentProviders().subscribe(
-        res => {
-          this.contentProviders = res;
-          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(res));
-        },
-        err => console.log(err)
-      )
-    }
-    }
 
 
     changeDate() {
@@ -552,7 +551,7 @@ openSelectCPModalButtons(): Array<any> {
         if(event.eventSubType) {
           var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
           if(cpList && cpList.length > 0) {
-            var cp = cpList.find(cp => cp.id === event.eventSubType);
+            var cp = cpList.find(cp => cp.contentProviderId === event.eventSubType);
             event.eventSubTypeName = cp ? cp.name : "NA";
           } else {
             event.eventSubTypeName = "Loading...";

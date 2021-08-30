@@ -22,7 +22,7 @@ export const environment = {
     kaizalaGetUserRoles : "ValidatePartnerAccessToken",
     kaizalaAppNameParam : "applicationName",
     kaizalaAppName : "com.microsoft.mobile.polymer.mishtu",
-  
+    baseHref:'portal',
     widewineTokenPrefix: "&widevine=true&token=Bearer%3D",
       filters : [
       {

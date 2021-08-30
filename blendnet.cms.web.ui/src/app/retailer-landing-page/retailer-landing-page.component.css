@@ -180,7 +180,7 @@
     /* padding-top: 22px;
     padding-bottom: 22px; */
     position: relative;
-    background-image: url('../../assets/images/retailer-landing-page/milestones.png');
+    /* background-image: url('../../assets/images/retailer-landing-page/milestones.png'); */
     background-repeat: no-repeat;
     background-position: 100% 67px;
 }
@@ -203,6 +203,10 @@
 
 .milestone-heading-1 {
     font-weight: 600;
+}
+.milestone-heading {
+    font-weight: 600;
+    color: black;
 }
 
 .milesone-progress {

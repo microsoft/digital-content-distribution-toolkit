@@ -14,7 +14,8 @@ import { ContentProviderService } from 'src/app/services/content-provider.servic
 export class RetailerLandingPageComponent implements OnInit {
   constructor(
     private toastr: ToastrService,
-    private retailerDashboardService: RetailerDashboardService
+    private retailerDashboardService: RetailerDashboardService,
+    private contentProviderService: ContentProviderService
   ) { }
   baseHref = this.retailerDashboardService.getBaseHref();
   partner: any = {
@@ -56,14 +57,34 @@ export class RetailerLandingPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getContentProviders();
     this.partnerCode = this.retailerDashboardService.getpartnerCode();
     this.retailerPartnerProvidedId = this.retailerDashboardService.getRetailerPartnerProvidedId();;
     this.getProfile();
     this.getDates();
     this.getMilestoneTotal();
-    // this.getContentProviders();
+   
     //hardcoded remove once flow form novo sends us above data
     // this.getRetailerTotals();
+  }
+
+ 
+
+  getContentProviders() {
+    if(sessionStorage.getItem("CONTENT_PROVIDERS")) {
+      this.contentProviders =  JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
+      this.contentProviders.forEach(contentProvider => {
+        this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+      }); 
+    } else {
+      this.contentProviderService.browseContentProviders().subscribe(res => {
+        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(res));
+        this.contentProviders = res;
+        this.contentProviders.forEach(contentProvider => {
+          this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+        }); 
+      });
+    }
   }
 
   copiedConfirm() {
@@ -117,12 +138,15 @@ export class RetailerLandingPageComponent implements OnInit {
             }
             if(planDetail.formula.firstOperand && planDetail.formula.secondOperand && planDetail.result) {
               milestonesCarouselArr.push({
+                ruleType: planDetail.ruleType,
                 firstOperand: planDetail.formula.firstOperand,
                 secondOperand: planDetail.formula.secondOperand,
                 value : planDetail.result.value ? planDetail.result.value : 0,
                 residualValue : planDetail.result.residualValue ? planDetail.result.residualValue : 0,
                 progress: ((planDetail.result.residualValue ? planDetail.result.residualValue : 0))*100/planDetail.formula.firstOperand,
-                eventType: planDetail.eventType
+                referral: planDetail.eventType === EventType['Retailer Referral'],
+                contentProviderId: planDetail.eventSubType
+                // eventType: planDetail.eventType
               });
             } 
           }
