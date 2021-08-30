@@ -42,4 +42,8 @@ spec:
         backend:
           serviceName: blendnet-notification-api
           servicePort: 80
+      - path: /deviceapi/*
+        backend:
+          serviceName: blendnet-device-api
+          servicePort: 80
       

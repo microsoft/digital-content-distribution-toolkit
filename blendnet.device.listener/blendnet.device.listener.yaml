@@ -1,0 +1,26 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blendnet-device-listener
+  labels:
+    app: blendnet-device-listener
+spec:
+  replicas: pod_count
+  selector:
+    matchLabels:
+      app: blendnet-device-listener
+  template:
+    metadata:
+      labels:
+        app: blendnet-device-listener
+        aadpodidbinding: pod_identity_name
+    spec:
+      containers:
+      - name: blendnet-device-listener
+        image: image_name
+        resources:
+          limits:
+            memory: "4Gi"
+            cpu: "2"
+        ports:
+        - containerPort: 80
