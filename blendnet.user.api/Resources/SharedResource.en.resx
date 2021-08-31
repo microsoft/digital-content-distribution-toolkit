@@ -162,4 +162,7 @@
   <data name="USR_ERR_015" xml:space="preserve">
     <value>USR_ERR_015-Retailer is already linked  ID : {0}  Partner Code : {1}</value>
   </data>
+  <data name="USR_ERR_016" xml:space="preserve">
+    <value>USR_ERR_016-User is not allowed</value>
+  </data>
 </root>

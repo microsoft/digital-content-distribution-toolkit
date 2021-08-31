@@ -278,7 +278,13 @@ namespace blendnet.user.api
                            .Build();
 
                 DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
-                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.User, ApplicationConstants.CosmosContainers.UserPartitionKey).Result;
+                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(    ApplicationConstants.CosmosContainers.User, 
+                                                                                                            ApplicationConstants.CosmosContainers.UserPartitionKey)
+                                                                                                            .Result;
+
+                containerResponse = database.Database.CreateContainerIfNotExistsAsync(  ApplicationConstants.CosmosContainers.WhitelistedUser, 
+                                                                                        ApplicationConstants.CosmosContainers.WhitelistedUserPartitionKey)
+                                                                                        .Result;
 
                 return client;
             });

@@ -22,6 +22,9 @@ namespace blendnet.common.dto
             public const string User = "User";
             public const string UserPartitionKey = "/phoneNumber";
 
+            public const string WhitelistedUser = "WhitelistedUser";
+            public const string WhitelistedUserPartitionKey = "/phoneNumber";
+
             public const string Retailer = "Retailer";
             public const string RetailerPartitionKey = "/partnerId";
 

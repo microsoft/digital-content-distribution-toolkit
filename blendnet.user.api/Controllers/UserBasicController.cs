@@ -70,6 +70,16 @@ namespace blendnet.user.api.Controllers
             Guid identityId = GetIdentityUserId(User.Claims);
             String phoneNumber = this.User.Identity.Name;
 
+            if (_appSettings.AllowWhitelistedUsersOnly)
+            {
+                var whitelistedUser = await _userRepository.GetWhitelistedUser(phoneNumber);
+                if (whitelistedUser is null)
+                {
+                    // This user is not enlisted
+                    return BadRequest(_stringLocalizer["USR_ERR_016"]);
+                }
+            }
+
             User user = await CreateUserIfNotExistsInternal(request);
 
             return Ok(user.UserId);

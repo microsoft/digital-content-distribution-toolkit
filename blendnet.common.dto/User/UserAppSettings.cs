@@ -14,5 +14,6 @@ namespace blendnet.common.dto.User
 
         public string DatabaseName { get; set; }
 
+        public bool AllowWhitelistedUsersOnly { get; set; }
     }
 }

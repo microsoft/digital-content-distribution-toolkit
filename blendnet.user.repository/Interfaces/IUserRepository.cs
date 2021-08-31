@@ -37,5 +37,12 @@ namespace blendnet.user.repository.Interfaces
         /// <param name="endDate"></param>
         /// <returns></returns>
         Task<List<ReferralSummary>> GetReferralSummary(string retailerPartnerId, int startDate, int endDate);
+
+        /// <summary>
+        /// Get Whitelisted user by phone number
+        /// </summary>
+        /// <param name="phoneNumber">phone number</param>
+        /// <returns></returns>
+        Task<WhitelistedUserDto> GetWhitelistedUser(string phoneNumber);
     }
 }

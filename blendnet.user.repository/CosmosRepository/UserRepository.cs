@@ -13,9 +13,10 @@ namespace blendnet.user.repository.CosmosRepository
 {
     public class UserRepository : IUserRepository
     {
-        private Container _container;
+        private readonly Container _container;
+        private readonly Container _whitelistedUsersContainer;
         private readonly ILogger _logger;
-        UserAppSettings _appSettings;
+        private readonly UserAppSettings _appSettings;
 
         public UserRepository(CosmosClient dbClient,
                                 IOptionsMonitor<UserAppSettings> optionsMonitor,
@@ -26,6 +27,7 @@ namespace blendnet.user.repository.CosmosRepository
             _logger = logger;
 
             this._container = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.User);
+            this._whitelistedUsersContainer = dbClient.GetContainer(_appSettings.DatabaseName, ApplicationConstants.CosmosContainers.WhitelistedUser);
         }
 
         /// <summary>
@@ -103,6 +105,23 @@ namespace blendnet.user.repository.CosmosRepository
             var referralData = await _container.ExtractDataFromQueryIterator<ReferralSummary>(queryDef);
 
             return referralData;
+        }
+
+        /// <summary>
+        /// Gets whitelisted user by phone number
+        /// </summary>
+        /// <param name="phoneNumber">phone number</param>
+        /// <returns></returns>
+        async Task<WhitelistedUserDto> IUserRepository.GetWhitelistedUser(string phoneNumber)
+        {
+            var queryString = "select * from c where c.phoneNumber = @phoneNumber";
+
+            var queryDef = new QueryDefinition(queryString)
+                            .WithParameter("@phoneNumber", phoneNumber);
+
+            var whitelistedUser = await _whitelistedUsersContainer.ExtractFirstDataFromQueryIterator<WhitelistedUserDto>(queryDef);
+
+            return whitelistedUser;
         }
 
         #region private methods
