@@ -19,13 +19,14 @@ namespace blendnet.device.api.Controllers
 {
     /// <summary>
     /// Device Controller
+    /// TODO:  If we go with different service principal for each device, take deviceid from token. Else current way works fine
     /// </summary>
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, 
-                    ApplicationConstants.KaizalaIdentityRoles.DeviceManagement, 
-                    ApplicationConstants.KaizalaIdentityRoles.Device)]
+                    ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement, 
+                    ApplicationConstants.KaizalaIdentityRoles.HubDevice)]
     public class DeviceController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -136,7 +137,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpPost("filterupdate", Name = nameof(FilterUpdate))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.DeviceManagement)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult> FilterUpdate(DeviceFilterUpdateRequest filterUpdateRequest)
         {
             List<string> errorInfo = new List<string>();
@@ -279,7 +280,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpPost("completecommand", Name = nameof(CompleteCommand))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Device)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDevice)]
         public async Task<ActionResult> CompleteCommand(DeviceCommandUpdateRequest filterUpdateRequest)
         {
             DeviceCommand deviceCommand = await _deviceRepository.GetDeviceCommandById(filterUpdateRequest.CommandId.Value, filterUpdateRequest.DeviceId);
@@ -354,6 +355,31 @@ namespace blendnet.device.api.Controllers
             deviceCommand.ExecutionDetails.Add(deviceCommandExecutionDetails);
 
             await _deviceRepository.UpdateInBatch(device, deviceCommand);
+
+            return NoContent();
+        }
+
+        [HttpPut("provision/{deviceId}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.HubDevice)]
+        public async Task<ActionResult> ProvisionDevice(string deviceId)
+        {
+            List<string> errorInfo = new List<string>();
+
+            var device = await _deviceRepository.GetDeviceById(deviceId);
+
+            if(device == null)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["DVC_ERR_0006"], deviceId));
+                return BadRequest(errorInfo);
+            }
+
+            device.DeviceStatus = DeviceStatus.Provisioned;
+            device.DeviceStatusUpdatedOn = DateTime.UtcNow;
+            device.ModifiedByByUserId = UserClaimData.GetUserId(User.Claims);
+            device.ModifiedDate = DateTime.UtcNow;
+
+            await _deviceRepository.UpdateDevice(device);
 
             return NoContent();
         }

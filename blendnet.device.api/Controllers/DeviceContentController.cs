@@ -19,11 +19,16 @@ using System.Threading.Tasks;
 
 namespace blendnet.device.api.Controllers
 {
+    /// <summary>
+    /// Device content controller
+    /// TODO:  If we go with different service principal for each device, take deviceid from token. 
+    /// Else current way works fine
+    /// </summary>
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin,
-                    ApplicationConstants.KaizalaIdentityRoles.Device)]
+                    ApplicationConstants.KaizalaIdentityRoles.HubDevice)]
     public class DeviceContentController : ControllerBase
     {
         private readonly ILogger _logger;

@@ -89,9 +89,9 @@ namespace blendnet.common.dto
 
             public const string RetailerManagement = "RetailerManagement";
 
-            public const string DeviceManagement = "DeviceManagement";
+            public const string HubDeviceManagement = "HubDeviceManagement";
 
-            public const string Device = "Device";
+            public const string HubDevice = "HubDevice";
 
         }
 
