@@ -41,7 +41,7 @@
             <!-- Status Column -->
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-                <td mat-cell *matCellDef="let row">{{row.status}} </td>
+                <td mat-cell *matCellDef="let row">{{row.status}} <sup class="content-status-condition">{{row.contentBroadcastStatus!=='BroadcastNotInitialized' ? '*' : ''}}</sup></td>
             </ng-container>
         
             <!-- Name Column -->
@@ -129,7 +129,7 @@
             <td mat-cell *matCellDef="let row" >
                     <mat-slide-toggle [color]="color"
                         [checked]="row.isActive"
-                        [disabled]="!(row.contentTransformStatus === 'TransformComplete' && row.contentBroadcastStatus === 'BroadcastNotInitialized')"
+                        [disabled]="!(row.status === 'TransformComplete')"
                         (click)="onToggleChange($event, row)"
                         (keyup.space)="onToggleChange($event, row)"
                         matTooltip="{{row.isActive ? 'Deactivate' : 'Activate'}}">
@@ -150,5 +150,9 @@
   
     <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
   </div>
+  <br>
+  <span class="content-status-condition">
+    * The content is in Broadcast Cancelled state.
+  </span>
 </div>  
   

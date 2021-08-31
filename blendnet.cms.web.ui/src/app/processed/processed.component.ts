@@ -102,7 +102,7 @@ export class ProcessedComponent {
     var dataSource: Content[] =[];
     if(rawData) {
       rawData.forEach( data => {
-        data.status = data.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED ? 
+        data.status = (data.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED && data.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE) ? 
         data.contentBroadcastStatus : data.contentTransformStatus
         data.isSelected = false;
         dataSource.push(data);

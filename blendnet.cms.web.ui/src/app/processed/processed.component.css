@@ -45,3 +45,6 @@ td.mat-footer-cell:last-of-type {
   .filter-separator {
     border-top: 1px  grey;
   }
+  .content-status-condition{
+    color: red;
+  }
