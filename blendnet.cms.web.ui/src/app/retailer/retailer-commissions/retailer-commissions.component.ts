@@ -6,6 +6,7 @@ import { RetailerCommissionDialogComponent } from '../retailer-commission-dialog
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service'
 import { EventType } from '@azure/msal-browser';
+import { ContentProviderService } from 'src/app/services/content-provider.service';
 
 
 @Component({
@@ -47,14 +48,17 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
   nestedCommissions = [];
   totalEarnings = 0;
   baseHref = this.retailerDashboardService.getBaseHref();
+  contentProviders: any;
   constructor(
     public userService: UserService,
     public router: Router,
     public dialog: MatDialog,
-    private retailerDashboardService: RetailerDashboardService
+    private retailerDashboardService: RetailerDashboardService,
+    private contentProviderService: ContentProviderService
   ) { }
 
   ngOnInit(): void {
+    this.getContentProviders();
     this.partnerCode = this.retailerDashboardService.getpartnerCode();
     this.retailerPartnerProvidedId = this.retailerDashboardService.getRetailerPartnerProvidedId();
     this.getDates();
@@ -157,6 +161,23 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
     )
   }
 
+  getContentProviders() {
+    if(sessionStorage.getItem("CONTENT_PROVIDERS")) {
+      this.contentProviders =  JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
+      this.contentProviders.forEach(contentProvider => {
+        this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+      }); 
+    } else {
+      this.contentProviderService.browseContentProviders().subscribe(res => {
+        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(res));
+        this.contentProviders = res;
+        this.contentProviders.forEach(contentProvider => {
+          this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+        }); 
+      });
+    }
+  }
+
   getCommissionsSliderInfo() {
     let commissionsCarouselArr = [];
     this.retailerDashboardService.getReferralsCommissionsCarouselInfo(
@@ -167,9 +188,9 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
           if(planDetail.eventType === 'RETAILER_INCOME_ORDER_COMPLETED') {
             console.log(planDetail.formula.formulaType);
             if(planDetail.formula.formulaType === 'PERCENTAGE') {
-              planDetail.earnText = 'Earn ' + planDetail.formula.firstOperand + '% for each ' + planDetail.eventTitle;
+              planDetail.earnText = 'Earn ' + planDetail.formula.firstOperand + '% for each ' + this.contentProviders[planDetail.eventSubType] + ' order';
             } else if(planDetail.formula.formulaType === 'PLUS') {
-              planDetail.earnText = 'Earn Rs.' + planDetail.formula.firstOperand + ' for each ' + planDetail.eventTitle;
+              planDetail.earnText = 'Earn Rs.' + planDetail.formula.firstOperand + ' for each ' + this.contentProviders[planDetail.eventSubType] + ' order';
 
             }
             planDetail.validTillText = res.endDate;

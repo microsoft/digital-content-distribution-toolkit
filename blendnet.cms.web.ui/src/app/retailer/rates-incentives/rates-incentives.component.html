@@ -52,10 +52,10 @@
                 <div class="each-offer" *ngIf="milestone.eventType === eventType['Retailer Referral']">
                     <div class="each-offer-inner milestones-each-offer-inner referral-milestone">
                         <div class="each-offer-text-block">
-                            Earn Rs {{milestone.formula.secondOperand}} Bonus for every {{milestone.eventTitle}}
+                            Earn Rs {{milestone.formula.secondOperand}} Bonus for every {{milestone.formula.firstOperand}} Referrals
                         </div>
                         <div class="each-offer-conversion">
-                            {{milestone.eventTitle}}  = Rs {{milestone.formula.secondOperand}} Earning
+                           {{milestone.formula.firstOperand}} Referral/s = Rs {{milestone.formula.secondOperand}} Earning
                         </div>
                     </div>
                 </div>
@@ -71,10 +71,10 @@
                     </div>
                     <div class="each-offer-inner milestones-each-offer-inner commission-milestone" *ngIf="milestone.formula.formulaType === 'DIVIDE_AND_MULTIPLY'">
                         <div class="each-offer-text-block">
-                            Earn Rs {{milestone.formula.secondOperand}} Bonus for every  {{milestone.formula.firstOperand}} {{milestone.eventTitle}}
+                            Earn Rs {{milestone.formula.secondOperand}} Bonus for every  {{milestone.formula.firstOperand}} {{contentProviders[milestone.eventSubType]}} order
                         </div>
                         <div class="each-offer-conversion">
-                            {{milestone.eventTitle}} = Rs {{milestone.formula.secondOperand}} Earning
+                            {{milestone.formula.firstOperand}} Order/s = Rs {{milestone.formula.secondOperand}} Earning
                         </div>
                     </div>
                 </div>

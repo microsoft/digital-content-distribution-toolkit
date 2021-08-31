@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service';
 import { EventType } from 'src/app/models/incentive.model';
-import { Contentproviders } from '../../models/incentive.model';
 import { ContentProviderService } from 'src/app/services/content-provider.service';
 
 @Component({
