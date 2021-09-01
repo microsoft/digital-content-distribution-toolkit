@@ -174,4 +174,10 @@
   <data name="OMS_ERR_0019" xml:space="preserve">
     <value>OMS_ERR_0019-Redemption is not allowed currently.</value>
   </data>
+  <data name="OMS_ERR_0020" xml:space="preserve">
+    <value>OMS_ERR_0020-RetailerPartnerCode should be null for RetailerManagement role</value>
+  </data>
+  <data name="OMS_ERR_0021" xml:space="preserve">
+    <value>OMS_ERR_0021-RetailerPartnerCode parameter is mandatory for superadmin or retailer</value>
+  </data>
 </root>

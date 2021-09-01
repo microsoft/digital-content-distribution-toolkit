@@ -14,6 +14,8 @@ namespace blendnet.oms.api.Model
         [Required]
         public string RetailerPartnerProvidedId { get; set; }
 
+        public string RetailerPartnerCode { get; set; }
+
         [Required]
         public float AmountCollected { get; set; }
 

@@ -35,7 +35,10 @@ namespace blendnet.oms.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.User)]
+    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, 
+        KaizalaIdentityRoles.User, 
+        KaizalaIdentityRoles.RetailerManagement, 
+        KaizalaIdentityRoles.Retailer)]
     public class OrderController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -108,6 +111,8 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPost("createorder", Name = nameof(CreateOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin,
+        KaizalaIdentityRoles.User)]
         public async Task<ActionResult> CreateOrder(OrderRequest orderRequest)
         {
             List<string> errorInfo = new List<string>();
@@ -165,13 +170,22 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPut("completeorder", Name = nameof(CompleteOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.RetailerManagement)]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, 
+            KaizalaIdentityRoles.RetailerManagement,
+            KaizalaIdentityRoles.Retailer)]
         public async Task<ActionResult> CompleteOrder(CompleteOrderRequest completeOrderRequest)
         {
             List<string> errorInfo = new List<string>();
 
-            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
-            RetailerProviderDto retailerProvider = await _retailerProviderProxy.GetRetailerProviderByUserId(callerUserId);
+            errorInfo = ValidateRequestParams(completeOrderRequest);
+
+            if(errorInfo.Count != 0)
+            {
+                return BadRequest(errorInfo);
+            }
+
+            RetailerProviderDto retailerProvider = await GetRetailerProvider(completeOrderRequest);
+                
             if (retailerProvider == null)
             {
                 errorInfo.Add(_stringLocalizer["OMS_ERR_0016"]);
@@ -241,6 +255,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPost("redeem", Name = nameof(RedeemOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        [AuthorizeRoles(KaizalaIdentityRoles.User)]
         public async Task<ActionResult> RedeemOrder(OrderRequest orderRequest)
         {
             List<string> errorInfo = new List<string>();
@@ -332,6 +347,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPut("cancel/{orderId:guid}", Name = nameof(CancelOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(KaizalaIdentityRoles.User)]
         public async Task<ActionResult> CancelOrder(Guid orderId)
         {
             var userPhoneNumber = User.Identity.Name;
@@ -379,6 +395,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("token/{contentId:guid}", Name = nameof(GetContentToken))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.User)]
         public async Task<ActionResult<string>> GetContentToken(Guid contentId)
         {
             List<string> errorDetails = new List<string>();
@@ -421,7 +438,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("summary/{retailerPartnerProvidedId}", Name = nameof(GetOrderSummary))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.RetailerManagement)]
+        [AuthorizeRoles(KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult> GetOrderSummary(string retailerPartnerProvidedId, int startDate, int endDate)
         {
             List<string> errorDetails = new List<string>();
@@ -542,6 +559,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpPost("orderlist")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(KaizalaIdentityRoles.User)]
         public async Task<ActionResult<List<Order>>> GetOrder(OrderStatusFilter orderFilter)
         {
             string phoneNumber = User.Identity.Name;
@@ -564,6 +582,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("active")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.User)]
         public async Task<ActionResult<common.dto.Oms.OrderItem>> GetActiveSubscriptionOrders()
         {
             var userPhoneNumber = User.Identity.Name;
@@ -1031,6 +1050,47 @@ namespace blendnet.oms.api.Controllers
             };
             
             _telemetryClient.TrackEvent(orderCreatedAIEvent);
+        }
+
+        private List<string> ValidateRequestParams(CompleteOrderRequest completeOrderRequest)
+        {
+            List<string> errorInfo = new List<string>();
+
+            if(User.IsInRole(KaizalaIdentityRoles.RetailerManagement))
+            {
+                if(!string.IsNullOrEmpty(completeOrderRequest.RetailerPartnerCode))
+                {
+                    errorInfo.Add(_stringLocalizer["OMS_ERR_0020"]);
+                    return errorInfo;
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(completeOrderRequest.RetailerPartnerCode))
+                {
+                    errorInfo.Add(_stringLocalizer["OMS_ERR_0021"]);
+                    return errorInfo;
+                }
+            }
+
+            return errorInfo;
+        } 
+
+        private async Task<RetailerProviderDto> GetRetailerProvider(CompleteOrderRequest completeOrderRequest)
+        {
+            RetailerProviderDto retailerProvider = null;
+
+            if(User.IsInRole(KaizalaIdentityRoles.RetailerManagement))
+            {
+                Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+                retailerProvider = await _retailerProviderProxy.GetRetailerProviderByUserId(callerUserId);
+            }
+            else
+            {
+                retailerProvider = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(completeOrderRequest.RetailerPartnerCode);
+            }
+
+            return retailerProvider;
         }
 
         #endregion
