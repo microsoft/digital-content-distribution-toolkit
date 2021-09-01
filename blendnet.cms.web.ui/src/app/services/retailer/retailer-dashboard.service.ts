@@ -23,9 +23,10 @@ export class RetailerDashboardService {
   ) { }
 
 
-  getAggregatedRetailerDetails(partnerCode: string, retailerPartnerProvidedId: string, startDate='', endDate=''): Observable<any>{
+  getAggregatedRetailerDetails(partnerCode: string, retailerPartnerProvidedId: string, startDate, endDate): Observable<any>{
     let url = this.baseUrl + 'IncentiveEvent/retailer/regular/';
     // let url = this.baseUrl + 'IncentiveEvent/retailer/events';
+      
       const rangeUrl = (startDate && endDate) ? 'range/': '';
       url += rangeUrl;
       url += partnerCode + '/' + retailerPartnerProvidedId;
@@ -39,7 +40,7 @@ export class RetailerDashboardService {
     return this.http.get(url, {params: {partnerCode: partnerCode, retailerPartnerProvidedId: retailerPartnerProvidedId, version :'1'}});
   }
 
-  getReferralsCommissionsInDetail(partnerCode: string, retailerPartnerProvidedId: string, startDate='', endDate='', eventType: string): Observable<any>{
+  getReferralsCommissionsInDetail(partnerCode: string, retailerPartnerProvidedId: string, startDate, endDate, eventType: string): Observable<any>{
     let url = this.baseUrl + 'IncentiveEvent/retailer/events';
     return this.http.get(url, {params: {partnerCode: partnerCode, retailerPartnerProvidedId: retailerPartnerProvidedId, version :'1', eventType: eventType, startDate: startDate, endDate: endDate}});
   }

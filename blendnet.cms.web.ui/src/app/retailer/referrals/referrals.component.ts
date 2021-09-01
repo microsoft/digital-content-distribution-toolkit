@@ -56,7 +56,14 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
     let occuredDates = [];
     let nestedReferrals = [];
     let totalEarnings = 0;
-    this.retailerDashboardService.getReferralsCommissionsInDetail(partnerCode, retailerPartnerProvidedId, dateObj.firstDateString, dateObj.lastDateString, 'RETAILER_INCOME_REFERRAL_COMPLETED').subscribe(
+    var startDate = new Date(dateObj.firstDateString);
+    var endDate = new Date(dateObj.lastDateString);
+    endDate.setHours(endDate.getHours() + 23);
+    endDate.setMinutes(endDate.getMinutes() + 59);
+    endDate.setSeconds(endDate.getSeconds() + 59);
+    var endDateUTCString  = endDate.toISOString();
+    var startDateUTCString  = startDate.toISOString()
+    this.retailerDashboardService.getReferralsCommissionsInDetail(partnerCode, retailerPartnerProvidedId, startDateUTCString, endDateUTCString, 'RETAILER_INCOME_REFERRAL_COMPLETED').subscribe(
       res => {
          res.forEach(transaction => {
           console.log(transaction.eventOccuranceTime);
