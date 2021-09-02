@@ -411,7 +411,9 @@ namespace blendnet.incentive.api.Controllers
 
             var numberOfDays = (endDate - startDate).TotalDays;
 
-            if (numberOfDays > 30)
+            int maxDaysGap = _configuration.GetValue<int>("MaxDaysGapInQuery");
+
+            if (numberOfDays > maxDaysGap)
             {
                 errorInfo.Add(_stringLocalizer["INC_ERR_0030"]);
                 return BadRequest(errorInfo);
