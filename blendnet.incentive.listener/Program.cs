@@ -4,11 +4,13 @@ using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.common.infrastructure.KeyVault;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.incentive.listener.IntegrationEventHandling;
 using blendnet.incentive.repository.IncentiveRepository;
 using blendnet.incentive.repository.Interfaces;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
@@ -77,6 +79,8 @@ namespace blendnet.incentive.listener
 
                     services.AddHostedService<EventListener>();
 
+                    //set up application insights
+                    services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
                     services.AddApplicationInsightsTelemetryWorkerService();
 
                     string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");

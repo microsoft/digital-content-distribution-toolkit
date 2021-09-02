@@ -4,11 +4,13 @@ using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.common.infrastructure.KeyVault;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.retailer.listener.IntegrationEventHandling;
 using blendnet.retailer.repository.CosmosRepository;
 using blendnet.retailer.repository.Interfaces;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Azure;
@@ -76,6 +78,8 @@ namespace blendnet.retailer.listener
 
                     services.AddHostedService<EventListener>();
 
+                    //set up application insights
+                    services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
                     services.AddApplicationInsightsTelemetryWorkerService();
 
                     string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");

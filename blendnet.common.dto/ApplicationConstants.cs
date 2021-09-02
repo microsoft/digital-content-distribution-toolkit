@@ -276,5 +276,10 @@ namespace blendnet.common.dto
             public const string AlphaNumeric = "^[a-zA-Z0-9]*$";
         }
 
+        public struct ApplicationInsightsDefaultEventProperty
+        {
+            public const string BlendNetCustomEvent = "BlendNetCustomEvent";
+        }
+
     }
 }

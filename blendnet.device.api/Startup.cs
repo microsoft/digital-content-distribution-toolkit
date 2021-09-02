@@ -4,11 +4,13 @@ using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Device;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.device.repository.CosmosRepository;
 using blendnet.device.repository.Interfaces;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -153,6 +155,7 @@ namespace blendnet.device.api
             });
 
             //Configure Application Insights
+            services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
 
             //Configure health check

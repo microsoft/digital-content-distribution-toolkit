@@ -22,6 +22,8 @@ using blendnet.api.proxy.IOTCentral;
 using System.Net.Http;
 using Polly;
 using Polly.Extensions.Http;
+using Microsoft.ApplicationInsights.Extensibility;
+using blendnet.common.infrastructure.ApplicationInsights;
 
 namespace blendnet.device.listener
 {
@@ -80,6 +82,8 @@ namespace blendnet.device.listener
 
                     services.AddHostedService<EventListener>();
 
+                    //set up application insights
+                    services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
                     services.AddApplicationInsightsTelemetryWorkerService();
 
                     string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");

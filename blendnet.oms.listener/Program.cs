@@ -16,6 +16,8 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using blendnet.api.proxy.Notification;
+using Microsoft.ApplicationInsights.Extensibility;
+using blendnet.common.infrastructure.ApplicationInsights;
 
 namespace blendnet.oms.listener
 {
@@ -74,6 +76,8 @@ namespace blendnet.oms.listener
 
                     services.AddHostedService<EventListener>();
 
+                    //set up application insights
+                    services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
                     services.AddApplicationInsightsTelemetryWorkerService();
 
                     string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");

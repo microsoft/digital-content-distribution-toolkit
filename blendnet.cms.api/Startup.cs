@@ -13,11 +13,12 @@ using blendnet.cms.repository.CosmosRepository;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.cms;
-using blendnet.common.dto.Cms;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.ServiceBus;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -158,6 +159,7 @@ namespace blendnet.cms.api
             });
 
             //Configure Application Insights
+            services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
 
             //Configure health check

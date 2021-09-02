@@ -5,12 +5,14 @@ using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.incentive.api.Common;
 using blendnet.incentive.repository.IncentiveRepository;
 using blendnet.incentive.repository.Interfaces;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -148,6 +150,7 @@ namespace blendnet.incentive.api
             });
 
             //Configure Application Insights
+            services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
 
             //Configure health check

@@ -27,6 +27,8 @@ using Azure.Security.KeyVault.Secrets;
 using blendnet.api.proxy.KaizalaIdentity;
 using System.Configuration;
 using blendnet.api.proxy.Ses;
+using Microsoft.ApplicationInsights.Extensibility;
+using blendnet.common.infrastructure.ApplicationInsights;
 
 namespace blendnet.cms.listener
 {
@@ -85,6 +87,8 @@ namespace blendnet.cms.listener
 
                     services.AddHostedService<EventListener>();
 
+                    //Setup Application Insights
+                    services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
                     services.AddApplicationInsightsTelemetryWorkerService();
 
                     string cmsStorageConnectionString = hostContext.Configuration.GetValue<string>("CMSStorageConnectionString");

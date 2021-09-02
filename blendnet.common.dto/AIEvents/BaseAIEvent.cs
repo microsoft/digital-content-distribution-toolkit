@@ -31,6 +31,10 @@ namespace blendnet.common.dto.AIEvents
         {
             Dictionary<string, string> ret = new Dictionary<string, string>();
 
+            //add a default property depecting it is a blendnet custom event. Based on this, adaptive sampling will be skipped for this.
+            ret.Add(ApplicationConstants.ApplicationInsightsDefaultEventProperty.BlendNetCustomEvent, 
+                    ApplicationConstants.ApplicationInsightsDefaultEventProperty.BlendNetCustomEvent);
+
             foreach (PropertyInfo prop in this.GetType().GetProperties())
             {
                 string propName = prop.Name;

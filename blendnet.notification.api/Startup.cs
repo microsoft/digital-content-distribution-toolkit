@@ -4,11 +4,13 @@ using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Notification;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.notification.repository;
 using blendnet.notification.repository.Interfaces;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -153,6 +155,7 @@ namespace blendnet.notification.api
             });
 
             //Configure Application Insights
+            services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
 
             //Configure health check

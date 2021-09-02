@@ -31,6 +31,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.api.proxy.Incentive;
+using Microsoft.ApplicationInsights.Extensibility;
+using blendnet.common.infrastructure.ApplicationInsights;
 
 namespace blendnet.oms.api
 {
@@ -150,6 +152,7 @@ namespace blendnet.oms.api
             });
 
             //Configure Application Insights
+            services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
 
             //Configure health check

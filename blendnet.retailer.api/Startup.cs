@@ -27,6 +27,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.api.proxy;
+using Microsoft.ApplicationInsights.Extensibility;
+using blendnet.common.infrastructure.ApplicationInsights;
 
 namespace blendnet.retailer.api
 {
@@ -148,6 +150,7 @@ namespace blendnet.retailer.api
             });
 
             //Configure Application Insights
+            services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
             services.AddApplicationInsightsTelemetry();
 
             //Configure health check
