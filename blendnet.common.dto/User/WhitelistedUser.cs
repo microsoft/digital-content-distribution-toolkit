@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace blendnet.common.dto.User
 {
@@ -22,5 +23,25 @@ namespace blendnet.common.dto.User
         /// Email ID associated with this user
         /// </summary>
         public string EmailId { get; set; }
+
+        /// <summary>
+        /// User ID who whitelisted this user
+        /// </summary>
+        public Guid WhitelistedByUserId { get ; set; }
+
+        /// <summary>
+        /// Role of the user who whitelisted this user (superadmin/retailer/...)
+        /// </summary>
+        public string WhitelistedByUserRole { get; set; }
+
+        /// <summary>
+        /// Partner Code of the retailer who whitelisted this user
+        /// </summary>
+        public string PartnerCode { get; set; }
+
+        /// <summary>
+        /// Partner-provided Retailer ID of the retailer who whitelisted this user
+        /// </summary>
+        public string PartnerProvidedRetailerId { get; set; }
     }
 }

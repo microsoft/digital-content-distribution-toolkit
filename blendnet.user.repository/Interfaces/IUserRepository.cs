@@ -39,10 +39,37 @@ namespace blendnet.user.repository.Interfaces
         Task<List<ReferralSummary>> GetReferralSummary(string retailerPartnerId, int startDate, int endDate);
 
         /// <summary>
+        /// Create Whitelisted user
+        /// </summary>
+        /// <param name="whitelistedUser">user to be created</param>
+        /// <returns>the whitelisted phone number</returns>
+        Task<string> CreateWhitelistedUser(WhitelistedUserDto whitelistedUser);
+
+        /// <summary>
         /// Get Whitelisted user by phone number
         /// </summary>
         /// <param name="phoneNumber">phone number</param>
         /// <returns></returns>
         Task<WhitelistedUserDto> GetWhitelistedUser(string phoneNumber);
+
+        /// <summary>
+        /// Get Whitelisted users count by user ID
+        /// </summary>
+        /// <param name="userId">user ID who created the whitelisted users</param>
+        /// <returns></returns>
+        Task<int> CountOfUsersWhitelistedByUserId(Guid userId);
+        
+        /// <summary>
+        /// Get Whitelisted users count (total)
+        /// </summary>
+        /// <returns></returns>
+        Task<int> WhitelistedUsersTotalCount();
+
+        /// <summary>
+        /// Delete Whitelisted user
+        /// </summary>
+        /// <param name="phoneNumber">phone number</param>
+        /// <returns></returns>
+        Task<int> DeleteWhitelistedUser(string phoneNumber);
     }
 }

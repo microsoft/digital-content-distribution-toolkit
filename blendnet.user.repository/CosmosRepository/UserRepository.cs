@@ -5,7 +5,9 @@ using blendnet.user.repository.Interfaces;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using User = blendnet.common.dto.User.User;
 
@@ -122,6 +124,67 @@ namespace blendnet.user.repository.CosmosRepository
             var whitelistedUser = await _whitelistedUsersContainer.ExtractFirstDataFromQueryIterator<WhitelistedUserDto>(queryDef);
 
             return whitelistedUser;
+        }
+
+        /// <summary>
+        /// Create Whitelisted user
+        /// </summary>
+        /// <param name="whitelistedUser">user to be created</param>
+        /// <returns></returns>
+        async Task<string> IUserRepository.CreateWhitelistedUser(WhitelistedUserDto whitelistedUser)
+        {
+            await _whitelistedUsersContainer.CreateItemAsync<WhitelistedUserDto>(whitelistedUser);
+            return whitelistedUser.PhoneNumber;
+        }
+
+        /// <summary>
+        /// Get Whitelisted user count for user ID
+        /// </summary>
+        /// <param name="userId">user ID of source who created the whitelisted users</param>
+        /// <returns></returns>
+        async Task<int> IUserRepository.CountOfUsersWhitelistedByUserId(Guid userId)
+        {
+            const string queryString = "select value count(c) from c where c.whitelistedByUserId = @userId";
+
+            var queryDef = new QueryDefinition(queryString)
+                            .WithParameter("@userId", userId);
+
+            var count = await _whitelistedUsersContainer.ExtractFirstDataFromQueryIterator<int>(queryDef);
+
+            return count;
+        }
+
+        /// <summary>
+        /// Get Whitelisted user count (total)
+        /// </summary>
+        /// <returns></returns>
+        async Task<int> IUserRepository.WhitelistedUsersTotalCount()
+        {
+            const string queryString = "select value count(c) from c";
+
+            var queryDef = new QueryDefinition(queryString);
+
+            var count = await _whitelistedUsersContainer.ExtractFirstDataFromQueryIterator<int>(queryDef);
+
+            return count;
+        }
+
+        /// <summary>
+        /// Delete Whitelisted user
+        /// </summary>
+        /// <param name="phoneNumber">phone number</param>
+        /// <returns></returns>
+        async Task<int> IUserRepository.DeleteWhitelistedUser(string phoneNumber)
+        {
+            try
+            {
+                var response = await _whitelistedUsersContainer.DeleteItemAsync<WhitelistedUserDto>(phoneNumber, new PartitionKey(phoneNumber));
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
         }
 
         #region private methods

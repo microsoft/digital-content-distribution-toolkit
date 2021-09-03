@@ -165,4 +165,13 @@
   <data name="USR_ERR_016" xml:space="preserve">
     <value>USR_ERR_016-User is not allowed</value>
   </data>
+  <data name="USR_ERR_017" xml:space="preserve">
+    <value>USR_ERR_017-You are not allowed to add users</value>
+  </data>
+  <data name="USR_ERR_018" xml:space="preserve">
+    <value>USR_ERR_018-Invalid Partner Code / Retailer ID</value>
+  </data>
+  <data name="USR_ERR_019" xml:space="preserve">
+    <value>USR_ERR_019-Limit Reached</value>
+  </data>
 </root>
