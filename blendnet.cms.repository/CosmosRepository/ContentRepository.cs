@@ -209,40 +209,34 @@ namespace blendnet.cms.repository.CosmosRepository
             return contentResult;
         }
 
+        /// <summary>
+        /// Returns the query based on given filter condition
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="contentStatusFilter"></param>
+        /// <param name="activeOnly"></param>
+        /// <returns></returns>
         private QueryDefinition GetQueryDefinitionWithStatusFilter( Guid contentProviderId, 
                                                                     ContentStatusFilter contentStatusFilter, 
                                                                     bool activeOnly)
         {
-            string queryString = string.Empty;
-
-            queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId ";
+            string queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId ";
 
             if (contentStatusFilter != null)
             {
-                string statuses = string.Empty;
-
-                if (contentStatusFilter.ContentUploadStatuses != null &&
-                    contentStatusFilter.ContentUploadStatuses.Length > 0)
+                if (contentStatusFilter.IsContentUploadStatusesPresent)
                 {
-                    statuses = string.Join(",", contentStatusFilter.ContentUploadStatuses.Select(item => "'" + item + "'"));
-
-                    queryString = $" {queryString} AND c.contentUploadStatus IN ({statuses})";
+                    queryString = $" {queryString} AND ARRAY_CONTAINS(@uploadStatuses, c.contentUploadStatus)";
                 }
 
-                if (contentStatusFilter.ContentTransformStatuses != null &&
-                    contentStatusFilter.ContentTransformStatuses.Length > 0)
+                if (contentStatusFilter.IsContentTransformStatusesPresent)
                 {
-                    statuses = string.Join(",", contentStatusFilter.ContentTransformStatuses.Select(item => "'" + item + "'"));
-
-                    queryString = $" {queryString} AND c.contentTransformStatus IN ({statuses})";
+                    queryString = $" {queryString} AND ARRAY_CONTAINS(@transformStatuses, c.contentTransformStatus)";
                 }
 
-                if (contentStatusFilter.ContentBroadcastStatuses != null &&
-                    contentStatusFilter.ContentBroadcastStatuses.Length > 0)
+                if (contentStatusFilter.IsContentBroadcastStatusesPresent)
                 {
-                    statuses = string.Join(",", contentStatusFilter.ContentBroadcastStatuses.Select(item => "'" + item + "'"));
-
-                    queryString = $" {queryString} AND c.contentBroadcastStatus IN ({statuses})";
+                    queryString = $" {queryString} AND ARRAY_CONTAINS(@broadcastStatuses, c.contentBroadcastStatus)";
                 }
             }
 
@@ -258,6 +252,21 @@ namespace blendnet.cms.repository.CosmosRepository
             queryDef.WithParameter("@type", ContentContainerType.Content);
 
             queryDef.WithParameter("@contentProviderId", contentProviderId);
+
+            if (contentStatusFilter.IsContentUploadStatusesPresent)
+            {
+                queryDef.WithParameter("@uploadStatuses", contentStatusFilter.ContentUploadStatuses);
+            }
+
+            if (contentStatusFilter.IsContentTransformStatusesPresent)
+            {
+                queryDef.WithParameter("@transformStatuses", contentStatusFilter.ContentTransformStatuses);
+            }
+
+            if (contentStatusFilter.IsContentBroadcastStatusesPresent)
+            {
+                queryDef.WithParameter("@broadcastStatuses", contentStatusFilter.ContentBroadcastStatuses);
+            }
 
             return queryDef;
         }
@@ -296,13 +305,13 @@ namespace blendnet.cms.repository.CosmosRepository
         {
             List<Content> contentList = new List<Content>();
 
-            string contentIdsData = string.Join(",", contentIds.Select(item => "'" + item.ToString() + "'"));
-
-            var queryString = $"SELECT * FROM c WHERE c.contentId in ({contentIdsData}) AND c.type = @type";
+            var queryString = $"SELECT * FROM c WHERE ARRAY_CONTAINS(@contentIds, c.contentId) AND c.type = @type";
 
             var queryDef = new QueryDefinition(queryString);
 
             queryDef.WithParameter("@type", ContentContainerType.Content);
+
+            queryDef.WithParameter("@contentIds", contentIds);
 
             contentList = await this._container.ExtractDataFromQueryIterator<Content>(queryDef);
 
