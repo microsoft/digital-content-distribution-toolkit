@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using blendnet.api.proxy.Kaizala;
-using blendnet.cms.repository.CosmosRepository;
+using blendnet.common.dto.Common;
 using blendnet.common.dto.Notification;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;

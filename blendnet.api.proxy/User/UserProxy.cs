@@ -10,6 +10,8 @@ using blendnet.common.dto.User;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using blendnet.common.dto.Extensions;
+
 
 namespace blendnet.api.proxy
 {
@@ -20,6 +22,8 @@ namespace blendnet.api.proxy
     {
         private readonly HttpClient _userHttpClient;
 
+        private readonly IDistributedCache _cache;
+
         public UserProxy(IHttpClientFactory clientFactory,
                           IConfiguration configuration,
                           ILogger<UserProxy> logger,
@@ -28,6 +32,7 @@ namespace blendnet.api.proxy
         {
             _userHttpClient = clientFactory.CreateClient(ApplicationConstants.HttpClientKeys.USER_HTTP_CLIENT);
 
+            _cache = cache;
         }
 
         /// <summary>
@@ -37,22 +42,41 @@ namespace blendnet.api.proxy
         /// <returns></returns>
         public async Task<User> GetUserByPhoneNumber(string phoneNumber)
         {
-            UserByPhoneRequest request = new UserByPhoneRequest() { PhoneNumber = phoneNumber };
+            string userByPhoneNoCacheKey = $"{phoneNumber}{ApplicationConstants.DistributedCacheKeySuffix.USERBYPHONEKEY}";
 
-            string url = $"User/user";
+            User userFromCache = await _cache.GetAsync<User>(userByPhoneNoCacheKey);
 
-            string accessToken = await base.GetServiceAccessToken();
-
-            User user = null;
-
-            try
+            if (userFromCache != default(User))
             {
-                user = await _userHttpClient.Post<UserByPhoneRequest,User>(url,request, true,null,accessToken);
+                return userFromCache;
             }
-            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {}
+            else
+            {
+                UserByPhoneRequest request = new UserByPhoneRequest() { PhoneNumber = phoneNumber };
 
-            return user;
+                string url = $"User/user";
+
+                string accessToken = await base.GetServiceAccessToken();
+
+                User user = null;
+
+                try
+                {
+                    user = await _userHttpClient.Post<UserByPhoneRequest, User>(url, request, true, null, accessToken);
+
+                    //if the user is retrieved store in cache for 24 hours to avoid database calls
+                    if (user != null)
+                    {
+                        await _cache.SetAsync<User>(userByPhoneNoCacheKey,
+                                                    user, 
+                                                    ApplicationConstants.DistributedCacheDurationsInHrs.Long);
+                    }
+                }
+                catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                { }
+
+                return user;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using blendnet.common.dto.Device;
+﻿using blendnet.common.dto.Common;
+using blendnet.common.dto.Device;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -106,7 +107,21 @@ namespace blendnet.device.repository.Interfaces
         /// </summary>
         /// <param name="deviceId"></param>
         /// <returns></returns>
-        Task<List<DeviceContent>> GetContentsByDeviceId(string deviceId);
+        Task<List<DeviceContent>> GetContentByDeviceId(string deviceId);
+
+
+        /// <summary>
+        /// Return the content on device for the given device and content provider id
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="contentProviderId"></param>
+        /// <param name="continuationToken"></param>
+        /// <param name="activeOnly"></param>
+        /// <returns></returns>
+        Task<ResultData<DeviceContent>> GetContentByDeviceId(string deviceId,
+                                                              Guid contentProviderId,
+                                                              string continuationToken,
+                                                              bool activeOnly);
 
         /// <summary>
         /// Gets device content by device id and content id
@@ -115,5 +130,13 @@ namespace blendnet.device.repository.Interfaces
         /// <param name="deviceId"></param>
         /// <returns></returns>
         Task<DeviceContent> GetContentByDeviceIdContentId(Guid contentId, string deviceId);
+
+        /// <summary>
+        /// Returns the content availability on given device ids
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <param name="deviceIds"></param>
+        /// <returns></returns>
+        Task<List<DeviceContent>> GetContentAvailability(Guid contentId, List<string> deviceIds);
     }
 }

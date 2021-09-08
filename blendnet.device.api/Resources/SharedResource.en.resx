@@ -144,4 +144,7 @@
   <data name="DVC_ERR_0009" xml:space="preserve">
     <value>DVC_ERR_0009-SYSTEM_ERROR-{0}</value>
   </data>
+  <data name="DVC_ERR_0010" xml:space="preserve">
+    <value>DVC_ERR_0010-Content Id, Device Id(s) are mandatory!</value>
+  </data>
 </root>

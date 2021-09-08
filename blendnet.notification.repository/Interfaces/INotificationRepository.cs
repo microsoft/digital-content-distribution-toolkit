@@ -1,4 +1,4 @@
-﻿using blendnet.cms.repository.CosmosRepository;
+﻿using blendnet.common.dto.Common;
 using blendnet.common.dto.Notification;
 using System;
 using System.Collections.Generic;

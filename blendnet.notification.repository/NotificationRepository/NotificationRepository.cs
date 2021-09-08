@@ -1,7 +1,5 @@
-﻿
-
-using blendnet.cms.repository.CosmosRepository;
-using blendnet.common.dto;
+﻿using blendnet.common.dto;
+using blendnet.common.dto.Common;
 using blendnet.common.dto.Notification;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.notification.repository.Interfaces;

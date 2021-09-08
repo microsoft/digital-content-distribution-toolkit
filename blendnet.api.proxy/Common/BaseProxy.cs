@@ -61,7 +61,7 @@ namespace blendnet.api.proxy.Common
 
             string serviceId = _configuration["CloudApiServiceAccountId"];
 
-            string accessTokenCacheKey = $"{serviceId}{ApplicationConstants.DistributedCacheKeyPrefix.SERVICEACCOUNTKEY}";
+            string accessTokenCacheKey = $"{serviceId}{ApplicationConstants.DistributedCacheKeySuffix.SERVICEACCOUNTKEY}";
 
             string accessTokenFromCache = await _cache.GetStringAsync(accessTokenCacheKey);
 

@@ -1,4 +1,4 @@
-using blendnet.cms.repository.CosmosRepository;
+using blendnet.common.dto.Common;
 using Microsoft.Azure.Cosmos;
 using System.Collections.Generic;
 using System.Linq;

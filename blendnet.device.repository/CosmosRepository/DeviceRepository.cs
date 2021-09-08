@@ -1,4 +1,5 @@
 ﻿using blendnet.common.dto;
+using blendnet.common.dto.Common;
 using blendnet.common.dto.Device;
 using blendnet.common.dto.Exceptions;
 using blendnet.common.infrastructure.Extensions;
@@ -281,13 +282,75 @@ namespace blendnet.device.repository.CosmosRepository
         /// </summary>
         /// <param name="deviceId"></param>
         /// <returns></returns>
-        public async Task<List<DeviceContent>> GetContentsByDeviceId(string deviceId)
+        public async Task<List<DeviceContent>> GetContentByDeviceId(string deviceId)
         {
-            var query = $"SELECT * FROM c WHERE c.deviceId = @deviceId";
+            var query = $"SELECT * FROM c WHERE c.deviceId = @deviceId AND c.deviceContainerType = @deviceContainerType AND c.isDeleted = false ";
 
             var queryDef = new QueryDefinition(query);
 
             queryDef.WithParameter("@deviceId", deviceId);
+
+            queryDef.WithParameter("@deviceContainerType", DeviceContainerType.DeviceContent.ToString());
+
+            var deviceContentList = await this._container.ExtractDataFromQueryIterator<DeviceContent>(queryDef);
+
+            return deviceContentList;
+        }
+
+        /// <summary>
+        /// Returns the Content by device id, content provider id
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="contentProviderId"></param>
+        /// <param name="continuationToken"></param>
+        /// <returns></returns>
+        public async Task<ResultData<DeviceContent>> GetContentByDeviceId(string deviceId, 
+                                                                            Guid contentProviderId, 
+                                                                            string continuationToken,
+                                                                            bool activeOnly = true)
+        {
+            ResultData<DeviceContent> contentResult;
+
+            string queryString = $"SELECT * FROM c where c.deviceId = @deviceId " +
+                                   " AND c.contentProviderId = @contentProviderId" +
+                                   " AND c.deviceContainerType = @deviceContainerType AND c.isDeleted = @isDeleted ";
+
+            QueryDefinition queryDef = new QueryDefinition(queryString);
+
+            queryDef.WithParameter("@deviceId", deviceId);
+
+            queryDef.WithParameter("@contentProviderId", contentProviderId);
+
+            queryDef.WithParameter("@deviceContainerType", DeviceContainerType.DeviceContent.ToString());
+
+            queryDef.WithParameter("@isDeleted", !activeOnly);
+
+            contentResult = await this._container.ExtractDataFromQueryIteratorWithToken<DeviceContent>(queryDef, continuationToken);
+
+            return contentResult;
+        }
+
+
+        /// <summary>
+        /// Returns the content availability on given device ids
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <param name="deviceIds"></param>
+        /// <returns></returns>
+        public async Task<List<DeviceContent>> GetContentAvailability(Guid contentId, List<string> deviceIds)
+        {
+            var query = $"SELECT * FROM c WHERE ARRAY_CONTAINS(@deviceIds, c.deviceId) " +
+                        $" AND c.id = @contentId " +
+                        $" AND c.deviceContainerType = @deviceContainerType" +
+                        $" AND c.isDeleted = false";
+
+            var queryDef = new QueryDefinition(query);
+
+            queryDef.WithParameter("@deviceIds", deviceIds);
+
+            queryDef.WithParameter("@contentId", contentId);
+
+            queryDef.WithParameter("@deviceContainerType", DeviceContainerType.DeviceContent.ToString());
 
             var deviceContentList = await this._container.ExtractDataFromQueryIterator<DeviceContent>(queryDef);
 

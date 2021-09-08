@@ -1,15 +1,15 @@
-﻿using blendnet.common.dto.Cms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blendnet.cms.repository.CosmosRepository
+namespace blendnet.common.dto.Common
 {
-/// <summary>
-/// Generic class which represents content result from any query and corresponding continuation token to query further 
-/// </summary>
+    /// <summary>
+    /// Generic class which represents content result from any query and corresponding continuation token to query further 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ResultData<T>
     {
         public List<T> Data { get; set; }
