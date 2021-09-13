@@ -196,7 +196,6 @@ export class ProcessedComponent {
       var newStatus = row.isActive ? "INACTIVATE" : "ACTIVATE";
       var newStatusValue = !row.isActive;
       const dialogRef = this.dialog.open(CommonDialogComponent, {
-        disableClose: true,
         data: {message: "Are you sure you want to " +newStatus+ " the content ?" , heading:'Warning',
           buttons: this.toggleButtons()
         },

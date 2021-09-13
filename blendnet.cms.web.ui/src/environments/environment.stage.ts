@@ -13,6 +13,7 @@ export const environment = {
     retailerDashboardUrl: "https://blendnet-stage.kaiza.la/incentiveapi/api/v1/",
     retailerApiUrl: "https://blendnet-stage.kaiza.la/retailerapi/api/v1",
     notificationApiUrl: "https://blendnet-stage.kaiza.la/notificationapi/api/v1/Notification",
+    deviceUrl: "https://blendnet-stage.kaiza.la/deviceapi/api/v1/Device",
     dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
     kaizalaApi0: "https://api-preprod.kaiza.la/v1/",
     kaizalaApi1: "https://api-preprod.kaiza.la/v1/",

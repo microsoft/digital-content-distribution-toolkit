@@ -15,7 +15,6 @@ import { MatSort } from '@angular/material/sort';
 })
 export class SubscriptionComponent {
   
-  @ViewChild(MatAccordion) accordion: MatAccordion;
   cpSubscriptions;
   today;
   minEnd: Date;

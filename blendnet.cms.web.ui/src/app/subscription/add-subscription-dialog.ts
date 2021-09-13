@@ -2,7 +2,6 @@ import { Component, EventEmitter, Inject, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
-import { DialogData } from "../broadcast/broadcast.component";
 import { SubscriptionService } from "../services/subscription.service";
 
 @Component({

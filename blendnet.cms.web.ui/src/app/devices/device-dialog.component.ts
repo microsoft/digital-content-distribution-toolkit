@@ -1,6 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { DeviceService } from '../services/device.service';
 
 @Component({
   selector: 'app-device-dialog',
@@ -8,28 +9,49 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./devices.component.css']
 })
 export class DeviceDialogComponent implements OnInit {
-  deviceForm = new FormGroup({
-    devicename :  new FormControl('', [Validators.required, Validators.maxLength(20)]),
-    deviceid:  new FormControl('', [Validators.required, Validators.maxLength(20)]),
-  });
+  @Output() onDeviceCreate = new EventEmitter<any>();
+  deviceid;
+
 
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<DeviceDialogComponent>,
+    private deviceService: DeviceService,
+    private toastr: ToastrService
 
   ) { }
 
   ngOnInit(): void {
-  }
-
-  get f() { 
-    return this.deviceForm.controls; 
-  }
+    }
 
   closeDialog(): void {
     this.dialogRef.close();
   }
 
-  saveOrUpdate() {}
+  createDevice() {
+    var device = this.getDeviceDetails();
+    this.deviceService.createDevice(device).subscribe(
+      res => {
+        console.log(res);
+        this.onDeviceCreate.emit("Device created successfully!");
+       
+      },
+      err => this.toastr.error(err)
+    );
+  }
+
+
+  getDeviceDetails() {
+    var device: any = {
+      id: this.deviceid
+    }
+    return device;
+  }
+    
+
+  
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }

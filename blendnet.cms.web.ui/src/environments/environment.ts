@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  allowedMaxSelection: 5,
+  allowedMaxSelection: 3,
   maxFileUploadSize: 1000000,
   fileAllowedType: 'application/json',
   channelName: "CMSPortal",
@@ -13,10 +13,11 @@ export const environment = {
   retailerApiUrl: "https://blendnet-dev.kaiza.la/retailerapi/api/v1",
   retailerDashboardUrl: "https://blendnet-dev.kaiza.la/incentiveapi/api/v1/",
   notificationApiUrl: "https://blendnet-dev.kaiza.la/notificationapi/api/v1/Notification",
+  deviceUrl: "https://blendnet-dev.kaiza.la/deviceapi/api/v1/Device",
   dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
-    kaizalaApi0: "https://api-alpha.kaiza.la/v1/",
-    kaizalaApi1: "https://api-alpha1.kaiza.la/v1/",
-    kaizalaApi2: "https://api-alpha2.kaiza.la/v1/",
+  kaizalaApi0: "https://api-alpha.kaiza.la/v1/",
+  kaizalaApi1: "https://api-alpha1.kaiza.la/v1/",
+  kaizalaApi2: "https://api-alpha2.kaiza.la/v1/",
   kaizalaSignUpSignIn: "LoginWithPhoneForPartners",
   kaizalaVerifyOTP: "VerifyPhonePinForPartnerLogin",
   kaizalaGetUserRoles : "ValidatePartnerAccessToken",
@@ -57,3 +58,4 @@ export const environment = {
   }
  };
 
+//  { 0, 0 }, { 1, 1 }, { 2, 2 }, { 3, 1 }, { 4, 0 }, { 5, 1 }, { 6, 0 }, { 7, 2 }, { 8, 2 }, { 9, 2 }

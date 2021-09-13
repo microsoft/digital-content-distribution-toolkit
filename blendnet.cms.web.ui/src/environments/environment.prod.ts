@@ -13,6 +13,7 @@ export const environment = {
   retailerApiUrl: "/retailerapi/api/v1",
   retailerDashboardUrl: "/incentiveapi/api/v1/",
   notificationApiUrl: "/notificationapi/api/v1/Notification",
+  deviceUrl: "/deviceapi/api/v1/Device",
   dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
   kaizalaApi0: "https://api-alpha.kaiza.la/v1/",
   kaizalaApi1: "https://api-alpha1.kaiza.la/v1/",

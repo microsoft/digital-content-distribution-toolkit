@@ -1,0 +1,29 @@
+<h1 mat-dialog-title>Apply Filters</h1>
+<div mat-dialog-content>
+  <div>
+    <form >
+      <label><h3><b>Filters</b></h3></label>
+      <hr class="filter-separator">
+      <div *ngFor="let filter of filters">
+        <label><b>{{filter.filterName}}</b> </label>
+        <br>
+        <mat-checkbox (change)="toggleSelection($event, f)"
+         [checked]="selection.isSelected(f)" *ngFor="let f of filter.filterValues">
+          {{f}}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </mat-checkbox>
+        <hr class="filter-separator">
+
+      </div>
+      
+    </form>
+  </div>
+  
+
+
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button (click)="closeDialog()" mat-dialog-close class="discard-btn">Cancel</button>
+  <button mat-raised-button (click)="applyFilters()" color="primary" class="update-btn"
+  >OK</button>
+</div>

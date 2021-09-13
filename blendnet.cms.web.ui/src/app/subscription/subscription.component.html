@@ -5,77 +5,7 @@
         <button mat-raised-button color="primary" class="create-btn"
         (click)="openDialog(null)" style="float: right;"> New Subscription </button>
 
-    </h1>
-    <!-- <div style="float: right;" *ngIf="cpSubscriptions?.length>0">
-        <button matTooltip="Expand All"   mat-icon-button  
-        color="primary" (click)="accordion.openAll()"><mat-icon>expand_more</mat-icon></button>
-        <button matTooltip="Collapse All"  mat-icon-button  
-        color="primary" (click)="accordion.closeAll()"> <mat-icon>expand_less</mat-icon></button>
-        <button  matTooltip="Refresh"   mat-icon-button  
-        color="primary" (click)="getSubscriptions()">
-           <mat-icon>refresh</mat-icon>
-       </button>
-    </div> -->
-<!-- 
-     <div>
-
-        <mat-accordion class="cms-headers-align" multi>
-            <mat-expansion-panel *ngFor="let sub of cpSubscriptions; index as i;">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        {{sub.title}}
-                    </mat-panel-title>
-                
-                    <mat-panel-description><span></span>
-                    <div [ngClass]="sub.endDate <= today ? 'cms-inactive' : 'cms-active'">
-                        {{sub.endDate <= today ? "Inactive" : "Active"}}
-                    </div>
-                        
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                
-                
-                        <mat-form-field >
-                            <mat-label>Price</mat-label>
-                            <input matInput  required [(ngModel)] = "sub.price" type="number" min="1">
-                        </mat-form-field>
-                    
-                        <mat-form-field>
-                            <mat-label>Duration (in days)</mat-label>
-                            <input matInput required type="number" min="1" max="365" [(ngModel)] = "sub.durationDays">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Start Date</mat-label>
-                            <input matInput disabled [(ngModel)]="sub.startDate" [matDatepicker]="spicker">
-                            <mat-datepicker-toggle matSuffix [for]="spicker"></mat-datepicker-toggle>
-                            <mat-datepicker #spicker disabled></mat-datepicker>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>End Date</mat-label>
-                            <input matInput disabled [(ngModel)]="sub.endDate" [min]="minEnd"  [matDatepicker]="epicker">
-                            <mat-datepicker-toggle matSuffix [for]="epicker"></mat-datepicker-toggle>
-                            <mat-datepicker #epicker disabled="false"></mat-datepicker>
-                        </mat-form-field>
-                    <br>
-                    <div *ngIf="sub.price<1"  class="cms-sub-validation-errors">
-                        Price should be greater than 0
-                    </div>
-                    <div *ngIf="sub.durationDays<1 || sub.durationDays>365" class="cms-sub-validation-errors">
-                        Duration should be between [1-365]
-                    </div>
-
-                        <button mat-raised-button  color="primary" class="update-btn" type="button" 
-                            [disabled] ="disableSaveBtn(sub)"
-                            (click)="save(sub)">Save
-                        </button>
-                 
-
-    
-            </mat-expansion-panel>
-        
-        </mat-accordion>
-    </div>  -->
-    
+    </h1>    
 <br>  
 <mat-form-field>
     <mat-label>Filter</mat-label>

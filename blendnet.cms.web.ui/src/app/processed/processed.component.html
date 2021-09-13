@@ -41,7 +41,7 @@
             <!-- Status Column -->
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-                <td mat-cell *matCellDef="let row">{{row.status}} <sup class="content-status-condition">{{row.contentBroadcastStatus!=='BroadcastNotInitialized' ? '*' : ''}}</sup></td>
+                <td mat-cell *matCellDef="let row">{{row.status}} <sup class="content-status-condition">{{row.contentBroadcastStatus =='BroadcastCancelComplete' ? '*' : ''}}</sup></td>
             </ng-container>
         
             <!-- Name Column -->
