@@ -254,19 +254,22 @@ namespace blendnet.cms.repository.CosmosRepository
 
             queryDef.WithParameter("@contentProviderId", contentProviderId);
 
-            if (contentStatusFilter.IsContentUploadStatusesPresent)
+            if (contentStatusFilter != null)
             {
-                queryDef.WithParameter("@uploadStatuses", contentStatusFilter.ContentUploadStatuses);
-            }
+                if (contentStatusFilter.IsContentUploadStatusesPresent)
+                {
+                    queryDef.WithParameter("@uploadStatuses", contentStatusFilter.ContentUploadStatuses);
+                }
 
-            if (contentStatusFilter.IsContentTransformStatusesPresent)
-            {
-                queryDef.WithParameter("@transformStatuses", contentStatusFilter.ContentTransformStatuses);
-            }
+                if (contentStatusFilter.IsContentTransformStatusesPresent)
+                {
+                    queryDef.WithParameter("@transformStatuses", contentStatusFilter.ContentTransformStatuses);
+                }
 
-            if (contentStatusFilter.IsContentBroadcastStatusesPresent)
-            {
-                queryDef.WithParameter("@broadcastStatuses", contentStatusFilter.ContentBroadcastStatuses);
+                if (contentStatusFilter.IsContentBroadcastStatusesPresent)
+                {
+                    queryDef.WithParameter("@broadcastStatuses", contentStatusFilter.ContentBroadcastStatuses);
+                }
             }
 
             return queryDef;
