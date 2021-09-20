@@ -120,6 +120,7 @@ namespace blendnet.common.dto
             public const string NOTIFICATION_HTTP_CLIENT = "notification";
             public const string SESVODE_HTTP_CLIENT = "ses";
             public const string IOTCENTRAL_HTTP_CLIENT = "iotcentral";
+            public const string DEVICE_HTTP_CLIENT = "device";
         }
 
         public struct StorageContainerPolicyNames

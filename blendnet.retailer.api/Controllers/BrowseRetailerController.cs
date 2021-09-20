@@ -64,6 +64,12 @@ namespace blendnet.retailer.api.Controllers
 
             List<RetailerWithDistanceDto> nearbyActiveRetailers = await this._retailerRepository.GetNearbyRetailers(lat, lng, distanceMeters, false /* shouldGetInactive*/);
 
+            // keep only active device information
+            foreach (var nearbyRetailer in nearbyActiveRetailers)
+            {
+                nearbyRetailer.Retailer.DeviceAssignments = nearbyRetailer.Retailer.DeviceAssignments.Where(assignment => assignment.IsActive()).ToList();
+            }
+
             return nearbyActiveRetailers;
         }
     }

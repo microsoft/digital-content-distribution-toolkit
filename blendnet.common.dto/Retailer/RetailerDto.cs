@@ -87,11 +87,19 @@ namespace blendnet.common.dto.Retailer
         /// </summary>
         public Dictionary<string, string> AdditionalAttibutes { get; set; }
 
+        /// <summary>
+        /// List of device assignments to the retailer
+        /// </summary>
+        public List<RetailerDeviceAssignment> DeviceAssignments { get; set; } = new List<RetailerDeviceAssignment>();
+
         public bool IsActive()
         {
             var now = DateTime.UtcNow;
             return StartDate < now && EndDate > now;
         }
+
+        [JsonIgnore] // do not put this prop in DB
+        public bool HasActiveDevice => this.DeviceAssignments.Exists(assignment => assignment.IsActive());
 
         /// <summary>
         /// Util method to create the PartnerID from partner code and partner-provided ID

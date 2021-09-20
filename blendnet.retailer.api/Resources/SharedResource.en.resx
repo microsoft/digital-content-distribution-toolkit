@@ -141,4 +141,28 @@
   <data name="RMS_ERR_0008" xml:space="preserve">
     <value>RMS_ERR_0008-Map Location is not valid</value>
   </data>
+  <data name="RMS_ERR_0009" xml:space="preserve">
+    <value>RMS_ERR_0009-Retailer not found for ID : {0} </value>
+  </data>
+  <data name="RMS_ERR_0010" xml:space="preserve">
+    <value>RMS_ERR_0010-Unknown Device : {0} </value>
+  </data>
+  <data name="RMS_ERR_0011" xml:space="preserve">
+    <value>RMS_ERR_0011-Retailer already has another device assigned</value>
+  </data>
+  <data name="RMS_ERR_0012" xml:space="preserve">
+    <value>RMS_ERR_0012-Device is already assigned to another retailer</value>
+  </data>
+  <data name="RMS_ERR_0013" xml:space="preserve">
+    <value>RMS_ERR_0013-Invalid Device Status</value>
+  </data>
+  <data name="RMS_ERR_0014" xml:space="preserve">
+    <value>RMS_ERR_0014-StartDate is in past</value>
+  </data>
+  <data name="RMS_ERR_0015" xml:space="preserve">
+    <value>RMS_ERR_0015-Device assignment not found</value>
+  </data>
+  <data name="RMS_ERR_0016" xml:space="preserve">
+    <value>RMS_ERR_0016-Requested End Date should be greater than assignment start date</value>
+  </data>
 </root>

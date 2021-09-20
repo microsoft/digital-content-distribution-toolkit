@@ -1,10 +1,9 @@
-﻿using blendnet.api.proxy.Retailer;
+﻿using blendnet.api.proxy.Device;
 using blendnet.common.dto;
-using blendnet.common.dto.Events;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
-using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.retailer.api.Models;
 using blendnet.retailer.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace blendnet.retailer.api.Controllers
@@ -26,13 +26,19 @@ namespace blendnet.retailer.api.Controllers
         private readonly IRetailerRepository _retailerRepository;
         private readonly IStringLocalizer<SharedResource> _stringLocalizer;
         private readonly IRetailerProviderRepository _retailerProviderRepository;
+        private readonly DeviceProxy _deviceProxy;
 
-        public RetailerController(ILogger<RetailerController> logger, IRetailerRepository retailerRepository, IStringLocalizer<SharedResource> stringLocalizer, IRetailerProviderRepository retailerProviderRepository)
+        public RetailerController(  ILogger<RetailerController> logger,
+                                    IRetailerRepository retailerRepository,
+                                    IStringLocalizer<SharedResource> stringLocalizer,
+                                    IRetailerProviderRepository retailerProviderRepository,
+                                    DeviceProxy deviceProxy)
         {
             this._logger = logger;
             this._retailerRepository = retailerRepository;
             this._retailerProviderRepository = retailerProviderRepository;
-            _stringLocalizer = stringLocalizer;
+            this._stringLocalizer = stringLocalizer;
+            this._deviceProxy = deviceProxy;
         }
 
         #region API methods
@@ -195,6 +201,192 @@ namespace blendnet.retailer.api.Controllers
             await _retailerRepository.CreateRetailer(retailerToCreate);
 
             return Ok(retailerToCreate.RetailerId);
+        }
+
+        /// <summary>
+        /// API to get retailers to whom the specified device was ever assigned
+        /// </summary>
+        /// <param name="deviceId">Device ID</param>
+        /// <returns>Retailer</returns>
+        [HttpGet("byDeviceId/{deviceId}", Name = nameof(GetRetailersWithDevice))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<List<RetailerDto>>> GetRetailersWithDevice(string deviceId)
+        {
+            List<RetailerDto> retailers = await _retailerRepository.GetRetailersWithDeviceId(deviceId);
+            if (retailers is null || retailers.Count == 0)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(retailers);
+            }
+        }
+
+        /// <summary>
+        /// API to assign a device to retailer
+        /// </summary>
+        /// <param name="assignRequest">device assignment request</param>
+        /// <returns></returns>
+        [HttpPost("assignDevice", Name = nameof(AssignDeviceToRetailer))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
+        public async Task<ActionResult> AssignDeviceToRetailer(AssignDeviceRequest assignRequest)
+        {
+            var callerUserId = UserClaimData.GetUserId(this.User.Claims);
+            var retailerProvider = await _retailerProviderRepository.GetRetailerProviderByPartnerCode(assignRequest.PartnerCode);
+            if (retailerProvider is null)
+            {
+                _logger.LogInformation($"Unknown Partner code - {assignRequest.PartnerCode}");
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0007"], assignRequest.PartnerCode),
+                });
+            }
+
+            string partnerId = RetailerDto.CreatePartnerId(assignRequest.PartnerCode, assignRequest.PartnerProvidedRetailerId);
+            RetailerDto existingRetailer = await _retailerRepository.GetRetailerByPartnerId(partnerId);
+
+            if (existingRetailer is null)
+            {
+                _logger.LogInformation($"Unknown retailer ID - {partnerId}");
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0009"], assignRequest.PartnerProvidedRetailerId),
+                });
+            }
+
+            var existingDevice = await _deviceProxy.GetDevice(assignRequest.DeviceId);
+            if (existingDevice is null)
+            {
+                _logger.LogInformation($"Unknown Device ID - {assignRequest.DeviceId}");
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0010"], assignRequest.DeviceId),
+                });
+            }
+
+            if (existingDevice.DeviceStatus != common.dto.Device.DeviceStatus.Provisioned)
+            {
+                _logger.LogInformation($"Device is not in right state. Device ID - {assignRequest.DeviceId}  Status - {existingDevice.DeviceStatus}");
+                return BadRequest(new string[] {
+                    _stringLocalizer["RMS_ERR_0013"],
+                });
+            }
+
+            // start date validation
+            var now = DateTime.UtcNow;
+            var startOfDayNow = now.ToIndiaStandardTime().Date;
+            var assignmentStartOfDay = assignRequest.StartDate.ToIndiaStandardTime().Date;
+
+            if (assignmentStartOfDay < startOfDayNow)
+            {
+                _logger.LogInformation($"Requested Start Date is in past");
+                return BadRequest(new string[] {
+                    _stringLocalizer["RMS_ERR_0014"],
+                });
+            }
+
+            // Requested retailer should not have an active device already
+            var existingRetailerActiveDeviceAssignment = existingRetailer.DeviceAssignments
+                                                            .Where(asg => asg.AssignmentEndDate > assignRequest.StartDate)
+                                                            .FirstOrDefault();
+            if (existingRetailerActiveDeviceAssignment is not null)
+            {
+                _logger.LogInformation($"retailer {existingRetailer.PartnerId} already has an active device {existingRetailerActiveDeviceAssignment.DeviceId}");
+                return BadRequest(new string[] {
+                    _stringLocalizer["RMS_ERR_0011"],
+                });
+            }
+
+            List<RetailerDto> retailersWithDeviceId = await _retailerRepository.GetRetailersWithDeviceId(assignRequest.DeviceId);
+            var activeAssignmentOfDevice = retailersWithDeviceId
+                                                .SelectMany(r => r.DeviceAssignments) // flatten the device assignment records across all retailers
+                                                .Where(asg => asg.DeviceId == assignRequest.DeviceId) // keep only the requested device ID records
+                                                .Where(asg => asg.AssignmentEndDate > assignRequest.StartDate) // keep only records that is active on the requested start date
+                                                .FirstOrDefault();
+            if (activeAssignmentOfDevice is not null)
+            {
+                // Device is actively assigned to some retailer
+                _logger.LogInformation($"Requested device {assignRequest.DeviceId} is already assigned to some retailer");
+                return BadRequest(new string[] {
+                    _stringLocalizer["RMS_ERR_0012"],
+                });
+            }
+
+            // all seems OK now, so assign the requested device
+            existingRetailer.DeviceAssignments.Add(new RetailerDeviceAssignment() {
+                DeviceId = assignRequest.DeviceId,
+                AssignmentStartDate = assignRequest.StartDate,
+                AssignmentEndDate = DateTime.MaxValue,
+            });
+
+            existingRetailer.ModifiedByByUserId = callerUserId;
+            existingRetailer.ModifiedDate = now;
+
+            await _retailerRepository.UpdateRetailer(existingRetailer);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// API to unassign active device for retailer
+        /// </summary>
+        /// <param name="unassignRequest">Unassign Device Request</param>
+        /// <returns></returns>
+        [HttpPost("unassignDevice", Name = nameof(UnassignDevice))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult> UnassignDevice(UnassignDeviceRequest unassignRequest)
+        {
+            var callerUserId = UserClaimData.GetUserId(this.User.Claims);
+            var retailerProvider = await _retailerProviderRepository.GetRetailerProviderByPartnerCode(unassignRequest.PartnerCode);
+            if (retailerProvider is null)
+            {
+                _logger.LogInformation($"Unknown Partner code - {unassignRequest.PartnerCode}");
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0007"], unassignRequest.PartnerCode),
+                });
+            }
+
+            string partnerId = RetailerDto.CreatePartnerId(unassignRequest.PartnerCode, unassignRequest.PartnerProvidedRetailerId);
+            RetailerDto existingRetailer = await _retailerRepository.GetRetailerByPartnerId(partnerId);
+
+            if (existingRetailer is null)
+            {
+                _logger.LogInformation($"Unknown retailer ID - {partnerId}");
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0009"], partnerId),
+                });
+            }
+
+            var activeAssignment = existingRetailer.DeviceAssignments
+                                            .Where(asg => asg.DeviceId == unassignRequest.DeviceId)
+                                            .Where(asg => asg.AssignmentEndDate >= unassignRequest.AssignmentEndDate)
+                                            .FirstOrDefault();
+            if (activeAssignment is null)
+            {
+                _logger.LogInformation($"No assignment found for retailer {partnerId} for device {unassignRequest.DeviceId}");
+                return BadRequest(new string[] {
+                    _stringLocalizer["RMS_ERR_0015"],
+                });
+            }
+
+            if (unassignRequest.AssignmentEndDate < activeAssignment.AssignmentStartDate)
+            {
+                _logger.LogInformation($"Requested end date is older than assignment start date.");
+                return BadRequest(new string[] {
+                    _stringLocalizer["RMS_ERR_0016"],
+                });
+            }
+
+            var now = DateTime.UtcNow;
+
+            activeAssignment.AssignmentEndDate = unassignRequest.AssignmentEndDate;
+            existingRetailer.ModifiedByByUserId = callerUserId;
+            existingRetailer.ModifiedDate = now;
+
+            await _retailerRepository.UpdateRetailer(existingRetailer);
+            
+            return NoContent();
         }
 
         #endregion

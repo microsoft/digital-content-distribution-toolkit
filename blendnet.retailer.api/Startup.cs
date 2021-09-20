@@ -1,12 +1,18 @@
+using blendnet.api.proxy;
+using blendnet.api.proxy.Device;
+using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
+using blendnet.common.infrastructure.ApplicationInsights;
+using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.Extensions;
 using blendnet.retailer.repository.CosmosRepository;
 using blendnet.retailer.repository.Interfaces;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
@@ -14,21 +20,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using blendnet.common.infrastructure.Authentication;
-using blendnet.api.proxy.KaizalaIdentity;
-using Microsoft.Extensions.Options;
 using System.Globalization;
-using Microsoft.AspNetCore.Localization;
-using blendnet.common.infrastructure.Extensions;
-using blendnet.api.proxy;
-using Microsoft.ApplicationInsights.Extensibility;
-using blendnet.common.infrastructure.ApplicationInsights;
+using System.Text.Json.Serialization;
 
 namespace blendnet.retailer.api
 {
@@ -164,6 +161,9 @@ namespace blendnet.retailer.api
             services.AddTransient<UserProxy>();
             services.AddTransient<IUserDetails, UserDetailsByProxy>();
 
+            // Configure Services
+            services.AddTransient<DeviceProxy>();
+
             //Configure Cosmos DB
             ConfigureCosmosDB(services);
 
@@ -288,6 +288,13 @@ namespace blendnet.retailer.api
             services.AddHttpClient(ApplicationConstants.HttpClientKeys.USER_HTTP_CLIENT, c =>
             {
                 c.BaseAddress = new Uri(userBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+            string deviceBaseUrl = Configuration.GetValue<string>("DeviceBaseUrl");
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.DEVICE_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(deviceBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }

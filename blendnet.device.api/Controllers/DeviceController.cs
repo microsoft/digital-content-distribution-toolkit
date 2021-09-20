@@ -82,7 +82,7 @@ namespace blendnet.device.api.Controllers
         [HttpGet("{deviceId}", Name = nameof(GetDevice))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<ContentProviderDto>> GetDevice(string deviceId)
+        public async Task<ActionResult<Device>> GetDevice(string deviceId)
         {
             var device = await _deviceRepository.GetDeviceById(deviceId);
 

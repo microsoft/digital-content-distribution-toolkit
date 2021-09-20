@@ -48,5 +48,12 @@ namespace blendnet.retailer.repository.Interfaces
         /// <param name="retailer"></param>
         /// <returns>status code</returns>
         Task<int> UpdateRetailer(RetailerDto retailer);
+
+        /// <summary>
+        /// Gets the list of retailers to whom the specified device was ever assigned
+        /// </summary>
+        /// <param name="deviceId">device ID</param>
+        /// <returns>Retailers as list</returns>
+        Task<List<RetailerDto>> GetRetailersWithDeviceId(string deviceId);
     }
 }

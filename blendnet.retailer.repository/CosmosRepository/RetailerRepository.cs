@@ -165,6 +165,31 @@ namespace blendnet.retailer.repository.CosmosRepository
         }
 
         /// <summary>
+        /// Gets the list of retailers to whom the specified device was ever assigned
+        /// </summary>
+        /// <param name="deviceId">device ID</param>
+        /// <returns>Retailers as list</returns>
+        async Task<List<RetailerDto>> IRetailerRepository.GetRetailersWithDeviceId(string deviceId)
+        {
+            // Used the below LINQ query to generate the queryString
+            // var query1 = _container.GetItemLinqQueryable<RetailerDto>()
+            //                 .Where(r => r.DeviceAssignments.Where(a => a.DeviceId == deviceId).Count() > 0);
+            
+            const string queryString = 
+                    @"SELECT VALUE root FROM root 
+                    JOIN (SELECT VALUE COUNT(1) FROM root 
+                        JOIN a0 IN root.deviceAssignments 
+                        WHERE (a0.deviceId = @deviceId))
+                        AS v0 WHERE (v0 > 0)";
+
+            var query = new QueryDefinition(queryString)
+                            .WithParameter("@deviceId", deviceId);
+
+            var result = await _container.ExtractDataFromQueryIterator<RetailerDto>(query);
+            return result;
+        }
+
+        /// <summary>
         /// Reserves a globally unique referral code for retailer
         /// </summary>
         /// <returns>returns the reserved code</returns>
