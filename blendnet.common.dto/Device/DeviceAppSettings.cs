@@ -67,5 +67,15 @@ namespace blendnet.common.dto.Device
         /// </summary>
         public string IOTCAPIBaseUrl { get; set; }
 
+        /// <summary>
+        /// Custom Message Property Name. This is the name set by IOT central while sending the message to Azure Service Bus
+        /// </summary>
+        public string IOTCentralPropertyName { get; set; }
+
+        /// <summary>
+        /// Custom Message Property Value. This is the value set by IOT central while sending the message to Azure Service Bus
+        /// </summary>
+        public string IOTCentralPropertyValue { get; set; }
+
     }
 }

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace blendnet.device.api.Model
+namespace blendnet.common.dto.Device
 {
-    public class UpdateRequest
+    public class DeviceContentUpdateRequest
     {
         [Required]
         public string DeviceId { get; set; }

@@ -1,6 +1,7 @@
 ﻿using blendnet.common.dto.Device;
 using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.ServiceBus;
 using blendnet.device.listener.IntegrationEventHandling;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -44,6 +45,15 @@ namespace blendnet.device.listener
 
             //add device based event handler
             _eventBus.Subscribe<FilterUpdateIntegrationEvent, FilterUpdateIntegrationEventHandler>();
+
+            //add correlation based rule
+            //CustomPropertyCorrelationRule correlationRule = new CustomPropertyCorrelationRule()
+            //{
+            //    PropertyName = _appSettings.IOTCentralPropertyName,
+            //    PropertValue = _appSettings.IOTCentralPropertyValue,
+            //};
+
+            //_eventBus.Subscribe<TelemetryCommandIntegrationEvent, TelemetryCommandIntegrationEventHandler>(correlationRule);
 
             await _eventBus.StartProcessing();
 

@@ -62,7 +62,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpPost("downloaded", Name = nameof(UpdateDownloaded))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult> UpdateDownloaded(UpdateRequest updateDownloadedRequest)
+        public async Task<ActionResult> UpdateDownloaded(DeviceContentUpdateRequest updateDownloadedRequest)
         {
             return await ProcessUpdateRequest(updateDownloadedRequest, false/*isDeleted*/);
         }
@@ -74,7 +74,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpPost("deleted", Name = nameof(UpdateDeleted))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult> UpdateDeleted(UpdateRequest updateDeletedRequest)
+        public async Task<ActionResult> UpdateDeleted(DeviceContentUpdateRequest updateDeletedRequest)
         {
             return await ProcessUpdateRequest(updateDeletedRequest, true /*isDeleted*/);
         }
@@ -89,7 +89,7 @@ namespace blendnet.device.api.Controllers
         /// <param name="updateRequest"></param>
         /// <param name="isDeleted"></param>
         /// <returns></returns>
-        private async Task<ActionResult> ProcessUpdateRequest(UpdateRequest updateRequest, bool isDeleted)
+        private async Task<ActionResult> ProcessUpdateRequest(DeviceContentUpdateRequest updateRequest, bool isDeleted)
         {
             List<string> failedItems = new List<string>();
             string deviceId = updateRequest.DeviceId;
