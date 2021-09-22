@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.retailer.api.Models
@@ -13,8 +12,5 @@ namespace blendnet.retailer.api.Models
 
         [Required]
         public string DeviceId { get; set; }
-        
-        [Required]
-        public DateTime StartDate { get; set; }
     }
 }

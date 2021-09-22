@@ -169,7 +169,7 @@ namespace blendnet.retailer.repository.CosmosRepository
         /// </summary>
         /// <param name="deviceId">device ID</param>
         /// <returns>Retailers as list</returns>
-        async Task<List<RetailerDto>> IRetailerRepository.GetRetailersWithDeviceId(string deviceId)
+        async Task<List<RetailerDto>> IRetailerRepository.GetRetailersByDeviceId(string deviceId)
         {
             // Used the below LINQ query to generate the queryString
             // var query1 = _container.GetItemLinqQueryable<RetailerDto>()

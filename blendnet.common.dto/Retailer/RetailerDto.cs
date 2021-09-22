@@ -99,7 +99,7 @@ namespace blendnet.common.dto.Retailer
         }
 
         [JsonIgnore] // do not put this prop in DB
-        public bool HasActiveDevice => this.DeviceAssignments.Exists(assignment => assignment.IsActive());
+        public bool HasActiveDevice => this.DeviceAssignments.Exists(assignment => assignment.IsActive);
 
         /// <summary>
         /// Util method to create the PartnerID from partner code and partner-provided ID

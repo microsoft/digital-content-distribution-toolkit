@@ -54,6 +54,6 @@ namespace blendnet.retailer.repository.Interfaces
         /// </summary>
         /// <param name="deviceId">device ID</param>
         /// <returns>Retailers as list</returns>
-        Task<List<RetailerDto>> GetRetailersWithDeviceId(string deviceId);
+        Task<List<RetailerDto>> GetRetailersByDeviceId(string deviceId);
     }
 }

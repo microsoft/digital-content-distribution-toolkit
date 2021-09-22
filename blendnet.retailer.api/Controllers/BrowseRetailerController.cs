@@ -67,7 +67,7 @@ namespace blendnet.retailer.api.Controllers
             // keep only active device information
             foreach (var nearbyRetailer in nearbyActiveRetailers)
             {
-                nearbyRetailer.Retailer.DeviceAssignments = nearbyRetailer.Retailer.DeviceAssignments.Where(assignment => assignment.IsActive()).ToList();
+                nearbyRetailer.Retailer.DeviceAssignments = nearbyRetailer.Retailer.DeviceAssignments.Where(assignment => assignment.IsActive).ToList();
             }
 
             return nearbyActiveRetailers;

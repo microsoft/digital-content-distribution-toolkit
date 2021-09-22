@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace blendnet.common.dto.Retailer
 {
@@ -27,18 +28,9 @@ namespace blendnet.common.dto.Retailer
         public DateTime AssignmentEndDate { get; set; }
 
         /// <summary>
-        /// Tells whether the current record is active, as per the input date
+        /// Tells whether the current record is an active assignment
         /// </summary>
-        /// <param name="dateTime">date for checking active (defaults to current time)</param>
-        /// <returns></returns>
-        public bool IsActive(DateTime? dateTime = null)
-        {
-            if (!dateTime.HasValue)
-            {
-                dateTime = DateTime.UtcNow;
-            }
-
-            return AssignmentStartDate <= dateTime.Value && dateTime.Value <= AssignmentEndDate;
-        }
+        [JsonIgnore] // do not put in DB
+        public bool IsActive => AssignmentStartDate <= DateTime.UtcNow && DateTime.UtcNow <= AssignmentEndDate;
     }
 }

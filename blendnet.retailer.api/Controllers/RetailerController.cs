@@ -208,12 +208,12 @@ namespace blendnet.retailer.api.Controllers
         /// </summary>
         /// <param name="deviceId">Device ID</param>
         /// <returns>Retailer</returns>
-        [HttpGet("byDeviceId/{deviceId}", Name = nameof(GetRetailersWithDevice))]
+        [HttpGet("byDeviceId/{deviceId}", Name = nameof(GetRetailersByDevice))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<List<RetailerDto>>> GetRetailersWithDevice(string deviceId)
+        public async Task<ActionResult<List<RetailerDto>>> GetRetailersByDevice(string deviceId)
         {
-            List<RetailerDto> retailers = await _retailerRepository.GetRetailersWithDeviceId(deviceId);
+            List<RetailerDto> retailers = await _retailerRepository.GetRetailersByDeviceId(deviceId);
             if (retailers is null || retailers.Count == 0)
             {
                 return NotFound();
@@ -278,22 +278,11 @@ namespace blendnet.retailer.api.Controllers
                 });
             }
 
-            // start date validation
             var now = DateTime.UtcNow;
-            var startOfDayNow = now.ToIndiaStandardTime().Date;
-            var assignmentStartOfDay = assignRequest.StartDate.ToIndiaStandardTime().Date;
-
-            if (assignmentStartOfDay < startOfDayNow)
-            {
-                _logger.LogInformation($"Requested Start Date is in past");
-                return BadRequest(new string[] {
-                    _stringLocalizer["RMS_ERR_0014"],
-                });
-            }
 
             // Requested retailer should not have an active device already
             var existingRetailerActiveDeviceAssignment = existingRetailer.DeviceAssignments
-                                                            .Where(asg => asg.AssignmentEndDate > assignRequest.StartDate)
+                                                            .Where(asg => asg.IsActive)
                                                             .FirstOrDefault();
             if (existingRetailerActiveDeviceAssignment is not null)
             {
@@ -303,11 +292,11 @@ namespace blendnet.retailer.api.Controllers
                 });
             }
 
-            List<RetailerDto> retailersWithDeviceId = await _retailerRepository.GetRetailersWithDeviceId(assignRequest.DeviceId);
+            List<RetailerDto> retailersWithDeviceId = await _retailerRepository.GetRetailersByDeviceId(assignRequest.DeviceId);
             var activeAssignmentOfDevice = retailersWithDeviceId
                                                 .SelectMany(r => r.DeviceAssignments) // flatten the device assignment records across all retailers
                                                 .Where(asg => asg.DeviceId == assignRequest.DeviceId) // keep only the requested device ID records
-                                                .Where(asg => asg.AssignmentEndDate > assignRequest.StartDate) // keep only records that is active on the requested start date
+                                                .Where(asg => asg.IsActive) // keep only records that is active on the requested start date
                                                 .FirstOrDefault();
             if (activeAssignmentOfDevice is not null)
             {
@@ -321,7 +310,7 @@ namespace blendnet.retailer.api.Controllers
             // all seems OK now, so assign the requested device
             existingRetailer.DeviceAssignments.Add(new RetailerDeviceAssignment() {
                 DeviceId = assignRequest.DeviceId,
-                AssignmentStartDate = assignRequest.StartDate,
+                AssignmentStartDate = now,
                 AssignmentEndDate = DateTime.MaxValue,
             });
 
@@ -366,7 +355,7 @@ namespace blendnet.retailer.api.Controllers
 
             var activeAssignment = existingRetailer.DeviceAssignments
                                             .Where(asg => asg.DeviceId == unassignRequest.DeviceId)
-                                            .Where(asg => asg.AssignmentEndDate >= unassignRequest.AssignmentEndDate)
+                                            .Where(asg => asg.IsActive)
                                             .FirstOrDefault();
             if (activeAssignment is null)
             {
@@ -376,17 +365,9 @@ namespace blendnet.retailer.api.Controllers
                 });
             }
 
-            if (unassignRequest.AssignmentEndDate < activeAssignment.AssignmentStartDate)
-            {
-                _logger.LogInformation($"Requested end date is older than assignment start date.");
-                return BadRequest(new string[] {
-                    _stringLocalizer["RMS_ERR_0016"],
-                });
-            }
-
             var now = DateTime.UtcNow;
 
-            activeAssignment.AssignmentEndDate = unassignRequest.AssignmentEndDate;
+            activeAssignment.AssignmentEndDate = now;
             existingRetailer.ModifiedByByUserId = callerUserId;
             existingRetailer.ModifiedDate = now;
 
