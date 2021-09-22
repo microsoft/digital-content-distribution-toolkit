@@ -220,6 +220,12 @@ namespace blendnet.retailer.api.Controllers
             }
             else
             {
+                // keep only the device that is asked for
+                foreach (var retailer in retailers)
+                {
+                    retailer.DeviceAssignments = retailer.DeviceAssignments.Where(asg => asg.DeviceId == deviceId).ToList();
+                }
+
                 return Ok(retailers);
             }
         }
