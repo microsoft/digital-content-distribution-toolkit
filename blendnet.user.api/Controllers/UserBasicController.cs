@@ -200,7 +200,6 @@ namespace blendnet.user.api.Controllers
                 ChannelId = createUserRequest.ChannelId,
                 CreatedDate = DateTime.UtcNow,
                 CreatedByUserId = generatedId,
-                Type = UserContainerType.User,
                 IdentityId = identityId,
             };
 

@@ -264,6 +264,151 @@ namespace blendnet.user.api.Controllers
             return Ok(referralData);
         }
 
+        /// <summary>
+        /// API to get the latest Data Export Request for a user
+        /// </summary>
+        /// <param name="request">Request for user (needed only for admin, ignored for others)</param>
+        /// <returns></returns>
+        [HttpPost("dataExport", Name = nameof(GetDataExportCommand))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<UserDataExportCommand>> GetDataExportCommand(UserForDataExportRequest request)
+        {
+            string phoneNumber;
+
+            if (UserClaimData.isSuperAdmin(this.User.Claims))
+            {
+                // expect a phone number in requestUrl
+                phoneNumber = request.PhoneNumber;
+            }
+            else
+            {
+                phoneNumber = this.User.Identity.Name;
+            }
+
+            var existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
+            if (existingUser is null || !existingUser.DataExportRequestedBy.HasValue)
+            {
+                return NotFound();
+            }
+
+            var dataExportCommand = await _userRepository.GetDataExportCommand(phoneNumber, existingUser.DataExportRequestedBy.Value);
+            if (dataExportCommand is null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(dataExportCommand);
+            }
+        }
+
+        /// <summary>
+        /// API to create a new data export request for user
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("dataExport/create", Name = nameof(CreateDataExportCommand))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<int>> CreateDataExportCommand()
+        {
+            string phoneNumber = this.User.Identity.Name;
+            var userId = UserClaimData.GetUserId(this.User.Claims);
+
+            var existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
+            if (existingUser is null)
+            {
+                return NotFound();
+            }
+
+            if (existingUser.DataExportRequestedBy.HasValue)
+            {
+                var existingDataExportCommand = await _userRepository.GetDataExportCommand(phoneNumber, existingUser.DataExportRequestedBy.Value);
+                if (existingDataExportCommand is not null && existingDataExportCommand.Status != DataExportRequestStatus.Completed)
+                {
+                    return BadRequest(new string[] {
+                        "Request already exists"
+                    });
+                }
+            }
+
+            var now = DateTime.UtcNow;
+
+            var newDataExportCommand = new UserDataExportCommand()
+            {
+                CreatedByUserId = userId,
+                CreatedDate = now,
+                Id = Guid.NewGuid(),
+                PhoneNumber = phoneNumber,
+                Status = DataExportRequestStatus.Active,
+            };
+
+            existingUser.DataExportRequestedBy = newDataExportCommand.Id;
+            existingUser.ModifiedByByUserId = userId;
+            existingUser.ModifiedDate = now;
+
+            var response = await _userRepository.CreateDataExportCommandBatch(newDataExportCommand, existingUser);
+
+            var aiEvent = new CreateUserDataExportCommandAIEvent()
+            {
+                RequestId = newDataExportCommand.Id,
+                UserId = userId,
+            };
+
+            _telemetryClient.TrackEvent(aiEvent);
+
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// API to update the result in a Data Export Request
+        /// </summary>
+        /// <param name="resultRequest">request</param>
+        /// <returns>status code</returns>
+        [HttpPost("dataExport/updateResult", Name = nameof(UpdateDataExportResult))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<int>> UpdateDataExportResult(UserDataExportResultRequest resultRequest)
+        {
+            Guid callerUserId = UserClaimData.GetUserId(this.User.Claims);
+            string phoneNumber = resultRequest.PhoneNumber;
+            var existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
+            if (existingUser is null)
+            {
+                return BadRequest(new string[] {
+                    "User not found"
+                });
+            }
+
+            if (!existingUser.DataExportRequestedBy.HasValue)
+            {
+                return BadRequest(new string[] {
+                    "No valid data export request found"
+                });
+            }
+
+            var existingDataExportCommand = await _userRepository.GetDataExportCommand(phoneNumber, existingUser.DataExportRequestedBy.Value);
+            if (existingDataExportCommand is null || existingDataExportCommand.Status != DataExportRequestStatus.Active)
+            {
+                return BadRequest(new string[] {
+                    "No valid data export request found"
+                });
+            }
+
+            var now = DateTime.UtcNow;
+
+            existingDataExportCommand.Result = new UserDataExportResult()
+            {
+                DateCompleted = now,
+                ExportedDataUrl = resultRequest.ExportedDataUrl,
+                ExportedDataValidity = resultRequest.ExportedDataValidity,
+            };
+
+            existingDataExportCommand.Status = DataExportRequestStatus.Completed;
+            existingDataExportCommand.ModifiedByByUserId = callerUserId;
+            existingDataExportCommand.ModifiedDate = now;
+
+            return await _userRepository.UpdateDataExportCommand(existingDataExportCommand);
+        }
+
         #region private methods
 
         /// <summary>
@@ -325,7 +470,6 @@ namespace blendnet.user.api.Controllers
                     ChannelId = Channel.NovoRetailerApp, // TODO: this should be from the Claim / partnerCode
                     CreatedDate = now,
                     CreatedByUserId = callerUserId,
-                    Type = UserContainerType.User,
                 };
 
                 await _userRepository.CreateUser(user);

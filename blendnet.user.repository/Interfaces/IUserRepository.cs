@@ -71,5 +71,28 @@ namespace blendnet.user.repository.Interfaces
         /// <param name="phoneNumber">phone number</param>
         /// <returns></returns>
         Task<int> DeleteWhitelistedUser(string phoneNumber);
+
+        /// <summary>
+        /// Gets the Data Export Command
+        /// </summary>
+        /// <param name="phoneNumber">phone number of the user</param>
+        /// <param name="commandId">Data Export Command ID</param>
+        /// <returns>Data Export Command</returns>
+        Task<UserDataExportCommand> GetDataExportCommand(string phoneNumber, Guid commandId);
+
+        /// <summary>
+        /// Creates the Data Export Command
+        /// </summary>
+        /// <param name="userDataExportCommand">Command to be created</param>
+        /// <param name="user">user</param>
+        /// <returns>status code</returns>
+        Task<int> CreateDataExportCommandBatch(UserDataExportCommand userDataExportCommand, User user);
+
+        /// <summary>
+        /// Updates the data export Command
+        /// </summary>
+        /// <param name="userDataExportCommand">Command to be updated</param>
+        /// <returns>status code</returns>
+        Task<int> UpdateDataExportCommand(UserDataExportCommand userDataExportCommand);
     }
 }

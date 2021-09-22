@@ -187,6 +187,61 @@ namespace blendnet.user.repository.CosmosRepository
             }
         }
 
+        /// <summary>
+        /// Gets the Data Export Command for a user
+        /// </summary>
+        /// <param name="phoneNumber">phone number of the user</param>
+        /// <param name="commandId">Data Export Command ID</param>
+        /// <returns>Data Export Command</returns>
+        async Task<UserDataExportCommand> IUserRepository.GetDataExportCommand(string phoneNumber, Guid commandId)
+        {
+            UserDataExportCommand command = await _container.ReadItemAsync<UserDataExportCommand>(commandId.ToString(), new PartitionKey(phoneNumber));
+            return command;
+        }
+
+        /// <summary>
+        /// Creates the Data Export Command
+        /// </summary>
+        /// <param name="userDataExportCommand">Command to be created</param>
+        /// <param name="user">user</param>
+        /// <returns>status code</returns>
+        async Task<int> IUserRepository.CreateDataExportCommandBatch(UserDataExportCommand userDataExportCommand, User user)
+        {
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(userDataExportCommand.PhoneNumber));
+            TransactionalBatchResponse batchResponse = await batch.CreateItem<UserDataExportCommand>(userDataExportCommand)
+                                                                    .ReplaceItem<User>(user.UserId.ToString(), user)
+                                                                    .ExecuteAsync();
+            
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(IUserRepository.CreateDataExportCommandBatch)} failed for user ID {user.UserId} and export command ID {userDataExportCommand.Id}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
+        }
+
+        /// <summary>
+        /// Updates the data export command
+        /// </summary>
+        /// <param name="userDataExportCommand">Command to be updated</param>
+        /// <returns>status code</returns>
+        async Task<int> IUserRepository.UpdateDataExportCommand(UserDataExportCommand userDataExportCommand)
+        {
+            try
+            {
+                var response = await this._container.ReplaceItemAsync<UserDataExportCommand>(   userDataExportCommand, 
+                                                                                                userDataExportCommand.Id.ToString(), 
+                                                                                                new PartitionKey(userDataExportCommand.PhoneNumber));
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }        
+        }
+
         #region private methods
 
         #endregion

@@ -250,7 +250,7 @@ namespace blendnet.device.repository.CosmosRepository
                 {
                     string errorMessage = $"Batch update failed for Device {device.Id} and Device Command Id {deviceCommand.Id}";
 
-                    throw GetTransactionalBatchException(batchResponse,errorMessage);
+                    throw batchResponse.GetTransactionalBatchException(errorMessage);
                 }
             }
         }
@@ -367,32 +367,5 @@ namespace blendnet.device.repository.CosmosRepository
             var response = await _container.UpsertItemAsync<DeviceContent>(deviceContent, new PartitionKey(deviceContent.DeviceId));
             return (int)response.StatusCode;
         }
-
-        /// <summary>
-        /// Get Exception.
-        /// </summary>
-        /// <param name="batchResponse"></param>
-        /// <param name="errorMessage"></param>
-        /// <returns></returns>
-        private BlendNetCosmosTransactionalBatchException GetTransactionalBatchException(TransactionalBatchResponse batchResponse,
-                                                                                          string errorMessage)
-        {
-            List<string> operationStatus = new List<string>();
-
-            for (var i = 0; i < batchResponse.Count; i++)
-            {
-                var result = batchResponse.GetOperationResultAtIndex<dynamic>(i);
-
-                operationStatus.Add($"Status code for index {i} is {result.StatusCode}");
-            }
-
-            BlendNetCosmosTransactionalBatchException batchException =
-                            new BlendNetCosmosTransactionalBatchException(errorMessage,
-                                                                          batchResponse.StatusCode,
-                                                                          batchResponse.ErrorMessage,
-                                                                          operationStatus);
-            return batchException;
-        }
-
     }
 }

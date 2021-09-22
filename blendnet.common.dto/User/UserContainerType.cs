@@ -12,6 +12,7 @@ namespace blendnet.common.dto.User
     [JsonConverter(typeof(StringEnumConverter))]
     public enum UserContainerType
     {
-        User = 0
+        User = 0,
+        UserDataExportCommand = 1,
     }
 }

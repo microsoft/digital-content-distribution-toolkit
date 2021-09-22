@@ -55,7 +55,12 @@ namespace blendnet.common.dto.User
         /// <summary>
         /// Type
         /// </summary>
-        public UserContainerType Type { get; set; }
+        public UserContainerType Type => UserContainerType.User;
+
+        /// <summary>
+        /// ID of Data Export Request command
+        /// </summary>
+        public Guid? DataExportRequestedBy { get; set; }
 
         public static bool IsPhoneNumberValid(string phoneNumber)
         {
