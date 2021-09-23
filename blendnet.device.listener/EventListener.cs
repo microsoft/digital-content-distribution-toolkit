@@ -47,13 +47,13 @@ namespace blendnet.device.listener
             _eventBus.Subscribe<FilterUpdateIntegrationEvent, FilterUpdateIntegrationEventHandler>();
 
             //add correlation based rule
-            //CustomPropertyCorrelationRule correlationRule = new CustomPropertyCorrelationRule()
-            //{
-            //    PropertyName = _appSettings.IOTCentralPropertyName,
-            //    PropertValue = _appSettings.IOTCentralPropertyValue,
-            //};
+            CustomPropertyCorrelationRule correlationRule = new CustomPropertyCorrelationRule()
+            {
+                PropertyName = _appSettings.IOTCentralPropertyName,
+                PropertValue = _appSettings.IOTCentralPropertyValue,
+            };
 
-            //_eventBus.Subscribe<TelemetryCommandIntegrationEvent, TelemetryCommandIntegrationEventHandler>(correlationRule);
+            _eventBus.Subscribe<IOTTelemetryCommandIntegrationEvent, IOTTelemetryCommandIntegrationEventHandler>(correlationRule);
 
             await _eventBus.StartProcessing();
 

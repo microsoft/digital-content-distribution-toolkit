@@ -248,6 +248,7 @@ namespace blendnet.common.dto
         public struct DateTimeFormats
         {
             public const string FormatYYYYMMDD = "yyyyMMdd";
+            public const string FormatYYYYMMDDHHmmssfff = "yyyyMMdd HH:mm:ss.fff";
         }
         
 

@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 
 namespace blendnet.common.dto.Events
 {
-    public class TelemetryCommandIntegrationEvent: IntegrationEvent
+    /// <summary>
+    /// Structure of data recieved in the telemetry recieved from IOT Central
+    /// </summary>
+    public class IOTTelemetryCommandIntegrationEvent: IntegrationEvent
     {
         public string applicationId { get; set; }
   
@@ -22,11 +25,14 @@ namespace blendnet.common.dto.Events
     
         public string module { get; set; }
 
-        public Telemetry telemetry { get; set; }
+        public IOTTelemetry telemetry { get; set; }
   
     }
 
-    public class Telemetry
+    /// <summary>
+    /// Represents Telemetry Property of the main object
+    /// </summary>
+    public class IOTTelemetry
     {
         public string DeviceIdInData { get; set; }
         
@@ -34,9 +40,7 @@ namespace blendnet.common.dto.Events
 
         public string ApplicationVersion { get; set; }
 
-        public TelemetryCommand TelemetryCommandData { get; set; }
+        public IOTTelemetryCommand TelemetryCommandData { get; set; }
 
     }
-
-
 }

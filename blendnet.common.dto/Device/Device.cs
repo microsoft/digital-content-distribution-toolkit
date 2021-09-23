@@ -119,7 +119,8 @@ namespace blendnet.common.dto.Device
         DeviceCommandPushedToDevice = 3,
         DeviceCommandComplete = 4,
         DeviceCommandPushToDeviceFailed = 5,
-        DeviceCommandFailed = 6
+        DeviceCommandFailed = 6,
+        DeviceCommandCancelled = 7,
     }
 
 }

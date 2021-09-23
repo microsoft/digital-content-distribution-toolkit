@@ -24,6 +24,7 @@ using Polly;
 using Polly.Extensions.Http;
 using Microsoft.ApplicationInsights.Extensibility;
 using blendnet.common.infrastructure.ApplicationInsights;
+using blendnet.api.proxy.Cms;
 
 namespace blendnet.device.listener
 {
@@ -115,7 +116,10 @@ namespace blendnet.device.listener
 
                     //Configure Kaizala Identity Proxy
                     services.AddTransient<KaizalaIdentityProxy>();
-                    
+
+                    //Configure Content Proxy
+                    services.AddTransient<ContentProxy>();
+
                 });
 
         /// <summary>
@@ -150,9 +154,11 @@ namespace blendnet.device.listener
 
             services.AddSingleton<IEventBus, EventServiceBus>();
 
-            //todo : add device based event handler
+            //add device based event handler
             services.AddTransient<FilterUpdateIntegrationEventHandler>();
-            
+
+            services.AddTransient<IOTTelemetryCommandIntegrationEventHandler>();
+
         }
 
         /// <summary>
@@ -206,7 +212,15 @@ namespace blendnet.device.listener
                 c.BaseAddress = new Uri(iotCentralBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             }).SetHandlerLifetime(TimeSpan.FromMinutes(httpHandlerLifeTimeInMts))  //Set lifetime to five minutes
-              .AddPolicyHandler(GetRetryPolicy(httpClientRetryCount)); ;
+              .AddPolicyHandler(GetRetryPolicy(httpClientRetryCount));
+
+            //Configure Http Client for cms Proxy
+            string cmsBaseUrl = hostContext.Configuration.GetValue<string>("CmsBaseUrl");
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(cmsBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
 
         }
 

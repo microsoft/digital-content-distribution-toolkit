@@ -27,8 +27,7 @@ namespace blendnet.device.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin,
-                    ApplicationConstants.KaizalaIdentityRoles.HubDevice)]
+    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
     public class DeviceContentController : ControllerBase
     {
         private readonly ILogger _logger;

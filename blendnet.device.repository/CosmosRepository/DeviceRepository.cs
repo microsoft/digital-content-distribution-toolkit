@@ -257,6 +257,8 @@ namespace blendnet.device.repository.CosmosRepository
 
         #endregion
 
+        #region Device Content
+        
         /// <summary>
         /// Gets content by device id and content id
         /// </summary>
@@ -367,5 +369,89 @@ namespace blendnet.device.repository.CosmosRepository
             var response = await _container.UpsertItemAsync<DeviceContent>(deviceContent, new PartitionKey(deviceContent.DeviceId));
             return (int)response.StatusCode;
         }
+
+        /// <summary>
+        /// Creates Device Content Mapping
+        /// </summary>
+        /// <param name="deviceContent"></param>
+        /// <returns></returns>
+        public async Task<Guid> CreateDeviceContent(DeviceContent deviceContent)
+        {
+            await this._container.CreateItemAsync<DeviceContent>(deviceContent, new PartitionKey(deviceContent.DeviceId.ToString()));
+
+            return deviceContent.ContentId;
+        }
+
+        /// <summary>
+        /// Updates Device Content
+        /// </summary>
+        /// <param name="deviceContent"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateDeviceContent(DeviceContent deviceContent)
+        {
+            try
+            {
+                var response = await this._container.ReplaceItemAsync<DeviceContent>(deviceContent,
+                                                                                        deviceContent.ContentId.ToString(),
+                                                                                        new PartitionKey(deviceContent.DeviceId));
+
+                return (int)response.StatusCode;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return (int)ex.StatusCode;
+            }
+
+        }
+
+        /// <summary>
+        /// Get Device Content
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        public async Task<DeviceContent> GetDeviceContent(Guid contentId, string deviceId)
+        {
+            try
+            {
+                ItemResponse<DeviceContent> response = await this._container.ReadItemAsync<DeviceContent>(contentId.ToString(), 
+                                                                                                            new PartitionKey(deviceId));
+
+                return response.Resource;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Get Exception.
+        /// </summary>
+        /// <param name="batchResponse"></param>
+        /// <param name="errorMessage"></param>
+        /// <returns></returns>
+        private BlendNetCosmosTransactionalBatchException GetTransactionalBatchException(TransactionalBatchResponse batchResponse,
+                                                                                          string errorMessage)
+        {
+            List<string> operationStatus = new List<string>();
+
+            for (var i = 0; i < batchResponse.Count; i++)
+            {
+                var result = batchResponse.GetOperationResultAtIndex<dynamic>(i);
+
+                operationStatus.Add($"Status code for index {i} is {result.StatusCode}");
+            }
+
+            BlendNetCosmosTransactionalBatchException batchException =
+                            new BlendNetCosmosTransactionalBatchException(errorMessage,
+                                                                          batchResponse.StatusCode,
+                                                                          batchResponse.ErrorMessage,
+                                                                          operationStatus);
+            return batchException;
+        }
+
     }
 }

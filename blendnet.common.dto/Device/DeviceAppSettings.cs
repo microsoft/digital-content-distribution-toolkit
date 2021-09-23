@@ -77,5 +77,10 @@ namespace blendnet.common.dto.Device
         /// </summary>
         public string IOTCentralPropertyValue { get; set; }
 
+        /// <summary>
+        /// CMS Base URL
+        /// </summary>
+        public string CmsBaseUrl { get; set; }
+
     }
 }

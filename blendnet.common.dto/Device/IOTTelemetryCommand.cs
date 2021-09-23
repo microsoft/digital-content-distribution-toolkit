@@ -9,9 +9,9 @@ namespace blendnet.common.dto.Device
     /// <summary>
     /// Telemetery Command
     /// </summary>
-    public class TelemetryCommand
+    public class IOTTelemetryCommand
     {
-        public TelemetryCommandName CommandName { get; set; }
+        public IOTTelemetryCommandName? CommandName { get; set; }
 
         public string CommandData { get; set; }
 
@@ -19,7 +19,7 @@ namespace blendnet.common.dto.Device
     /// <summary>
     /// Supported Telemetery Commands
     /// </summary>
-    public enum TelemetryCommandName
+    public enum IOTTelemetryCommandName
     {
         ContentDownloaded = 0,
         ContentDeleted = 1,

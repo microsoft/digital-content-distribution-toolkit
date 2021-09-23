@@ -165,11 +165,11 @@ namespace blendnet.device.api
 
             //Configure Services
             services.AddTransient<IDeviceRepository, DeviceRepository>();
+            services.AddTransient<ContentProxy>();
 
             //registerations required for authhandler to work
             services.AddTransient<KaizalaIdentityProxy>();
             services.AddTransient<UserProxy>();
-            services.AddTransient<ContentProxy>();
             services.AddTransient<IUserDetails, UserDetailsByProxy>();
 
             //Configure Cosmos DB

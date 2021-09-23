@@ -138,5 +138,27 @@ namespace blendnet.device.repository.Interfaces
         /// <param name="deviceIds"></param>
         /// <returns></returns>
         Task<List<DeviceContent>> GetContentAvailability(Guid contentId, List<string> deviceIds);
+
+        /// <summary>
+        /// Creates Device Content Mapping
+        /// </summary>
+        /// <param name="deviceContent"></param>
+        /// <returns></returns>
+        Task<Guid> CreateDeviceContent(DeviceContent deviceContent);
+
+        /// <summary>
+        /// Updates Device to Content Mapping
+        /// </summary>
+        /// <param name="deviceContent"></param>
+        /// <returns></returns>
+        Task<int> UpdateDeviceContent(DeviceContent deviceContent);
+
+        /// <summary>
+        /// Returns device to content mapping
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        Task<DeviceContent> GetDeviceContent(Guid contentId, string deviceId);
     }
 }
