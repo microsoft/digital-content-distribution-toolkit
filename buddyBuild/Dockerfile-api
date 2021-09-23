@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS buildApi
+FROM mcr.microsoft.com/dotnet/sdk:5.0-cbl-mariner1.0 AS buildApi
 WORKDIR /src
 COPY . .
 RUN dotnet build "blendnet.crm.contentprovider.api.sln" -c Release
