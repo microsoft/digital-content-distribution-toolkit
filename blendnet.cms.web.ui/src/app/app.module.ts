@@ -40,9 +40,11 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { NotificationsDialog } from './notifications/notifications-dialog';
 import { RetailerPlanDetailsDialogComponent } from './retailer-plan-details-dialog/retailer-plan-details-dialog.component';
 import { DeviceDialogComponent } from './devices/device-dialog.component';
-import { DeviceHistoryComponent } from './devices/device-history.component';
+import { DeviceFilterHistoryComponent } from './devices/device-filter-history.component';
 import { DeviceFiltersComponent } from './devices/device-filters.component';
 import { AdditionalHistoryDialog } from './devices/device-additional-history.component';
+import { DeviceAssignComponent } from './devices/device-assign.component';
+import { DeviceRetailerHistoryComponent } from './devices/device-retailer-history.component';
 
 @NgModule({
   declarations: [
@@ -76,9 +78,11 @@ import { AdditionalHistoryDialog } from './devices/device-additional-history.com
     RetailerPlanDetailsDialogComponent,
     BroadcastDetailsDialog,
     DeviceDialogComponent,
-    DeviceHistoryComponent,
+    DeviceFilterHistoryComponent,
     DeviceFiltersComponent,
-    AdditionalHistoryDialog
+    AdditionalHistoryDialog,
+    DeviceAssignComponent,
+    DeviceRetailerHistoryComponent
   ],
   imports: [
     HttpClientModule,

@@ -7,6 +7,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DeviceService } from '../services/device.service';
+import { DeviceAssignComponent } from './device-assign.component';
 import { DeviceDialogComponent } from './device-dialog.component';
 import { DeviceFiltersComponent } from './device-filters.component';
 
@@ -29,7 +30,7 @@ export interface DialogData {
   templateUrl: 'devices.component.html',
 })
 export class DevicesComponent {
-  displayedColumns: string[] = ['id', 'status', 'filterUpdateStatus' , 'filters', 'history'];
+  displayedColumns: string[] = ['id', 'status', 'filterUpdateStatus' , 'filters', 'filters_history', 'assignment', 'assign_history'];
   dataSource: MatTableDataSource<any>;
   showDialog: boolean = false;
   initialSelection = [];
@@ -38,6 +39,9 @@ export class DevicesComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+
+  errMessage;
+  error= false;
 
   constructor(
     public dialog: MatDialog, 
@@ -61,11 +65,15 @@ export class DevicesComponent {
 
       },
       err => {
+        this.error = true;
         this.dataSource = this.createDataSource([]);
-        this.toastr.error(err);
-        console.log('HTTP Error', err);
-      }
-     );
+        if(err === 'Not Found') {
+          this.errMessage = "No data found";
+        } else {
+          this.toastr.error(err);
+          this.errMessage = err;
+        }
+      });
   }
 
   
@@ -88,6 +96,30 @@ export class DevicesComponent {
     }
   }
 
+  
+
+  showFilterHistory(deviceId): void {
+    this.router.navigateByUrl('/devices/filters-history/'+ deviceId);
+  }
+
+  showAssignHistory(deviceId): void {
+    this.router.navigateByUrl('/devices/assignment-history/'+ deviceId);
+  }
+
+  assignment(deviceId) {
+    const dialogRef = this.dialog.open(DeviceAssignComponent, {
+      width: '500px',
+      data: {
+        heading : "Device Assignment/Unassignment",
+        deviceId: deviceId
+    },
+      
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
 
   openCreateDeviceDialog(): void {
     const dialogRef = this.dialog.open(DeviceDialogComponent, {
@@ -108,11 +140,6 @@ export class DevicesComponent {
   }
 
 
-
-  showHistory(deviceId): void {
-    this.router.navigateByUrl('/devices/'+ deviceId);
-
-  }
 
   deleteDeviceButtons(): Array<any> {
     return [{

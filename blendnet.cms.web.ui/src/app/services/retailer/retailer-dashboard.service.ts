@@ -11,9 +11,9 @@ import * as moment from 'moment';
 })
 export class RetailerDashboardService {
 
-  baseUrl = environment.retailerDashboardUrl;
-  retailerUrl = environment.retailerApiUrl;
-  retailerIncentive = environment.retailerDashboardUrl;
+  baseUrl = environment.baseUrl + environment.retailerDashboardUrl;
+  retailerUrl = environment.baseUrl +  environment.retailerApiUrl;
+  retailerIncentive = environment.baseUrl +  environment.retailerDashboardUrl;
   partnerCode = sessionStorage.getItem('partnerCode');
   retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
   monthSelected:any;

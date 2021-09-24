@@ -1,23 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, mergeMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Incentive, PlanType, RetailerPartner } from '../models/incentive.model';
-import { ConfigService } from './config.service';
+import { PlanType } from '../models/incentive.model';
 import { LogService } from './log.service';
+import { RetailerService } from './retailer.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IncentiveService {
 
-  baseUrl = environment.incentiveApiUrl;
+  baseUrl = environment.baseUrl + environment.incentiveApiUrl;
 
   constructor(
     private logger: LogService,
     private http: HttpClient,
-    private configService: ConfigService
+    private retailerService: RetailerService
   ) {
     
    }
@@ -38,7 +38,7 @@ export class IncentiveService {
   }
 
   getRetailerIncentives(): Observable<any> {
-    return this.configService.getRetailerPartners().pipe(mergeMap((res : any) => {
+    return this.retailerService.getRetailerPartners().pipe(mergeMap((res : any) => {
       var regularPlanUrls = {};
       var milestonePlanUrls = {};
       var planResponse = [];

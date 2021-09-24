@@ -1,0 +1,42 @@
+<form [formGroup]="retailerForm">
+    <h2>{{data.heading}}</h2>
+
+    <div>
+        <mat-form-field >
+        <input matInput placeholder="Retailer ID" 
+        formControlName="retailerID"  [disableControl]="isUpdate">
+        </mat-form-field>
+        
+    </div>
+    <div>
+        <mat-form-field >
+          <input matInput placeholder="Partner Code" 
+          formControlName="partnerCode" [disableControl]="isUpdate" >
+        </mat-form-field>
+    </div>
+      <!-- <div> 
+        <mat-form-field >
+            <mat-label>Start date</mat-label>
+            <input matInput  [matDatepicker]="startpicker"
+            formControlName="startDate" required disabled [min]="minStart">
+            <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+            <mat-datepicker #startpicker [disabled]="isUpdate"></mat-datepicker>
+        </mat-form-field>
+    </div>
+    <div *ngIf="isUpdate"> 
+        <mat-form-field >
+            <mat-label>End date</mat-label>
+            <input matInput  [matDatepicker]="endpicker"
+            formControlName="endDate" required disabled [min]="minStart">
+            <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+            <mat-datepicker #endpicker disabled="false"></mat-datepicker>
+        </mat-form-field>
+    </div> -->
+    
+      <div align="end">
+        <button mat-raised-button type="button" class="discard-btn" (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button type="submit" color="primary" class="update-btn" 
+        [disabled]="retailerForm.invalid" (click)="saveOrUpdate()"> {{isUpdate ? "Unassign" : "Asssign"}}</button>
+      </div>
+
+</form>

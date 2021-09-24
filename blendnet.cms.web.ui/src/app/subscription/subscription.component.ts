@@ -23,7 +23,8 @@ export class SubscriptionComponent {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
+  errMessage;
+  error= false;
 
   constructor(
     private subscriptionService: SubscriptionService,
@@ -54,11 +55,15 @@ export class SubscriptionComponent {
 
       },
       err => {
+        this.error = true;
         this.dataSource = this.createDataSource([]);
-        this.toastr.error(err);
-        console.log('HTTP Error', err);
-      }
-     );
+        if(err === 'Not Found') {
+          this.errMessage = "No data found";
+        } else {
+          this.toastr.error(err);
+          this.errMessage = err;
+        }
+      });
   }
 
   applyFilter(event: Event) {

@@ -37,8 +37,9 @@ export class BroadcastComponent {
   allowedMaxSelection: number = environment.allowedMaxSelection;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  //polling: Subscription;
-
+  errMessage;
+  error= false;
+  
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
     private toastr: ToastrService
@@ -84,11 +85,15 @@ export class BroadcastComponent {
       this.selectedContents=0;
     },
     err => {
-      this.dataSource = this.createDataSource([]);
-      this.toastr.error(err);
-      console.log('HTTP Error', err)
-    }
-    );
+      this.error = true;
+        this.dataSource = this.createDataSource([]);
+        if(err === 'Not Found') {
+          this.errMessage = "No data found";
+        } else {
+          this.toastr.error(err);
+          this.errMessage = err;
+        }
+    });
   }
 
   viewContent(selectedContent) : void {

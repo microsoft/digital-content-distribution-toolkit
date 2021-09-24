@@ -14,7 +14,6 @@ export class SpinnerOverlayService {
   constructor(private overlay: Overlay) {}
    
   public show(): void {
-    // Hack avoiding `ExpressionChangedAfterItHasBeenCheckedError` error
     Promise.resolve(null).then(() => {
       this.overlayRef = this.overlay.create({
         positionStrategy: this.overlay

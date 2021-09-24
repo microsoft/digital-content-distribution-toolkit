@@ -6,9 +6,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { Incentive, PlanType, PublishMode } from '../models/incentive.model';
-import { ConfigService } from '../services/config.service';
 import { ContentProviderService } from '../services/content-provider.service';
 import { IncentiveService } from '../services/incentive.service';
+import { RetailerService } from '../services/retailer.service';
 
 @Component({
   selector: 'app-incentive-management',
@@ -41,11 +41,14 @@ export class IncentiveManagementComponent implements OnInit {
   selectedPartner;
   missingPlansforPartner;
 
+  errMessage;
+  error= false;
+
   constructor( private incentiveService: IncentiveService,
     public dialog: MatDialog,
     private toastr: ToastrService,
-    private configService: ConfigService,
-    private contentProviderService: ContentProviderService
+    private contentProviderService: ContentProviderService,
+    private retailerService: RetailerService
     ) { }
 
   ngOnInit(): void {
@@ -85,20 +88,24 @@ export class IncentiveManagementComponent implements OnInit {
             this.selectedStatusRetailer= this.statuses[0]; 
             this.applyFilterRetailer(null);   
             this.getMissingPlans(this.dataSourceRetailers.data);
-            if(validResult.length != res.length) {
-              this.toastr.warning("Incentive Plans for one or more retailer partner/s are not loaded");
-            }
+           
         },
       err => {
+        this.error = true;
         this.dataSourceRetailers = this.createDataSource([]);
-        console.log('HTTP Error', err);
+        if(err === 'Not Found') {
+          this.errMessage = "No data found";
+        } else {
+          this.toastr.error(err);
+          this.errMessage = err;
+        }
       }
     );
   }
 
   getMissingPlans(plans) {
     var missingListPartner: any [] = [];
-    this.configService.getRetailerPartners().subscribe(
+    this.retailerService.getRetailerPartners().subscribe(
       res => {
         this.partners = this.getPartnerCodes(res);
         sessionStorage.setItem("RETAILER_PARTNERS", JSON.stringify(this.partners));
@@ -271,8 +278,14 @@ export class IncentiveManagementComponent implements OnInit {
           this.getMissingPlansConsumer(this.dataSourceConsumers.data);  
         },
       err => {
+        this.error = true;
         this.dataSourceConsumers = this.createDataSource([]);
-        console.log('HTTP Error', err);
+        if(err === 'Not Found') {
+          this.errMessage = "No data found";
+        } else {
+          this.toastr.error(err);
+          this.errMessage = err;
+        }
       }
     );
   }

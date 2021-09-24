@@ -38,6 +38,8 @@ export class ProcessedComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   color: ThemePalette = 'primary';
+  errMessage;
+  error= false;
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
@@ -76,11 +78,15 @@ export class ProcessedComponent {
       this.selectedContents=0;
     },
     err => {
-      this.dataSource = this.createDataSource([]);
-      this.toastr.error(err);
-      console.log('HTTP Error', err)
-    }
-    );
+       this.error = true;
+        this.dataSource = this.createDataSource([]);
+        if(err === 'Not Found') {
+          this.errMessage = "No data found";
+        } else {
+          this.toastr.error(err);
+          this.errMessage = err;
+        }
+    });
   }
 
   toggleSelection(event, row) {
@@ -351,10 +357,7 @@ export class ProcessConfirmDialog {
     public contentService: ContentService,
     private toastr: ToastrService) {
       this.filters = environment.filters;
-      const currentYear = new Date().getFullYear();
-      const currentMonth = new Date().getMonth();
-      const currentDay = new Date().getDate();
-      this.minStart = new Date(currentYear, currentMonth, currentDay);
+      this.minStart = new Date();
     }
 
   onCancel(): void {

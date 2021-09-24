@@ -9,8 +9,8 @@ import { LogService } from './log.service';
   providedIn: 'root'
 })
 export class UserService {
-  userBaseUrl = environment.userApiUrl;
-  createUserBaseUrl = environment.createUserApiUrl;
+  userBaseUrl = environment.baseUrl + environment.userApiUrl;
+  createUserBaseUrl = environment.baseUrl +  environment.createUserApiUrl;
   isRetailerRouted = false;
   private loggedInUser = new BehaviorSubject<any>(null);
   loggedInUser$ = this.loggedInUser.asObservable();
@@ -53,11 +53,6 @@ export class UserService {
       this.registeredUserSubject.next(userId);
       return userId;
     }));
-
-    
-
-
-
   }
 
   setRetailerRouted(flag) {

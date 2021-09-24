@@ -1,16 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { ContentService } from '../services/content.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {MatAccordion} from '@angular/material/expansion';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog} from '@angular/material/dialog';
 import { NotificationsDialog } from './notifications-dialog';
-import { environment } from '../../environments/environment';
 import {MatTableDataSource} from '@angular/material/table';
 import { Content } from '../models/content.model';
-import { ContentStatus } from '../models/content-status.enum';
-import { SubscriptionService } from '../services/subscription.service';
 import { NotificationService } from '../services/notification.service';
 import { MatSort } from '@angular/material/sort';
 
@@ -31,6 +26,8 @@ export class NotificationsComponent implements OnInit {
   cpSubscriptions;
   today;
   sendDate: Date;
+  errMessage;
+  error= false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -62,11 +59,15 @@ export class NotificationsComponent implements OnInit {
             this.dataSource.sort = this.sort;
           },
           err => {
+            this.error = true;
             this.dataSource = this.createDataSource([]);
-            this.toastr.error(err);
-            console.log('HTTP Error', err)
-          }
-          );
+            if(err === 'Not Found') {
+              this.errMessage = "No data found";
+            } else {
+              this.toastr.error(err);
+              this.errMessage = err;
+            }
+          });
 
       }
   

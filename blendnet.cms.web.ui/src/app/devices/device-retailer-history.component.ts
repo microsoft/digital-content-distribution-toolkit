@@ -5,24 +5,25 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { DeviceService } from '../services/device.service';
+import { RetailerService } from '../services/retailer.service';
 import { AdditionalHistoryDialog } from './device-additional-history.component';
 
 @Component({
-  selector: 'app-device-history',
-  templateUrl: './device-history.component.html',
+  selector: 'app-device-retailer-history',
+  templateUrl: './device-retailer-history.component.html',
   styleUrls: ['./devices.component.css']
 })
-export class DeviceHistoryComponent implements OnInit {
+export class DeviceRetailerHistoryComponent implements OnInit {
   deviceid;
-  displayedColumns: string[] = ['id', 'deviceCommandStatus', 'filters' , 'createdDate',  'details'];
+  displayedColumns: string[] = ['retailerId', 'name', 'phoneNumber','partnerCode' , 'assignmentStartDate',  'assignmentEndDate'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
+  errMessage;
+  error= false;
 
   constructor(
-    private deviceService: DeviceService,
+    private retailerService: RetailerService,
     public dialog: MatDialog,
     private toastr: ToastrService,
     private route: ActivatedRoute,
@@ -33,15 +34,20 @@ export class DeviceHistoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.deviceService.getDeviceHistory(this.deviceid).subscribe(res => {
+    this.retailerService.getRetailerByDeviceId(this.deviceid ).subscribe(res => {
       this.dataSource = this.createDataSource(res.body);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     },
     err => {
+      this.error = true;
       this.dataSource = this.createDataSource([]);
-      this.toastr.error(err);
-      console.log('HTTP Error', err);
+      if(err === 'Not Found') {
+        this.errMessage = "No data found";
+      } else {
+        this.toastr.error(err);
+        this.errMessage = err;
+      }
     });
    
   }
@@ -50,7 +56,16 @@ export class DeviceHistoryComponent implements OnInit {
     var dataSource: any[] =[];
     if(rawDataList) {
       rawDataList.forEach( rawData => {
-        dataSource.push(rawData);
+        var currentDevice = rawData.deviceAssignments.find(d =>  d.deviceId === this.deviceid   );
+        var data = {
+          retailerId: rawData.partnerProvidedId,
+          name: rawData.name,
+          phoneNumber: rawData.phoneNumber,
+          partnerCode: rawData.partnerCode,
+          assignmentStartDate: currentDevice.assignmentStartDate,
+          assignmentEndDate: currentDevice.assignmentEndDate
+        }
+        dataSource.push(data);
       });
     }
     return new MatTableDataSource(dataSource);

@@ -8,7 +8,7 @@ import { LogService } from './log.service';
   providedIn: 'root'
 })
 export class NotificationService {
-  notificationBaseUrl = environment.notificationApiUrl;
+  notificationBaseUrl = environment.baseUrl +  environment.notificationApiUrl;
 
   constructor(
     private logger: LogService,

@@ -18,7 +18,8 @@ import { IncentiveManagementComponent } from './incentive-management/incentive-m
 
 import { NotificationsComponent } from './notifications/notifications.component';
 import { SeamlessLoginComponent } from './retailer/seamless-login/seamless-login.component';
-import { DeviceHistoryComponent } from './devices/device-history.component';
+import { DeviceFilterHistoryComponent } from './devices/device-filter-history.component';
+import { DeviceRetailerHistoryComponent } from './devices/device-retailer-history.component';
 
 const appRoutes: Routes = [
   {
@@ -79,8 +80,18 @@ const appRoutes: Routes = [
     } 
   },
   {
-    path: 'devices/:id',
-   component: DeviceHistoryComponent,
+    path: 'devices/filters-history/:id',
+   component: DeviceFilterHistoryComponent,
+   canActivate: [
+    AuthGuardService, RoleGuardService
+  ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin]
+    } 
+  },
+  {
+    path: 'devices/assignment-history/:id',
+   component: DeviceRetailerHistoryComponent,
    canActivate: [
     AuthGuardService, RoleGuardService
   ],

@@ -8,7 +8,7 @@ import { LogService } from './log.service';
   providedIn: 'root'
 })
 export class DeviceService {
-  baseUrl = environment.deviceUrl;
+  baseUrl = environment.baseUrl + environment.deviceUrl;
   constructor(private logger: LogService,
     private http: HttpClient) { }
 
@@ -37,5 +37,9 @@ export class DeviceService {
       let url = this.baseUrl + '/' + deviceId +'/commands';
       this.logger.log(`Getting device history`);
       return this.http.get(url,{ observe: 'response'});
+    }
+
+    assignDeviceToRetailer() {
+
     }
 }

@@ -8,11 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class ContentService {
 
-  
-  baseUrl = environment.contentApiUrl;
-  // private unprocessedContent$: Observable<Content[]>;
-  // private stopPolling = new Subject();
-
+  baseUrl = environment.baseUrl +  environment.contentApiUrl;
 
   constructor(
     private logger: LogService,

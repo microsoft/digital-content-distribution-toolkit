@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SaskeyService } from '../services/saskey.service';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { ContentProviderService } from '../services/content-provider.service';
 
 @Component({
   selector: 'app-sas-key',
@@ -14,7 +12,7 @@ export class SasKeyComponent implements OnInit {
   expiresIn:string= "";
 
   constructor( 
-    private sasKeyService: SaskeyService,
+    private contentProviderService: ContentProviderService,
     private toastr: ToastrService
     ) { }
 
@@ -30,7 +28,7 @@ export class SasKeyComponent implements OnInit {
   generateSAS() {
     var cpId = sessionStorage.getItem("contentProviderId");
     if(cpId) {
-      this.sasKeyService.generateSASKey(cpId)
+      this.contentProviderService.generateSASKey(cpId)
       .subscribe( res => {
         this.sasKey  = res.sasUri;
         var today = new Date();

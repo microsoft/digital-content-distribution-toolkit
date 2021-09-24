@@ -27,11 +27,10 @@ import { SubscriptionService } from "../services/subscription.service";
       private subscriptionService: SubscriptionService,
       private toastr: ToastrService
       ) {
-        const currentYear = new Date().getFullYear();
-        const currentMonth = new Date().getMonth();
-        const currentDay = new Date().getDate();
-        this.minStart = new Date(currentYear, currentMonth, currentDay);
-        this.minEnd = new Date(currentYear, currentMonth, currentDay+1);
+ 
+        this.minStart = new Date();
+        this.minEnd  = new Date();
+        this.minEnd.setDate(this.minEnd.getDate() +1);
   
       }
   

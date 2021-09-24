@@ -5,13 +5,13 @@ import { ContentProviderService } from '../services/content-provider.service';
 import { IncentiveService } from '../services/incentive.service';
 import { Output, EventEmitter } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { ConfigService } from '../services/config.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { AddEventDialog } from './add-event-dialog';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { RetailerService } from '../services/retailer.service';
 
 @Component({
   selector: 'app-add-incentive',
@@ -55,14 +55,12 @@ export class AddIncentiveComponent implements OnInit {
     private incentiveService: IncentiveService,
     private contentProviderService: ContentProviderService,
     private toastr: ToastrService,
-    private configService: ConfigService,
+    private retailerService: RetailerService,
     public dialog: MatDialog
   ) { 
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth();
-    const currentDay = new Date().getDate();
-    this.minStart = new Date(currentYear, currentMonth, currentDay);
-    this.minEnd = new Date(currentYear, currentMonth, currentDay+1);
+    this.minStart = new Date();
+    this.minEnd = new Date();
+    this.minEnd.setDate(this.minEnd.getDate() +1);
     
   }
 
@@ -137,7 +135,7 @@ export class AddIncentiveComponent implements OnInit {
     if(sessionStorage.getItem("RETAILER_PARTNERS")) {
       this.partners = JSON.parse(sessionStorage.getItem('RETAILER_PARTNERS'));
     } else {
-      this.configService.getRetailerPartners().subscribe(
+      this.retailerService.getRetailerPartners().subscribe(
         res => {
           this.partners = this.getPartnerCodes(res);
           sessionStorage.setItem("RETAILER_PARTNERS", JSON.stringify(this.partners));

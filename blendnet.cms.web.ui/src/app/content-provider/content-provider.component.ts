@@ -106,8 +106,7 @@ export class ContentProviderComponent implements OnInit {
   openEditConfirmModal(selectedCp, edit = true): void {
     const heading = edit ? 'Edit ': 'Add '
     const dialogRef = this.dialog.open(AddContentProviderComponent, {
-      width: '60%',
-      disableClose: true,
+      width: '40%',
       data: {cp: selectedCp, heading: heading + 'Content Provider'}
     });
   
@@ -123,7 +122,6 @@ export class ContentProviderComponent implements OnInit {
 
     openSelectCPModal(selectedCp): void {
       const dialogRef = this.dialog.open(CommonDialogComponent, {
-        disableClose: true,
         data: {message: "Please confirm to continue with your selection", heading:'Confirm',
           buttons: this.openSelectCPModalButtons()
         },

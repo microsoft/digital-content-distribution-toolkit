@@ -90,7 +90,6 @@ export class AppComponent {
 
     logout() {
       const dialogRef = this.dialog.open(CommonDialogComponent, {
-        disableClose: true,
         data: {message: "Are you sure you want to log out?", heading:'Confirm Logout',
           buttons: this.logoutButtons()
         },

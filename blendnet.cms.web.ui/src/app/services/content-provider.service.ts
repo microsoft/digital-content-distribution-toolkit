@@ -9,8 +9,8 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class ContentProviderService {
-  baseUrl = environment.contentProviderApiUrl;
-  browseContentBaseUrl = environment.browrseContent;
+  baseUrl = environment.baseUrl +  environment.contentProviderApiUrl;
+  browseContentBaseUrl = environment.baseUrl +  environment.browrseContent;
   private selectedCP = new BehaviorSubject<Contentprovider>(null);
   sharedSelectedCP$ = this.selectedCP.asObservable();
   
@@ -49,9 +49,13 @@ export class ContentProviderService {
     return this.http.delete(url,{ observe: 'response'});
   }
 
-
-
   changeDefaultCP(selectedCP: Contentprovider) {
     this.selectedCP.next(selectedCP)
+  }
+ 
+  generateSASKey(contentProviderId)  : Observable<any> {
+    let url = this.baseUrl + "/" +contentProviderId+ "/generateSaS";
+    this.logger.log(`Fetching SAS key`);
+    return this.http.get(url);
   }
 }
