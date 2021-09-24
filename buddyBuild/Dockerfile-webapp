@@ -1,4 +1,7 @@
-FROM node:14-buster-slim as build-web
+FROM cblmariner.azurecr.io/base/core:1.0 as build-web
+RUN tdnf -y install nodejs
+ENV NODE_OPTIONS=--tls-cipher-list='ECDHE-RSA-AES128-GCM-SHA256:!RC4'
+
 WORKDIR /app
 
 COPY blendnet.cms.web.ui /app
