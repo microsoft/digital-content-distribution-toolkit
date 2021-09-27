@@ -49,6 +49,16 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             //   this.kaizalaService.logout();
             //   location.reload(true);
             // }
+            if (error.status === 401) {
+              let errorMessage = "User is unauthorised";
+              return throwError(errorMessage);
+            }
+
+            if (error.status === 403) {
+              let errorMessage = "User is forbidden";
+              return throwError(errorMessage);
+            }
+
             let errorMessage = '';
             if (error.error instanceof ErrorEvent) {
               // client-side error

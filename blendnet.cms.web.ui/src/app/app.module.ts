@@ -16,7 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AddContentProviderComponent } from './add-content-provider/add-content-provider.component';
-import { LoginComponent } from './login/login.component';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { ToastrModule } from 'ngx-toastr';
 import { HttpErrorInterceptor } from './interceptor/http-error.interceptor';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
@@ -29,7 +29,7 @@ import { CommonDialogComponent } from './common-dialog/common-dialog.component';
 import { AddSubscriptionDialog } from './subscription/add-subscription-dialog';
 import { ProfileComponent } from './profile/profile.component';
 import { PascalToStringPipe } from './custom-pipes/pascalcase-to-string.pipe';
-import { RetailerLandingPageComponent } from './retailer-landing-page/retailer-landing-page.component';
+// import { RetailerLandingPageComponent } from './retailer/retailer-dashboard/retailer-landing-page.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 
 import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
@@ -38,8 +38,11 @@ import { DisableControlDirective } from './custom-directives/disable-control.dir
 import { AddEventDialog } from './incentive-management/add-event-dialog';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { NotificationsDialog } from './notifications/notifications-dialog';
-import { RetailerPlanDetailsDialogComponent } from './retailer-plan-details-dialog/retailer-plan-details-dialog.component';
+import { RetailerLoginComponent } from './retailer-login/retailer-login.component';
+import { LoginComponent } from './login/login.component';
+// import { RetailerPlanDetailsDialogComponent } from './retailer';
 import { DeviceDialogComponent } from './devices/device-dialog.component';
+import { ContentProviderHeaderComponent } from './content-provider-header/content-provider-header.component';
 import { DeviceFilterHistoryComponent } from './devices/device-filter-history.component';
 import { DeviceFiltersComponent } from './devices/device-filters.component';
 import { AdditionalHistoryDialog } from './devices/device-additional-history.component';
@@ -56,6 +59,7 @@ import { DeviceRetailerHistoryComponent } from './devices/device-retailer-histor
     ContentProviderComponent,
     SasKeyComponent,
     AddContentProviderComponent,
+    AdminLoginComponent,
     LoginComponent,
     SpinnerOverlayComponent,
     ContentTokenDialog,
@@ -67,7 +71,7 @@ import { DeviceRetailerHistoryComponent } from './devices/device-retailer-histor
     CommonDialogComponent,
     ProfileComponent,
     PascalToStringPipe,
-    RetailerLandingPageComponent,
+    // RetailerLandingPageComponent,
     ContentDetailsDialog,
     IncentiveManagementComponent,
     AddIncentiveComponent,
@@ -75,9 +79,11 @@ import { DeviceRetailerHistoryComponent } from './devices/device-retailer-histor
     AddEventDialog,
     NotificationsComponent,
     NotificationsDialog,
-    RetailerPlanDetailsDialogComponent,
+    RetailerLoginComponent,
+    // RetailerPlanDetailsDialogComponent,
     BroadcastDetailsDialog,
     DeviceDialogComponent,
+    ContentProviderHeaderComponent,
     DeviceFilterHistoryComponent,
     DeviceFiltersComponent,
     AdditionalHistoryDialog,

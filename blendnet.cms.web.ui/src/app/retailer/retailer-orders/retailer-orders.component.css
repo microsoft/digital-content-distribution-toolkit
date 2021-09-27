@@ -1,0 +1,231 @@
+.retailer-request-header {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.retailer-request-header-text {
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 24px;
+    color: #101010;
+    margin-left: 20px;
+}
+
+.retailer-home-backbtn {
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 33px;
+    display: flex;
+    align-items: center;
+    color: #8692A6;
+    margin-left: 20px;
+    padding: 0;
+}
+
+.retailer-request-body {
+    height: 120px;
+    background: #ffffff;
+    border: 0.5px solid #D4E5F1;
+    box-sizing: border-box;
+    border-radius: 8px;
+    margin: 28px 20px auto 20px;
+    display: flex;
+    align-items: center;
+}
+
+.retailer-request-body input {
+    margin-left: 20px;
+    padding-left: 9px;
+    width: 328px;
+    height: 48px;
+    background: #FFFFFF;
+    border: 0.5px solid #D4E5F1;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+    border-radius: 4px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    color: #606060;
+}
+
+.retailer-request-body input:focus-visible {
+    outline: none
+}
+
+.retailer-request-button {
+    margin-right: 20px;
+    margin-left: auto;
+    width: 273px;
+    height: 48px;
+}
+
+.retailer-request-button button{
+    background: #1973EB;
+    border-radius: 30px;
+    width: 100%;
+    height: 100%;
+    font-family: Mukta;
+    font-style: normal;
+    /* font-weight: bold; */
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.retailer-orderdetails-container {
+    width: 1110px;
+    margin: 28px 20px auto 20px;
+    background: #FFFFFF;
+    border: 0.5px solid #D4E5F1;
+    box-sizing: border-box;
+    border-radius: 8px;
+}
+
+.retailer-orders-text {
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    color: #101010;
+    margin: 40px auto 24px 24px;
+}
+
+.retailer-empty-request {
+    background: #FFFFFF;
+    margin-top: 72px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 360px;
+    height: 284px;
+}
+
+.retailer-empty-text {
+    margin-top: 20px;
+    margin-bottom: 136px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    color: #5D6973;
+}
+
+.retailer-request-orders {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+.retailer-order-logo {
+    border-radius: 4px;
+    height: 56px;
+    width: 56px;
+}
+
+.order-separator {
+    margin: 0 20px 0 20px;
+    border: 0.5px solid #D4E5F1
+}
+
+.order-title {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.order-title span:nth-of-type(1) {
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    color: #101010;
+}
+
+.order-title span:nth-of-type(2) {
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    color: #5D6973;
+}
+
+.order-complete {
+    margin-left: auto;
+    color: #5D6973;
+}
+
+.mat-icon {
+    vertical-align: middle;
+}
+
+.order-complete span {
+    margin: 0 25px 0 4px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 24px;
+    
+}
+
+.order-complete button {
+    height: 40px;
+    width: 200px;
+    border: 1px solid #1973EB;
+    box-sizing: border-box;
+    border-radius: 20px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
+    text-transform: capitalize;
+    color: #1973EB;
+    background: #FFFFFF;
+    cursor: pointer;
+}
+
+.order-complete-failed {
+    margin-left: auto;
+    margin-right: 284px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 24px;
+    /* identical to box height, or 150% */
+
+    display: flex;
+    align-items: center;
+
+    color: #B81212;
+}
+
+.retailer-success-prompt {
+    position: absolute;
+    z-index: 100;
+    left: 192px;
+    top: 12px;
+}

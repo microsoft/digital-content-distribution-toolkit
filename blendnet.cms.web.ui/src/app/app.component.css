@@ -1,41 +1,124 @@
-.cms-container {
-    height: calc(100vh - 63px);
-    border: 1px solid rgba(0, 0, 0, 0.5);
+.cms-toolbar {
+    height: 55px;
+    margin-bottom: 1px;
+    display: flex;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-.retailer-cms-container {
+.mishtu-logo {
+    width: 50px;
+    height: 50px;
+}
+
+.retailer-referral {
+    margin-right: 24px;
+    background: #FAFCFF;
+    float: right;
+    mix-blend-mode: normal;
+    border: 0.5px dashed #0789FF;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 6px rgba(72, 83, 85, 0.08);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px 10px 16px;
+}
+
+.cms-toolbar-item {
+    display: flex;
+    margin: 18px 20px 18px auto;
+}
+
+.retailer-referral-text {
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    color: #5D6973;
+    margin: 0;
+}
+
+.retailer-referral-text span {
+    font-weight: bold;
+    color: #101010;
+}
+
+.referral-copy-icon {
+    cursor: pointer;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+/* .retailer-cms-container {
     height: 100vh !important;
+} */
+
+.cms-container {
+    height: 100%;
+    background: #F8FCFF;
+    border: 2px solid #F0F0F0;
+    box-sizing: border-box;
+    /* border: 1px solid rgba(0, 0, 0, 0.5); */
+}
+
+.cms-container-height {
+    height: calc(100vh - 57px);
+    background: #F8FCFF;
+    border: 2px solid #F0F0F0;
+    box-sizing: border-box;
+}
+
+.cms-sidenav {
+    width: 250px;
 }
 
 .position-fixed{
     position: fixed
-  }
-  .cms-content {
-    margin-top: 70px
-  }
+}
+
+.cms-content {
+margin-top: 70px
+}
+
+.cms-sidenav-details {
+    display: flex;
+    align-items: center;
+}
+
 .cms-sidenav-content {
     /* display: flex; */
     /* height: 100%; */
     width: 100%;
     align-items: center;
     justify-content: center;
+    overflow: hidden auto;
 }
-.cms-sidenav {
-    user-select: none;
+
+.nav-icon {
+    margin-right: 20px;
+    margin-left: 5px;
+    font-size: 16pt;
 }
+
 .cms-app-name{
     font-size: small;
 }
+
 .full-width {
     width: 100%;
 }
+
 .menu-button {
     transition: 300ms ease-in-out;
     transform: rotate(0deg);
 }
+
 .menu-button.rotated {
     transform: rotate(180deg);
 }
+
 .submenu {
     overflow-y: hidden;
     transition: transform 300ms ease;
@@ -51,55 +134,96 @@
 .cms-profile {
     font-size: small;
 }
-.active {
-    background-color: lightgray;
-  }
 
-  .sidenav-toggler {
-      cursor: pointer;
-  }
+.mat-list-item {
+    height: 50px !important;
+}
 
-  .menu-side-text {
-      vertical-align: super;
-  }
+.mat-list-item.active {
+    width: 95%;
+    color: #FFFFFF;
+    background: linear-gradient(180deg, #00B0EC 13.47%, #0078D4 95.94%) !important;
+    border-radius: 0px 100px 100px 0px !important;
+}
 
-  .menu-small-text {
-    font-size: 10px;
-  }
+.submenu a:hover {
+    width: 95%;
+    border-radius: 0px 100px 100px 0px;
+}
 
-  @media only screen and (max-width: 767px) {
-    ::ng-deep .mat-list-item-content {
-        padding-right: 0 !important;
-      }
+.sidenav-toggler {
+    cursor: pointer;
+}
 
-      ::ng-deep .cms-image {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
+.menu-side-text {
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 30px;
+}
 
-      .retailer-menu {
-        width: 100%;
-      }
-  }
+.menu-small-text {
+font-size: 10px;
+}
 
-  @media only screen and (min-width: 768px) and (max-width: 1023px) {
-      .retailer-menu {
-        width: 100%;
-      }
-  }
-
-  .force-full-menu {
-      width: 100%;
-  }
-
-  .hidden {
-      display: none !important;
-  }
-
-  @media only screen and (min-width: 1024px) {
-    .retailer-menu, .referrals-main-block {
-      width: 900px;
-      margin-left: calc(50vw - 450px);
+@media only screen and (max-width: 767px) {
+::ng-deep .mat-list-item-content {
+    padding-right: 0 !important;
+    padding-left: 5px !important;
     }
+
+    ::ng-deep .cms-image {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
+
+    .cms-sidenav {
+        width: auto;
+    }
+
+    .retailer-referral{
+        display: none;
+    }
+
+    .cms-sidenav-details {
+        flex-direction: column;
+    }
+
+    .nav-icon {
+        margin-left: 0px;
+    }
+
+    .retailer-menu {
+    width: 100%;
+    }
+
+    .mat-list-item.active {
+        width: 100%;
+        color: #FFFFFF;
+        background: linear-gradient(180deg, #00B0EC 13.47%, #0078D4 95.94%) !important;
+        border-radius: 0px !important;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+    .retailer-menu {
+    width: 100%;
+    }
+}
+
+.force-full-menu {
+    width: 100%;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media only screen and (min-width: 1024px) {
+.retailer-menu, .referrals-main-block {
+    width: 900px;
+    margin-left: calc(50vw - 450px);
+}
 }

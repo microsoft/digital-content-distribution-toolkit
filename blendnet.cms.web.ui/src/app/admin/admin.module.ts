@@ -1,22 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
-import { BroadcastComponent } from './../broadcast/broadcast.component';
-import { ContentProviderComponent } from './../content-provider/content-provider.component';
-import { DevicesComponent } from './../devices/devices.component';
-import { LoginComponent } from './../login/login.component';
-import { ManageContentComponent } from './../manage-content/manage-content.component';
-import { ProcessedComponent } from './../processed/processed.component';
-import { SasKeyComponent } from './../sas-key/sas-key.component';
-import { UnprocessedComponent } from './../unprocessed/unprocessed.component';
-import { RoleGuardService } from './../services/role-guard.service';
-import { SubscriptionComponent } from './../subscription/subscription.component';
-import { HomeComponent } from './../home/home.component';
-import { AuthGuardService } from './../services/auth-guard.service';
+import { BroadcastComponent } from '../broadcast/broadcast.component';
+import { ContentProviderComponent } from '../content-provider/content-provider.component';
+import { DevicesComponent } from '../devices/devices.component';
+import { ManageContentComponent } from '../manage-content/manage-content.component';
+import { ProcessedComponent } from '../processed/processed.component';
+import { SasKeyComponent } from '../sas-key/sas-key.component';
+import { UnprocessedComponent } from '../unprocessed/unprocessed.component';
+import { RoleGuardService } from '../services/role-guard.service';
+import { SubscriptionComponent } from '../subscription/subscription.component';
 import { environment } from 'src/environments/environment';
+import { NotificationsComponent } from '../notifications/notifications.component';
+import { IncentiveManagementComponent } from '../incentive-management/incentive-management.component';
 
 const routes: Routes = [
-
   {
     path: 'unprocessed-content', 
     component: UnprocessedComponent,
@@ -69,6 +67,16 @@ const routes: Routes = [
     } 
   },
   {
+    path: 'incentive-management',
+   component: IncentiveManagementComponent,
+   canActivate: [
+     RoleGuardService
+  ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin]
+    } 
+  },
+  {
     path: 'content-providers',
      component: ContentProviderComponent,
      canActivate: [
@@ -99,9 +107,15 @@ const routes: Routes = [
       expectedRole: [environment.roles.SuperAdmin]
     } 
   },
-  { 
-    path: '**', 
-    redirectTo: '' 
+  {
+    path: 'notifications', 
+    component: NotificationsComponent,
+    canActivate: [
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin]
+    } 
   }
 
 ];
@@ -114,4 +128,4 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ]
 })
-export class AuthenticatedUserModule { }
+export class AdminModule { }

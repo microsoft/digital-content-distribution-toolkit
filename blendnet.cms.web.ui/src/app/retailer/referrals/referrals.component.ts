@@ -37,15 +37,15 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     console.log('setting routed to' + true);
-    this.userService.setRetailerRouted(true);
+    //this.userService.setRetailerRouted(true);
   }
 
   ngOnDestroy() {
-    this.userService.setRetailerRouted(false);
+   // this.userService.setRetailerRouted(false);
   }
 
-  navigateToHome() {
-    this.router.navigate(['retailer/home']);
+  navigateToDashboard() {
+    this.router.navigate(['/retailer/dashboard']);
   }
 
   selected(period: string) {

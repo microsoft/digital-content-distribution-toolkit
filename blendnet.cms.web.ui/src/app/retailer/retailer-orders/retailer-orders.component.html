@@ -1,0 +1,57 @@
+<div class="retailer-success-prompt" *ngIf="orderCompleteRequestSuccess">
+    <app-retailer-order-success></app-retailer-order-success>
+</div>
+<div class="retailer-request-header">
+    <span *ngIf="requestPage" class="retailer-request-header-text">Requests</span>
+    <button mat-button
+    class="retailer-home-backbtn"
+    (click)="goToPreviousPage()"
+    *ngIf="!requestPage">
+        <mat-icon>chevron_left</mat-icon>
+        Back
+    </button>
+</div>
+<div class="retailer-request-body" *ngIf="requestPage">
+    <input [(ngModel)]="userContact" placeholder="Enter customer phone number" required/>
+    <div class="retailer-request-button">
+        <button 
+            mat-raised-button 
+            color="primary"
+            [disabled]="userContact === ''"
+            (click)="getOrders()">Check Requests</button>
+    </div>
+</div>
+
+<div class="retailer-orderdetails-container" *ngIf="!requestPage">
+    <span class="retailer-orders-text">Open Requests for {{userContact}}</span>
+    <div *ngIf="emptyRequest">
+        <div class="retailer-empty-request">
+            <img src="../../{{baseHref}}/assets/images/retailer/retailer-empty-order.png">
+        </div>
+        <div class="retailer-empty-text">
+            <span>No packs purchased yet</span>
+        </div>
+    </div>
+    <div *ngIf="!emptyRequest" class="retailer-orders-detail">
+        <div *ngFor="let order of createdOrders">
+            <div  class="retailer-request-orders">
+                <div class="retailer-order-logo">
+                    <img src="../../{{baseHref}}/assets/images/retailer/eros-logo.png">
+                </div>
+                <div class="order-title">
+                    <span>{{order.title}}</span>
+                    <span>Rs. {{order.price}} Pack</span>
+                </div>
+                <div *ngIf="!orderCompleteFailed(order)" class="order-complete">
+                    <mat-icon>access_time</mat-icon>
+                    <span>{{order.days}} days ago</span>
+                    <button (click)="completeOrder(order)"> Mark Paid</button>
+                </div>
+                <div *ngIf="orderCompleteFailed(order)" class="order-complete-failed">
+                    <span>Failed</span>
+                </div>
+            </div>
+            <hr class="order-separator">
+        </div>
+    </div>
+</div>

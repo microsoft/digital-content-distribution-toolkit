@@ -1,0 +1,225 @@
+.retailer-login {
+    display: flex;
+    background: linear-gradient(180deg, #00B0EC 13.47%, #0078D4 95.94%);
+}
+
+.retailer-login-left-design {
+    width: 77px;
+    height: 72px;
+    margin: auto;
+}
+
+.retailer-login-right-design {
+    width: 55%;
+    margin-right: 0px;
+    margin-left: auto;
+    height: 100vh;
+    border-radius: 60px 0px 0px 60px;
+    background: #FFFFFF;
+}
+
+.retailer-login-form {
+    margin-left: 146px;
+    margin-top: 232px;
+}
+
+.retailer-countrycode {
+    width: 68px;
+    height: 48px;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    color: #5D6973;
+    background: #FFFFFF;
+    border: 0.5px solid #D4E5F1;
+    box-sizing: border-box;
+    border-radius: 4px 0 0 4px;
+}
+
+.retailer-login-backbtn {
+    padding: 0;
+    margin-bottom: 10px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 33px;
+    display: flex;
+    align-items: center;
+    color: #8692A6;
+}
+
+.retailer-login-text {
+    width: 87px;
+    height: 60px;
+    left: 16px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 60px;
+    color: #000000;
+    margin: 0 0 80px 0;
+}
+
+.retailer-login-subheader {
+    height: 32px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 32px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #101010;
+}
+
+.retailer-login-details {
+    margin-top: 28px;
+    margin-bottom: 128px;
+}
+
+.mat-select {
+    width: 68px;
+    height: 55px;
+    margin-top: 4px;
+    background: #ebecf0;
+}
+
+.otp-resend {
+    color: #1973EB;
+    font-weight: bold;
+    margin: 4px;
+    cursor: pointer;
+}
+
+/* .mat-select-trigger {
+    &height: 100%;
+} */
+
+.retailer-login-contact {
+    width: 486px;
+    height: 49px;
+    padding-left: 12px;
+    background: #FFFFFF;
+    border: 0.5px solid #D4E5F1;
+    box-sizing: border-box;
+    border-radius: 0 4px 4px 0;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    color: #5D6973;
+    
+}
+
+.login-error-text {
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 23px;
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+    color: #B90101;
+}
+
+/* .retailer-login-contact input {
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    color: #5D6973;
+} */
+
+.retailer-login-contact:focus-visible {
+    outline: none;
+}
+
+.retailer-login-next {
+    border-radius: 30px;
+    width: 486px;
+    height: 44px;
+    background-color: #1973EB;
+}
+
+.retailer-login-otp-text {
+    width: 320px;
+    height: 32px;
+    margin-top: 80px;
+    margin-bottom: 12px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 32px;
+    display: flex;
+    align-items: center;
+    color: #101010;
+}
+
+.retailer-login-otp-desc {
+    width: 253px;
+    height: 24px;
+    margin-bottom: 19px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    color: #5D6973;
+}
+
+.retailer-id-details {
+    margin-top: 28px;
+    margin-bottom: 142px;
+}
+
+.retailer-login-id {
+    width: 486px;
+    height: 48px;
+    padding-left: 12px;
+    background: #FFFFFF;
+    border: 0.5px solid #D4E5F1;
+    box-sizing: border-box;
+    border-radius: 4px;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    color: #5D6973;
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+}
+
+.retailer-login-id:focus-visible {
+    outline: none;
+}
+
+.retailer-otp-input {
+    width: 44px;
+    height: 44px;
+    margin-top: 25px;
+    margin-right: 11px;
+    margin-bottom: 53px;
+    background: #FFFFFF;
+    border: 0.5px solid #D4E5F1;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 8px rgba(93, 105, 115, 0.12);
+    border-radius: 4px;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
+    color: #5D6973;
+}

@@ -11,12 +11,18 @@ export class JwtInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // add authorization header with jwt token if available
         let currentUser = this.kaizalaService.currentUserValue;
-        if ((currentUser && currentUser.authenticationToken) || sessionStorage.getItem('authenticationToken')) {
+        if ((currentUser && currentUser.authenticationToken)) {
             request = request.clone({
                 setHeaders: { 
-                    Authorization: `Bearer ${currentUser.authenticationToken}` || `Bearer ${sessionStorage.getItem('authenticationToken')}`
+                    Authorization: `Bearer ${currentUser.authenticationToken}`
                 }
             });
+        } else if(sessionStorage.getItem('authenticationToken')) {
+            request = request.clone({
+                setHeaders: {
+                    Authorization: `Bearer ${sessionStorage.getItem('authenticationToken')}`
+                }
+            })
         }
 
         return next.handle(request);

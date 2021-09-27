@@ -55,16 +55,22 @@ export class UserService {
     }));
   }
 
-  setRetailerRouted(flag) {
-    console.log('setting routed to' + flag)
-    this.isRetailerRouted = flag;
+  linkRetailer(payload) {
+    let url = this.createUserBaseUrl + '/linkRetailer';
+    this.logger.log('Linking retailer id with userid');
+    return this.http.post(url, payload);
   }
 
-  getRetailerRouted() {
-    return this.isRetailerRouted;
-  }
+  // setRetailerRouted(flag) {
+  //   console.log('setting routed to' + flag)
+  //   this.isRetailerRouted = flag;
+  // }
+
+  // getRetailerRouted() {
+  //   return this.isRetailerRouted;
+  // }
   
-  setLoggedInUser(user) {
-    this.loggedInUser.next(user)
-  }
+  // setLoggedInUser(user) {
+  //   this.loggedInUser.next(user)
+  // }
 }

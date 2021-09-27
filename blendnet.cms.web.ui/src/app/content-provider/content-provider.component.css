@@ -45,6 +45,10 @@
     margin: 5px;
   }
 
+  .mat-card-action-btn{
+    margin: 0px !important;
+  }
+
   @media (max-width: 800px) {
     .btn-sec {
       margin-right: 1rem !important;

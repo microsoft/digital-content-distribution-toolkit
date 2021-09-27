@@ -1,0 +1,71 @@
+<div class="retailer-login">
+    <div class="retailer-login-left-design">
+        <img src="../../{{baseHref}}/assets/images/retailer/login-logo.png">
+    </div>
+    <div class="retailer-login-right-design">
+        <div class="retailer-login-form">
+            <button mat-button 
+            *ngIf="!isPhoneNumberSection" 
+            class="retailer-login-backbtn"
+            (click)="goToPreviousPage()">
+                <mat-icon>chevron_left</mat-icon>
+                Back
+            </button>
+            <h1 class="retailer-login-text">Login</h1>
+            <div *ngIf="isPhoneNumberSection">
+                <span class="retailer-login-subheader">Enter phone number</span>
+                <div class="retailer-login-details">
+                    <div>
+                        <select name="countrycode" class="retailer-countrycode">
+                            <option *ngFor="let code of countryCodes" [value]="code.value">
+                                {{code.value}}
+                            </option>
+                        </select>
+                        <input [(ngModel)]="contact" class="retailer-login-contact"/>
+                    </div>
+                    <mat-error *ngIf="otpSendErrorMessage" class="login-error-text">Incorrect phone no. Please check and fill again.</mat-error>
+                </div>
+                <div>
+                    <button 
+                    mat-raised-button color="primary"
+                    (click)="showOTPSection()"
+                    class="retailer-login-next">Next</button>
+                </div>
+            </div>
+
+            <div *ngIf="isOTPSection">
+                <span class="retailer-login-otp-text">4 digit OTP</span>
+                <p class="retailer-login-otp-desc">OTP sent to {{contact}}</p>
+                <div class="retailer-otp-section" id="OTPInput" (click)="OTPInput()">
+                    <input class="retailer-otp-input" maxlength="1" id="otp-field1">
+                    <input class="retailer-otp-input" maxlength="1" id="otp-field2">
+                    <input class="retailer-otp-input" maxlength="1" id="otp-field3">
+                    <input class="retailer-otp-input" maxlength="1" id="otp-field4">
+                </div>
+                <mat-error *ngIf="otpVerifyErrorMessage" class="login-error-text">Incorrect OTP. Please check and fill again.</mat-error>
+                <p class="retailer-login-otp-desc">Didn't get OTP ?  <span class="otp-resend" (click)="showOTPSection()">Resend</span></p>
+                <div>
+                    <button 
+                    mat-raised-button color="primary" 
+                    class="retailer-login-next"
+                    (click)="verifyOTP()">Next</button>
+                </div>
+            </div>
+
+            <div *ngIf="isRetailerIdSection">
+                <span class="retailer-login-subheader">Enter Retailer Id</span>
+                <div class="retailer-id-details">
+                    <input [(ngModel)]="retailerId" class="retailer-login-id"/>
+                    <mat-error *ngIf="retailerLinkErrorMessage" class="login-error-text">Incorrect retailer id. Please check and fill again.</mat-error>
+                </div>
+                <div>
+                    <button 
+                    mat-raised-button color="primary" 
+                    class="retailer-login-next"
+                    (click)="linkRetailerId()">Next</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

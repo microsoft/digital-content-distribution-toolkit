@@ -65,6 +65,7 @@
     width: 90%;
     margin-left: 5%;
     margin-top: 0%;
+    overflow: auto;
   }
   
   table {

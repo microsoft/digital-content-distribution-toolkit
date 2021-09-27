@@ -9,6 +9,7 @@ export const environment = {
     browrseContent: "/cmsapi/api/v1/BrowseContent",
     contentApiUrl: "/cmsapi/api/v1/Content",
     userApiUrl: "/userapi/api/v1/User",
+    omsApiUrl: "/omsapi/api/v1",
     createUserApiUrl: "/userapi/api/v1/UserBasic",
     incentiveApiUrl: "/incentiveapi/api/v1/Incentive",
     retailerDashboardUrl: "/incentiveapi/api/v1/",

@@ -1,166 +1,81 @@
-<mat-toolbar *ngIf="!hasRetailerAccess" color="primary" class="cms-toolbar">
-	<!-- <img class="sidenav-toggler" src="../assets/noun_menu.svg"
-	(click)="isExpanded = !isExpanded"> -->
-	<span>
-		<div class="cms-app-name" *ngIf="currentUser && hasMenuAccess">
+<mat-toolbar *ngIf="!isAccessedViaPartnerApp && isLoggedIn" class="cms-toolbar">
+
+	<!-- <span>
+		<div class="cms-app-name" *ngIf="!isAccessedViaPartnerApp && hasAdminAccess">
 		<h1>Content Provider : {{selectedCPName}}</h1>
 	</div></span>
 	<span class="cms-menu-spacer"></span>
-	<span><h1>BlendNet</h1></span>
-  <span class="cms-menu-spacer"></span>
-  
-    <div class="cms-profile" *ngIf="currentUser"><span>{{currentUserName}}</span>
-		<button mat-button [matMenuTriggerFor]="menu">
-			<mat-icon style="margin-bottom: 3px;">more_vert</mat-icon>
-		</button>
-		<mat-menu #menu="matMenu" xPosition="before">
-			<button mat-menu-item [routerLink]="['/profile']">	
-				<mat-icon>account_circle</mat-icon>
-    			<span>Profile</span>
+	<span><h1>{{appName}}</h1></span>
+  	<span class="cms-menu-spacer"></span> -->
+
+	<div class="mishtu-logo">
+        <img src="../{{baseHref}}/assets/mishtu-logo.png">
+    </div>
+	<div class="cms-toolbar-item">
+		<div class="retailer-referral" *ngIf="hasRetailerAccess">
+			<p class="retailer-referral-text">Referral Code: <span>{{referralCode}}</span></p>
+			<mat-icon  class="referral-copy-icon" matTooltip="Copy to Clipboard" (click)="copiedConfirm()"
+			[cdkCopyToClipboardAttempts]="20"
+			[cdkCopyToClipboard]="">
+				content_copy
+			</mat-icon>
+		</div>
+	  
+		<div class="cms-profile" *ngIf="!isAccessedViaPartnerApp && isLoggedIn">
+			<span *ngIf="!hasRetailerAccess">{{currentUserName}}</span>
+			<button mat-button [matMenuTriggerFor]="menu">
+				<mat-icon style="margin-bottom: 3px;">more_vert</mat-icon>
 			</button>
-			<button mat-menu-item (click)="logout()">	
-				<mat-icon>logout</mat-icon>
-    			<span>Logout</span>
-			</button>
-		</mat-menu>
+			<mat-menu #menu="matMenu" xPosition="before">
+				<button mat-menu-item [routerLink]="['/profile']">	
+					<mat-icon>account_circle</mat-icon>
+					<span>Profile</span>
+				</button>
+				<button mat-menu-item (click)="logout()">	
+					<mat-icon>logout</mat-icon>
+					<span>Logout</span>
+				</button>
+			</mat-menu>
+		</div>
 	</div>
 
 </mat-toolbar>
-<mat-sidenav-container class="cms-container {{hasRetailerAccess? 'retailer-cms-container': ''}}" autosize >
-	<mat-sidenav  *ngIf="currentUser && hasMenuAccess" #sidenav class="cms-sidenav" mode="side" opened="true">	
+
+<mat-sidenav-container [ngClass]="(!isAccessedViaPartnerApp && isLoggedIn) ? 'cms-container-height': 'cms-container' "   autosize  >
+	<mat-sidenav  #sidenav class="cms-sidenav" mode="side" opened="true" *ngIf="!isAccessedViaPartnerApp && isLoggedIn">	
 		<mat-nav-list>
-			<div class="submenu" [ngClass]="{'expanded' : true}">
+			<div class="submenu" [ngClass]="{'expanded' : true}" *ngFor="let item of menu">
 				<a mat-list-item
-				 [routerLink]="['/']">
-				 <div>
-					<mat-icon mat-list-icon>
-						home</mat-icon>
-						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Home</span>
-						<div *ngIf="!isExpanded" class="menu-small-text">Home</div>
+				 [routerLink]="[item.routerLink]" 
+				 *ngIf="shouldShow(item.roles)"
+				 [ngClass]="{'active': item.routerLink ? router.isActive(item.routerLink, true): false}">
+				 <div class="cms-sidenav-details">
+					<mat-icon mat-list-icon class="nav-icon">
+						{{item.iconName}}</mat-icon>
+						<span *ngIf="isExpanded" class="menu-side-text">{{item.displayName}}</span>
+						<div *ngIf="!isExpanded" class="menu-small-text">{{item.closedName}}</div>
 				 </div>
 				</a>
-        		<a mat-list-item
-				 routerLinkActive="active" 
-				 [routerLink]="['admin/content-providers']">
-					<div>
-						<mat-icon mat-list-icon>play_lesson</mat-icon>
-						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Content Providers</span>
-						<div *ngIf="!isExpanded" class="menu-small-text">Providers</div>
-					</div>
-				</a>
-				<a mat-list-item
-				 routerLinkActive="active" 
-				 [routerLink]="['admin/sas-key']">
-					<div>
-						<mat-icon mat-list-icon>vpn_key</mat-icon>
-						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">SAS Key</span>
-						<div *ngIf="!isExpanded" class="menu-small-text">SAS Key</div>
-					</div>
-				</a>
-				<a mat-list-item 
-				 routerLinkActive="active" 
-				[routerLink]="['admin/subscriptions']">
-					<div>
-						<mat-icon mat-list-icon>subscriptions</mat-icon>
-						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Subscriptions</span>
-						<div *ngIf="!isExpanded" class="menu-small-text">Subscriptions</div>
-					</div>
-				</a>
-				<a mat-list-item 
-				 routerLinkActive="active" 
-				[routerLink]="['notifications']">
-					<div>
-						<mat-icon mat-list-icon>notifications</mat-icon>
-						&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Notifications</span>
-						<div *ngIf="!isExpanded" class="menu-small-text">Notifications</div>
-					</div>
-				</a>
-      <!-- </div> -->
-      <!-- <mat-list-item  class="parent">
-				<span class="full-width" *ngIf="isExpanded">Content</span>
-				<mat-icon mat-list-icon>local_movies</mat-icon>
-			</mat-list-item> -->
-			<!-- <div class="submenu" [ngClass]="{'expanded' : true}"> -->
-			<a mat-list-item 
-			routerLinkActive="active" 
-			[routerLink]="['admin/unprocessed-content']">
-				<div>
-					<mat-icon mat-list-icon>movie</mat-icon>
-					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Unprocessed</span>
-					<div *ngIf="!isExpanded" class="menu-small-text">Unprocessed</div>
-				</div>
-			</a>
-			<a mat-list-item 
-			routerLinkActive="active" 
-			[routerLink]="['admin/processed-content']">
-				<div>
-					<mat-icon mat-list-icon>local_movies</mat-icon>
-					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Processed</span>
-					<div *ngIf="!isExpanded" class="menu-small-text">Processed</div>
-				</div>
-			</a>
-			<a mat-list-item 
-			routerLinkActive="active" 
-			[routerLink]="['admin/broadcast-content']">
-				<div>
-					<mat-icon mat-list-icon>live_tv</mat-icon>
-					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Broadcast</span>
-					<div *ngIf="!isExpanded" class="menu-small-text">Broadcast</div>
-				</div>
-			</a>
-			<a mat-list-item 
-			routerLinkActive="active" 
-			[routerLink]="['incentive-management']">
-				<div>
-					<mat-icon mat-list-icon>emoji_events</mat-icon>
-					&nbsp;&nbsp;<span *ngIf="isExpanded" class="menu-side-text">Incentives</span>
-					<div *ngIf="!isExpanded" class="menu-small-text">Incentives</div>
-				</div>
-			</a>
-      <!-- </div> -->
-      <!-- <mat-list-item class="parent">
-				<span class="full-width" *ngIf="isExpanded">Devices</span>
-				<mat-icon mat-list-icon>router</mat-icon>
-			</mat-list-item> -->
-			<!-- <div class="submenu" [ngClass]="{'expanded' : true}" > -->
-			<a mat-list-item 
-			routerLinkActive="active" 
-			[routerLink]="['admin/devices']">
-				<div>
-					<mat-icon mat-list-icon>router</mat-icon>
-					&nbsp;&nbsp;<span *ngIf="isExpanded"  class="menu-side-text">Devices</span>
-					<div *ngIf="!isExpanded"  class="menu-small-text">Devices</div>
-				</div>
-			</a>
-			<a mat-list-item 
-			routerLinkActive="active" 
-			[routerLink]="['admin/manage-content']">
-				<div>
-					<mat-icon mat-list-icon>manage_accounts</mat-icon>
-					&nbsp;&nbsp;<span *ngIf="isExpanded"   class="menu-side-text">Manage content</span>
-					<div *ngIf="!isExpanded"  class="menu-small-text">Manage content</div>
-				</div>
-			</a>
-
-			
-			
-      </div>
+      		</div>
 		</mat-nav-list>
     <mat-nav-list>
   </mat-nav-list>
 </mat-sidenav>
-	<mat-sidenav  *ngIf="hasRetailerAccess" #sidenav class="cms-sidenav retailer-menu {{userService.getRetailerRouted() ? 'hidden': ''}}" mode="side" opened="true">
+	<!-- <mat-sidenav  *ngIf="hasRetailerAccess" #sidenav class="cms-sidenav retailer-menu {{userService.getRetailerRouted() ? 'hidden': ''}}" mode="side" opened="true">
 		<mat-nav-list>
 			<app-retailer-landing-page></app-retailer-landing-page>
 		</mat-nav-list>
 		<div class="retailer-layout">
 			
 		</div>
-	</mat-sidenav>
+	</mat-sidenav> -->
 
-	<div  class="{{ hasRetailerAccess? '':'cms-sidenav-content'}}">
-		<!-- <router-outlet></router-outlet> -->
+	<!-- <div  class="{{ hasRetailerAccess? '':'cms-sidenav-content'}}">
 		<router-outlet class="{{(hasRetailerAccess && !isDesktop && !userService.getRetailerRouted()) ? 'hidden': ''}}"></router-outlet>
+	</div> -->
+
+	<div  class="cms-sidenav-content">
+		<router-outlet></router-outlet>
 	</div>
 
 </mat-sidenav-container>

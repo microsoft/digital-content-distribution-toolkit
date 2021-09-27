@@ -1,0 +1,256 @@
+.landing-profile-block-wrapper {
+    border-bottom: 2px solid #E5E5E5;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.landing-profile-name {
+    font-size: 18px;
+    line-height: 24px;
+    color: #101010;
+    font-weight: bold;
+}
+
+.landing-profile-id  {
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    color: #5D6973;
+    padding: 10px 0;
+}
+
+.landing-referral-code {
+    background: #FAFCFF;
+    mix-blend-mode: normal;
+    border: 0.5px dashed #0789FF;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 6px rgba(72, 83, 85, 0.08);
+    border-radius: 8px;
+    display: inline-block;
+    padding: 10px;
+}
+
+.copy-icon {
+    cursor: pointer;
+}
+
+.referral-copy-icon {
+    vertical-align: middle;
+    padding-left: 6px;
+}
+
+.landing-trophy-image-wrapper {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 20px;
+}
+
+.landing-page-total-block-wrapper {
+    padding-left: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.landing-page-currency-image-block{
+    display: inline-block;
+}
+
+.landing-page-total-value-block {
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.landing-page-total-image-block {
+    /* display: block; */
+    float: right;
+    padding-right: 20px;
+    width: calc(100% - 175px);
+    max-width: 100px;
+}
+
+.landing-page-total-image-block-field {
+    width: 100%;
+}
+
+.total-value {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 32px;
+}
+
+.total-earnings-text {
+    font-size: 14px;
+    line-height: 16px;
+    color: #5D6973;
+}
+
+.referrals-route-wrapper, .milestones-route-wrapper, .commission-route-wrapper, .rates-route-wrapper {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
+
+.referrals-value, .milestones-value, .commission-value, .rates-value {
+    /* display: inline-block; */
+    font-weight: 900;
+    font-size: 18px;
+    line-height: 24px
+}
+
+.referrals-value-wrapper, .milestones-value-wrapper, .commission-value-wrapper, .rates-value-wrapper {
+    padding-top: 22px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.referrals-text, .milestones-text, .commission-text, .rates-text {
+    /* display: inline-block; */
+    font-size: 14px;
+    line-height: 18px;
+    margin-top: 5px;
+}
+
+.referrals-route-inner {
+    background-color: #D6EBFF;
+    height: 90px;
+    background-image: url('../../../assets/images/retailer-landing-page/referrals.png');
+    background-repeat: no-repeat;
+    background-position: calc(100% + 5px) 5px;
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.milestones-route-inner {
+    background-color: #FFFACB;
+    height: 110px;
+    background-image: url('../../../assets/images/retailer-landing-page/milestones.png');
+    background-repeat: no-repeat;
+    background-position: 100% 28px;
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.commission-route-inner {
+    background-color: #C6E2E1;
+    height: 90px;
+    background-image: url('../../../assets/images/retailer-landing-page/commission.png');
+    background-repeat: no-repeat;
+    background-position: 100% -32%;
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.rates-route-inner {
+    background-color: #FFE6D4;
+    height: 90px;
+    background-image: url('../../../assets/images/retailer-landing-page/rates-incentives.png');
+    background-repeat: no-repeat;
+    background-position: 100% -32%;
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+
+.commission-route-wrapper, .rates-route-wrapper {
+    margin-top: 20px;
+}
+
+.rates-route-wrapper {
+    border-top: 2px solid #E5E5E5;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.landing-each-offer {
+    height: 160px;
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.landing-each-offer-milestone {
+    height: 160px;
+    background: #90C0FF;
+    border-radius: 8px;
+    /* padding-top: 22px;
+    padding-bottom: 22px; */
+    position: relative;
+    background-image: url('../../../assets/images/retailer-landing-page/milestones.png');
+    background-repeat: no-repeat;
+    background-position: 100% 67px;
+}
+
+.landing-each-offer-milestone-inner {
+    padding-top: 22px;
+    padding-bottom: 22px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.landing-page-slider {
+    margin-top: 20px;
+}
+
+.each-offer-text-block {
+    color: white;
+    display: inline-block;
+}
+
+.milestone-heading-1 {
+    font-weight: 600;
+}
+
+.milesone-progress {
+    vertical-align: bottom;
+    position: absolute;
+    width: calc(100% - 110px);
+    bottom: 17px;
+    color: white;
+}
+
+::ng-deep .mat-progress-bar-fill::after {
+    background-color: #FEB500
+}
+
+.milestones-achieved-block {
+    float: right;
+    color: white;
+}
+
+.landing-total-milestone {
+    margin-bottom: 20px;
+}
+
+.referral-card {
+    background: linear-gradient(104.36deg, #3C8FFE -3.84%, #83B8FF 49.88%, #4394FF 93.64%);
+}
+
+.commission-card {
+    background-color: red; /* For browsers that do not support gradients */
+    background: linear-gradient(104.36deg, #279B95 -3.84%, #6AC7C4 49.88%, #67AEAA 93.64%);
+}
+
+.referral-card img {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    width: 200px;
+}
+
+.commission-card img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+}
+
+@media only screen and (min-width: 767px){
+    .landing-profile-block-wrapper{
+        display:none;
+    }
+}

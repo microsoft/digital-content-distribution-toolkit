@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { LogService } from '../log.service';
 import * as moment from 'moment';
@@ -17,6 +17,9 @@ export class RetailerDashboardService {
   partnerCode = sessionStorage.getItem('partnerCode');
   retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
   monthSelected:any;
+  private referralCode = new BehaviorSubject<String>("");
+  sharedReferralCode = this.referralCode.asObservable();
+
   constructor(
     private logger: LogService,
     private http: HttpClient
@@ -69,7 +72,7 @@ export class RetailerDashboardService {
   }
 
   getRetailerPartnerProvidedId() {
-    let partnerProvidedId = sessionStorage.getItem('parnterProvidedId');
+    let partnerProvidedId = sessionStorage.getItem('partnerProvidedId');
     return partnerProvidedId
   }
 
@@ -89,7 +92,7 @@ export class RetailerDashboardService {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     totalString+=splitString[2]+', ';
-    totalString+=monthNames[parseInt(splitString[1])]+', ';
+    totalString+=monthNames[parseInt(splitString[1])-1]+', ';
     totalString+=splitString[0];
     return totalString;
   }
@@ -110,5 +113,8 @@ export class RetailerDashboardService {
     return moment(new Date(date)).format('DD MMM, YYYY');
   }
 
+  changeRetailerReferral(referralCode: string){
+    this.referralCode.next(referralCode)
+  }
 
 }

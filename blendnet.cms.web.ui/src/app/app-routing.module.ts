@@ -1,34 +1,29 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { BroadcastComponent } from './broadcast/broadcast.component';
-import { ContentProviderComponent } from './content-provider/content-provider.component';
-import { DevicesComponent } from './devices/devices.component';
-import { LoginComponent } from './login/login.component';
-import { ManageContentComponent } from './manage-content/manage-content.component';
-import { ProcessedComponent } from './processed/processed.component';
-import { SasKeyComponent } from './sas-key/sas-key.component';
-import { UnprocessedComponent } from './unprocessed/unprocessed.component';
-import { RoleGuardService } from './services/role-guard.service';
-import { SubscriptionComponent } from './subscription/subscription.component';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { HomeComponent } from './home/home.component';
-import { AuthGuardService } from './services/auth-guard.service';
-import { environment } from 'src/environments/environment';
+import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
-import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
-
-import { NotificationsComponent } from './notifications/notifications.component';
+import { RetailerLoginComponent } from './retailer-login/retailer-login.component';
 import { SeamlessLoginComponent } from './retailer/seamless-login/seamless-login.component';
+import { RoleGuardService } from './services/role-guard.service';
 import { DeviceFilterHistoryComponent } from './devices/device-filter-history.component';
 import { DeviceRetailerHistoryComponent } from './devices/device-retailer-history.component';
+import { environment } from 'src/environments/environment';
+import { AuthGuardService } from './services/auth-guard.service';
 
 const appRoutes: Routes = [
-  {
-    path: 'login',
+  { 
+    path: 'login', 
     component: LoginComponent
   },
   {
+    path: 'admin-login',
+    component: AdminLoginComponent
+  },
+  {
     path: 'admin',
-    loadChildren: () => import('./authenticated-user/authenticated-user.module').then(m => m.AuthenticatedUserModule)
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
   },
   {
     path: 'retailer',
@@ -39,45 +34,8 @@ const appRoutes: Routes = [
     component: SeamlessLoginComponent
   },
   {
-    path: 'unprocessed-content', 
-    component: UnprocessedComponent,
-    canActivate: [
-      AuthGuardService, RoleGuardService
-    ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
-  },
-  {
-    path: 'processed-content',
-     component: ProcessedComponent,
-     canActivate: [
-      AuthGuardService, RoleGuardService
-    ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
-    },
-  {
-    
-    path: 'broadcast-content',
-   component: BroadcastComponent,
-   canActivate: [
-    AuthGuardService, RoleGuardService
-  ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
-  },
-  {
-    path: 'devices',
-   component: DevicesComponent,
-   canActivate: [
-    AuthGuardService, RoleGuardService
-  ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
+    path: 'common-retailer-login',
+    component: RetailerLoginComponent
   },
   {
     path: 'devices/filters-history/:id',
@@ -99,89 +57,23 @@ const appRoutes: Routes = [
       expectedRole: [environment.roles.SuperAdmin]
     } 
   },
-  {
-    path: 'manage-content',
-   component: ManageContentComponent,
-   canActivate: [
-    AuthGuardService, RoleGuardService
-  ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
-  },
-  {
-    path: 'incentive-management',
-   component: IncentiveManagementComponent,
-   canActivate: [
-    AuthGuardService, RoleGuardService
-  ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
-  },
-  {
-    path: 'content-providers',
-     component: ContentProviderComponent,
-     canActivate: [
-      AuthGuardService, RoleGuardService
-    ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin, environment.roles.ContentAdmin]
-    } 
-    },
-  {
-    path: 'sas-key', 
-    component: SasKeyComponent,
-    canActivate: [
-      AuthGuardService, RoleGuardService
-    ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin, environment.roles.ContentAdmin]
-    } 
-  },
-  {
-    path: 'profile', 
-    component: ProfileComponent,
-    canActivate: [
-      AuthGuardService
-    ],
-  },
-  {
-    path: 'subscriptions', 
-    component: SubscriptionComponent,
-    canActivate: [
-      AuthGuardService, RoleGuardService
-    ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
-  },
-  {
-    path: 'notifications', 
-    component: NotificationsComponent,
-    canActivate: [
-      RoleGuardService
-    ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
-  },
-  { 
-    path: '', 
-    component: HomeComponent, 
-    canActivate: [AuthGuardService] },
-  {
-    path: 'login',
-    component: LoginComponent
-  },
+
   {
     path: 'profile',
-    component: ProfileComponent
+    component: ProfileComponent,
+    canActivate: [
+      RoleGuardService
+    ]
   },
   { 
     path: '**', 
-    redirectTo: '' 
+    redirectTo: '/home',
+  },
+  {
+    path: 'home', 
+    component: HomeComponent
   }
+
 ];
 
 @NgModule({

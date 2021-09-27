@@ -1,0 +1,53 @@
+.retailer-order-success {
+    width: 640px;
+    height: 144px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(95.58deg, #00B0EC -6.2%, #0078D4 97.26%);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+.retailer-order-success-text {
+    position: absolute;
+    margin-top: 16px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.success-header {
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 24px;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #FFFFFF;
+}
+
+.success-amount {
+    margin-top: 8px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 40px;
+    letter-spacing: 0.5px;
+    color: #FFFFFF;
+}
+
+.success-desc {
+    margin-top: 16px;
+    font-family: Mukta;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: #FFFFFF;
+}

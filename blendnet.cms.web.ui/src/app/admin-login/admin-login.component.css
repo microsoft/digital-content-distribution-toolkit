@@ -1,0 +1,29 @@
+.content-home {
+    margin: 5%;
+}
+.cms-login {
+    margin-left: 25%;
+    width: 50%;
+    align-content: center;
+}
+.cms-login-contact {
+    width: 80%;
+}
+
+.cms-login-form {
+    margin-left: 10%;
+}
+.cms-resend-otp {
+    color: grey;
+}
+.cms-login-validation-errors {
+    font-size: smaller;
+}
+.cms-container {
+    height: calc(100vh - 3px);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+}
+.otp-link {
+    cursor: pointer;
+    color: rgb(78, 122, 245);
+}

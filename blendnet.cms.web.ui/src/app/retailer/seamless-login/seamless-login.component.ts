@@ -11,7 +11,7 @@ import jwt_decode from 'jwt-decode';
 })
 export class SeamlessLoginComponent implements OnInit, AfterViewInit {
   partnerCode: string;
-  parnterProvidedId: string;
+  partnerProvidedId: string;
   authenticationToken: string;
   roles: string;
   isCountryCodeSection: boolean = true;
@@ -22,16 +22,16 @@ export class SeamlessLoginComponent implements OnInit, AfterViewInit {
   constructor(
     private kaizalaService: KaizalaService,
     private route: ActivatedRoute,
-    private userService: UserService,
+    // private userService: UserService,
     private router: Router
   ) {
     console.log('Called Constructor');
     this.route.queryParams.subscribe(params => {
         this.partnerCode = params['partnerCode'];
-        this.parnterProvidedId = params['parnterProvidedId'];
+        this.partnerProvidedId = params['partnerProvidedId'];
         this.authenticationToken = params['authenticationToken'];
         sessionStorage.setItem('partnerCode', this.partnerCode);
-        sessionStorage.setItem('parnterProvidedId', this.parnterProvidedId);
+        sessionStorage.setItem('partnerProvidedId', this.partnerProvidedId);
         sessionStorage.setItem('authenticationToken', this.authenticationToken);
         let currentUser = {
           authenticationToken: this.authenticationToken
@@ -64,9 +64,11 @@ export class SeamlessLoginComponent implements OnInit, AfterViewInit {
         const urnCreds = JSON.parse(decodedToken['urn:microsoft:credentials'])
         const phoneNumber = urnCreds['phoneNumber'];
         sessionStorage.setItem('currentUserName', phoneNumber);
-
-        this.userService.setLoggedInUser(phoneNumber);
-        this.router.navigate(['retailer/home']);
+        sessionStorage.setItem('accessedViaPartnerApp', "true");
+        // this.kaizalaService.setLoggedInUser(phoneNumber);
+        this.kaizalaService.currentUserNameSubject.next(phoneNumber);
+        this.kaizalaService.currentUserSubject.next({authenticationToken: this.authenticationToken});
+        this.router.navigate(['retailer/dashboard']);
       },
       err => {
         this.otpVerifyErrorMessage = err;

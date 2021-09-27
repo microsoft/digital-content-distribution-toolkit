@@ -7,15 +7,17 @@ import { ContentProviderService } from './content-provider.service';
 import { LogService } from './log.service';
 import jwt_decode from "jwt-decode";
 import { UserService } from './user.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class KaizalaService {
-  private currentUserSubject: BehaviorSubject<any>;
+  public currentUserSubject: BehaviorSubject<any>;
   public currentUser: Observable<any>;
-  private currentUserNameSubject: BehaviorSubject<any>;
+  public currentUserNameSubject: BehaviorSubject<any>;
   public currentUserName: Observable<any>;
+  public loggedInUser: BehaviorSubject<any>;
 
 
   
@@ -23,13 +25,18 @@ export class KaizalaService {
   baseUrl1 = environment.kaizalaApi1;
   baseUrl2 = environment.kaizalaApi2;
 
+
   constructor(
     private logger: LogService,
     private http: HttpClient,
     private contentProviderService: ContentProviderService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
+    // this.currentUserSubject = new BehaviorSubject<any>(sessionStorage.getItem('currentUser'));
+    // this.loggedInUser = new BehaviorSubject<any>(sessionStorage.getItem('loggedInUser'));
     this.currentUserSubject = new BehaviorSubject<any>(JSON.parse(sessionStorage.getItem('currentUser')));
+    this.loggedInUser = new BehaviorSubject<any>(JSON.parse(sessionStorage.getItem('loggedInUser')));
     this.currentUser = this.currentUserSubject.asObservable();
     this.currentUserNameSubject = new BehaviorSubject<any>(sessionStorage.getItem('currentUserName'));
     this.currentUserName = this.currentUserNameSubject.asObservable();
@@ -40,10 +47,18 @@ export class KaizalaService {
     return this.currentUserSubject.value;
   }
 
+  public get loggedInValue() {
+    return this.loggedInUser.value;
+  }
+
   public get currentUserNameValue() {
     return this.currentUserNameSubject.value;
   }
 
+  public isLoggedIn() {
+    // return this.currentUserValue !== null;
+    return this.loggedInValue !== null;
+  }
 
 
   getURLSuffix (lastDigit) {
@@ -144,5 +159,8 @@ export class KaizalaService {
     // remove user from local storage and set current user to null
     this.userService.resetRegisteredUserValue();
     this.currentUserSubject.next(null);
+    this.currentUserNameSubject.next(null);
+    this.loggedInUser.next(null);
+    this.router.navigate(['/login']);
   }
 }
