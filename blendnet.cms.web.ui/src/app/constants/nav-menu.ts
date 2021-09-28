@@ -23,20 +23,6 @@ export let menu: NavMenu[] = [
         roles: ['SuperAdmin', 'ContentAdmin']
     },
     {
-        displayName: 'Subscriptions',
-        closedName: 'Subscriptions',
-        iconName: 'subscriptions',
-        routerLink: 'admin/subscriptions',
-        roles: ['SuperAdmin']
-    },
-    {
-        displayName: 'Notifications',
-        closedName: 'Notifications',
-        iconName: 'notifications',
-        routerLink: 'admin/notifications',
-        roles: ['SuperAdmin']
-    },
-    {
         displayName: 'Unprocessed',
         closedName: 'Unprocessed',
         iconName: 'movie',
@@ -58,6 +44,13 @@ export let menu: NavMenu[] = [
         roles: ['SuperAdmin']
     },
     {
+        displayName: 'Subscriptions',
+        closedName: 'Subscriptions',
+        iconName: 'subscriptions',
+        routerLink: 'admin/subscriptions',
+        roles: ['SuperAdmin']
+    },
+    {
         displayName: 'Incentives',
         closedName: 'Incentives',
         iconName: 'emoji_events',
@@ -69,6 +62,13 @@ export let menu: NavMenu[] = [
         closedName: 'Devices',
         iconName: 'router',
         routerLink: 'admin/devices',
+        roles: ['SuperAdmin']
+    },
+    {
+        displayName: 'Notifications',
+        closedName: 'Notifications',
+        iconName: 'notifications',
+        routerLink: 'admin/notifications',
         roles: ['SuperAdmin']
     },
     {

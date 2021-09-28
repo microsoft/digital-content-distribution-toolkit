@@ -92,8 +92,9 @@ export class DeviceRetailerHistoryComponent implements OnInit {
       console.log('The dialog was closed');
     });
   }
+  
   showDevicesPage() {
-    this.router.navigateByUrl('/devices');
+    this.router.navigateByUrl('/admin/devices');
   }
 
 

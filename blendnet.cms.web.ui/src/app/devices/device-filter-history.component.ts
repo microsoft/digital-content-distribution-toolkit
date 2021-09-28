@@ -85,7 +85,7 @@ export class DeviceFilterHistoryComponent implements OnInit {
     });
   }
   showDevicesPage() {
-    this.router.navigateByUrl('/devices');
+    this.router.navigateByUrl('/admin/devices');
   }
 
 

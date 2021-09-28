@@ -1,11 +1,26 @@
 .cms-card {
-    width: 150px;
-    height: 300px;
+    width: 170px;
+    height: 250px;
     margin-bottom: 32px;
   }
+
+  .mat-card{
+    display:flex;
+    flex-direction: column;
+  }
   
+  .mat-card-header {
+      display: flex;
+      flex-direction: row;
+      flex-shrink: 0; 
+      margin-bottom: 5px;
+  }
+  
+  .mat-card-content{
+    flex-grow: 1;
+    overflow: auto; 
+  }
   .cms-header-image {
-    /* background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg'); */
     background-size: cover;
     width:150px;
     height:200px;
@@ -19,12 +34,19 @@
     margin-top: 3%;
   }
 .mat-card-image{
-  height: 182px;
-  width: 182px;
+  height: 160px;
+  width: 170px;
+  margin: 0px 0px 0px 0px;
+}
+.mat-card-image:first-child{
+  margin-top: 0px !important;
+}
+.mat-card-actions {
+  margin-left: 8px !important;
 }
   .cms-cp-logo {
-    max-width: 200px;
-    max-height: 200px;
+    width: 200px;
+    height: 200px;
   }
   .cp-status-active {
     color: green  !important;
@@ -48,9 +70,6 @@
     margin: 5px;
   }
 
-  .mat-card-action-btn{
-    margin: 0px !important;
-  }
 
   @media (max-width: 800px) {
     .btn-sec {
