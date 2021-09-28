@@ -1,34 +1,35 @@
 <app-content-provider-header></app-content-provider-header>
 <div class="cms-container">
-    <div class="form-group">
-        <label for="file"><b>Upload new content/s </b></label>
-        <input type="file"
-               id="file"
-               #jsonFileInput
-               (change)="handleFileInput($event)">
-
-        <!-- <button mat-raised-button color="primary" (click)="openUploadConfirmModal()"
-        [disabled] = "fileUploadError !== null">Upload</button>
-        </div> -->
-        <div class="file-upload-error">
-            {{fileUploadError}}
-        </div>
-        
-    <br>
-    <br>
-    <h1>
+    <!-- <div class="form-group"> -->
+  
+    <h1 class="page-title">
         Unprocessed Content
 
-        <button matTooltip="Refresh"  mat-stroked-button mat-icon-button  color="primary" (click)="getUnprocessedContent()"
+        <button matTooltip="Refresh"  mat-stroked-button color="primary" (click)="getUnprocessedContent()"
             style="float: right;">
-           <mat-icon>refresh</mat-icon>
+           <mat-icon>autorenew</mat-icon> Refresh
        </button>
 
     </h1>
+    <input type="file" class="file-input"
+    (change)="onFileSelected($event)" #fileUpload accept="application/json">
+
+    <div class="file-upload">
+
+    
+
+        <button color="primary" class="upload-btn" mat-raised-button
+        (click)="fileUpload.click()">
+        <mat-icon>file_upload</mat-icon> Upload new Content
+        </button> {{fileName || ""}}
+    </div>
+    <div class="file-upload-error">
+        {{fileUploadError}}
+    </div>
 
 <mat-form-field>
     <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Don" #input>
+    <input matInput (keyup)="applyFilter($event)" [disabled]="error"  placeholder="Ex. Don" #input>
   </mat-form-field>
   
   <div class="mat-elevation-z8">
@@ -139,7 +140,8 @@
     
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4" *ngIf="input.value?.length>0">No data matching the filter "{{input.value}}"</td>
+            <td class="mat-cell" colspan="4" *ngIf="errMessage"><h4>{{errMessage}}</h4></td>
+            <td class="mat-cell" colspan="4" *ngIf="!errMessage && input.value?.length>0">No data matching the filter "{{input.value}}"</td>
         </tr>
         </table>
     </div>

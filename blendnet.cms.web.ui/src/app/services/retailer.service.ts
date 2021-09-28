@@ -9,6 +9,7 @@ import { LogService } from './log.service';
 })
 export class RetailerService {
   baseUrl = environment.baseUrl + environment.retailerUrl;
+  baseRetailerProviderUrl = environment.baseUrl + environment.retailerProviderUrl;
   constructor(private logger: LogService,
     private http: HttpClient) { }
 
@@ -67,7 +68,7 @@ export class RetailerService {
     }
 
     getRetailerPartners(): Observable<any>{
-        let url = this.baseUrl + '/RetailerProvider/all' ;
+        let url = this.baseRetailerProviderUrl + '/all' ;
         this.logger.log(`Fetching Retailer Providers`);
         return this.http.get(url);
       }

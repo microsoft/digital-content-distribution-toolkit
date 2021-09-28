@@ -1,13 +1,11 @@
 <app-content-provider-header></app-content-provider-header>
 <div class="cms-container">
+   
+    <h1 class="page-title">Subscriptions</h1>    
 
-    <h1>Subscriptions
+<button mat-raised-button color="primary" class="create-btn"
+(click)="openDialog(null)" > New Subscription </button>
 
-        <button mat-raised-button color="primary" class="create-btn"
-        (click)="openDialog(null)" style="float: right;"> New Subscription </button>
-
-    </h1>    
-<br>  
 <mat-form-field>
     <mat-label>Filter</mat-label>
     <input matInput (keyup)="applyFilter($event)" [disabled]="error"  placeholder="Ex. Premium" #input>

@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Inject, ViewChild} from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -36,7 +36,11 @@ export class UnprocessedComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('jsonFileInput') jsonFileInput;
-  // polling: Subscription;
+  @ViewChild('UploadFileInput') uploadFileInput: ElementRef;
+  myfilename = 'Choose a meta-data file to upload content';
+  errMessage;
+  error= false;
+  fileName = '';
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
@@ -79,11 +83,15 @@ export class UnprocessedComponent {
 
       },
       err => {
+        this.error = true;
         this.dataSource = this.createDataSource([]);
-        this.toastr.error(err);
-        console.log('HTTP Error', err);
-      }
-    );
+        if(err === 'Not Found') {
+          this.errMessage = "No data found";
+        } else {
+          this.toastr.error(err);
+          this.errMessage = err;
+        }
+      });
   }
 
   toggleSelection(event, row) {
@@ -134,27 +142,6 @@ export class UnprocessedComponent {
     }
   }
 
-  handleFileInput(files: any) {
-    this.fileUploadError = null;
-    if (files.target.files && files.target.files[0]) {
-      if(files.target.files[0].size > environment.maxFileUploadSize) {
-        this.fileUploadError="Max file size allowed is : " +  environment.maxFileUploadSize;
-        return false;
-      }
-      if(files.target.files[0].type !== environment.fileAllowedType) {
-        this.fileUploadError="Only " + environment.fileAllowedType + " files are allowed";
-        return false;
-      }
-      this.file = {
-        data: files.target.files[0], 
-        inProgress: false, 
-        progress: 0
-      }
-      //this.uploadFile(files.target.files[0]);
-      this.uploadFile(this.file);
-    }
-  }
-
   uploadFile(file) {
     const formData = new FormData(); 
     formData.append('file', file.data);  
@@ -180,11 +167,29 @@ export class UnprocessedComponent {
         }  
       });  
 
-      this.jsonFileInput.nativeElement.value = '';
   }
 
+  onFileSelected(event) {
 
-
+    this.fileUploadError = null;
+    if (event.target.files && event.target.files[0]) {
+      if(event.target.files[0].size > environment.maxFileUploadSize) {
+        this.fileUploadError="Max file size allowed is : " +  environment.maxFileUploadSize;
+        return false;
+      }
+      if(event.target.files[0].type !== environment.fileAllowedType) {
+        this.fileUploadError="Only " + environment.fileAllowedType + " files are allowed";
+        return false;
+      }
+      this.fileName = event.target.files[0].name;
+      this.file = {
+        data: event.target.files[0], 
+        inProgress: false, 
+        progress: 0
+      }
+      this.uploadFile(this.file);
+      }
+  }
 
 openProcessConfirmModal(row): void {
   var rows = [];

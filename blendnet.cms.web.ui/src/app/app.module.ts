@@ -29,9 +29,7 @@ import { CommonDialogComponent } from './common-dialog/common-dialog.component';
 import { AddSubscriptionDialog } from './subscription/add-subscription-dialog';
 import { ProfileComponent } from './profile/profile.component';
 import { PascalToStringPipe } from './custom-pipes/pascalcase-to-string.pipe';
-// import { RetailerLandingPageComponent } from './retailer/retailer-dashboard/retailer-landing-page.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
-
 import { IncentiveManagementComponent } from './incentive-management/incentive-management.component';
 import { AddIncentiveComponent } from './incentive-management/add-incentive.component';
 import { DisableControlDirective } from './custom-directives/disable-control.directive';
@@ -40,7 +38,6 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { NotificationsDialog } from './notifications/notifications-dialog';
 import { RetailerLoginComponent } from './retailer-login/retailer-login.component';
 import { LoginComponent } from './login/login.component';
-// import { RetailerPlanDetailsDialogComponent } from './retailer';
 import { DeviceDialogComponent } from './devices/device-dialog.component';
 import { ContentProviderHeaderComponent } from './content-provider-header/content-provider-header.component';
 import { DeviceFilterHistoryComponent } from './devices/device-filter-history.component';
@@ -71,7 +68,6 @@ import { DeviceRetailerHistoryComponent } from './devices/device-retailer-histor
     CommonDialogComponent,
     ProfileComponent,
     PascalToStringPipe,
-    // RetailerLandingPageComponent,
     ContentDetailsDialog,
     IncentiveManagementComponent,
     AddIncentiveComponent,
@@ -80,7 +76,6 @@ import { DeviceRetailerHistoryComponent } from './devices/device-retailer-histor
     NotificationsComponent,
     NotificationsDialog,
     RetailerLoginComponent,
-    // RetailerPlanDetailsDialogComponent,
     BroadcastDetailsDialog,
     DeviceDialogComponent,
     ContentProviderHeaderComponent,

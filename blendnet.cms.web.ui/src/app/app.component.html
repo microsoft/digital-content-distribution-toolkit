@@ -1,13 +1,4 @@
 <mat-toolbar *ngIf="!isAccessedViaPartnerApp && isLoggedIn" class="cms-toolbar">
-
-	<!-- <span>
-		<div class="cms-app-name" *ngIf="!isAccessedViaPartnerApp && hasAdminAccess">
-		<h1>Content Provider : {{selectedCPName}}</h1>
-	</div></span>
-	<span class="cms-menu-spacer"></span>
-	<span><h1>{{appName}}</h1></span>
-  	<span class="cms-menu-spacer"></span> -->
-
 	<div class="mishtu-logo">
         <img src="../{{baseHref}}/assets/mishtu-logo.png">
     </div>
@@ -38,7 +29,6 @@
 			</mat-menu>
 		</div>
 	</div>
-
 </mat-toolbar>
 
 <mat-sidenav-container [ngClass]="(!isAccessedViaPartnerApp && isLoggedIn) ? 'cms-container-height': 'cms-container' "   autosize  >
@@ -61,19 +51,6 @@
     <mat-nav-list>
   </mat-nav-list>
 </mat-sidenav>
-	<!-- <mat-sidenav  *ngIf="hasRetailerAccess" #sidenav class="cms-sidenav retailer-menu {{userService.getRetailerRouted() ? 'hidden': ''}}" mode="side" opened="true">
-		<mat-nav-list>
-			<app-retailer-landing-page></app-retailer-landing-page>
-		</mat-nav-list>
-		<div class="retailer-layout">
-			
-		</div>
-	</mat-sidenav> -->
-
-	<!-- <div  class="{{ hasRetailerAccess? '':'cms-sidenav-content'}}">
-		<router-outlet class="{{(hasRetailerAccess && !isDesktop && !userService.getRetailerRouted()) ? 'hidden': ''}}"></router-outlet>
-	</div> -->
-
 	<div  class="cms-sidenav-content">
 		<router-outlet></router-outlet>
 	</div>

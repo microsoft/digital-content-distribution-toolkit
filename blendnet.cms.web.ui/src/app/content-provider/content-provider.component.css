@@ -14,11 +14,14 @@
     
   .cms-container {
     height: 80%;
-    width: 80%;
-    margin-left: 15%;
-    margin-top: 5%;
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 3%;
   }
-
+.mat-card-image{
+  height: 182px;
+  width: 182px;
+}
   .cms-cp-logo {
     max-width: 200px;
     max-height: 200px;

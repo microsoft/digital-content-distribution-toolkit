@@ -15,13 +15,16 @@
 .cms-headers-align .mat-form-field + .mat-form-field {
   margin-left: 8px;
 }
-   
+
+.page-title{
+  font-weight: bold;
+}   
 .cms-container {
   height: 80%;
   width: 90%;
   margin-left: 5%;
-  margin-top: 5%;
   margin-bottom: 5%;
+  margin-top: 3%;
 }
 
 table {

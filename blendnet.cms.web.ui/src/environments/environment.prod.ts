@@ -13,6 +13,7 @@ export const environment = {
   incentiveApiUrl: "/incentiveapi/api/v1/Incentive",
   omsApiUrl: "/omsapi/api/v1",
   retailerApiUrl: "/retailerapi/api/v1",
+  retailerProviderUrl: "/retailerapi/api/v1/RetailerProvider",
   retailerDashboardUrl: "/incentiveapi/api/v1/",
   notificationApiUrl: "/notificationapi/api/v1/Notification",
   deviceUrl: "/deviceapi/api/v1/Device",
