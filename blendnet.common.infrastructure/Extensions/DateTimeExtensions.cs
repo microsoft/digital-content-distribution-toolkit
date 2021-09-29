@@ -7,25 +7,19 @@ namespace blendnet.common.infrastructure.Extensions
     {
         /// <summary>
         /// TimeZoneInfo that represents India Standard Time (GMT+530)
+        /// 
+        /// Created manually as the Timezone information is not embedded in runtime system
         /// </summary>
         /// <value></value>
-        private static TimeZoneInfo IndiaTimeZoneInfo { get; }
+        private static TimeZoneInfo IndiaTimeZoneInfo => TimeZoneInfo.CreateCustomTimeZone( "India Standard Time", 
+                                                                                            new TimeSpan(5, 30, 0), 
+                                                                                            "India Standard Time", 
+                                                                                            "India Standard Time");
 
         /// <summary>
         /// Tolerance for accommodating time difference between server and client
         /// </summary>
         private const uint TOLENRANCE_FOR_CURRENT_TIME_MINUTES = 5;
-
-        /// <summary>
-        /// Static constructor
-        /// </summary>
-        static DateTimeExtensions()
-        {
-            // get India TimeZone object
-            // need this logic based on Offset, as TimeZone IDs are different on each machine
-            // Caching this in memory because SystemTimeZones call can cause disk IO
-            IndiaTimeZoneInfo = TimeZoneInfo.GetSystemTimeZones().Where(e => e.BaseUtcOffset.Hours == 5 && e.BaseUtcOffset.Minutes == 30).First();
-        }
 
         /// <summary>
         /// Converts given DateTime object from UTC to India Time zone

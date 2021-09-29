@@ -207,4 +207,7 @@
   <data name="CMS_ERR_0030" xml:space="preserve">
     <value>CMS_ERR_0030-Atleast one content id should be passed</value>
   </data>
+  <data name="CMS_ERR_0031" xml:space="preserve">
+    <value>CMS_ERR_0031-Title should not be empty</value>
+  </data>
 </root>

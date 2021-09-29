@@ -260,6 +260,11 @@ namespace blendnet.cms.api.Controllers
                 listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0026"]);
             }
 
+            if (string.IsNullOrWhiteSpace(subscription.Title))
+            {
+                listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0031"]);
+            }
+
             return listOfValidationErrors;
         }
 
