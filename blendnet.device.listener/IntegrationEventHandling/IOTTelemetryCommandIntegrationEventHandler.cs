@@ -70,19 +70,19 @@ namespace blendnet.device.listener.IntegrationEventHandling
             {
                 using (_telemetryClient.StartOperation<RequestTelemetry>("IOTTelemetryCommandIntegrationEventHandler.Handle"))
                 {
-                    if (integrationEvent.telemetry == null ||
-                        integrationEvent.telemetry.TelemetryCommandData == null ||
-                        !integrationEvent.telemetry.TelemetryCommandData.CommandName.HasValue ||
-                        string.IsNullOrEmpty(integrationEvent.telemetry.TelemetryCommandData.CommandData))
+                    if (integrationEvent.Telemetry == null ||
+                        integrationEvent.Telemetry.TelemetryCommandData == null ||
+                        !integrationEvent.Telemetry.TelemetryCommandData.CommandName.HasValue ||
+                        string.IsNullOrEmpty(integrationEvent.Telemetry.TelemetryCommandData.CommandData))
                     {
-                        _logger.LogInformation($"No valid telemetry details found. Make sure to set the right data export in IOT Central. Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module}");
+                        _logger.LogInformation($"No valid telemetry details found. Make sure to set the right data export in IOT Central. Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module}");
 
                         return;
                     }
 
-                    _logger.LogInformation($"Handle Process starting for Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} Message Body : {integrationEvent.Body}");
+                    _logger.LogInformation($"Handle Process starting for Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} Message Body : {integrationEvent.Body}");
 
-                    switch (integrationEvent.telemetry.TelemetryCommandData.CommandName.Value)
+                    switch (integrationEvent.Telemetry.TelemetryCommandData.CommandName.Value)
                     {
                         case IOTTelemetryCommandName.CompleteCommand:
                             {
@@ -106,12 +106,12 @@ namespace blendnet.device.listener.IntegrationEventHandling
                             }
                         default:
                             {
-                                _logger.LogInformation($"Invalid Command Name Passed {integrationEvent.telemetry.TelemetryCommandData.CommandName.Value}  for : Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module}");
+                                _logger.LogInformation($"Invalid Command Name Passed {integrationEvent.Telemetry.TelemetryCommandData.CommandName.Value}  for : Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module}");
                                 break;
                             }
                     }
 
-                    _logger.LogInformation($"Handle complete  for : Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module}");
+                    _logger.LogInformation($"Handle complete  for : Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module}");
                 }
             }
             catch (Exception ex)
@@ -130,11 +130,11 @@ namespace blendnet.device.listener.IntegrationEventHandling
         {
             try
             {
-                _logger.LogInformation($"Complete command data : {integrationEvent.telemetry.TelemetryCommandData.CommandData}." +
-                    $" Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                _logger.LogInformation($"Complete command data : {integrationEvent.Telemetry.TelemetryCommandData.CommandData}." +
+                    $" Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                 DeviceCommandUpdateRequest deviceCommandUpdateRequest =
-                    JsonSerializer.Deserialize<DeviceCommandUpdateRequest>(integrationEvent.telemetry.TelemetryCommandData.CommandData,
+                    JsonSerializer.Deserialize<DeviceCommandUpdateRequest>(integrationEvent.Telemetry.TelemetryCommandData.CommandData,
                                                                            Utilties.GetJsonSerializerOptions());
 
                 //perform the data validation
@@ -143,7 +143,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
                     !deviceCommandUpdateRequest.IsFailed.HasValue)
                 {
                     _logger.LogError($"Invalid data recieved for Complete Command. " +
-                        $"Command Id, Device Id , Is Failed are mandatory. Command Data {integrationEvent.telemetry.TelemetryCommandData.CommandData} Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                        $"Command Id, Device Id , Is Failed are mandatory. Command Data {integrationEvent.Telemetry.TelemetryCommandData.CommandData} Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                     return;
                 }
@@ -156,7 +156,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
                 {
                     _logger.LogError($"Invalid command id - {deviceCommandUpdateRequest.CommandId.Value} and Device Id {deviceCommandUpdateRequest.DeviceId} " +
                         $" combination recieved for Complete Command. " +
-                        $" Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                        $" Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                     return;
                 }
@@ -165,7 +165,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
                 if (deviceCommand.DeviceCommandStatus != DeviceCommandStatus.DeviceCommandPushedToDevice)
                 {
                     _logger.LogError($"Invalid device command status. Command Id {deviceCommand.Id} Current status should be set to {DeviceCommandStatus.DeviceCommandPushedToDevice} " +
-                        $" Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                        $" Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                     return;
                 }
@@ -176,7 +176,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
                 if (device == null)
                 {
                     _logger.LogError($"Invalid device id - {deviceCommandUpdateRequest.DeviceId} recieved for Complete Command. " +
-                        $" Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                        $" Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                     return;
                 }
@@ -224,7 +224,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
             }
             catch (Exception ex)
             {
-                string errorMessage = $"Failed to complete command. Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} Exception {ex.Message}";
+                string errorMessage = $"Failed to complete command. Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} Exception {ex.Message}";
 
                 _logger.LogError(ex, $"{errorMessage}");
             }
@@ -239,18 +239,18 @@ namespace blendnet.device.listener.IntegrationEventHandling
         {
             try
             {
-                _logger.LogInformation($"Provision Device data : {integrationEvent.telemetry.TelemetryCommandData.CommandData}." +
-                    $" Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                _logger.LogInformation($"Provision Device data : {integrationEvent.Telemetry.TelemetryCommandData.CommandData}." +
+                    $" Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                 ProvisionDeviceRequest provisionDeviceRequest =
-                    JsonSerializer.Deserialize<ProvisionDeviceRequest>(integrationEvent.telemetry.TelemetryCommandData.CommandData,
+                    JsonSerializer.Deserialize<ProvisionDeviceRequest>(integrationEvent.Telemetry.TelemetryCommandData.CommandData,
                                                                            Utilties.GetJsonSerializerOptions());
 
                 //perform the data validation
-                if (string.IsNullOrEmpty(provisionDeviceRequest.DeviceId) )
+                if (string.IsNullOrEmpty(provisionDeviceRequest.DeviceId))
                 {
-                    _logger.LogError($"Invalid data recieved for Provision Device. Command Data : {integrationEvent.telemetry.TelemetryCommandData.CommandData} " +
-                        $" Device Id is mandatory. Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                    _logger.LogError($"Invalid data recieved for Provision Device. Command Data : {integrationEvent.Telemetry.TelemetryCommandData.CommandData} " +
+                        $" Device Id is mandatory. Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                     return;
                 }
@@ -261,7 +261,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
                 if (device == null)
                 {
                     _logger.LogError($"Invalid device id - {provisionDeviceRequest.DeviceId} recieved for Provision Device. " +
-                        $"Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                        $"Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                     return;
                 }
@@ -271,12 +271,12 @@ namespace blendnet.device.listener.IntegrationEventHandling
                 device.ModifiedDate = DateTime.UtcNow;
 
                 await _deviceRepository.UpdateDevice(device);
-                
+
                 return;
             }
             catch (Exception ex)
             {
-                string errorMessage = $"Failed to provision device. Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} Exception {ex.Message}";
+                string errorMessage = $"Failed to provision device. Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} Exception {ex.Message}";
 
                 _logger.LogError(ex, $"{errorMessage}");
             }
@@ -288,16 +288,16 @@ namespace blendnet.device.listener.IntegrationEventHandling
         /// <param name="integrationEvent"></param>
         /// <param name="isDeleted"></param>
         /// <returns></returns>
-        private async Task ProcessDeviceContentRequest(IOTTelemetryCommandIntegrationEvent integrationEvent, 
+        private async Task ProcessDeviceContentRequest(IOTTelemetryCommandIntegrationEvent integrationEvent,
                                                                     bool isDeleted)
         {
             try
             {
-                _logger.LogInformation($"Process Device Content data : {integrationEvent.telemetry.TelemetryCommandData.CommandData}." +
-                    $" Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                _logger.LogInformation($"Process Device Content data : {integrationEvent.Telemetry.TelemetryCommandData.CommandData}." +
+                    $" Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                 DeviceContentUpdateRequest deviceContentRequest =
-                    JsonSerializer.Deserialize<DeviceContentUpdateRequest>(integrationEvent.telemetry.TelemetryCommandData.CommandData,
+                    JsonSerializer.Deserialize<DeviceContentUpdateRequest>(integrationEvent.Telemetry.TelemetryCommandData.CommandData,
                                                                            Utilties.GetJsonSerializerOptions());
 
                 //perform the data validation
@@ -306,7 +306,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
                     deviceContentRequest.Contents.Count <= 0)
                 {
                     _logger.LogError($"Invalid data recieved for Device Content Mapping. " +
-                        $"Device Id and Content Id(s) is mandatory. Command Data : {integrationEvent.telemetry.TelemetryCommandData.CommandData} Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                        $"Device Id and Content Id(s) is mandatory. Command Data : {integrationEvent.Telemetry.TelemetryCommandData.CommandData} Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
 
                     return;
                 }
@@ -317,8 +317,8 @@ namespace blendnet.device.listener.IntegrationEventHandling
                 if (device == null)
                 {
                     _logger.LogError($"Invalid device id - {deviceContentRequest.DeviceId} recieved for Device Content Mapping. " +
-                        $"Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
-                    
+                        $"Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
+
                     return;
                 }
 
@@ -370,7 +370,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
                                 deviceContent.ContentProviderId = contentProviderId;
                                 deviceContent.OperationTimeStamp = contentdata.OperationTime;
                                 deviceContent.ModifiedDate = curDate;
-                                
+
                                 //update the record
                                 await _deviceRepository.UpdateDeviceContent(deviceContent);
                             }
@@ -383,12 +383,12 @@ namespace blendnet.device.listener.IntegrationEventHandling
                             }
                         }
                     }
-                    catch(Exception ex) //swallow the exception and continue for other content ids
+                    catch (Exception ex) //swallow the exception and continue for other content ids
                     {
                         failedContents.Add($"Exception occurred for {contentdata.ContentId}. Ex: {ex.Message}");
 
                         _logger.LogError($"Exception occurred for - {contentdata.ContentId}. Ex: {ex.ToString()} " +
-                                                $" Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                                                $" Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
                     }
 
                 }
@@ -397,16 +397,16 @@ namespace blendnet.device.listener.IntegrationEventHandling
                 if (failedContents.Count >= 0)
                 {
                     _logger.LogError($"Failed or skipped device content mapping for - {string.Join("|", failedContents)}." +
-                                                $" Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} ");
+                                                $" Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");
                 }
             }
             catch (Exception ex)
             {
-                string errorMessage = $"Failed to update content to device mapping. Device Id : {integrationEvent.deviceId} Template Id : {integrationEvent.templateId} Module Id : {integrationEvent.module} Exception {ex.Message}";
+                string errorMessage = $"Failed to update content to device mapping. Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} Exception {ex.Message}";
 
                 _logger.LogError(ex, $"{errorMessage}");
             }
-           
+
         }
     }
 }

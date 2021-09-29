@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace blendnet.common.dto.Events
@@ -11,22 +12,29 @@ namespace blendnet.common.dto.Events
     /// <summary>
     /// Structure of data recieved in the telemetry recieved from IOT Central
     /// </summary>
-    public class IOTTelemetryCommandIntegrationEvent: IntegrationEvent
+    public class IOTTelemetryCommandIntegrationEvent : IntegrationEvent
     {
-        public string applicationId { get; set; }
-  
-        public string deviceId { get; set; }
+        [JsonPropertyName("applicationId")]
+        public string ApplicationId { get; set; }
 
-        public string messageSource { get; set; }
-        
-        public string templateId { get; set; }
+        [JsonPropertyName("deviceId")]
+        public string DeviceId { get; set; }
 
-        public DateTime enqueuedTime { get; set; }
-    
-        public string module { get; set; }
+        [JsonPropertyName("messageSource")]
+        public string MessageSource { get; set; }
 
-        public IOTTelemetry telemetry { get; set; }
-  
+        [JsonPropertyName("templateId")]
+        public string TemplateId { get; set; }
+
+        [JsonPropertyName("enqueuedTime")]
+        public DateTime EnqueuedTime { get; set; }
+
+        [JsonPropertyName("module")]
+        public string Module { get; set; }
+
+        [JsonPropertyName("telemetry")]
+        public IOTTelemetry Telemetry { get; set; }
+
     }
 
     /// <summary>
@@ -34,12 +42,16 @@ namespace blendnet.common.dto.Events
     /// </summary>
     public class IOTTelemetry
     {
+        [JsonPropertyName("deviceIdInData")]
         public string DeviceIdInData { get; set; }
-        
+
+        [JsonPropertyName("applicationName")]
         public string ApplicationName { get; set; }
 
+        [JsonPropertyName("applicationVersion")]
         public string ApplicationVersion { get; set; }
 
+        [JsonPropertyName("telemetryCommandData")]
         public IOTTelemetryCommand TelemetryCommandData { get; set; }
 
     }

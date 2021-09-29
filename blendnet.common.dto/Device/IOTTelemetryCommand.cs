@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace blendnet.common.dto.Device
@@ -11,8 +12,10 @@ namespace blendnet.common.dto.Device
     /// </summary>
     public class IOTTelemetryCommand
     {
+        [JsonPropertyName("commandName")]
         public IOTTelemetryCommandName? CommandName { get; set; }
 
+        [JsonPropertyName("commandData")]
         public string CommandData { get; set; }
 
     }
