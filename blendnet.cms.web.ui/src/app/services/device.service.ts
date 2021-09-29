@@ -39,7 +39,11 @@ export class DeviceService {
       return this.http.get(url,{ observe: 'response'});
     }
 
-    assignDeviceToRetailer() {
-
+    cancelCommand(deviceId, commandId) {
+      let url = this.baseUrl + '/' + deviceId +'/cancelcommand/' + commandId;
+      this.logger.log(`Cancelling command for device`);
+      return this.http.post(url,{ observe: 'response'});
     }
+
+
 }

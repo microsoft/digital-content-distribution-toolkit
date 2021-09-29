@@ -59,10 +59,17 @@ export class DevicesComponent {
   getDevices() {
     this.deviceService.getDevices().subscribe(
       res => {
-        this.dataSource = this.createDataSource(res.body);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-
+        var data:any = res.body;
+        if(data.length>0) {
+          this.dataSource = this.createDataSource(data);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        } else {
+          this.error = true;
+          this.dataSource = this.createDataSource([]);
+          this.errMessage = "No data found";
+        }
+        
       },
       err => {
         this.error = true;
@@ -75,8 +82,18 @@ export class DevicesComponent {
         }
       });
   }
+  disabledApplyFilters(row){
+    return   (row.filterUpdateStatus === 'DeviceCommandSubmitted ' || row.filterUpdateStatus === 'DeviceCommandInProcess ' || row.filterUpdateStatus === 'DeviceCommandPushedToDevice') 
+    || row.deviceStatus === 'Registered';
+  }
 
-  
+  disableRetailerAssignment(row) {
+    return (row.deviceStatus === 'Registered');
+  }
+  disabledCancelFilters(row) {
+
+  }
+
   createDataSource(rawDataList) {
     var dataSource: any[] =[];
     if(rawDataList) {

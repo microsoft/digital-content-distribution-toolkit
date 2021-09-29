@@ -49,12 +49,14 @@
                     
                
                 <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button  [disabled]="row.filterUpdateStatus !== 'DeviceCommandNotInitialized' && row.filterUpdateStatus !== 'DeviceCommandComplete' "  (click)="openFiltersConfirmModal(row)">
+                    <button mat-icon-button  [disabled]="disabledApplyFilters(row)"  (click)="openFiltersConfirmModal(row)">
                         <mat-icon mat-list-icon 
                         matTooltip="Apply filters">filter_alt</mat-icon> 
                     </button>
                 </td>
             </ng-container>
+
+            
 
             <!-- Filter history Column -->
             <ng-container matColumnDef="filters_history">
@@ -70,11 +72,11 @@
             </ng-container>
 
             <ng-container matColumnDef="assignment">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Assignment
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Assign/Unassign
                 </th>
                 <td mat-cell *matCellDef="let row" >
                     
-                    <button mat-icon-button (click)="assignment(row.id)">
+                    <button mat-icon-button (click)="assignment(row.id)" [disabled]="disableRetailerAssignment(row)">
                         <mat-icon mat-list-icon 
                         matTooltip="assign/unassign retailer">assignment</mat-icon> 
                     </button>

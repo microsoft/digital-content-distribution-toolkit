@@ -56,6 +56,19 @@
                         matTooltip="Additional Details">info</mat-icon> 
                     </button> </td>
                 </ng-container>
+
+                 <!-- cancel_command Column -->
+             <ng-container matColumnDef="cancel_command">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Cancel Command</th>
+                
+           
+            <td mat-cell *matCellDef="let row" >
+                <button mat-icon-button  [disabled]="disabledCancelFilters(row)"  (click)="openConfirmCancelCommand(row)">
+                    <mat-icon mat-list-icon 
+                    matTooltip="Cancel filter update command">cancel</mat-icon> 
+                </button>
+            </td>
+        </ng-container>
             
 
             
