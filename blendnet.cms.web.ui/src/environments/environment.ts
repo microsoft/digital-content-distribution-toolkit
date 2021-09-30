@@ -48,7 +48,7 @@ export const environment = {
     {
       "filterName" : "Content Types",
       "filterValues" : [
-        "Test"]
+        "Test", "Development"]
     },
   ],
   countryCodes: [

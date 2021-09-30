@@ -50,6 +50,11 @@ export const environment = {
     //   "filterValues" : [
     //     "Test"]
     // },
+    {
+      "filterName" : "Content Types",
+      "filterValues" : [
+        "Test", "Development"]
+    }
   ],
   countryCodes: [
     {value: '+91', viewValue: 'India (+91)'}

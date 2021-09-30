@@ -22,7 +22,9 @@ export class AddIncentiveComponent implements OnInit {
 
   @Input() audience: string;
   @Input() plan: any;
-  @Output() newIncentiveEvent = new EventEmitter<any>();
+  @Output() newIncentiveEventR = new EventEmitter<any>();
+  @Output() newIncentiveEventC = new EventEmitter<any>();
+
 
   displayedColumns: string[] = ['eventType','eventTitle','contentProvider', 'ruleType', 'formula',  'firstOperand', 'secondOperand', 'edit', 'delete'];
   dataSource: MatTableDataSource<any>;
@@ -395,8 +397,12 @@ openSelectCPModalButtons(): Array<any> {
     this.incentiveService.createIncentivePlanRetailer(incentivePlan).subscribe(
       res => {
         this.toastr.success("Retailer Incentive plan drafted successfully");
-        console.log(res),
-        this.newIncentiveEvent.emit();
+        console.log(res);
+        var incentiveDetails = {
+          planType :incentivePlan.planType,
+          partner: incentivePlan.audience.subTypeName
+        }
+        this.newIncentiveEventR.emit(incentiveDetails);
       },
       err =>  {
         console.log(err);
@@ -410,8 +416,8 @@ openSelectCPModalButtons(): Array<any> {
     this.incentiveService.createIncentivePlanConsumer(incentivePlan).subscribe(
       res => {
         this.toastr.success("Consumer Incentive plan drafted successfully");
-        console.log(res),
-        this.newIncentiveEvent.emit();
+        console.log(res);
+        this.newIncentiveEventC.emit(incentivePlan.planType);
       },
       err =>  {
         console.log(err);
@@ -422,7 +428,11 @@ openSelectCPModalButtons(): Array<any> {
 
   displayIncentivePlan() {
     this.plan = null;
-    this.newIncentiveEvent.emit();
+    if(this.audience === 'RETAILER') {
+      this.newIncentiveEventR.emit(null);
+    } else {
+      this.newIncentiveEventC.emit(null);
+    }
   }
 
 

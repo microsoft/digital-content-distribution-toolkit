@@ -6,6 +6,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { DeviceService } from '../services/device.service';
 import { DeviceAssignComponent } from './device-assign.component';
 import { DeviceDialogComponent } from './device-dialog.component';
@@ -17,6 +18,7 @@ export interface UserData {
   status: string;
   existingFilters: string[];
 }
+
 
 export interface DialogData {
   message: string;
@@ -30,12 +32,13 @@ export interface DialogData {
   templateUrl: 'devices.component.html',
 })
 export class DevicesComponent {
-  displayedColumns: string[] = ['id', 'status', 'filterUpdateStatus' , 'filters', 'filters_history', 'assignment', 'assign_history'];
+  displayedColumns: string[] = ['id', 'status', 'status_update_date', 'filterUpdateStatus' , 'filters', 'cancel_command', 'assignment', 'history'];
   dataSource: MatTableDataSource<any>;
   showDialog: boolean = false;
   initialSelection = [];
   allowMultiSelect = true;
   selection = new SelectionModel<any>(this.allowMultiSelect, this.initialSelection);
+  cancelConfirmMessage: string = "WARNING!!!!! Please use this action cautiously. Cancelling a command takes few minutes. Press Continue to CANCEL the command.";
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -90,9 +93,6 @@ export class DevicesComponent {
   disableRetailerAssignment(row) {
     return (row.deviceStatus === 'Registered');
   }
-  disabledCancelFilters(row) {
-
-  }
 
   createDataSource(rawDataList) {
     var dataSource: any[] =[];
@@ -114,6 +114,57 @@ export class DevicesComponent {
   }
 
   
+  disabledCancelFilters(row){
+    return row.filterUpdateStatus !== 'DeviceCommandPushedToDevice';
+  }
+
+
+  openConfirmCancelCommand(row) {
+
+    const dialogRef = this.dialog.open(CommonDialogComponent, {
+      data: {
+        heading: 'Confirm',
+        message: this.cancelConfirmMessage,
+        contents: row,
+        action: "PROCESS",
+        buttons: this.openSelectCPModalButtons()
+      },
+      maxHeight: '400px'
+    });
+  
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'proceed') {
+        this.cancelCommand(row);
+      }
+    });
+  }
+
+  openSelectCPModalButtons(): Array<any> {
+    return [{
+      label: 'Cancel',
+      type: 'basic',
+      value: 'cancel',
+      class: 'discard-btn'
+    },
+    {
+      label: 'Continue',
+      type: 'primary',
+      value: 'submit',
+      class: 'update-btn'
+    }
+    ]
+  }
+
+  cancelCommand(row) {
+    this.deviceService.cancelCommand(row.id, row.filterUpdateStatusUpdatedBy ).subscribe(res => {
+      this.toastr.success("Device command cancelled successfully.");
+      this.getDevices(); 
+    },
+    err => {
+      this.toastr.error(err);
+    })
+  }
 
   showFilterHistory(deviceId): void {
     this.router.navigateByUrl('/devices/filters-history/'+ deviceId);
@@ -176,15 +227,15 @@ export class DevicesComponent {
 
 openFiltersConfirmModal(device) {
   const dialogRef = this.dialog.open(DeviceFiltersComponent, {
-    width: '500px',
+    width: '60%',
     data: {device : device},
     
   });
 
   dialogRef.componentInstance.onDeviceFilterUpdate.subscribe(data => {
-    this.toastr.success("Device filters updated successfully!");
-    // this.getDevices(); 
+    this.toastr.success("Apply filters command submitted. This may take a while for completion");
     dialogRef.close();
+    this.getDevices(); 
   })
 
   dialogRef.afterClosed().subscribe(result => {

@@ -35,14 +35,19 @@ export class IncentiveManagementComponent implements OnInit {
   selectedStatusRetailer;
   selectedStatusConsumer;
   selectedPlan = null;
-  missingListPartner: any[] = [];
+  // missingListPartner: any[] = [];
   missingListConsumer: any ={};
+  missingListPartner: any = {};
   partners = [];
   selectedPartner;
   missingPlansforPartner;
 
   errMessage;
   error= false;
+  isErrorRetailer = false;
+  isErrorConsumer=false;
+  selectedRetailerPartner;
+  selectedPlanType="REGULAR";
 
   constructor( private incentiveService: IncentiveService,
     public dialog: MatDialog,
@@ -52,9 +57,10 @@ export class IncentiveManagementComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.getRetailerPartners();
     this.getContentProviders()
     this.statuses = ['REGULAR', 'MILESTONE'];
-    this.getRetailerIncentivePlans();
+    //this.getRetailerIncentivePlans();
   }
 
   getContentProviders() {
@@ -70,156 +76,250 @@ export class IncentiveManagementComponent implements OnInit {
   }
 
   tabClick(event) {
+    this. selectedPlanType="REGULAR";
     if(event.tab.textLabel === "RETAILER") {
-      this.getRetailerIncentivePlans();
+      // this.getRetailerIncentivePlans();
+      this.getRPlansSelectedPartnerPlanType();
     } else if(event.tab.textLabel === "CONSUMER"){
       this.getConsumerIncentivePlans();
     }
   }
 
-  getRetailerIncentivePlans() {
-    this.incentiveService.getRetailerIncentives().subscribe(
-      res => {
-            const validResult = res.filter((result) => Array.isArray(result));
-            var mergedResult = [].concat.apply([], validResult);
-            this.dataSourceRetailers = this.createDataSource(mergedResult);
-            this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
-            this.dataSourceRetailers.sort = this.sort.toArray()[0];  
-            this.selectedStatusRetailer= this.statuses[0]; 
-            this.applyFilterRetailer(null);   
-            this.getMissingPlans(this.dataSourceRetailers.data);
-           
-        },
-      err => {
-        this.error = true;
-        this.dataSourceRetailers = this.createDataSource([]);
-        if(err === 'Not Found') {
-          this.errMessage = "No data found";
-        } else {
-          this.toastr.error(err);
-          this.errMessage = err;
-        }
-      }
-    );
-  }
+  // getRetailerIncentivePlans() {
+  //   this.incentiveService.getRetailerIncentives().subscribe(
+  //     res => {
+  //       const validResult = res.filter((result) => Array.isArray(result));
+  //       var mergedResult = [].concat.apply([], validResult);
+  //       this.dataSourceRetailers = this.createDataSource(mergedResult);
+  //       this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
+  //       this.dataSourceRetailers.sort = this.sort.toArray()[0];  
+  //       this.selectedStatusRetailer= this.statuses[0]; 
+  //       this.applyFilterRetailer(null);   
+  //       this.getMissingPlans(this.dataSourceRetailers.data);
+  //       },
+  //     err => {
+  //       this.error = true;
+  //       this.dataSourceRetailers = this.createDataSource([]);
+  //       if(err === 'Not Found') {
+  //         this.errMessage = "No data found";
+  //       } else {
+  //         this.toastr.error(err);
+  //         this.errMessage = err;
+  //       }
+  //     }
+  //   );
+  // }
 
-  getMissingPlans(plans) {
-    var missingListPartner: any [] = [];
+  getRetailerPartners() {
     this.retailerService.getRetailerPartners().subscribe(
       res => {
         this.partners = this.getPartnerCodes(res);
         sessionStorage.setItem("RETAILER_PARTNERS", JSON.stringify(this.partners));
-        var partnerwisePlanList: any[] = [];
-        this.partners.forEach( partner => {
-           
-          var partnerwisePlan = {
-            partner : partner,
-            regularPlans: plans.filter(plan => (plan.partner === partner && plan.type === PlanType.REGULAR && plan.status === PublishMode.PUBLISHED))
-            .sort((p1, p2) => {
-              return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
-            }),
-            milestonePlans: plans.filter(plan => (plan.partner === partner && plan.type === PlanType.MILESTONE && plan.status === PublishMode.PUBLISHED))
-            .sort((p1, p2) => {
-              return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
-            })
-          }
-          partnerwisePlanList.push(partnerwisePlan);
-        })
-
-        partnerwisePlanList.forEach(partner => {
-          var missingListRegular = [];
-          var missingListMilestone = [];
-          for(let i=0; i < partner.regularPlans.length-1; i ++ ){
-            if(new Date(partner.regularPlans[i+1].startDate).getTime()- new Date(partner.regularPlans[i].endDate).getTime() > 1000){
-              var missingStartDate = new Date(partner.regularPlans[i].endDate);
-              missingStartDate.setDate(missingStartDate.getDate()+1);
-              var missingEndDate = new Date(partner.regularPlans[i+1].startDate)
-              missingEndDate.setDate(missingEndDate.getDate()-1);
-              var missingPlan = {
-                startDate: missingStartDate,
-                endDate: missingEndDate
-              }
-              missingListRegular.push(missingPlan);
-            }
-          }
-
-          for(let i=0; i < partner.milestonePlans.length-1; i ++ ){
-            if(new Date(partner.milestonePlans[i+1].startDate).getTime() - new Date(partner.milestonePlans[i].endDate).getTime()    > 1000){
-              var missingStartDate = new Date(partner.milestonePlans[i].endDate);
-              missingStartDate.setDate(missingStartDate.getDate()+1);
-              var missingEndDate = new Date(partner.milestonePlans[i+1].startDate)
-              missingEndDate.setDate(missingEndDate.getDate()-1);
-              var missingPlan = {
-                startDate: missingStartDate,
-                endDate: missingEndDate
-              }
-              missingListMilestone.push(missingPlan);
-            }
-          }
-          var partnerList ={
-            partner: partner.partner,
-            missingListRegular: missingListRegular,
-            missingListMilestone: missingListMilestone
-          }
-          missingListPartner.push(partnerList);
-        });
-    
-        this.missingListPartner =  missingListPartner;
+        this.selectedRetailerPartner = this.partners[0];
+        this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanType);
       },
-      err => console.log(err)
+      err => this.toastr.error("Unable to load retailer Partner.")
     );
   }
 
-  getMissingPlansConsumer(plans) {
-    var cosumerPlansbyType = {
-      regularPlans: plans.filter(plan => (plan.type === PlanType.REGULAR && plan.status === PublishMode.PUBLISHED))
-      .sort((p1, p2) => {
-        return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
-      }),
-      milestonePlans: plans.filter(plan => (plan.type === PlanType.MILESTONE && plan.status === PublishMode.PUBLISHED))
-      .sort((p1, p2) => {
-        return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
-      })
-    };
-
-          var missingListRegular = [];
-          var missingListMilestone = [];
-          for(let i=0; i < cosumerPlansbyType.regularPlans.length-1; i ++ ){
-            if(new Date(cosumerPlansbyType.regularPlans[i+1].startDate).getTime()- new Date(cosumerPlansbyType.regularPlans[i].endDate).getTime() > 1000){
-              var missingStartDate = new Date(cosumerPlansbyType.regularPlans[i].endDate);
-              missingStartDate.setDate(missingStartDate.getDate()+1);
-              var missingEndDate = new Date(cosumerPlansbyType.regularPlans[i+1].startDate)
-              missingEndDate.setDate(missingEndDate.getDate()-1);
-              var missingPlan = {
-                startDate: missingStartDate,
-                endDate: missingEndDate
-              }
-              missingListRegular.push(missingPlan);
-            }
-          }
-
-          for(let i=0; i < cosumerPlansbyType.milestonePlans.length-1; i ++ ){
-            if(new Date(cosumerPlansbyType.milestonePlans[i+1].startDate).getTime() - new Date(cosumerPlansbyType.milestonePlans[i].endDate).getTime()    > 1000){
-              var missingStartDate = new Date(cosumerPlansbyType.milestonePlans[i].endDate);
-              missingStartDate.setDate(missingStartDate.getDate()+1);
-              var missingEndDate = new Date(cosumerPlansbyType.milestonePlans[i+1].startDate)
-              missingEndDate.setDate(missingEndDate.getDate()-1);
-              var missingPlan = {
-                startDate: missingStartDate,
-                endDate: missingEndDate
-              }
-              missingListMilestone.push(missingPlan);
-            }
-          }
-          this.missingListConsumer = {
-            missingListRegular: missingListRegular,
-            missingListMilestone: missingListMilestone
-          }
+  getRPlansSelectedPartnerPlanType() {
+    this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanType);
   }
 
-  getMissingPlansforPartner(event){
-    this.missingPlansforPartner = this.missingListPartner.find( p => p.partner === event.value);
+
+  getRetailerIncentivePlansForPartner(partner, type){
+    this.isErrorRetailer = false;
+    this.incentiveService.getRetailerIncentivesByPartnerAndPlanType(partner, type).subscribe(res => {
+      this.dataSourceRetailers = this.createDataSource(res.body);
+      this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
+      this.dataSourceRetailers.sort = this.sort.toArray()[0]; 
+      this.getMissingPlansPerPartner(res.body, type);
+    }, err => {
+      this.missingListPartner = {
+        missingListRegular: [],
+        missingListMilestone: []
+      }
+      this.isErrorRetailer = true;
+      this.dataSourceRetailers = this.createDataSource([]);
+      if(err === 'Not Found') {
+        this.errMessage = "No data found";
+      } else {
+        this.toastr.error(err);
+        this.errMessage = err;
+      }
+    })
   }
+
+  getMissingPlansPerPartner(plans, type) {
+    var regularPlans = [];
+    var milestonePlans = [];
+    var missingListRegular = [];
+    var missingListMilestone = [];
+    if(type === PlanType.REGULAR) {
+      regularPlans = plans.filter(plan => (plan.planType === PlanType.REGULAR && plan.publishMode === PublishMode.PUBLISHED))
+            .sort((p1, p2) => {
+              return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+            });
+      
+      for(let i=0; i < regularPlans.length-1; i ++ ){
+        if(new Date(regularPlans[i+1].startDate).getTime()- new Date(regularPlans[i].endDate).getTime() > 1000){
+          var missingStartDate = new Date(regularPlans[i].endDate);
+          missingStartDate.setDate(missingStartDate.getDate()+1);
+          var missingEndDate = new Date(regularPlans[i+1].startDate)
+          missingEndDate.setDate(missingEndDate.getDate()-1);
+          var missingPlan = {
+            startDate: missingStartDate,
+            endDate: missingEndDate
+          }
+          missingListRegular.push(missingPlan);
+        }
+      }
+     
+    } else if(type === PlanType.MILESTONE){
+      milestonePlans = plans.filter(plan => (plan.planType === PlanType.MILESTONE && plan.publishMode === PublishMode.PUBLISHED))
+        .sort((p1, p2) => {
+          return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+        });
+  
+      for(let i=0; i < milestonePlans.length-1; i ++ ){
+        if(new Date(milestonePlans[i+1].startDate).getTime() - new Date(milestonePlans[i].endDate).getTime()    > 1000){
+          var missingStartDate = new Date(milestonePlans[i].endDate);
+          missingStartDate.setDate(missingStartDate.getDate()+1);
+          var missingEndDate = new Date(milestonePlans[i+1].startDate)
+          missingEndDate.setDate(missingEndDate.getDate()-1);
+          var missingPlan = {
+            startDate: missingStartDate,
+            endDate: missingEndDate
+          }
+          missingListMilestone.push(missingPlan);
+        }
+      }
+    }
+   
+  this.missingListPartner = {
+    missingListRegular: missingListRegular,
+    missingListMilestone: missingListMilestone
+  }
+}
+
+  // getMissingPlans(plans) {
+  //   var missingListPartner: any [] = [];
+  //   this.retailerService.getRetailerPartners().subscribe(
+  //     res => {
+  //       this.partners = this.getPartnerCodes(res);
+  //       sessionStorage.setItem("RETAILER_PARTNERS", JSON.stringify(this.partners));
+  //       var partnerwisePlanList: any[] = [];
+  //       this.partners.forEach( partner => {
+           
+  //         var partnerwisePlan = {
+  //           partner : partner,
+  //           regularPlans: plans.filter(plan => (plan.partner === partner && plan.type === PlanType.REGULAR && plan.status === PublishMode.PUBLISHED))
+  //           .sort((p1, p2) => {
+  //             return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+  //           }),
+  //           milestonePlans: plans.filter(plan => (plan.partner === partner && plan.type === PlanType.MILESTONE && plan.status === PublishMode.PUBLISHED))
+  //           .sort((p1, p2) => {
+  //             return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+  //           })
+  //         }
+  //         partnerwisePlanList.push(partnerwisePlan);
+  //       })
+
+  //       partnerwisePlanList.forEach(partner => {
+  //         var missingListRegular = [];
+  //         var missingListMilestone = [];
+  //         for(let i=0; i < partner.regularPlans.length-1; i ++ ){
+  //           if(new Date(partner.regularPlans[i+1].startDate).getTime()- new Date(partner.regularPlans[i].endDate).getTime() > 1000){
+  //             var missingStartDate = new Date(partner.regularPlans[i].endDate);
+  //             missingStartDate.setDate(missingStartDate.getDate()+1);
+  //             var missingEndDate = new Date(partner.regularPlans[i+1].startDate)
+  //             missingEndDate.setDate(missingEndDate.getDate()-1);
+  //             var missingPlan = {
+  //               startDate: missingStartDate,
+  //               endDate: missingEndDate
+  //             }
+  //             missingListRegular.push(missingPlan);
+  //           }
+  //         }
+
+  //         for(let i=0; i < partner.milestonePlans.length-1; i ++ ){
+  //           if(new Date(partner.milestonePlans[i+1].startDate).getTime() - new Date(partner.milestonePlans[i].endDate).getTime()    > 1000){
+  //             var missingStartDate = new Date(partner.milestonePlans[i].endDate);
+  //             missingStartDate.setDate(missingStartDate.getDate()+1);
+  //             var missingEndDate = new Date(partner.milestonePlans[i+1].startDate)
+  //             missingEndDate.setDate(missingEndDate.getDate()-1);
+  //             var missingPlan = {
+  //               startDate: missingStartDate,
+  //               endDate: missingEndDate
+  //             }
+  //             missingListMilestone.push(missingPlan);
+  //           }
+  //         }
+  //         var partnerList ={
+  //           partner: partner.partner,
+  //           missingListRegular: missingListRegular,
+  //           missingListMilestone: missingListMilestone
+  //         }
+  //         missingListPartner.push(partnerList);
+  //       });
+    
+  //       this.missingListPartner =  missingListPartner;
+  //     },
+  //     err => console.log(err)
+  //   );
+  // }
+
+  getMissingPlansConsumer(plans, type) {
+    var regularPlans = [];
+    var milestonePlans = [];
+    var missingListRegular = [];
+    var missingListMilestone = [];
+    if(type === PlanType.REGULAR) {
+      regularPlans =  plans.filter(plan => (plan.type === PlanType.REGULAR && plan.status === PublishMode.PUBLISHED))
+      .sort((p1, p2) => {
+        return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+      });
+      for(let i=0; i < regularPlans.length-1; i ++ ){
+        if(new Date(regularPlans[i+1].startDate).getTime()- new Date(regularPlans[i].endDate).getTime() > 1000){
+          var missingStartDate = new Date(regularPlans[i].endDate);
+          missingStartDate.setDate(missingStartDate.getDate()+1);
+          var missingEndDate = new Date(regularPlans[i+1].startDate)
+          missingEndDate.setDate(missingEndDate.getDate()-1);
+          var missingPlan = {
+            startDate: missingStartDate,
+            endDate: missingEndDate
+          }
+          missingListRegular.push(missingPlan);
+        }
+      }
+    } else if(type === PlanType.MILESTONE) {
+      milestonePlans= plans.filter(plan => (plan.type === PlanType.MILESTONE && plan.status === PublishMode.PUBLISHED))
+      .sort((p1, p2) => {
+        return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
+      });
+      for(let i=0; i < milestonePlans.length-1; i ++ ){
+        if(new Date(milestonePlans[i+1].startDate).getTime() - new Date(milestonePlans[i].endDate).getTime()    > 1000){
+          var missingStartDate = new Date(milestonePlans[i].endDate);
+          missingStartDate.setDate(missingStartDate.getDate()+1);
+          var missingEndDate = new Date(milestonePlans[i+1].startDate)
+          missingEndDate.setDate(missingEndDate.getDate()-1);
+          var missingPlan = {
+            startDate: missingStartDate,
+            endDate: missingEndDate
+          }
+          missingListMilestone.push(missingPlan);
+        }
+      }
+    }
+    this.missingListConsumer = {
+      missingListRegular: missingListRegular,
+      missingListMilestone: missingListMilestone
+    }
+  }
+
+  // getMissingPlansforPartner(event){
+  //   this.missingPlansforPartner = this.missingListPartner.find( p => p.partner === event.value);
+  // }
 
   getPartnerCodes(partners) {
     var partnerCodes = [];
@@ -251,34 +351,47 @@ export class IncentiveManagementComponent implements OnInit {
   }
 
 
-  addIncentive(audience) {
+  addIncentiveRetailer($event) {
+    if($event) {
+      this.selectedRetailerPartner = $event.partner,
+      this.selectedPlanType = $event.planType
+    }
     this.getContentProviders();
     this.selectedPlan = null;
-    if(audience === "RETAILER") {
-      this.createRetailerIncentive = false;
-      this.getRetailerIncentivePlans();
-      this.showRetailerIncentive = true;
-    } else {
-      this.createConsumerIncentive = false;
-      this.getConsumerIncentivePlans();
-      this.showConsumerIncentive = true;
+    this.createRetailerIncentive = false;
+    this.getRPlansSelectedPartnerPlanType();
+    this.showRetailerIncentive = true;
+    
+  }
+
+  addIncentiveConsumer($event) {
+    if($event) {
+      this.selectedPlanType = $event
     }
+    this.createConsumerIncentive = false;
+    this.getConsumerIncentivePlans();
+    this.showConsumerIncentive = true;
   }
 
   getConsumerIncentivePlans() {
-    this.incentiveService.getConsumerIncentives().subscribe(
+    this.isErrorConsumer = false;
+    this.incentiveService.getConsumerIncentivesByPlanType(this.selectedPlanType).subscribe(
       res => { 
-          const validResult = res.filter((result) => Array.isArray(result));
-          var mergedResult = [].concat.apply([], validResult);
-          this.dataSourceConsumers = this.createDataSource(mergedResult);
+          // const validResult = res.filter((result) => Array.isArray(result));
+          // var mergedResult = [].concat.apply([], validResult);
+          this.dataSourceConsumers = this.createDataSource(res.body);
           this.dataSourceConsumers.paginator = this.paginator.toArray()[1];;
           this.dataSourceConsumers.sort = this.sort.toArray()[1];   
           this.selectedStatusConsumer= this.statuses[0];     
           this.applyFilterConsumer(null);  
-          this.getMissingPlansConsumer(this.dataSourceConsumers.data);  
+          this.getMissingPlansConsumer(this.dataSourceConsumers.data, this.selectedPlanType);  
         },
       err => {
-        this.error = true;
+        this.missingListConsumer = {
+          missingListRegular: [],
+          missingListMilestone: []
+        }
+        this.isErrorConsumer = true;
         this.dataSourceConsumers = this.createDataSource([]);
         if(err === 'Not Found') {
           this.errMessage = "No data found";
@@ -323,6 +436,9 @@ export class IncentiveManagementComponent implements OnInit {
     }
   }
 
+  selectPlanTypeRetailer(event) {
+
+  }
   applyFilterRetailer(event) {
     var filterValue = "";
     if(event && event.target) {
@@ -433,7 +549,7 @@ deleteDraftRetailerIncentive(id, partner) {
   this.incentiveService.deleteDraftRetailerIncentivePlan(id, partner).subscribe(
     res => {
       this.toastr.success("Retailer Incentive plan deleted successfully");
-      this.getRetailerIncentivePlans();
+      // this.getRetailerIncentivePlans();
     },
     err =>  {
       console.log(err);
@@ -460,7 +576,7 @@ deleteDraftConsumerIncentive(id){
     this.incentiveService.publishRetailerIncentivePlan(id, partner).subscribe(
       res => {
         this.toastr.success("Retailer Incentive plan published successfully");
-        this.getRetailerIncentivePlans();
+        this.getRPlansSelectedPartnerPlanType();
       },
       err =>  {
         console.log(err);

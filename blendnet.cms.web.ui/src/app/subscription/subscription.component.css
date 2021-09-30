@@ -45,7 +45,7 @@ padding-right: 0px !important
 }
 .cms-table-container {
   position: relative;
-  max-height: 350px;
+  max-height: 550px;
   overflow: auto;
   width: 100%;
 }

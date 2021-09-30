@@ -5,7 +5,6 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { DeviceService } from '../services/device.service';
 import { AdditionalHistoryDialog } from './device-additional-history.component';
 
@@ -16,13 +15,12 @@ import { AdditionalHistoryDialog } from './device-additional-history.component';
 })
 export class DeviceFilterHistoryComponent implements OnInit {
   deviceid;
-  displayedColumns: string[] = ['id', 'deviceCommandStatus', 'filters' , 'createdDate',  'details', 'cancel_command'];
+  displayedColumns: string[] = ['id', 'deviceCommandStatus', 'filters' , 'createdDate',  'details'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   errMessage;
   error= false;
-  cancelConfirmMessage: string = "WARNING!!!!! Please use this action cautiously. Cancelling a command takes few minutes. Press Continue to CANCEL the command.";
   constructor(
     private deviceService: DeviceService,
     public dialog: MatDialog,
@@ -52,56 +50,6 @@ export class DeviceFilterHistoryComponent implements OnInit {
     });
   }
 
-  disabledCancelFilters(row){
-    return row.deviceCommandStatus !== 'DeviceCommandPushToDevice';
-  }
-
-
-  openConfirmCancelCommand(row) {
-
-    const dialogRef = this.dialog.open(CommonDialogComponent, {
-      data: {
-        heading: 'Confirm',
-        message: this.cancelConfirmMessage,
-        contents: row,
-        action: "PROCESS",
-        buttons: this.openSelectCPModalButtons()
-      },
-      maxHeight: '400px'
-    });
-  
-  
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'proceed') {
-        this.cancelCommand(row);
-      }
-    });
-  }
-
-  openSelectCPModalButtons(): Array<any> {
-    return [{
-      label: 'Cancel',
-      type: 'basic',
-      value: 'cancel',
-      class: 'discard-btn'
-    },
-    {
-      label: 'Continue',
-      type: 'primary',
-      value: 'submit',
-      class: 'update-btn'
-    }
-    ]
-  }
-
-  cancelCommand(row) {
-    this.deviceService.cancelCommand(this.deviceid , row.id).subscribe(res => {
-      this.toastr.success("Cancel command initiated. This may take a while for completion");
-    },
-    err => {
-      this.toastr.error(err);
-    })
-  }
 
   createDataSource(rawDataList) {
     var dataSource: any[] =[];

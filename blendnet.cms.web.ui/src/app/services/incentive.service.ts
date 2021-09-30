@@ -36,6 +36,12 @@ export class IncentiveService {
     return this.http.post(url, incentivePlan, { observe: 'response'});
 
   }
+  getRetailerIncentivesByPartnerAndPlanType(partner, type) { 
+    let url= this.baseUrl + "/retailer/" + type +"/" + partner;
+    this.logger.log(`Getting the incentive plans for retailers`);
+    return this.http.get(url, { observe: 'response'});
+        
+  }
 
   getRetailerIncentives(): Observable<any> {
     return this.retailerService.getRetailerPartners().pipe(mergeMap((res : any) => {
@@ -69,6 +75,14 @@ export class IncentiveService {
     this.logger.log(`Getting incentive plans for consumer`);
     return forkJoin([regularIncentives, milestoneIncentives]);
   }
+
+  
+  getConsumerIncentivesByPlanType(type) {
+    let url = this.baseUrl + "/consumer/" + type;
+    this.logger.log(`Getting the incentive plans for consumers`);
+    return this.http.get(url, { observe: 'response'});
+  }
+
 
   getRetailerIncentivePlanByIdAndPartner(planId, subType) {
     let url = this.baseUrl + "/retailer/"+ planId + "/" + subType;
