@@ -877,7 +877,6 @@ namespace blendnet.oms.api.Controllers
         {
             var currentDate = DateTime.UtcNow;
 
-            order.RetailerId = retailer.RetailerId;
             order.RetailerPartnerId = retailer.PartnerId;
             order.RetailerPartnerCode = retailer.PartnerCode;
             order.PaymentDepositDate = currentDate.Year * 10000 + currentDate.Month * 100 + currentDate.Day;
@@ -1009,7 +1008,6 @@ namespace blendnet.oms.api.Controllers
             
             if (!order.IsRedeemed)
             {
-                orderCompletedAIEvent.RetailerId = order.RetailerId.Value;
                 orderCompletedAIEvent.RetailerPartnerId = order.RetailerPartnerId;
                 orderCompletedAIEvent.RetailerPartnerCode = order.RetailerPartnerCode;
                 orderCompletedAIEvent.RetailerAdditionalAttributes = retailerAdditionalAttributes;

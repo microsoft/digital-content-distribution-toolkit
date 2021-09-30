@@ -12,7 +12,7 @@ namespace blendnet.common.dto.Retailer
         /// </summary>
         /// <value></value>
         [JsonProperty(PropertyName = "id")]
-        public Guid RetailerId { get; set; }
+        public string RetailerId => this.PartnerId;
 
         /// <summary>
         /// Associated User ID (into User table)

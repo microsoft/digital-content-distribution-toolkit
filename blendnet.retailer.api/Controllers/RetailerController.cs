@@ -192,7 +192,6 @@ namespace blendnet.retailer.api.Controllers
                 Services = new List<ServiceType>() { ServiceType.Media },
                 ModifiedByByUserId = null,
                 ModifiedDate = null,
-                RetailerId = Guid.NewGuid(),
                 StartDate = DateTime.MinValue,
                 UserId = Guid.Empty,
                 ReferralCode = null,

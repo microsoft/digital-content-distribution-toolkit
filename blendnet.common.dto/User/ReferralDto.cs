@@ -5,11 +5,6 @@ namespace blendnet.common.dto.User
     public class ReferralDto
     {
         /// <summary>
-        /// ID of the retailer who referred the customer
-        /// </summary>
-        public Guid RetailerId { get; set; }
-
-        /// <summary>
         /// Associated User ID of the retailer who referred the customer
         /// </summary>
         public Guid RetailerUserId { get; set; }

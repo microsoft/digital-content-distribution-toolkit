@@ -28,11 +28,6 @@ namespace blendnet.common.dto.Oms
         public Guid UserId { get; set; }
 
         /// <summary>
-        /// Retailer Id
-        /// </summary>
-        public Guid? RetailerId { get; set; }
-
-        /// <summary>
         /// Retailer Partner Id which includes partner code
         /// </summary>
         public string RetailerPartnerId { get; set; }

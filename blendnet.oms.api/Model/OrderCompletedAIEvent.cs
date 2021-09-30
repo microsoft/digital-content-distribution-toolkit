@@ -25,11 +25,6 @@ namespace blendnet.oms.api.Model
         public bool IsRedeemed { get; set; }
 
         /// <summary>
-        /// Retailer id
-        /// </summary>
-        public Guid? RetailerId { get; set; }
-
-        /// <summary>
         /// Retailer partner id
         /// </summary>
         public string RetailerPartnerId { get; set; }

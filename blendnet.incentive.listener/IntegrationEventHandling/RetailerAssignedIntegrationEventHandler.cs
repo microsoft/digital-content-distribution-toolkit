@@ -21,7 +21,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
     public class RetailerAssignedIntegrationEventHandler : IIntegrationEventHandler<RetailerAssignedIntegrationEvent>
     {
         private const string C_UserPhone = "UserPhone";
-        private const string C_RetailerId = "RetailerId";
+        private const string C_RetailerPartnerId = "RetailerPartnerId";
         private const string C_UserId = "UserId";
         private const string C_RetailerRefferalCode = "RetailerRefferalCode";
         private const string C_RetailerRefferalDate = "RetailerRefferalDate";
@@ -57,7 +57,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             {
                 using (_telemetryClient.StartOperation<RequestTelemetry>("RetailerAssignedIntegrationEventHandler.Handle"))
                 {
-                    _logger.LogInformation($"Adding events of referral completion for retailer {integrationEvent.User.ReferralInfo.RetailerId} and user {integrationEvent.User.UserId} ");
+                    _logger.LogInformation($"Adding events of referral completion for retailer {integrationEvent.User.ReferralInfo.RetailerPartnerId} and user {integrationEvent.User.UserId} ");
 
                     User user = integrationEvent.User;
 
@@ -67,12 +67,12 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
                     await _eventRepository.CreateIncentiveEvent(incentiveEvent);
                     
-                    _logger.LogInformation($"Done adding event in RetailerAssignedIntegrationEventHandler for retailer {integrationEvent.User.ReferralInfo.RetailerId} and user {integrationEvent.User.UserId} ");
+                    _logger.LogInformation($"Done adding event in RetailerAssignedIntegrationEventHandler for retailer {integrationEvent.User.ReferralInfo.RetailerPartnerId} and user {integrationEvent.User.UserId} ");
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"RetailerAssignedIntegrationEventHandler.Handle failed for retailer {integrationEvent.User.ReferralInfo.RetailerId} and user {integrationEvent.User.UserId} ");
+                _logger.LogError(e, $"RetailerAssignedIntegrationEventHandler.Handle failed for retailer {integrationEvent.User.ReferralInfo.RetailerPartnerId} and user {integrationEvent.User.UserId} ");
             }
         }
 
@@ -128,8 +128,8 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
             Property retailerData = new Property()
             {
-                Name = C_RetailerId,
-                Value = user.ReferralInfo.RetailerId.ToString()
+                Name = C_RetailerPartnerId,
+                Value = user.ReferralInfo.RetailerPartnerId
             };
             incentiveEvent.Properties.Add(retailerData);
 

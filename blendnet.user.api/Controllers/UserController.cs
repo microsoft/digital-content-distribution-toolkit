@@ -176,7 +176,6 @@ namespace blendnet.user.api.Controllers
             var currentDate = DateTime.UtcNow;
             user.ReferralInfo = new ReferralDto
             {
-                RetailerId = retailerDto.RetailerId,
                 RetailerUserId = retailerDto.UserId,
                 RetailerPartnerCode = retailerDto.PartnerCode,
                 RetailerPartnerId = retailerDto.PartnerId,
@@ -483,7 +482,6 @@ namespace blendnet.user.api.Controllers
                 CreatedDate = now,
 
                 // Retailer properties
-                RetailerId = Guid.NewGuid(),
                 PhoneNumber = retailerRequest.PhoneNumber,
                 Name = retailerRequest.Name,
                 UserId = user.UserId, 
