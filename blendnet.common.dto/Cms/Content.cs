@@ -70,7 +70,20 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Genre
         /// </summary>
+        [Required]
         public string Genre { get; set; }
+
+        /// <summary>
+        /// Age Appropriateness
+        /// </summary>
+        [Required]
+        public string AgeAppropriateness { get; set; }
+
+        /// <summary>
+        /// ContentAdvisory
+        /// </summary>
+        [Required]
+        public string ContentAdvisory { get; set; }
 
         /// <summary>
         /// Year of Release
