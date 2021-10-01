@@ -3,7 +3,6 @@ using blendnet.common.dto.Notification;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Oms;
 using blendnet.common.infrastructure;
-using blendnet.notification.api.Model;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;

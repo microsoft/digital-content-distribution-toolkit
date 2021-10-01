@@ -1,6 +1,8 @@
+using blendnet.api.proxy.Notification;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
+using blendnet.common.dto.Notification;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
@@ -27,24 +29,27 @@ namespace blendnet.user.api.Controllers
     {
         private readonly ILogger _logger;
 
-        private IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        private RetailerProxy _retailerProxy;
+        private readonly RetailerProxy _retailerProxy;
 
-        private RetailerProviderProxy _retailerProviderProxy;
+        private readonly RetailerProviderProxy _retailerProviderProxy;
 
-        private IEventBus _eventBus;
+        private readonly NotificationProxy _notificationProxy;
 
-        private UserAppSettings _appSettings;
+        private readonly IEventBus _eventBus;
 
-        IStringLocalizer<SharedResource> _stringLocalizer;
+        private readonly UserAppSettings _appSettings;
 
-        private TelemetryClient _telemetryClient;
+        private readonly IStringLocalizer<SharedResource> _stringLocalizer;
+
+        private readonly TelemetryClient _telemetryClient;
 
         public UserController(IUserRepository userRepository,
                               ILogger<UserController> logger,
                               RetailerProxy retailerProxy,
                               RetailerProviderProxy retailerProviderProxy,
+                              NotificationProxy notificationProxy,
                               IEventBus eventBus,
                               IOptionsMonitor<UserAppSettings> optionsMonitor,
                               IStringLocalizer<SharedResource> stringLocalizer,
@@ -54,6 +59,7 @@ namespace blendnet.user.api.Controllers
             _userRepository = userRepository;
             _retailerProxy = retailerProxy;
             _retailerProviderProxy = retailerProviderProxy;
+            _notificationProxy = notificationProxy;
             _eventBus = eventBus;
             _appSettings = optionsMonitor.CurrentValue;
             _stringLocalizer = stringLocalizer;
@@ -405,7 +411,41 @@ namespace blendnet.user.api.Controllers
             existingDataExportCommand.ModifiedByByUserId = callerUserId;
             existingDataExportCommand.ModifiedDate = now;
 
-            return await _userRepository.UpdateDataExportCommand(existingDataExportCommand);
+            var result = await _userRepository.UpdateDataExportCommand(existingDataExportCommand);
+
+            if (result == (int)System.Net.HttpStatusCode.OK)
+            {
+                // send notification
+                NotificationRequest notificationRequest = new NotificationRequest()
+                {
+                    Title = "Download data",
+                    Body = "Your data is ready to download",
+                    Type = PushNotificationType.UserDataExportComplete,
+                    UserData = new List<UserData>()
+                    {
+                        new UserData()
+                        {
+                            PhoneNumber = existingUser.PhoneNumber,
+                            UserId = existingUser.UserId,
+                        }
+                    },
+                };
+
+                try
+                {
+                    await _notificationProxy.SendNotification(notificationRequest);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, $"Failed to send notification for Data Export Complete for user id {existingUser.UserId}");
+                }
+            }
+            else
+            {
+                _logger.LogInformation($"Skipped sending notification due to error while saving result: {result}");
+            }
+
+            return Ok(result);
         }
 
         #region private methods

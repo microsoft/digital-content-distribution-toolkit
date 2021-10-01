@@ -8,7 +8,6 @@ using blendnet.user.repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
@@ -19,9 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using blendnet.common.infrastructure.ServiceBus;
 using Microsoft.Extensions.Azure;
 using blendnet.common.infrastructure;
@@ -33,6 +30,7 @@ using blendnet.api.proxy;
 using blendnet.user.api.Common;
 using Microsoft.ApplicationInsights.Extensibility;
 using blendnet.common.infrastructure.ApplicationInsights;
+using blendnet.api.proxy.Notification;
 
 namespace blendnet.user.api
 {
@@ -160,6 +158,7 @@ namespace blendnet.user.api
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<RetailerProxy>();
             services.AddTransient<RetailerProviderProxy>();
+            services.AddTransient<NotificationProxy>();
 
             //registerations required for authhandler to work
             services.AddTransient<KaizalaIdentityProxy>();
@@ -253,6 +252,14 @@ namespace blendnet.user.api
             {
                 string retailerBaseUrl = Configuration.GetValue<string>("RetailerBaseUrl");
                 c.BaseAddress = new Uri(retailerBaseUrl);
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
+
+            // Configure Notification Http Client
+            string notificationBaseUrl = Configuration.GetValue<string>("NotificationBaseUrl");
+            services.AddHttpClient(ApplicationConstants.HttpClientKeys.NOTIFICATION_HTTP_CLIENT, c =>
+            {
+                c.BaseAddress = new Uri(notificationBaseUrl);
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             });
         }

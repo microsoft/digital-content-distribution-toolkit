@@ -1,17 +1,11 @@
 ﻿using blendnet.api.proxy.Common;
 using blendnet.common.dto;
-using blendnet.notification.api.Model;
+using blendnet.common.dto.Notification;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace blendnet.api.proxy.Notification
