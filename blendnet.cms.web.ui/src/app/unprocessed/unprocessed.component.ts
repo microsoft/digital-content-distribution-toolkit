@@ -159,14 +159,17 @@ export class UnprocessedComponent {
       catchError((error) => {
         file.inProgress = false;
         this.toastr.error(error);
+        // this.fileName ='';
         return of(`Upload failed: ${file.data.name}`);
       })).subscribe((event: any) => {
         if (typeof (event) === 'object') {
           console.log(event.body);
           this.getUnprocessedContent();
+          // this.fileName ='';
         }  
       });  
-
+      this.jsonFileInput.nativeElement.value = '';
+     
   }
 
   onFileSelected(event) {
