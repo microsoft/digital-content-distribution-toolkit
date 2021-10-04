@@ -88,7 +88,6 @@ export class AddIncentiveComponent implements OnInit {
       if(this.audience === "RETAILER") {
         this.incentiveService.getRetailerIncentivePlanByIdAndPartner(this.plan.id, this.plan.partner).subscribe(
           res => {
-            console.log(res);
             this.createFilledForm(res.body);
           }
             ,
@@ -240,9 +239,14 @@ export class AddIncentiveComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
   }
   
-    
-  onPlanTypeChange() {
-  if(this.dataSource.data.length > 0) {
+  disablePlanChange() {
+    return this.isPublished || this.disablePlanTypePartner;
+  }
+  
+  onPlanTypeChange($event) {
+  if(this.isPublished || this.disablePlanTypePartner) {
+    $event.stopPropagation();
+  } else if(this.dataSource.data.length > 0) {
     const dialogRef = this.dialog.open(CommonDialogComponent, {
       data: {
         heading: 'Confirm',

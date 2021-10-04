@@ -64,43 +64,7 @@ export class AdminLoginComponent implements OnInit {
 
   }
 
-  // getContactErrorMessage() {
-  //   this.otpSendErrorMessage= "";
-  //   if (this.contact.hasError('required') || this.contact.invalid) {
-  //     return 'Please enter a valid Phone Number';
-  //   }
-  // }
-
-  // getOTPErrorMessage() {
-  //   this.otpVerifyErrorMessage = "";
-  //   if (this.otp.hasError('required') || this.otp.invalid) {
-  //     return 'Please enter a valid OTP received on the phone';
-  //   }
-
-  // }
-
-  // showContactOnlySection() {
-  //   this.isContactOnlySection = true;
-  //   this.isCountryCodeSection = false;
-  //   this.isOTPSection = false;
-  // }
-
-  // showCountryCodeSection() {
-  //   this.selectedCountryCodeValue = this.countryCodes[0].value;
-  //   this.isContactOnlySection = false;
-  //   this.isCountryCodeSection = true;
-  //   this.isOTPSection = false;
-  //   this.otpSendErrorMessage = "";
-  //   this.otpVerifyErrorMessage = "";
-  //   this.otp.setValue("");
-  // }
-
-  // resendOTP() {
-  //   this.otpSendErrorMessage = "";
-  //   this.otpVerifyErrorMessage = "";
-  //   this.showOTPSection();
-  // }
-  
+ 
   generateOTP() {
     this.kaizalaService.getOTP(this.selectedCountryCodeValue.concat(this.contact.value)).subscribe(
       res => {
@@ -141,11 +105,8 @@ export class AdminLoginComponent implements OnInit {
                 this.isContactOnlySection = true;
                 this.isCountryCodeSection = false;
                 this.isOTPSection = false; 
-                // this.kaizalaService.currentUserSubject.next(this.contact.value);
-                // this.kaizalaService.currentUserNameSubject.next(this.contact.value);
                 sessionStorage.setItem('loggedInUser', JSON.stringify(this.user));
                 this.kaizalaService.loggedInUser.next(this.user);
-                //this.userService.setLoggedInUser(this.contact.value);
                 this.router.navigate([this.returnUrl]);
               },
               err => {

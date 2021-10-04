@@ -11,10 +11,14 @@
     <form [formGroup]="incentiveFormGroup">
         <div>
                 <label class="type-label">Incentive Plan Type: </label>&nbsp;&nbsp;&nbsp;
-                <mat-radio-group  formControlName="type" [disableControl]="isPublished || disablePlanTypePartner" aria-label="Select plan type">
-                <!-- (ngModelChange)="onPlanTypeChange()"> -->
-                    <mat-radio-button value="REGULAR" (click)="onPlanTypeChange()">REGULAR PLAN</mat-radio-button>
-                    <mat-radio-button value="MILESTONE" (click)="onPlanTypeChange()">MILESTONE PLAN</mat-radio-button>
+                <mat-radio-group  formControlName="type"  aria-label="Select plan type"
+                    [disableControl]="disablePlanChange()"> 
+                    <mat-radio-button value="REGULAR" (click)="onPlanTypeChange($event)"
+                    >
+                    REGULAR PLAN</mat-radio-button>
+                    <mat-radio-button value="MILESTONE" (click)="onPlanTypeChange($event)" 
+                    >
+                    MILESTONE PLAN</mat-radio-button>
                 </mat-radio-group>
         </div>
         <br>
