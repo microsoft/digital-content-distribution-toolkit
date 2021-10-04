@@ -28,6 +28,8 @@ export class Content {
         public contentTransformStatus: string,
         public contentTransformStatusUpdatedBy: string,
         public contentUploadStatus: string,
-        public contentUploadStatusUpdatedBy: string
+        public contentUploadStatusUpdatedBy: string,
+        public ageAppropriateness: string,
+        public contentAdvisory: string
     ) {}
 }

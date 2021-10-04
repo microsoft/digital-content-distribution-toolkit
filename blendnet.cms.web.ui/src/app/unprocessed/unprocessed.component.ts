@@ -164,6 +164,7 @@ export class UnprocessedComponent {
       })).subscribe((event: any) => {
         if (typeof (event) === 'object') {
           console.log(event.body);
+          this.toastr.success("Content uploaded successfully.");
           this.getUnprocessedContent();
           // this.fileName ='';
         }  

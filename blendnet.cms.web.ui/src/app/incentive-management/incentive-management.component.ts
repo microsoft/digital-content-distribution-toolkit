@@ -130,7 +130,9 @@ export class IncentiveManagementComponent implements OnInit {
   getRetailerIncentivePlansForPartner(partner, type){
     this.isErrorRetailer = false;
     this.incentiveService.getRetailerIncentivesByPartnerAndPlanType(partner, type).subscribe(res => {
-      this.dataSourceRetailers = this.createDataSource(res.body);
+      var resArr: any = res.body;
+      resArr.sort((a, b) => (a.createdDate < b.createdDate ? 1: -1));
+      this.dataSourceRetailers = this.createDataSource(resArr);
       this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
       this.dataSourceRetailers.sort = this.sort.toArray()[0]; 
       this.getMissingPlansPerPartner(res.body, type);
@@ -379,7 +381,9 @@ export class IncentiveManagementComponent implements OnInit {
       res => { 
           // const validResult = res.filter((result) => Array.isArray(result));
           // var mergedResult = [].concat.apply([], validResult);
-          this.dataSourceConsumers = this.createDataSource(res.body);
+          var resArr: any = res.body;
+          resArr.sort((a, b) => (a.createdDate < b.createdDate ? 1: -1));
+          this.dataSourceConsumers = this.createDataSource(resArr);
           this.dataSourceConsumers.paginator = this.paginator.toArray()[1];;
           this.dataSourceConsumers.sort = this.sort.toArray()[1];   
           this.selectedStatusConsumer= this.statuses[0];     
