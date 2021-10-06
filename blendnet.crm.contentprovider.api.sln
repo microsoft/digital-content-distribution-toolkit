@@ -60,11 +60,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.notification.api",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.notification.repository", "blendnet.notification.repository\blendnet.notification.repository.csproj", "{938DF3AD-305D-432B-AA36-7BE04C26E840}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.device.api", "blendnet.device.api\blendnet.device.api.csproj", "{CF9A6F8C-8EEF-4352-9968-FB61C6ED617E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.device.api", "blendnet.device.api\blendnet.device.api.csproj", "{CF9A6F8C-8EEF-4352-9968-FB61C6ED617E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.device.listener", "blendnet.device.listener\blendnet.device.listener.csproj", "{0648C641-9241-48B6-9BC1-704A308EF1E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.device.listener", "blendnet.device.listener\blendnet.device.listener.csproj", "{0648C641-9241-48B6-9BC1-704A308EF1E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.device.repository", "blendnet.device.repository\blendnet.device.repository.csproj", "{2014E0E9-E165-4A43-9642-F1980BD33AFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.device.repository", "blendnet.device.repository\blendnet.device.repository.csproj", "{2014E0E9-E165-4A43-9642-F1980BD33AFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.cosmos.utility", "blendnet.cosmos.utility\blendnet.cosmos.utility.csproj", "{B1969CB8-931C-46AE-8014-AB4457224C4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,6 +170,10 @@ Global
 		{2014E0E9-E165-4A43-9642-F1980BD33AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2014E0E9-E165-4A43-9642-F1980BD33AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2014E0E9-E165-4A43-9642-F1980BD33AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1969CB8-931C-46AE-8014-AB4457224C4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1969CB8-931C-46AE-8014-AB4457224C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1969CB8-931C-46AE-8014-AB4457224C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1969CB8-931C-46AE-8014-AB4457224C4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

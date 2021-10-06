@@ -1,16 +1,19 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using blendnet.common.dto;
+using blendnet.common.dto.Cms;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace blendnet.common.dto.Cms
+namespace blendnet.cosmos.utility.BroadCastMigration
 {
     /// <summary>
-    /// Represent a Media Content and Attachment Files
+    /// State of Content before the change
     /// </summary>
-    public class Content:BaseDto
+    public class OldContent : BaseDto
     {
         /// <summary>
         /// Unique Content Id
@@ -177,7 +180,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Content Transform Status
         /// </summary>
-        public ContentTransformStatus? ContentTransformStatus { get; set; } = Cms.ContentTransformStatus.TransformNotInitialized;
+        public ContentTransformStatus? ContentTransformStatus { get; set; } = blendnet.common.dto.Cms.ContentTransformStatus.TransformNotInitialized;
 
         /// <summary>
         /// Command Id
@@ -187,7 +190,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Content Broadcast Status
         /// </summary>
-        public ContentBroadcastStatus? ContentBroadcastStatus { get; set; } = Cms.ContentBroadcastStatus.BroadcastNotInitialized;
+        public ContentBroadcastStatus? ContentBroadcastStatus { get; set; } = blendnet.common.dto.Cms.ContentBroadcastStatus.BroadcastNotInitialized;
 
         /// <summary>
         /// Command Id
@@ -197,133 +200,12 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Command Id
         /// </summary>
-        public ContentBroadcastedBy ContentBroadcastedBy { get; set; }
+        public Guid? ContentBroadcastedBy { get; set; }
 
-        /// <summary>
-        /// Returns if broadcast is active
-        /// </summary>
-        public bool IsBroadCastActive
-        {
-            get
-            {
-                DateTime currentDateTime = DateTime.UtcNow;
-
-                if (ContentBroadcastStatus == Cms.ContentBroadcastStatus.BroadcastOrderComplete &&
-                   (currentDateTime >= ContentBroadcastedBy.BroadcastRequest.StartDate && 
-                    currentDateTime <= ContentBroadcastedBy.BroadcastRequest.EndDate))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-        }
-
-        public void SetDefaults()
+        public void SetIdentifiers()
         {
             this.Id = Guid.NewGuid();
-
-            this.ContentBroadcastedBy = null;
-            
-            this.ContentBroadcastStatusUpdatedBy = null;
-
-            this.ContentTransformStatusUpdatedBy = null;
-
-            this.ContentUploadStatusUpdatedBy = null;
-
-            this.ModifiedByByUserId = null;
-
-            this.ModifiedDate = null;
         }
 
     }
-
-    public class People
-    {
-        public string Name { get; set; }
-        
-        public Role Role { get; set; }
-    }
-
-    public class Attachment
-    {
-        public string Name { get; set; }
-
-        public AttachmentType Type { get; set; }
-
-    }
-
-    /// <summary>
-    /// Represents the Type of Attachment
-    /// </summary>
-    public enum AttachmentType
-    {
-        Thumbnail = 0,
-        Teaser = 1,
-        LargeThumbnail = 2
-    }
-
-    /// <summary>
-    /// Role of artists present
-    /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum Role
-    {
-        Director = 0,
-        Actor = 1,
-        Singer = 2,
-        MusicDirector = 3
-    }
-
-    /// <summary>
-    /// Command Upload Status
-    /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum ContentUploadStatus
-    {
-        UploadSubmitted = 0,
-        UploadInProgress = 1,
-        UploadComplete = 2,
-        UploadFailed = 3
-    }
-
-    /// <summary>
-    /// Content Transform Status
-    /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum ContentTransformStatus
-    {
-        TransformNotInitialized = 0,
-        TransformSubmitted = 1,
-        TransformInProgress = 2,
-        TransformAMSJobInProgress = 3,
-        TransformDownloadInProgress = 4,
-        TransformComplete = 5,
-        TransformFailed = 6,
-        TransformCancelled = 7
-    }
-
-    /// <summary>
-    /// Content Broadcast Status
-    /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum ContentBroadcastStatus
-    {
-        BroadcastNotInitialized = 0,
-        BroadcastSubmitted = 1,
-        BroadcastInProgress = 2,
-        BroadcastTarPushed = 3,
-        BroadcastOrderCreated = 4,
-        BroadcastOrderActive = 5,
-        BroadcastOrderComplete = 6,
-        BroadcastOrderRejected = 7,
-        BroadcastOrderFailed = 8,
-        BroadcastOrderCancelled = 9,
-        BroadcastFailed = 10,
-        BroadcastCancelSubmitted = 11,
-        BroadcastCancelInProgress = 12,
-        BroadcastCancelComplete = 13,
-        BroadcastCancelFailed = 14
-    }
-
 }

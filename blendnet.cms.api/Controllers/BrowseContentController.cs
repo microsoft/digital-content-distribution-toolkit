@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -70,7 +71,7 @@ namespace blendnet.cms.api.Controllers
             {
                 errorInfo.Add(_stringLocalizer["CMS_ERR_0017"]);
 
-                return BadRequest(errorInfo);
+                return NotFound(errorInfo);
             }
 
             return Ok(result);
@@ -96,14 +97,24 @@ namespace blendnet.cms.api.Controllers
 
             var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken, true);
 
-            ResultData<ContentDto> result = new ResultData<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult.Data), contentApiResult.ContinuationToken);
-
-            if(result.Data == null || result.Data.Count == 0)
+            if (contentApiResult.Data == null || contentApiResult.Data.Count <= 0)
             {
                 errorInfo.Add(_stringLocalizer["CMS_ERR_0017"]);
 
-                return BadRequest(errorInfo);
+                return NotFound(errorInfo);
             }
+
+            //return only the active content
+            List<Content> activeBroadCastContent = contentApiResult.Data.Where(bc => bc.IsBroadCastActive).ToList();
+
+            if (activeBroadCastContent == null || activeBroadCastContent.Count <= 0)
+            {
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0017"]);
+
+                return NotFound(errorInfo);
+            }
+
+            ResultData<ContentDto> result = new ResultData<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(activeBroadCastContent), contentApiResult.ContinuationToken);
 
             return Ok(result);
         }

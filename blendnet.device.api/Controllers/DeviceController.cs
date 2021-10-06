@@ -448,7 +448,13 @@ namespace blendnet.device.api.Controllers
 
                     deviceCommand.DeviceCommandStatus = DeviceCommandStatus.DeviceCommandComplete;
 
-                    device.FilterUpdatedBy = deviceCommand.Id;
+                    FilterUpdatedBy filterUpdatedBy = new FilterUpdatedBy
+                    {
+                        CommandId = deviceCommand.Id.Value,
+                        FilterUpdateRequest = deviceCommand.FilterUpdateRequest,
+                    };
+
+                    device.FilterUpdatedBy = filterUpdatedBy;
                 }
             }
 

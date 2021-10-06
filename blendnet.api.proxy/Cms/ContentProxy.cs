@@ -75,5 +75,29 @@ namespace blendnet.api.proxy.Cms
 
             return contents;
         }
+
+        /// <summary>
+        /// Get the content based on filter
+        /// </summary>
+        /// <param name="contentProviderId"></param>
+        /// <param name="statusFilter"></param>
+        /// <returns></returns>
+        public async Task<List<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter statusFilter)
+        {
+            string url = $"Content/{contentProviderId}/contentlist";
+
+            string accessToken = await base.GetServiceAccessToken();
+
+            List<Content> contentList = null;
+
+            try
+            {
+                contentList = await _cmsHttpClient.Post<ContentStatusFilter,List<Content>>(url,statusFilter,true,null, accessToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { }
+
+            return contentList;
+        }
     }
 }

@@ -107,6 +107,31 @@ namespace blendnet.cms.repository.CosmosRepository
         }
 
         /// <summary>
+        /// Returns the list of content provider where given admin phone number exists
+        /// </summary>
+        /// <param name="adminPhoneNumbers"></param>
+        /// <returns></returns>
+        public async Task<List<ContentProviderDto>> GetContentProvidersByAdmin(List<string> adminPhoneNumbers)
+        {
+            List<ContentProviderDto> contentProviderList = new List<ContentProviderDto>();
+
+            var queryString = " SELECT DISTINCT VALUE cp FROM  cp " +
+                                " JOIN ca IN cp.contentAdministrators " +
+                                " WHERE cp.type = @type " +  
+                                " AND ARRAY_CONTAINS(@adminPhoneNumbers, ca.phoneNumber) ";
+
+            var queryDef = new QueryDefinition(queryString);
+
+            queryDef.WithParameter("@type", ContentProviderContainerType.ContentProvider);
+
+            queryDef.WithParameter("@adminPhoneNumbers", adminPhoneNumbers);
+
+            contentProviderList = await this._container.ExtractDataFromQueryIterator<ContentProviderDto>(queryDef);
+
+            return contentProviderList;
+        }
+
+        /// <summary>
         /// Update Content Provider
         /// </summary>
         /// <param name="updatedContentProvider"></param>

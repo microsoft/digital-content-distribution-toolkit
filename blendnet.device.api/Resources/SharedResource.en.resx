@@ -147,4 +147,16 @@
   <data name="DVC_ERR_0010" xml:space="preserve">
     <value>DVC_ERR_0010-Content Id, Device Id(s) are mandatory!</value>
   </data>
+  <data name="DVC_ERR_0011" xml:space="preserve">
+    <value>DVC_ERR_0011-No broadcasted content found for given content provider.</value>
+  </data>
+  <data name="DVC_ERR_0012" xml:space="preserve">
+    <value>DVC_ERR_0012-No active broadcasted content found for given content provider.</value>
+  </data>
+  <data name="DVC_ERR_0013" xml:space="preserve">
+    <value>DVC_ERR_0013-No content is available on device.</value>
+  </data>
+  <data name="DVC_ERR_0014" xml:space="preserve">
+    <value>DVC_ERR_0014-Filters were never updated on device. Make sure to update the filter successfully first.</value>
+  </data>
 </root>

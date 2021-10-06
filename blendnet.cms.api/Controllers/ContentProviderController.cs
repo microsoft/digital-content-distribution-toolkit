@@ -5,6 +5,7 @@ using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -25,9 +26,12 @@ namespace blendnet.cms.api.Controllers
 
         private IContentProviderRepository _contentProviderRepository;
 
+        IStringLocalizer<SharedResource> _stringLocalizer;
+
         public ContentProviderController(IContentProviderRepository contentProviderRepository,
                                             ILogger<ContentProviderController> logger,
-                                            IEventBus eventBus)
+                                            IEventBus eventBus,
+                                            IStringLocalizer<SharedResource> stringLocalizer)
             : base(contentProviderRepository)
         {
             _contentProviderRepository = contentProviderRepository;
@@ -35,6 +39,8 @@ namespace blendnet.cms.api.Controllers
             _logger = logger;
 
             _eventBus = eventBus;
+
+            _stringLocalizer = stringLocalizer;
         }
 
 
@@ -111,6 +117,18 @@ namespace blendnet.cms.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<string>> CreateContentProvider(ContentProviderDto contentProvider)
         {
+            //Check for duplicate phone number
+            if (DoesDuplicateAdminPhoneNumberExists(contentProvider))
+            {
+                return BadRequest(_stringLocalizer["CMS_ERR_0032"]);
+            }
+
+            //Check if admin is already allocated to some other content provider
+            if (await IsContentAdminAllocatedToAnotherContentProvider(contentProvider))
+            {
+                return BadRequest(_stringLocalizer["CMS_ERR_0033"]);
+            }
+
             //generate ids for content provider and administrator
             contentProvider.SetIdentifiers();
             
@@ -150,6 +168,17 @@ namespace blendnet.cms.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateContentProvider(Guid contentProviderId, ContentProviderDto contentProvider)
         {
+            //Check for duplicate phone number
+            if (DoesDuplicateAdminPhoneNumberExists(contentProvider))
+            {
+                return BadRequest(_stringLocalizer["CMS_ERR_0032"]);
+            }
+
+            if (await IsContentAdminAllocatedToAnotherContentProvider(contentProvider))
+            {
+                return BadRequest(_stringLocalizer["CMS_ERR_0033"]);
+            }
+
             contentProvider.Id = contentProviderId;
 
             contentProvider.Type = ContentProviderContainerType.ContentProvider;
@@ -302,6 +331,61 @@ namespace blendnet.cms.api.Controllers
                 return NotFound();
             }
         }
+
+        /// <summary>
+        /// Check if duplicate phone number exists
+        /// </summary>
+        /// <param name="contentProvider"></param>
+        /// <returns></returns>
+        private bool DoesDuplicateAdminPhoneNumberExists(ContentProviderDto contentProvider)
+        {
+            if (contentProvider.ContentAdministrators != null && 
+                contentProvider.ContentAdministrators.Count > 0)
+            {
+                var duplicateCount = contentProvider.ContentAdministrators
+                                                    .GroupBy(ca => ca.PhoneNumber)
+                                                    .Where(gr => gr.Count() > 1)
+                                                    .Count();
+
+                if (duplicateCount > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Is Content Admin Allocated To Another Content Provider
+        /// </summary>
+        /// <param name="contentProvider"></param>
+        /// <returns></returns>
+        private async Task<bool> IsContentAdminAllocatedToAnotherContentProvider(ContentProviderDto contentProvider)
+        {
+            if (contentProvider.ContentAdministrators != null &&
+                contentProvider.ContentAdministrators.Count > 0)
+            {
+                List<string> adminPhoneNumbers = contentProvider.ContentAdministrators.Select(ca => ca.PhoneNumber).ToList();
+
+                List<ContentProviderDto> contentProviders = await _contentProviderRepository.GetContentProvidersByAdmin(adminPhoneNumbers);
+
+                if (contentProviders == null || contentProviders.Count() <= 0)
+                {
+                    return false;
+                }
+
+                int otherCps = contentProviders.Where(cp => (cp.Id.Value != contentProvider.Id)).Count();
+
+                if (otherCps > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         #endregion
     }
 }

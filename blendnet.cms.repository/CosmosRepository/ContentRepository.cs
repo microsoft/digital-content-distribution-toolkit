@@ -27,8 +27,7 @@ namespace blendnet.cms.repository.CosmosRepository
 
         public ContentRepository(CosmosClient dbClient,
                                 IOptionsMonitor<AppSettings> optionsMonitor,
-                                ILogger<ContentProviderRepository> logger,
-                                IAzureClientFactory<BlobServiceClient> blobClientFactory)
+                                ILogger<ContentProviderRepository> logger)
         {
             _appSettings = optionsMonitor.CurrentValue;
 

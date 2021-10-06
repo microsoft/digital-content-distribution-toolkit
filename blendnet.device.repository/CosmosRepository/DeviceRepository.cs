@@ -313,9 +313,53 @@ namespace blendnet.device.repository.CosmosRepository
         {
             ResultData<DeviceContent> contentResult;
 
+            QueryDefinition queryDef = GetContentByDeviceIdQueryDef(deviceId, contentProviderId, activeOnly);
+
+            contentResult = await this._container.ExtractDataFromQueryIteratorWithToken<DeviceContent>(queryDef, continuationToken);
+
+            return contentResult;
+        }
+
+        /// <summary>
+        /// Returns all the Content by device id, content provider id
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="contentProviderId"></param>
+        /// <param name="activeOnly"></param>
+        /// <returns></returns>
+        public async Task<List<DeviceContent>> GetContentByDeviceId(  string deviceId,
+                                                                Guid contentProviderId,
+                                                                bool activeOnly = true)
+        {
+            List<DeviceContent> contentResult;
+
+            QueryDefinition queryDef = GetContentByDeviceIdQueryDef(deviceId, contentProviderId, activeOnly);
+
+            contentResult = await this._container.ExtractDataFromQueryIterator<DeviceContent>(queryDef);
+
+            return contentResult;
+        }
+
+
+        /// <summary>
+        /// Returns query definition
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="contentProviderId"></param>
+        /// <param name="activeOnly"></param>
+        /// <returns></returns>
+        private QueryDefinition GetContentByDeviceIdQueryDef(string deviceId, 
+                                                    Guid contentProviderId,
+                                                    bool activeOnly)
+        {
             string queryString = $"SELECT * FROM c where c.deviceId = @deviceId " +
-                                   " AND c.contentProviderId = @contentProviderId" +
-                                   " AND c.deviceContainerType = @deviceContainerType AND c.isDeleted = @isDeleted ";
+                                  " AND c.contentProviderId = @contentProviderId" +
+                                  " AND c.deviceContainerType = @deviceContainerType ";
+
+            if (activeOnly)
+            {
+                queryString = $" {queryString} AND c.isDeleted = @isDeleted";
+            }
 
             QueryDefinition queryDef = new QueryDefinition(queryString);
 
@@ -325,11 +369,12 @@ namespace blendnet.device.repository.CosmosRepository
 
             queryDef.WithParameter("@deviceContainerType", DeviceContainerType.DeviceContent.ToString());
 
-            queryDef.WithParameter("@isDeleted", !activeOnly);
+            if (activeOnly)
+            {
+                queryDef.WithParameter("@isDeleted", !activeOnly);
+            }
 
-            contentResult = await this._container.ExtractDataFromQueryIteratorWithToken<DeviceContent>(queryDef, continuationToken);
-
-            return contentResult;
+            return queryDef;
         }
 
 

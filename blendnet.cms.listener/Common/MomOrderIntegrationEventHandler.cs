@@ -130,8 +130,13 @@ namespace blendnet.cms.listener.Common
             {
                 broadcastCommand.CommandStatus = CommandStatus.Complete;
 
+                ContentBroadcastedBy contentBroadcastedBy = new ContentBroadcastedBy() {
+                    CommandId = broadcastCommand.Id.Value,
+                    BroadcastRequest = broadcastCommand.BroadcastRequest
+                };
+
                 //keep track of command id which broadcasted the content
-                content.ContentBroadcastedBy = broadcastCommand.Id;
+                content.ContentBroadcastedBy = contentBroadcastedBy;
             }
             else if (contentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderCancelled ||
                       contentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderFailed ||

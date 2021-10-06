@@ -179,7 +179,6 @@ namespace blendnet.cms.api.Controllers
                 return actionResult;
             }
 
-            
             List<string> errorDetails = new List<string>();
 
             //Null check for file
@@ -496,7 +495,9 @@ namespace blendnet.cms.api.Controllers
                          content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderFailed ||
                          content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderRejected ||
                          content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastFailed ||
-                         content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastCancelComplete))
+                         content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastCancelComplete ||
+                         (content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderComplete &&
+                          !content.IsBroadCastActive )))
                     {
                         content.ContentBroadcastStatus = ContentBroadcastStatus.BroadcastSubmitted;
 
@@ -690,13 +691,11 @@ namespace blendnet.cms.api.Controllers
         {
             foreach (Content content in contents)
             {
-                content.SetIdentifiers();
+                content.SetDefaults();
 
                 content.CreatedDate = DateTime.UtcNow;
 
                 content.CreatedByUserId = UserClaimData.GetUserId(this.User.Claims);
-
-                content.ModifiedByByUserId = null;
 
                 content.ContentProviderId = contentProviderId;
 

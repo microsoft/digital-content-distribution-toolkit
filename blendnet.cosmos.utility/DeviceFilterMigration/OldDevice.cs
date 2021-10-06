@@ -1,14 +1,16 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using blendnet.common.dto;
+using blendnet.common.dto.Device;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace blendnet.common.dto.Device
+namespace blendnet.cosmos.utility.DeviceFilterMigration
 {
-    /// <summary>
-    /// Represents a HUB Device
-    /// </summary>
-    public class Device:BaseDto
+    public class OldDevice : BaseDto
     {
         private string _id;
         /// <summary>
@@ -17,7 +19,7 @@ namespace blendnet.common.dto.Device
         [JsonProperty(PropertyName = "id")]
         [Required]
         [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumeric)]
-        public string Id 
+        public string Id
         {
             get
             {
@@ -53,7 +55,7 @@ namespace blendnet.common.dto.Device
         /// <summary>
         /// Type
         /// </summary>
-        public DeviceContainerType DeviceContainerType 
+        public DeviceContainerType DeviceContainerType
         {
             get
             {
@@ -74,7 +76,7 @@ namespace blendnet.common.dto.Device
         /// <summary>
         /// Command which updated the filter sucessfully
         /// </summary>
-        public FilterUpdatedBy FilterUpdatedBy { get; set; }
+        public Guid? FilterUpdatedBy { get; set; }
 
         /// <summary>
         /// Sets the default values
@@ -93,34 +95,4 @@ namespace blendnet.common.dto.Device
         }
 
     }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum DeviceContainerType
-    {
-        Device = 0,
-        Command = 1,
-        Content = 2,
-        DeviceContent = 3
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum DeviceStatus
-    {
-        Registered = 0,
-        Provisioned = 1
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum DeviceCommandStatus
-    {
-        DeviceCommandNotInitialized = 0,
-        DeviceCommandSubmitted = 1,
-        DeviceCommandInProcess = 2,
-        DeviceCommandPushedToDevice = 3,
-        DeviceCommandComplete = 4,
-        DeviceCommandPushToDeviceFailed = 5,
-        DeviceCommandFailed = 6,
-        DeviceCommandCancelled = 7,
-    }
-
 }

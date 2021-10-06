@@ -22,6 +22,14 @@ namespace blendnet.cms.repository.Interfaces
         /// <returns></returns>
         Task<ContentProviderDto> GetContentProviderById(Guid id);
 
+
+        /// <summary>
+        /// Returns the list of content provider where given admin phone number exists
+        /// </summary>
+        /// <param name="adminPhoneNumbers"></param>
+        /// <returns></returns>
+        Task<List<ContentProviderDto>> GetContentProvidersByAdmin(List<string> adminPhoneNumbers);
+
         /// <summary>
         /// Creates Content Provider
         /// </summary>

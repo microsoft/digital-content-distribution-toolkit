@@ -4,17 +4,13 @@ using blendnet.common.dto.Cms;
 using blendnet.common.dto.Device;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
-using blendnet.device.api.Model;
 using blendnet.device.repository.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace blendnet.device.api.Controllers
@@ -76,6 +72,77 @@ namespace blendnet.device.api.Controllers
         public async Task<ActionResult> UpdateDeleted(DeviceContentUpdateRequest updateDeletedRequest)
         {
             return await ProcessUpdateRequest(updateDeletedRequest, true /*isDeleted*/);
+        }
+
+        /// <summary>
+        /// Returns the details about : 
+        ///     content broadcasted, 
+        ///     total valid content broadcasted for this device, 
+        ///     total valid available content on device
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="contentProviderId"></param>
+        /// <returns></returns>
+        [HttpPost("{deviceId}/{contentProviderId:guid}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<DeviceContentValidity>> GetDeviceContentValidity(string deviceId,Guid contentProviderId)
+        {
+            List<string> errorInfo = new List<string>();
+
+            Device device = await _deviceRepository.GetDeviceById(deviceId);
+
+            if (device == null)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["DVC_ERR_0006"], deviceId));
+
+                return BadRequest(errorInfo);
+            }
+
+            if (device.FilterUpdatedBy == null)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["DVC_ERR_0014"], deviceId));
+
+                return BadRequest(errorInfo);
+            }
+
+            //Get the list of available content on device for the given content provider
+            List<DeviceContent> deviceContents = await _deviceRepository.GetContentByDeviceId(deviceId, contentProviderId, true);
+
+            if (deviceContents == null || deviceContents.Count() <= 0)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["DVC_ERR_0013"], deviceId));
+
+                return NotFound(errorInfo);
+            }
+
+            ContentStatusFilter contentStatusFilter = new ContentStatusFilter();
+
+            contentStatusFilter.ContentTransformStatuses = new string[] { ContentTransformStatus.TransformComplete.ToString() };
+
+            contentStatusFilter.ContentBroadcastStatuses = new string[] { ContentBroadcastStatus.BroadcastOrderComplete.ToString() };
+
+            //Get Valid BroadCasted Content for given content provider
+            List<Content> broadCastedContents = await _contentProxy.GetContentByContentProviderId(contentProviderId, contentStatusFilter);
+
+            if (broadCastedContents == null || broadCastedContents.Count() <= 0)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["DVC_ERR_0011"], deviceId));
+
+                return NotFound(errorInfo);
+            }
+
+            //We are concerned with the content which is in active state.
+            List<Content> activeBroadCastedContents = broadCastedContents.Where(bc => bc.IsBroadCastActive).ToList();
+
+            if (activeBroadCastedContents == null || activeBroadCastedContents.Count() <= 0)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["DVC_ERR_0012"], deviceId));
+
+                return NotFound(errorInfo);
+            }
+
+            return GetDeviceContentAvailability(device, activeBroadCastedContents, deviceContents);
+
         }
 
         #endregion
@@ -149,6 +216,59 @@ namespace blendnet.device.api.Controllers
             {
                 return BadRequest(failedItems);
             }
+        }
+
+        /// <summary>
+        /// 1) find out if the active broadcasted content is valid for device.
+        /// 2) IF yes, the does it exists on device.
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="activeBroadcastContentList"></param>
+        /// <param name="contentAvailableOnDevice"></param>
+        /// <returns></returns>
+        private DeviceContentValidity GetDeviceContentAvailability(Device device,
+                                            List<Content> activeBroadcastContentList,  
+                                            List<DeviceContent> contentAvailableOnDevice )
+        {
+            DeviceContentValidity deviceContentValidity = new DeviceContentValidity();
+
+            deviceContentValidity.DeviceId = device.DeviceId;
+            deviceContentValidity.DeviceFiltersUsed = device.FilterUpdatedBy.FilterUpdateRequest.Filters;
+            deviceContentValidity.TotalActiveBroacastedContent = activeBroadcastContentList.Count();
+            deviceContentValidity.ValidActiveBroadcastedContentList = new List<ContentValidity>();
+
+            ContentValidity contentValidity;
+
+            // 1) find out if the active broadcasted content is valid for device.
+            // 2) IF yes, the does it exists on device.
+            foreach (Content activeContent in activeBroadcastContentList)
+            {
+                List<string> broadCastedFilters = activeContent.ContentBroadcastedBy.BroadcastRequest.Filters;
+
+                //check if it is a validate broadcast for device.
+                if (device.FilterUpdatedBy.FilterUpdateRequest.Filters.Intersect(broadCastedFilters).Any())
+                {
+                    contentValidity = new ContentValidity();
+
+                    deviceContentValidity.ValidActiveBroadcastedContentList.Add(contentValidity);
+
+                    //since one of the broadast and device filter matches it is eligible to be called as valid content
+                    contentValidity.ValidActiveBroadcastedContent = activeContent;
+
+                    //now check if the valid broadcasted content has been downloaded on device or not
+                    DeviceContent contentOnDevice = contentAvailableOnDevice.
+                                                    Where(ca => (ca.ContentId == activeContent.ContentId
+                                                                    && ca.ContentProviderId == activeContent.ContentProviderId))
+                                                    .FirstOrDefault();
+
+                    if (contentOnDevice != default(DeviceContent))
+                    {
+                        contentValidity.DeviceContent = contentOnDevice;
+                    }
+                }
+            }
+
+            return deviceContentValidity;
         }
 
         #endregion

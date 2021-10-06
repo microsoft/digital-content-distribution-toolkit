@@ -122,6 +122,16 @@ namespace blendnet.device.repository.Interfaces
                                                               Guid contentProviderId,
                                                               string continuationToken,
                                                               bool activeOnly);
+        /// <summary>
+        /// Return the content on device for the given device and content provider id
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="contentProviderId"></param>
+        /// <param name="activeOnly"></param>
+        /// <returns></returns>
+        Task<List<DeviceContent>> GetContentByDeviceId(string deviceId,
+                                                 Guid contentProviderId,
+                                                 bool activeOnly = true);
 
         /// <summary>
         /// Gets device content by device id and content id

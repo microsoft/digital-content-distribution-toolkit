@@ -164,11 +164,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
             try
             {
-                BroadcastCancellationResult result = await _vodeProxy.CancelBroadcast(content.ContentBroadcastedBy.Value);
+                BroadcastCancellationResult result = await _vodeProxy.CancelBroadcast(content.ContentBroadcastedBy.CommandId);
 
                 string resultString = System.Text.Json.JsonSerializer.Serialize(result);
 
-                _logger.LogInformation($"Successfully invoked the cancellation end point for Content {content.ContentId.Value} and Command {content.ContentBroadcastedBy.Value}. Response recieved : {resultString}");
+                _logger.LogInformation($"Successfully invoked the cancellation end point for Content {content.ContentId.Value} and Command {content.ContentBroadcastedBy.CommandId}. Response recieved : {resultString}");
 
             }
             catch (Exception ex)
