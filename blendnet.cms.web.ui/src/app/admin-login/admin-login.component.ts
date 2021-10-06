@@ -78,7 +78,7 @@ export class AdminLoginComponent implements OnInit {
         }    
       },
       err => {
-        this.otpSendErrorMessage = err;
+        this.otpSendErrorMessage = err.code + " " + err.msg;
       }
     );
   }
@@ -110,7 +110,7 @@ export class AdminLoginComponent implements OnInit {
                 this.router.navigate([this.returnUrl]);
               },
               err => {
-                this.otpVerifyErrorMessage = err;
+                this.otpVerifyErrorMessage = err.code + " " + err.msg;
                 this.otp.value="";
               }
             )
@@ -124,7 +124,13 @@ export class AdminLoginComponent implements OnInit {
       },
       err => {
         this.otp.value="";
-        this.otpVerifyErrorMessage = err;
+        if(err.status === 401) {
+          this.otpVerifyErrorMessage = "Please enter valid OTP code received on the phone";
+        } else if(err.status === 409) {
+          this.otpVerifyErrorMessage = "You have reached maximum limit of OTP attempts";
+        } else {
+          this.otpVerifyErrorMessage = err.msg;
+        }
       }
     );
   }
@@ -133,12 +139,5 @@ export class AdminLoginComponent implements OnInit {
     this.kaizalaService.logout();
   }
 
-  // ngDoCheck() {
-  //   this.userService.showLoginDisplay$.subscribe(showLoginDisplay => {
-  //     if(showLoginDisplay) {
-  //       this.showLoginDisplay = showLoginDisplay;
-  //     }
-  //   });
-  // }
  
 }

@@ -49,36 +49,48 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             //   this.kaizalaService.logout();
             //   location.reload(true);
             // }
-            if (error.status === 401) {
-              let errorMessage = "User is unauthorised";
-              return throwError(errorMessage);
-            }
-
-            if (error.status === 403) {
-              let errorMessage = "User is forbidden";
-              return throwError(errorMessage);
-            }
-
-            let errorMessage = '';
-            if (error.error instanceof ErrorEvent) {
-              // client-side error
-              errorMessage = `Error: ${error.error.message}`;
+            if(error.url.includes(environment.kaizalaSignUpSignIn) || 
+            error.url.includes(environment.kaizalaVerifyOTP) || 
+            error.url.includes(environment.kaizalaGetUserRoles)) {
+              let errMsg = { 
+                status : error.status,
+                code :error.error.errorCode,
+                msg : error.error.message }
+              return throwError(errMsg);
             } else {
-              // server-side error
-              var errMsg = "";
-              if(Array.isArray(error.error)) {
-                  error.error.forEach( err =>
-                  errMsg = errMsg +  "\n" + err
-                  );
-              } else {
-                errMsg = error.error.title ?  error.error.title : 
-                (error.error.message ? error.error.message :"Something went wrong. Please try again!");
+              if (error.status === 401) {
+                let errorMessage = "User is unauthorised";
+                return throwError(errorMessage);
               }
-              errorMessage = errMsg;
+  
+              if (error.status === 403) {
+                let errorMessage = "User is forbidden";
+                return throwError(errorMessage);
+              }
+  
+              let errorMessage = '';
+              if (error.error instanceof ErrorEvent) {
+                // client-side error
+                errorMessage = `Error: ${error.error.message}`;
+              } else {
+                // server-side error
+                var errMsg = "";
+                if(Array.isArray(error.error)) {
+                    error.error.forEach( err =>
+                    errMsg = errMsg +  "\n" + err
+                    );
+                } else {
+                  errMsg = error.error.title ?  error.error.title : 
+                  (error.error.message ? error.error.message :"Something went wrong. Please try again!");
+                }
+                errorMessage = errMsg;
+              }
+              console.log(errorMessage);
+              return throwError(errorMessage);
             }
+
             
-            console.log(errorMessage);
-            return throwError(errorMessage);
+
           })
         )
     }
