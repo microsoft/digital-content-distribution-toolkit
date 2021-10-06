@@ -26,10 +26,14 @@
   margin-bottom: 5%;
   margin-top: 3%;
 }
+  table {
+    width: 100%;
+  }
+  table.add-sub td {
+    width: 40%;
+  }
+  
 
-table {
-  width: 100%;
-}
 
 .mat-form-field {
   font-size: 14px;

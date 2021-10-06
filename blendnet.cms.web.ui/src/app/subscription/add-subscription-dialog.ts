@@ -68,8 +68,8 @@ import { SubscriptionService } from "../services/subscription.service";
       this.dialogRef.close();
     }
   
-    isRedeemable() {
-      return this.subForm.get('isRedeemable').value === 'Yes';
+    isNotRedeemable() {
+      return this.subForm.get('isRedeemable').value !== 'Yes';
     }
 
     editSubscription() {
