@@ -13,6 +13,8 @@ import { SubscriptionComponent } from '../subscription/subscription.component';
 import { environment } from 'src/environments/environment';
 import { NotificationsComponent } from '../notifications/notifications.component';
 import { IncentiveManagementComponent } from '../incentive-management/incentive-management.component';
+import { DeviceFilterHistoryComponent } from '../devices/device-filter-history.component';
+import { DeviceRetailerHistoryComponent } from '../devices/device-retailer-history.component';
 
 const routes: Routes = [
   {
@@ -53,7 +55,27 @@ const routes: Routes = [
     RoleGuardService
   ],
     data: { 
-      expectedRole: [environment.roles.SuperAdmin]
+      expectedRole: [environment.roles.SuperAdmin, environment.roles.HubDeviceManagement]
+    } 
+  },
+  {
+    path: 'devices/filters-history/:id',
+   component: DeviceFilterHistoryComponent,
+   canActivate: [
+    RoleGuardService
+  ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin, environment.roles.HubDeviceManagement]
+    } 
+  },
+  {
+    path: 'devices/assignment-history/:id',
+   component: DeviceRetailerHistoryComponent,
+   canActivate: [
+    RoleGuardService
+  ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin, environment.roles.HubDeviceManagement]
     } 
   },
   {

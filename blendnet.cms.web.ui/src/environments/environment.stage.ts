@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    allowedMaxSelection: 5,
+    allowedMaxSelection: 10,
     maxFileUploadSize: 1000000,
     fileAllowedType: 'application/json',
     channelName: "CMSPortal",
@@ -40,11 +40,6 @@ export const environment = {
         "filterValues" : [
           "Central_India", "West_India", "North_India", "South_India"]
       },
-      // {
-      //   "filterName" : "Device Types",
-      //   "filterValues" : [
-      //     "MAP_100", "MAP_500", "MAP_200"]
-      // },
       {
         "filterName" : "Content Types",
         "filterValues" : [
@@ -58,7 +53,8 @@ export const environment = {
       "SuperAdmin" : "SuperAdmin",
       "ContentAdmin": "ContentAdmin",
       "User" : "User",
-      "Retailer": "Retailer"
+      "Retailer": "Retailer",
+      "HubDeviceManagement": "HubDeviceManagement"
     }
    };
   

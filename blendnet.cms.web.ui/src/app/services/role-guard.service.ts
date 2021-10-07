@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { KaizalaService } from './kaizala.service';
 @Injectable({
     providedIn: 'root'
   })
 export class RoleGuardService implements CanActivate {
 
-  constructor(private kaizalaService: KaizalaService) {}
+  constructor(private kaizalaService: KaizalaService, private router: Router) {}
   
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const expectedRoles = route.data.expectedRole;
@@ -25,7 +25,8 @@ export class RoleGuardService implements CanActivate {
       &&  route.routeConfig.path !== 'manage-content' && route.routeConfig.path !== 'profile'
       && route.routeConfig.path !== 'content-providers' && route.routeConfig.path !== 'notifications') {
       window.alert("Please select a Content Provider to access the management services");
-      return false;
+      this.router.navigate(['/admin/content-providers'])
+      //return false;
     }
     return true;
   }

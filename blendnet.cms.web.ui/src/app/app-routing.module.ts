@@ -6,11 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RetailerLoginComponent } from './retailer-login/retailer-login.component';
 import { SeamlessLoginComponent } from './retailer/seamless-login/seamless-login.component';
-import { DeviceFilterHistoryComponent } from './devices/device-filter-history.component';
-import { DeviceRetailerHistoryComponent } from './devices/device-retailer-history.component';
 import { RoleGuardService } from './services/role-guard.service';
-import { environment } from 'src/environments/environment';
-import { AuthGuardService } from './services/auth-guard.service';
 
 const appRoutes: Routes = [
   { 
@@ -37,27 +33,6 @@ const appRoutes: Routes = [
     path: 'common-retailer-login',
     component: RetailerLoginComponent
   },
-  {
-    path: 'devices/filters-history/:id',
-   component: DeviceFilterHistoryComponent,
-   canActivate: [
-    AuthGuardService, RoleGuardService
-  ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
-  },
-  {
-    path: 'devices/assignment-history/:id',
-   component: DeviceRetailerHistoryComponent,
-   canActivate: [
-    AuthGuardService, RoleGuardService
-  ],
-    data: { 
-      expectedRole: [environment.roles.SuperAdmin]
-    } 
-  },
-
   {
     path: 'profile',
     component: ProfileComponent,

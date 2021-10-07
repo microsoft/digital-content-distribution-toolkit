@@ -211,7 +211,7 @@ export class AddIncentiveComponent implements OnInit {
   createEmptyFormDraft() {
     this.incentiveFormGroup = this.formBuilder.group({
       name :  new FormControl('', [Validators.required]),
-      type : new FormControl('',[Validators.required]),
+      type : new FormControl('REGULAR',[Validators.required]),
       partner: new FormControl(''),
       startDate: new FormControl('',[Validators.required]),
       endDate: new FormControl('',[Validators.required]),
@@ -317,10 +317,9 @@ openSelectCPModalButtons(): Array<any> {
   getEventsFromDS() {
     var planDetails: any[] = [];
     this.dataSource.data.forEach( e => {
-      var event = {
+      var event: any= {
         eventType : e.eventType,
         eventTitle : e.eventTitle,
-        eventSubType: e.eventSubType,
         ruleType: e.ruleType,
         formula: {
           formulaType: e.formula.formulaType,
@@ -328,6 +327,9 @@ openSelectCPModalButtons(): Array<any> {
           secondOperand: e.formula.secondOperand,
           rangeOperand: e.formula.rangeOperand
         }
+      }
+      if(e.eventSubType && e.eventSubType !== '') {
+        event.eventSubType = e.eventSubType
       }
       planDetails.push(event);
     })

@@ -5,7 +5,9 @@
         </button>
         
     </h1>
-    <button mat-raised-button color="primary" class="create-btn" (click)="openCreateDeviceDialog()"  > New Device </button>   
+    <span *ngIf="!isDeviceMgmtRole">
+        <button mat-raised-button color="primary" class="create-btn" (click)="openCreateDeviceDialog()"  > New Device </button>   
+    </span>
         <br>
     <mat-form-field>
         <mat-label>Filter</mat-label>
@@ -69,23 +71,10 @@
                 <td mat-cell *matCellDef="let row" >
                     <button mat-icon-button  [disabled]="disabledCancelFilters(row)"  (click)="openConfirmCancelCommand(row)">
                         <mat-icon mat-list-icon 
-                        matTooltip="Cancel filter update command">cancel</mat-icon> 
+                        matTooltip="Cancel filter update">cancel</mat-icon> 
                     </button>
                 </td>
             </ng-container>
-
-            <!-- Filter history Column -->
-            <!-- <ng-container matColumnDef="filters_history">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Filters History
-                </th>
-                <td mat-cell *matCellDef="let row" >
-                    
-                    <button mat-icon-button (click)="showFilterHistory(row.id)">
-                        <mat-icon mat-list-icon 
-                        matTooltip="show filter updates history">history</mat-icon> 
-                    </button>
-                </td>
-            </ng-container> -->
 
             <ng-container matColumnDef="assignment">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Assign/Unassign
@@ -94,23 +83,10 @@
                     
                     <button mat-icon-button (click)="assignment(row.id)" [disabled]="disableRetailerAssignment(row)">
                         <mat-icon mat-list-icon 
-                        matTooltip="assign/unassign retailer">assignment</mat-icon> 
+                        matTooltip="Assign/unassign retailer">assignment</mat-icon> 
                     </button>
                 </td>
             </ng-container>
-
-            <!-- <ng-container matColumnDef="assign_history">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Assignment History
-                </th>
-                <td mat-cell *matCellDef="let row" >
-                    
-                    <button mat-icon-button (click)="showAssignHistory(row.id)">
-                        <mat-icon mat-list-icon 
-                        matTooltip="assignment history">manage_search</mat-icon> 
-                    </button>
-                </td>
-            </ng-container>
-         -->
 
          <ng-container matColumnDef="history">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>History
@@ -119,12 +95,12 @@
                 
                 <button mat-icon-button (click)="showAssignHistory(row.id)">
                     <mat-icon mat-list-icon 
-                    matTooltip="assignment history">manage_search</mat-icon> 
+                    matTooltip="Assignment history">manage_search</mat-icon> 
                 </button>
 
                 <button mat-icon-button (click)="showFilterHistory(row.id)">
                     <mat-icon mat-list-icon 
-                    matTooltip="show filter updates history">history</mat-icon> 
+                    matTooltip="Filter updates history">history</mat-icon> 
                 </button>
             </td>
         </ng-container>

@@ -6,6 +6,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { DeviceService } from '../services/device.service';
 import { DeviceAssignComponent } from './device-assign.component';
@@ -45,7 +46,7 @@ export class DevicesComponent {
 
   errMessage;
   error= false;
-
+  isDeviceMgmtRole = true;
   constructor(
     public dialog: MatDialog, 
     private toastr: ToastrService,
@@ -56,7 +57,10 @@ export class DevicesComponent {
   }
 
   ngOnInit() {
+    const userRoles = sessionStorage.getItem("roles")?.split(",");
+    this.isDeviceMgmtRole =  userRoles.includes(environment.roles.HubDeviceManagement);
     this.getDevices();
+   
   }
 
   getDevices() {
@@ -167,11 +171,11 @@ export class DevicesComponent {
   }
 
   showFilterHistory(deviceId): void {
-    this.router.navigateByUrl('/devices/filters-history/'+ deviceId);
+    this.router.navigateByUrl('/admin/devices/filters-history/'+ deviceId);
   }
 
   showAssignHistory(deviceId): void {
-    this.router.navigateByUrl('/devices/assignment-history/'+ deviceId);
+    this.router.navigateByUrl('/admin/devices/assignment-history/'+ deviceId);
   }
 
   assignment(deviceId) {

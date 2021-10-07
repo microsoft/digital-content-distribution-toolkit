@@ -1,18 +1,28 @@
 <h1>Broadcast Details</h1>
 <mat-form-field>
 <input matInput placeholder="Start Date" 
-        required disabled [(ngModel)]="startDate">
+        required disabled > {{startDate}}
 </mat-form-field>
 <mat-form-field>
 <input matInput placeholder="End Date" 
-    required disabled [(ngModel)]="endDate" >
+    required disabled > {{endDate}}
 </mat-form-field>
 <mat-form-field>
 <input matInput placeholder="Filters" 
-        required disabled [(ngModel)]="filters">
+        required disabled > {{filters}}
 </mat-form-field>
-
+<mat-form-field >
+        <span>
+                <mat-label>Additional Details </mat-label>
+                <button [cdkCopyToClipboard]="additionalDataJson" mat-icon-button>
+                        <mat-icon  matTooltip="Copy to Clipboard">content_copy</mat-icon>
+                </button>
+        </span>
+        <textarea matInput disabled> {{additionalData | json}}
+        </textarea>
+        
+      </mat-form-field>
 <div mat-dialog-action>
     <button mat-raised-button (click)="onClose()" color="primary" >Close</button>
-  </div>
+</div>
 

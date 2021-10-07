@@ -16,7 +16,7 @@
                     <mat-radio-button value="REGULAR" (click)="onPlanTypeChange($event)"
                     >
                     REGULAR PLAN</mat-radio-button>
-                    <mat-radio-button value="MILESTONE" (click)="onPlanTypeChange($event)" 
+                    <mat-radio-button *ngIf="this.audience === 'RETAILER'" value="MILESTONE" (click)="onPlanTypeChange($event)" 
                     >
                     MILESTONE PLAN</mat-radio-button>
                 </mat-radio-group>
@@ -135,7 +135,7 @@
                     <button mat-icon-button [disabled]="isPublished || isExpensePlan(row)"
                         (click)="removeEvent(rowIndex)">
                         <mat-icon mat-icon 
-                        matTooltip="delete">delete</mat-icon> 
+                        matTooltip="Delete">delete</mat-icon> 
                     </button>
                 </td>
             </ng-container>

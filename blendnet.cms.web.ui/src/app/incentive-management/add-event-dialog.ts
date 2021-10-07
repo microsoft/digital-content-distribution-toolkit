@@ -117,7 +117,7 @@ import { IncentiveService } from "../services/incentive.service";
         eventType :  new FormControl('', [Validators.required]),
         eventTitle :  new FormControl('', [Validators.required]),
         eventSubType :  new FormControl(''),
-        ruleType : new FormControl('', [Validators.required]),
+        ruleType : new FormControl('SUM', [Validators.required]),
         formula : new FormControl('', [Validators.required]),
         firstOperand : new FormControl('',[Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
         secondOperand : new FormControl('', [Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),

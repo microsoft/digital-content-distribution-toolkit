@@ -62,7 +62,7 @@ export let menu: NavMenu[] = [
         closedName: 'Devices',
         iconName: 'router',
         routerLink: 'admin/devices',
-        roles: ['SuperAdmin']
+        roles: ['SuperAdmin', 'HubDeviceManagement']
     },
     {
         displayName: 'Notifications',
