@@ -15,6 +15,7 @@ import { NotificationsComponent } from '../notifications/notifications.component
 import { IncentiveManagementComponent } from '../incentive-management/incentive-management.component';
 import { DeviceFilterHistoryComponent } from '../devices/device-filter-history.component';
 import { DeviceRetailerHistoryComponent } from '../devices/device-retailer-history.component';
+import { DeviceContentsComponent } from '../devices/device-contents.component';
 
 const routes: Routes = [
   {
@@ -71,6 +72,16 @@ const routes: Routes = [
   {
     path: 'devices/assignment-history/:id',
    component: DeviceRetailerHistoryComponent,
+   canActivate: [
+    RoleGuardService
+  ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin, environment.roles.HubDeviceManagement]
+    } 
+  },
+  {
+    path: 'devices/contents/:id',
+   component: DeviceContentsComponent,
    canActivate: [
     RoleGuardService
   ],

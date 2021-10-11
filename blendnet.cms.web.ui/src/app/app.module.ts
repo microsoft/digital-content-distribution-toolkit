@@ -45,6 +45,7 @@ import { DeviceFiltersComponent } from './devices/device-filters.component';
 import { AdditionalHistoryDialog } from './devices/device-additional-history.component';
 import { DeviceAssignComponent } from './devices/device-assign.component';
 import { DeviceRetailerHistoryComponent } from './devices/device-retailer-history.component';
+import { DeviceContentsComponent } from './devices/device-contents.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { DeviceRetailerHistoryComponent } from './devices/device-retailer-histor
     DeviceFiltersComponent,
     AdditionalHistoryDialog,
     DeviceAssignComponent,
-    DeviceRetailerHistoryComponent
+    DeviceRetailerHistoryComponent,
+    DeviceContentsComponent
   ],
   imports: [
     HttpClientModule,

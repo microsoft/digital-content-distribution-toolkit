@@ -49,6 +49,13 @@ td.mat-footer-cell:last-of-type {
   .filter-separator {
     border-top: 1px  grey;
   }
-  .content-status-condition{
+  .content-cancelbroadcast-condition{
     color: red;
+  }
+  .content-completebroadcast-condition{
+    color: rgb(41, 187, 28)
+  }
+
+  .note{
+    border: 1px solid #2196f3;
   }

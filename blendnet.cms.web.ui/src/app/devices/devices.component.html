@@ -81,7 +81,7 @@
                 </th>
                 <td mat-cell *matCellDef="let row" >
                     
-                    <button mat-icon-button (click)="assignment(row.id)" [disabled]="disableRetailerAssignment(row)">
+                    <button mat-icon-button (click)="assignment(row.id)" [disabled]="isDeviceNotProvisioned(row)">
                         <mat-icon mat-list-icon 
                         matTooltip="Assign/unassign retailer">assignment</mat-icon> 
                     </button>
@@ -101,6 +101,18 @@
                 <button mat-icon-button (click)="showFilterHistory(row.id)">
                     <mat-icon mat-list-icon 
                     matTooltip="Filter updates history">history</mat-icon> 
+                </button>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="content">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Content
+            </th>
+            <td mat-cell *matCellDef="let row" >
+                
+
+                <button mat-icon-button (click)="showDeviceContents(row.id)" [disabled]="isDeviceNotProvisioned(row)">
+                    <mat-icon mat-list-icon 
+                    matTooltip="Device content list">movie</mat-icon> 
                 </button>
             </td>
         </ng-container>

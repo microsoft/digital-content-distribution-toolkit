@@ -42,7 +42,10 @@
             <!-- Status Column -->
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-                <td mat-cell *matCellDef="let row">{{row.status}} <sup class="content-status-condition">{{row.contentBroadcastStatus =='BroadcastCancelComplete' ? '*' : ''}}</sup></td>
+                <td mat-cell *matCellDef="let row">{{row.status}} 
+                    <sup class="content-cancelbroadcast-condition">{{row.contentBroadcastStatus =='BroadcastCancelComplete' ? '*' : ''}}</sup>
+                    <sup class="content-completebroadcast-condition">{{row.contentBroadcastStatus =='BroadcastOrderComplete' ? '*' : ''}}</sup>
+                </td>
             </ng-container>
         
             <!-- Name Column -->
@@ -67,9 +70,6 @@
             <!-- View Action Column -->
             <ng-container matColumnDef="url">
                 <th mat-header-cell *matHeaderCellDef> 
-                    <!-- <button mat-icon-button disabled>
-                        <mat-icon mat-list-icon  matTooltip="View URL">link</mat-icon> 
-                    </button> -->
                     Dash URL
                 </th>
                 <td mat-cell *matCellDef="let row" >
@@ -97,22 +97,6 @@
                     </button>
                 </td>
             </ng-container>
-
-            <!-- Delete Action Column -->
-            <!-- <ng-container matColumnDef="isDeletable">
-                <th mat-header-cell *matHeaderCellDef> 
-                    Delete
-                </th>
-                <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button 
-                    [disabled]="isContentNotDeletable(row)"
-                    (click)="openDeleteConfirmModal(row)">
-                        <mat-icon mat-list-icon 
-                        matTooltip="Archive Content">delete</mat-icon> 
-                    </button>
-                </td>
-            </ng-container> -->
-             <!-- View Action Column -->
         <ng-container matColumnDef="view">
             <th mat-header-cell *matHeaderCellDef> 
                 Meta-data
@@ -153,8 +137,18 @@
     <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
   </div>
   <br>
-  <span class="content-status-condition">
-    * The content is in Broadcast Cancelled state (Broadcast status).
-  </span>
+  <table class="note">
+    <tr>
+        <span class="content-cancelbroadcast-condition">
+            * The marked content is in Broadcast Cancelled state (Broadcast status).
+        </span>
+    </tr>
+    <tr>
+        <span class="content-completebroadcast-condition">
+           * The marked content has completed the last broadcast and is no longer being actively broadcast.
+        </span>
+    </tr>
+  </table>
+ 
 </div>  
   

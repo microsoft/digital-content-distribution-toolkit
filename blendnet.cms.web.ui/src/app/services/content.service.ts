@@ -59,7 +59,7 @@ export class ContentService {
     return this.http.post(url, id);
   }
 
-  getContentDetails(contentId, commandId) {
+  getCommandDetails(contentId, commandId) {
     let url = this.baseUrl + '/' +contentId  + '/command/' + commandId;
     this.logger.log(`Getting the details for the content `);
     return this.http.get(url);

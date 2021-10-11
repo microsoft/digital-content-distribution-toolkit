@@ -45,3 +45,15 @@ td.mat-footer-cell:last-of-type {
   .filter-separator {
     border-top: 1px  grey;
   }
+
+  .available-icon {
+    color: #24945c;
+  }
+  .unavailable-icon {
+    color: #f34d37;
+  }
+
+  .content-count{
+    border: 1px solid #2196f3;
+  }
+    

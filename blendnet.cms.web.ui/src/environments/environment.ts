@@ -16,6 +16,7 @@ export const environment = {
   retailerApiUrl: "/retailerapi/api/v1",
   notificationApiUrl: "/notificationapi/api/v1/Notification",
   deviceUrl: "/deviceapi/api/v1/Device",
+  deviceContentUrl: "/deviceapi/api/v1/DeviceContent",
   retailerUrl: "/retailerapi/api/v1/Retailer",
   retailerProviderUrl: "/retailerapi/api/v1/RetailerProvider",
   dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",

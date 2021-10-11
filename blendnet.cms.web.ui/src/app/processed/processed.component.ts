@@ -67,7 +67,8 @@ export class ProcessedComponent {
         ContentStatus.BROADCAST_CANCEL_COMPLETE,
         ContentStatus.BROADCAST_ORDER_CANCELLED,
         ContentStatus.BROADCAST_ORDER_REJECTED,
-        ContentStatus.BROADCAST_ORDER_FAILED
+        ContentStatus.BROADCAST_ORDER_FAILED,
+        ContentStatus.BROADCAST_ORDER_COMPLETE
       ]
     }
     this.contentService.getContentByCpIdAndFilters(processedContentFilters).subscribe(
@@ -108,10 +109,23 @@ export class ProcessedComponent {
     var dataSource: Content[] =[];
     if(rawData) {
       rawData.forEach( data => {
-        data.status = (data.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED && data.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE) ? 
-        data.contentBroadcastStatus : data.contentTransformStatus
-        data.isSelected = false;
-        dataSource.push(data);
+        if(data.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE) {
+          data.status = (data.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED 
+            && data.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE) ? 
+          data.contentBroadcastStatus : data.contentTransformStatus
+          data.isSelected = false;
+          dataSource.push(data);
+        } else {
+          var today = new Date();
+          if(data.contentBroadcastedBy.broadcastRequest.endDate < today.toISOString()) {
+            data.status = (data.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED 
+              && data.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE) ? 
+            data.contentBroadcastStatus : data.contentTransformStatus
+            data.isSelected = false;
+            dataSource.push(data);
+          }
+        }
+        
       });
     }
     return new MatTableDataSource(dataSource);
@@ -123,6 +137,7 @@ export class ProcessedComponent {
     || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED
     && row.contentBroadcastStatus !== ContentStatus.BROADCAST_FAILED 
     && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE
+    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE
     && row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_FAILED
     && row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_REJECTED
     && row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_CANCELLED);

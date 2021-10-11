@@ -246,12 +246,20 @@ export class BroadcastDetailsDialog {
     additionalData;
     additionalDataJson;
   ngOnInit(): void {
+    this.contentService.getCommandDetails(this.data.content.id, 
+      this.data.content.contentBroadcastedBy.commandId).subscribe(
+      res => {
+        this.additionalDataJson = JSON.stringify(res);
+      },
+      err => {
+        this.additionalDataJson = err;
+        }
+      );
       this.startDate = this.data.content.contentBroadcastedBy.broadcastRequest.startDate;
       this.endDate = this.data.content.contentBroadcastedBy.broadcastRequest.endDate;
       this.filters = this.data.content.contentBroadcastedBy.broadcastRequest.filters.join();
-      this.additionalData = this.data.content;
-      this.additionalDataJson = JSON.stringify(this.data.content);
-  }
+    }
+
   onClose(): void {
     this.dialogRef.close();
     }

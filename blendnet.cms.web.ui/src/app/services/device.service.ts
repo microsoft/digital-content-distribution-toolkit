@@ -9,6 +9,7 @@ import { LogService } from './log.service';
 })
 export class DeviceService {
   baseUrl = environment.baseUrl + environment.deviceUrl;
+  deviceContentUrl = environment.baseUrl + environment.deviceContentUrl;
   constructor(private logger: LogService,
     private http: HttpClient) { }
 
@@ -44,6 +45,11 @@ export class DeviceService {
       this.logger.log(`Cancelling command for device`);
       return this.http.post(url,{ observe: 'response'});
     }
+
+    getContentsOnDeviceByCP(deviceId, contentProviderId) {
+      let url = this.deviceContentUrl + '/' + deviceId +'/' + contentProviderId;
+      this.logger.log(`Getting all the contents available for a device`);
+      return this.http.post(url,{ observe: 'response'});    }
 
 
 }

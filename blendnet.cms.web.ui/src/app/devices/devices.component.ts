@@ -33,7 +33,7 @@ export interface DialogData {
   templateUrl: 'devices.component.html',
 })
 export class DevicesComponent {
-  displayedColumns: string[] = ['id', 'status', 'status_update_date', 'filterUpdateStatus' , 'filters', 'cancel_command', 'assignment', 'history'];
+  displayedColumns: string[] = ['id', 'status', 'status_update_date', 'filterUpdateStatus' , 'filters', 'cancel_command', 'assignment', 'content', 'history'];
   dataSource: MatTableDataSource<any>;
   showDialog: boolean = false;
   initialSelection = [];
@@ -94,7 +94,7 @@ export class DevicesComponent {
     || row.deviceStatus === 'Registered';
   }
 
-  disableRetailerAssignment(row) {
+  isDeviceNotProvisioned(row) {
     return (row.deviceStatus === 'Registered');
   }
 
@@ -178,6 +178,9 @@ export class DevicesComponent {
     this.router.navigateByUrl('/admin/devices/assignment-history/'+ deviceId);
   }
 
+  showDeviceContents(deviceId): void {
+    this.router.navigateByUrl('/admin/devices/contents/'+ deviceId);
+  }
   assignment(deviceId) {
     const dialogRef = this.dialog.open(DeviceAssignComponent, {
       width: '500px',
