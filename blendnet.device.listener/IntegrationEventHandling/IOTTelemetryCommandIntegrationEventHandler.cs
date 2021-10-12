@@ -400,7 +400,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
                 }
 
                 //in case there are failed mappings, report it to the application insights
-                if (failedContents.Count >= 0)
+                if (failedContents.Count > 0)
                 {
                     _logger.LogError($"Failed or skipped device content mapping for - {string.Join("|", failedContents)}." +
                                                 $" Device Id : {integrationEvent.DeviceId} Template Id : {integrationEvent.TemplateId} Module Id : {integrationEvent.Module} ");

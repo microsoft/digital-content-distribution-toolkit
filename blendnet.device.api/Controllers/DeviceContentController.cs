@@ -105,16 +105,6 @@ namespace blendnet.device.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            //Get the list of available content on device for the given content provider
-            List<DeviceContent> deviceContents = await _deviceRepository.GetContentByDeviceId(deviceId, contentProviderId, true);
-
-            if (deviceContents == null || deviceContents.Count() <= 0)
-            {
-                errorInfo.Add(string.Format(_stringLocalizer["DVC_ERR_0013"], deviceId));
-
-                return NotFound(errorInfo);
-            }
-
             ContentStatusFilter contentStatusFilter = new ContentStatusFilter();
 
             contentStatusFilter.ContentTransformStatuses = new string[] { ContentTransformStatus.TransformComplete.ToString() };
@@ -140,6 +130,9 @@ namespace blendnet.device.api.Controllers
 
                 return NotFound(errorInfo);
             }
+
+            //Get the list of available content on device for the given content provider
+            List<DeviceContent> deviceContents = await _deviceRepository.GetContentByDeviceId(deviceId, contentProviderId, true);
 
             return GetDeviceContentAvailability(device, activeBroadCastedContents, deviceContents);
 
@@ -255,15 +248,19 @@ namespace blendnet.device.api.Controllers
                     //since one of the broadast and device filter matches it is eligible to be called as valid content
                     contentValidity.ValidActiveBroadcastedContent = activeContent;
 
-                    //now check if the valid broadcasted content has been downloaded on device or not
-                    DeviceContent contentOnDevice = contentAvailableOnDevice.
-                                                    Where(ca => (ca.ContentId == activeContent.ContentId
-                                                                    && ca.ContentProviderId == activeContent.ContentProviderId))
-                                                    .FirstOrDefault();
-
-                    if (contentOnDevice != default(DeviceContent))
+                    //if there is no content available on device, no point checking if it available on device
+                    if (contentAvailableOnDevice != null && contentAvailableOnDevice.Count() > 0)
                     {
-                        contentValidity.DeviceContent = contentOnDevice;
+                        //now check if the valid broadcasted content has been downloaded on device or not
+                        DeviceContent contentOnDevice = contentAvailableOnDevice.
+                                                        Where(ca => (ca.ContentId == activeContent.ContentId
+                                                                        && ca.ContentProviderId == activeContent.ContentProviderId))
+                                                        .FirstOrDefault();
+
+                        if (contentOnDevice != default(DeviceContent))
+                        {
+                            contentValidity.DeviceContent = contentOnDevice;
+                        }
                     }
                 }
             }
