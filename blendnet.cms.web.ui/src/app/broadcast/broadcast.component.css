@@ -41,3 +41,9 @@ td.mat-footer-cell:last-of-type {
   .discard-btn {
     margin: 5px;
   }
+  .content-cancelbroadcast-condition{
+    color: red;
+  }
+  .note{
+    border: 1px solid #2196f3;
+  }

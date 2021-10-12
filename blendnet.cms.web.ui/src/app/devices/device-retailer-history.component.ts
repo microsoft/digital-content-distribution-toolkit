@@ -68,6 +68,7 @@ export class DeviceRetailerHistoryComponent implements OnInit {
         dataSource.push(data);
       });
     }
+    dataSource.sort((a, b) => (a.assignmentStartDate < b.assignmentStartDate ? 1: -1));
     return new MatTableDataSource(dataSource);
   }
 

@@ -58,6 +58,7 @@ export class DeviceFilterHistoryComponent implements OnInit {
         dataSource.push(rawData);
       });
     }
+    dataSource.sort((a, b) => (a.createdDate < b.createdDate ? 1: -1));
     return new MatTableDataSource(dataSource);
   }
 

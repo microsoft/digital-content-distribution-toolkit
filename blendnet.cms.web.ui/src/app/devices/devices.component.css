@@ -57,3 +57,10 @@ td.mat-footer-cell:last-of-type {
     border: 1px solid #2196f3;
   }
     
+  .cms-spacer {
+    flex: 1 1 auto;
+  }
+
+  .cp-select{
+    margin-right: 15px;
+  }

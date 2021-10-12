@@ -106,6 +106,10 @@ export class BroadcastComponent {
     });
   
   }
+  isBroadcastNotActive(selectedContent) {
+    var today = new Date();
+    return selectedContent.contentBroadcastedBy?.broadcastRequest.endDate < today.toISOString();
+}
 
   
 viewURL(selectedContent) : void {

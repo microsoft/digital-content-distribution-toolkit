@@ -5,8 +5,11 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { BroadcastDetailsDialog } from '../broadcast/broadcast.component';
 import { ContentProviderService } from '../services/content-provider.service';
+import { ContentService } from '../services/content.service';
 import { DeviceService } from '../services/device.service';
+import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
 import { AdditionalHistoryDialog } from './device-additional-history.component';
 
 @Component({
@@ -16,7 +19,7 @@ import { AdditionalHistoryDialog } from './device-additional-history.component';
 })
 export class DeviceContentsComponent implements OnInit {
   deviceid;
-  displayedColumns: string[] = ['content_name', 'content_id', 'availability', 'operationTimeStamp',  'details'];
+  displayedColumns: string[] = ['title', 'id', 'availability', 'operationTimeStamp', 'metadata', 'details'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -33,7 +36,8 @@ export class DeviceContentsComponent implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-    private contentProviderService: ContentProviderService
+    private contentProviderService: ContentProviderService,
+    private contentService: ContentService
 
   ) { 
     this.route.params.subscribe(device => this.deviceid = device.id);
@@ -90,7 +94,13 @@ export class DeviceContentsComponent implements OnInit {
     var dataSource: any[] =[];
     if(rawDataList) {
       rawDataList.forEach( rawData => {
-        dataSource.push(rawData);
+        var content : any = {};
+        content.title = rawData.validActiveBroadcastedContent.title;
+        content.id = rawData.validActiveBroadcastedContent.id;
+        content.availability = rawData.isAvailableOnDevice;
+        content.operationTimeStamp = rawData.deviceContent?.operationTimeStamp;
+        content.details = rawData;
+        dataSource.push(content);
       });
     }
     return new MatTableDataSource(dataSource);
@@ -106,20 +116,32 @@ export class DeviceContentsComponent implements OnInit {
   }
 
   openAdditionalDetailsHistory(row) {
-    const dialogRef = this.dialog.open(AdditionalHistoryDialog, {
-      data: {
-        history : row
-      },
-      width: '60%'
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+    this.contentService.getContentById(row.id).subscribe(
+      res => {
+        const dialogRef = this.dialog.open(BroadcastDetailsDialog, {
+          data: {content: res},
+          width: '60%'
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      }
+    )
+
   }
   showDevicesPage() {
     this.router.navigateByUrl('/admin/devices');
   }
 
-
+  viewContent(selectedContent) : void {
+    const dialogRef = this.dialog.open(ContentDetailsDialog, {
+      data: {content: selectedContent.details.validActiveBroadcastedContent}
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  
+  }
 }

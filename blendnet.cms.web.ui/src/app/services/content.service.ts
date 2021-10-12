@@ -74,4 +74,11 @@ export class ContentService {
     return this.http.post(url, payload);
   }
 
+  getContentById(id){
+    let url = this.baseUrl + "/" + id;
+    this.logger.log(`Fetching content by content id`);
+    return this.http.get(url);
+
+  }
+
 }
