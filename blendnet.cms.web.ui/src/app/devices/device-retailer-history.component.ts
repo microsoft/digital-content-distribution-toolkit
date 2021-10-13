@@ -54,7 +54,9 @@ export class DeviceRetailerHistoryComponent implements OnInit {
 
   createDataSource(rawDataList) {
     var dataSource: any[] =[];
-    if(rawDataList) {
+    if(rawDataList && rawDataList.length > 0) {
+      this.errMessage = "";
+      this.error = false;
       rawDataList.forEach( rawData => {
         var currentDevice = rawData.deviceAssignments.find(d =>  d.deviceId === this.deviceid   );
         var data = {
@@ -67,8 +69,11 @@ export class DeviceRetailerHistoryComponent implements OnInit {
         }
         dataSource.push(data);
       });
+      dataSource.sort((a, b) => (a.assignmentStartDate < b.assignmentStartDate ? 1: -1));
+    } else {
+      this.errMessage = "No data found";
+      this.error = true;
     }
-    dataSource.sort((a, b) => (a.assignmentStartDate < b.assignmentStartDate ? 1: -1));
     return new MatTableDataSource(dataSource);
   }
 

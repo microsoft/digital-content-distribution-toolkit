@@ -100,10 +100,15 @@ export class DevicesComponent {
 
   createDataSource(rawDataList) {
     var dataSource: any[] =[];
-    if(rawDataList) {
+    if(rawDataList && rawDataList.length > 0) {
+      this.errMessage = "";
+      this.error = false;
       rawDataList.forEach( rawData => {
         dataSource.push(rawData);
       });
+    } else {
+      this.errMessage = "No data found";
+      this.error = true;
     }
     return new MatTableDataSource(dataSource);
   }

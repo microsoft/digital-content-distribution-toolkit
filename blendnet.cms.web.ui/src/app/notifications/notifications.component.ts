@@ -100,10 +100,15 @@ export class NotificationsComponent implements OnInit {
 
   createDataSource(rawData) {
     var dataSource: Content[] =[];
-    if(rawData) {
+    if(rawData && rawData.length > 0) {
+      this.errMessage = "";
+      this.error = false;
       rawData.forEach( data => {
         dataSource.push(data);
       });
+    } else {
+      this.errMessage = "No data found";
+      this.error = true;
     }
     return new MatTableDataSource(dataSource);
   }

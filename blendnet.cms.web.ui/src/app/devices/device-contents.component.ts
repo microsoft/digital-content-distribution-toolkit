@@ -92,7 +92,9 @@ export class DeviceContentsComponent implements OnInit {
 
   createDataSource(rawDataList) {
     var dataSource: any[] =[];
-    if(rawDataList) {
+    if(rawDataList && rawDataList.length > 0) {
+      this.errMessage = "";
+      this.error = false;
       rawDataList.forEach( rawData => {
         var content : any = {};
         content.title = rawData.validActiveBroadcastedContent.title;
@@ -102,6 +104,9 @@ export class DeviceContentsComponent implements OnInit {
         content.details = rawData;
         dataSource.push(content);
       });
+    } else {
+      this.errMessage = "No data found";
+      this.error = true;
     }
     return new MatTableDataSource(dataSource);
   }

@@ -53,12 +53,17 @@ export class DeviceFilterHistoryComponent implements OnInit {
 
   createDataSource(rawDataList) {
     var dataSource: any[] =[];
-    if(rawDataList) {
+    if(rawDataList && rawDataList.length > 0) {
+      this.errMessage = "";
+      this.error = false;
       rawDataList.forEach( rawData => {
         dataSource.push(rawData);
       });
+      dataSource.sort((a, b) => (a.createdDate < b.createdDate ? 1: -1));
+    } else {
+      this.errMessage = "No data found";
+      this.error = true;
     }
-    dataSource.sort((a, b) => (a.createdDate < b.createdDate ? 1: -1));
     return new MatTableDataSource(dataSource);
   }
 

@@ -72,7 +72,7 @@
 
                 <!-- metadata Column -->
                 <ng-container matColumnDef="metadata">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Metadata</th>
+                    <th mat-header-cell *matHeaderCellDef >Metadata</th>
                     <td mat-cell *matCellDef="let row"> <button mat-icon-button (click)="viewContent(row)">
                         <mat-icon mat-list-icon 
                         matTooltip="View content">visibility</mat-icon> 
@@ -81,7 +81,7 @@
             
                 <!-- details Column -->
                 <ng-container matColumnDef="details">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Broadcast Details</th>
+                    <th mat-header-cell *matHeaderCellDef >Broadcast Details</th>
                     <td mat-cell *matCellDef="let row"> <button mat-icon-button (click)="openAdditionalDetailsHistory(row)">
                         <mat-icon mat-list-icon 
                         matTooltip="Broadcast Details">info</mat-icon> 

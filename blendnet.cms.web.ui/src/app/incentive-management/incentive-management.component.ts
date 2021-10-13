@@ -43,6 +43,7 @@ export class IncentiveManagementComponent implements OnInit {
   missingPlansforPartner;
 
   errMessage;
+  errMessageCust;
   error= false;
   isErrorRetailer = false;
   isErrorConsumer=false;
@@ -336,7 +337,11 @@ export class IncentiveManagementComponent implements OnInit {
 
   createDataSource(response) {
     var dataSource: Incentive[] =[];
-    if(response) {
+    if(response && response.length > 0) {
+      this.errMessage = "";
+      this.errMessageCust = "";
+      this.isErrorConsumer = false;
+      this.isErrorRetailer = false;
       response.forEach( data => {
         var row: any = {};
         row.id = data.id;
@@ -348,6 +353,11 @@ export class IncentiveManagementComponent implements OnInit {
         row.endDate =  data.endDate;
         dataSource.push(row);
       });
+    } else {
+      this.errMessage = "No data found";
+      this.errMessageCust = "No data found";
+      this.isErrorConsumer = true;
+      this.isErrorRetailer = true;
     }
     return new MatTableDataSource(dataSource);
   }

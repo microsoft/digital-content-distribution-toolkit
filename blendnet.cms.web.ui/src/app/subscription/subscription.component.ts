@@ -77,12 +77,17 @@ export class SubscriptionComponent {
 
   createDataSource(rawDataList) {
     var dataSource: any[] =[];
-    if(rawDataList) {
+    if(rawDataList && rawDataList.length > 0) {
+      this.errMessage = "";
+      this.error = false;
       rawDataList.forEach( rawData => {
         rawData.status = (rawData.endDate >= this.today || rawData.startDate >= this.today)
                        ? true : false;
         dataSource.push(rawData);
       });
+    } else {
+      this.errMessage = "No data found";
+      this.error = true;
     }
     return new MatTableDataSource(dataSource);
   }
