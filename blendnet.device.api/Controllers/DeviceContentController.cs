@@ -23,7 +23,8 @@ namespace blendnet.device.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin,
+                    ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
     public class DeviceContentController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -57,6 +58,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpPost("downloaded", Name = nameof(UpdateDownloaded))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateDownloaded(DeviceContentUpdateRequest updateDownloadedRequest)
         {
             return await ProcessUpdateRequest(updateDownloadedRequest, false/*isDeleted*/);
@@ -69,6 +71,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpPost("deleted", Name = nameof(UpdateDeleted))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateDeleted(DeviceContentUpdateRequest updateDeletedRequest)
         {
             return await ProcessUpdateRequest(updateDeletedRequest, true /*isDeleted*/);
@@ -85,6 +88,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpPost("{deviceId}/{contentProviderId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult<DeviceContentValidity>> GetDeviceContentValidity(string deviceId,Guid contentProviderId)
         {
             List<string> errorInfo = new List<string>();

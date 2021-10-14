@@ -64,7 +64,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult<List<Device>>> GetDevices()
         {
             var devices = await _deviceRepository.GetDevices();
@@ -80,7 +80,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpGet("{deviceId}", Name = nameof(GetDevice))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult<Device>> GetDevice(string deviceId)
         {
             var device = await _deviceRepository.GetDeviceById(deviceId);
@@ -232,7 +232,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpGet("{deviceId}/command/{commandId:guid}", Name = nameof(GetCommand))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult<DeviceCommand>> GetCommand(string deviceId, Guid commandId)
         {
             var deviceCommand = await _deviceRepository.GetDeviceCommandById(commandId, deviceId);
@@ -256,7 +256,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpGet("{deviceId}/commands", Name = nameof(GetCommands))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult<DeviceCommand>> GetCommands(string deviceId, DeviceCommandType deviceCommandType)
         {
             var deviceCommands = await _deviceRepository.GetDeviceCommands(deviceId, deviceCommandType);
@@ -293,7 +293,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpPost("{deviceId}/cancelcommand/{commandId:guid}", Name = nameof(CancelCommand))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult> CancelCommand(string deviceId, Guid commandId)
         {
             DeviceCommandUpdateRequest commandUpdateRequest = new DeviceCommandUpdateRequest();
