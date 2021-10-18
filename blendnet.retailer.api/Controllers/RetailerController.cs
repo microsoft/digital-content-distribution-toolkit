@@ -19,7 +19,7 @@ namespace blendnet.retailer.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Retailer)]
+    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Retailer, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
     public class RetailerController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -209,7 +209,7 @@ namespace blendnet.retailer.api.Controllers
         /// <returns>Retailer</returns>
         [HttpGet("byDeviceId/{deviceId}", Name = nameof(GetRetailersByDevice))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult<List<RetailerDto>>> GetRetailersByDevice(string deviceId)
         {
             List<RetailerDto> retailers = await _retailerRepository.GetRetailersByDeviceId(deviceId);
@@ -328,7 +328,7 @@ namespace blendnet.retailer.api.Controllers
         /// <returns></returns>
         [HttpPost("unassignDevice", Name = nameof(UnassignDevice))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult> UnassignDevice(UnassignDeviceRequest unassignRequest)
         {
             var callerUserId = UserClaimData.GetUserId(this.User.Claims);
