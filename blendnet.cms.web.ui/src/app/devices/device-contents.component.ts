@@ -5,6 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 import { BroadcastDetailsDialog } from '../broadcast/broadcast.component';
 import { ContentProviderService } from '../services/content-provider.service';
 import { ContentService } from '../services/content.service';
@@ -19,7 +20,7 @@ import { AdditionalHistoryDialog } from './device-additional-history.component';
 })
 export class DeviceContentsComponent implements OnInit {
   deviceid;
-  displayedColumns: string[] = ['title', 'id', 'availability', 'operationTimeStamp', 'metadata', 'details'];
+  displayedColumns: string[] = ['title', 'id', 'availability', 'operationTimeStamp', 'metadata'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -44,6 +45,9 @@ export class DeviceContentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(sessionStorage.getItem('roles').includes(environment.roles.SuperAdmin)) {
+      this.displayedColumns.push('details')
+    }
     this.getContentProviders();
   }
 

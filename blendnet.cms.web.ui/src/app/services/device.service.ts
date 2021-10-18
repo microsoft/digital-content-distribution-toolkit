@@ -21,7 +21,6 @@ export class DeviceService {
       return this.http.get(url, { observe: 'response'});
     }
 
-
     createDevice(device): Observable<HttpResponse<any>>{ 
       let url = this.baseUrl ;
       this.logger.log(`Creating a device`);
@@ -49,7 +48,8 @@ export class DeviceService {
     getContentsOnDeviceByCP(deviceId, contentProviderId) {
       let url = this.deviceContentUrl + '/' + deviceId +'/' + contentProviderId;
       this.logger.log(`Getting all the contents available for a device`);
-      return this.http.post(url,{ observe: 'response'});    }
+      return this.http.post(url,{ observe: 'response'});    
+    }
 
 
 }

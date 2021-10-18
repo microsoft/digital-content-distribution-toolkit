@@ -169,7 +169,7 @@ getBroadcastDetails(selectedContent) {
   
   isBroadcastCancellable(row) {
     return row.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
-    || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE);
+    || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_FAILED);
   }
 
   showBroadcastDetails(row) {
