@@ -65,7 +65,7 @@ export class DeviceAssignComponent implements OnInit {
     if(this.isUpdate) {
       this.retailerService.unassignDeviceToRetailer(request).subscribe(res => {
         if(res.status === 204) {
-          this.toastr.success("Device assigned to retailer sucessfully");
+          this.toastr.success("Device unassigned sucessfully");
           this.closeDialog();
         } 
       },
@@ -74,7 +74,7 @@ export class DeviceAssignComponent implements OnInit {
     } else {
       this.retailerService.assignDeviceToRetailer(request).subscribe(res => {
         if(res.status === 204) {
-          this.toastr.success("Device unassigned sucessfully");
+          this.toastr.success("Device assigned to retailer sucessfully");
           this.closeDialog();
         } 
       },

@@ -58,16 +58,18 @@ export class DeviceRetailerHistoryComponent implements OnInit {
       this.errMessage = "";
       this.error = false;
       rawDataList.forEach( rawData => {
-        var currentDevice = rawData.deviceAssignments.find(d =>  d.deviceId === this.deviceid   );
-        var data = {
-          retailerId: rawData.partnerProvidedId,
-          name: rawData.name,
-          phoneNumber: rawData.phoneNumber,
-          partnerCode: rawData.partnerCode,
-          assignmentStartDate: currentDevice.assignmentStartDate,
-          assignmentEndDate: currentDevice.assignmentEndDate
-        }
-        dataSource.push(data);
+        var currentDeviceList = rawData.deviceAssignments.filter(d =>  d.deviceId === this.deviceid);
+        currentDeviceList.forEach(currentDevice => {
+          var data = {
+            retailerId: rawData.partnerProvidedId,
+            name: rawData.name,
+            phoneNumber: rawData.phoneNumber,
+            partnerCode: rawData.partnerCode,
+            assignmentStartDate: currentDevice.assignmentStartDate,
+            assignmentEndDate: currentDevice.assignmentEndDate
+          }
+          dataSource.push(data);
+        });
       });
       dataSource.sort((a, b) => (a.assignmentStartDate < b.assignmentStartDate ? 1: -1));
     } else {
