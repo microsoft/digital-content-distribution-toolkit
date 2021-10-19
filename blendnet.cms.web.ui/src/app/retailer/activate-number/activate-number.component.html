@@ -1,0 +1,18 @@
+<div class="activate-number-header">
+    <span>Activate Number</span>
+</div>
+<div class="customer-contact">
+    <input [formControl]="phoneNumber" placeholder="Enter number" required/>
+    <div class="activate-message">
+        <mat-error *ngIf="error" class="activation-error-msg">Activation Failed, Limit Reached!</mat-error>
+        <span *ngIf="activateNumberRequestSuccess" class="activation-success-msg">Number Activated !!!!</span>
+    </div>
+</div>
+<div class="footer">
+    <button 
+    mat-raised-button 
+    color="primary"
+    [disabled]="phoneNumber.invalid"
+    class="activate-button"
+    (click)="activateNumber()">{{getButtonText()}}</button>
+</div>

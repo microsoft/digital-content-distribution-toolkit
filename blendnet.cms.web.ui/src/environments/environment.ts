@@ -9,6 +9,7 @@ export const environment = {
   browrseContent: "/cmsapi/api/v1/BrowseContent",
   contentApiUrl: "/cmsapi/api/v1/Content",
   userApiUrl: "/userapi/api/v1/User",
+  whitelistedUserApiUrl: "/userapi/api/v1/WhitelistedUser/create",
   omsApiUrl: "/omsapi/api/v1",
   createUserApiUrl: "/userapi/api/v1/UserBasic",
   incentiveApiUrl: "/incentiveapi/api/v1/Incentive",

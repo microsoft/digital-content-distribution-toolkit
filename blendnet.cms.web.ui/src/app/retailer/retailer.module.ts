@@ -8,7 +8,7 @@ import { RetailerCommissionsComponent } from './retailer-commissions/retailer-co
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { RetailerCommissionDialogComponent } from './retailer-commission-dialog/retailer-commission-dialog.component';
 import { RatesIncentivesComponent } from './rates-incentives/rates-incentives.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RetailerMilestonesComponent } from './retailer-milestones/retailer-milestones.component';
 import { SeamlessLoginComponent } from './seamless-login/seamless-login.component';
 import { NoTransactionsComponent } from './no-transactions/no-transactions.component';
@@ -16,6 +16,8 @@ import { RetailerOrdersComponent } from './retailer-orders/retailer-orders.compo
 import { RetailerDashboardComponent } from './retailer-dashboard/retailer-dashboard.component';
 import { RetailerOrderSuccessComponent } from './retailer-order-success/retailer-order-success.component';
 import { RoleGuardService } from '../services/role-guard.service';
+import { ActivateNumberComponent } from './activate-number/activate-number.component';
+import { RetailerHomeComponent } from './retailer-home/retailer-home.component';
 
 
 const routes: Routes = [
@@ -60,7 +62,21 @@ const routes: Routes = [
     data: {
       expectedRole: [environment.roles.User]
     } 
-  }
+  },
+  {
+    path: 'activate-number',
+    component: ActivateNumberComponent,
+    data: { 
+      expectedRole: [environment.roles.Retailer]
+    } 
+  },
+  {
+    path: 'retailer-home',
+    component: RetailerHomeComponent,
+    data: { 
+      expectedRole: [environment.roles.Retailer]
+    } 
+  },
 ]
 
 
@@ -75,13 +91,16 @@ const routes: Routes = [
     NoTransactionsComponent,
     RetailerDashboardComponent,
     RetailerOrdersComponent,
-    RetailerOrderSuccessComponent
+    RetailerOrderSuccessComponent,
+    ActivateNumberComponent,
+    RetailerHomeComponent
     ],
   imports: [
     CommonModule,
     CMSMaterialModule,
     CarouselModule ,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule.forChild(routes)
   ]
 })

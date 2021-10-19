@@ -29,6 +29,7 @@ export const environment = {
     kaizalaAppNameParam : "applicationName",
     kaizalaAppName : "com.microsoft.mobile.polymer.mishtu",
     baseHref:'portal',
+    whitelistedUserApiUrl: "/userapi/api/v1/WhitelistedUser/create",
     widewineTokenPrefix: "&widevine=true&token=Bearer%3D",
       filters : [
       {
