@@ -39,8 +39,8 @@ import { NotificationService } from "../services/notification.service";
   
     ngOnInit() {
       this.notifFormGroup = new FormGroup({
-        title :  new FormControl('', [Validators.required]),
-        body : new FormControl('', [Validators.required, Validators.maxLength(70)]),
+        title :  new FormControl('', [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
+        body : new FormControl('', [Validators.required, Validators.maxLength(70), Validators.pattern(/^[^\s].*[^\s]$/)]),
         attachmentUrl :  new FormControl(''),
         // type :  new FormControl(0),
         // topic: new FormControl('', [Validators.required]),

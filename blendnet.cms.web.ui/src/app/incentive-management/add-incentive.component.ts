@@ -210,7 +210,7 @@ export class AddIncentiveComponent implements OnInit {
 
   createEmptyFormDraft() {
     this.incentiveFormGroup = this.formBuilder.group({
-      name :  new FormControl('', [Validators.required]),
+      name :  new FormControl('', [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
       type : new FormControl('REGULAR',[Validators.required]),
       partner: new FormControl(''),
       startDate: new FormControl('',[Validators.required]),

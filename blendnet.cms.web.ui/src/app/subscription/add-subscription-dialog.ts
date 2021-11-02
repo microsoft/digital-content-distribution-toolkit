@@ -54,7 +54,7 @@ import { SubscriptionService } from "../services/subscription.service";
     
     createEmptyForm() {
       this.subForm = new FormGroup({
-        name :  new FormControl('', [Validators.required]),
+        name :  new FormControl('', [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
         price : new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
         durationDays : new FormControl('', [Validators.required, Validators.max(365), Validators.min(1)]),
         startDate : new FormControl(null, [Validators.required]),

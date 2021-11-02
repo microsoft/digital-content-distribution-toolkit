@@ -56,7 +56,7 @@ export class AdminLoginComponent implements OnInit {
     this.countryCodes = environment.countryCodes;
     this.selectedCountryCodeValue = this.countryCodes[0].value;
     this.contact = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
-    this.otp = new FormControl('', [Validators.required]);
+    this.otp = new FormControl('', [Validators.required, Validators.pattern(/^\d{4}$/)]);
     this.otpSendErrorMessage = "";
     this.otpVerifyErrorMessage = "";
     // get return url from route parameters or default to '/'

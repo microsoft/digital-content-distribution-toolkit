@@ -114,9 +114,9 @@ import { IncentiveService } from "../services/incentive.service";
     
     createEmptyForm() {
       this.eventForm = new FormGroup({
-        eventType :  new FormControl('', [Validators.required]),
-        eventTitle :  new FormControl('', [Validators.required]),
-        eventSubType :  new FormControl(''),
+        eventType :  new FormControl('',  [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
+        eventTitle :  new FormControl('',  [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
+        eventSubType :  new FormControl('',  [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
         ruleType : new FormControl('SUM', [Validators.required]),
         formula : new FormControl('', [Validators.required]),
         firstOperand : new FormControl('',[Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),

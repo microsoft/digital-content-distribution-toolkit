@@ -12,8 +12,8 @@ import { RetailerService } from '../services/retailer.service';
 export class DeviceAssignComponent implements OnInit {
 
   retailerForm = new FormGroup({
-    retailerID: new FormControl('',  [Validators.required]),
-    partnerCode: new FormControl('',  [Validators.required]),
+    retailerID: new FormControl('',  [Validators.required, Validators.pattern(/^[-a-zA-Z0-9_]+$/)]),
+    partnerCode: new FormControl('',  [Validators.required, Validators.pattern(/^[-a-zA-Z0-9_]+$/)]),
     // startDate: new FormControl()
   });
   // minStart: Date;
@@ -46,8 +46,8 @@ export class DeviceAssignComponent implements OnInit {
         this.toastr.error("Something went wrong...!!");
       }
       this.retailerForm = new FormGroup({
-        retailerID: new FormControl(retailerId),
-        partnerCode: new FormControl(partnerCode)
+        retailerID: new FormControl(retailerId, [Validators.required, Validators.pattern(/^[-a-zA-Z0-9_]+$/)]),
+        partnerCode: new FormControl(partnerCode, [Validators.required, Validators.pattern(/^[-a-zA-Z0-9_]+$/)])
       });
     })
   }

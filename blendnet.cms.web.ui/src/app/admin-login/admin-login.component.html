@@ -41,7 +41,8 @@
                 
                 <br>
                 <div>
-                    <button mat-raised-button color="primary" (click)="verifyOTP()">Verify OTP</button>
+                    <button mat-raised-button color="primary" 
+                    [disabled]="otp.invalid" (click)="verifyOTP()">Verify OTP</button>
                 </div>
             </div>
 <!-- 

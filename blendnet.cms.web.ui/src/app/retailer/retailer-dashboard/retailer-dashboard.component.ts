@@ -69,7 +69,14 @@ export class RetailerDashboardComponent implements OnInit {
   getRetailerTotals(partnerCode, retailerPartnerProvidedId, dateObj) {
     let referralTotal = 0;
     let commissionTotal = 0;
-    this.retailerDashboardService.getAggregatedRetailerDetails(partnerCode, retailerPartnerProvidedId, dateObj.firstDateString, dateObj.lastDateString).subscribe(res => {
+    let startDate = new Date(dateObj.firstDateString);
+    let endDate = new Date(dateObj.lastDateString);
+    endDate.setHours(23);
+    endDate.setMinutes(59);
+    endDate.setSeconds(59);
+    let endDateUTCString  = endDate.toISOString();
+    let startDateUTCString  = startDate.toISOString()
+    this.retailerDashboardService.getAggregatedRetailerDetails(partnerCode, retailerPartnerProvidedId, startDateUTCString, endDateUTCString).subscribe(res => {
       if(res.eventAggregateResponses) {
         res.eventAggregateResponses.forEach(planDetail => {
           if(planDetail.eventType === 'RETAILER_INCOME_ORDER_COMPLETED') {
