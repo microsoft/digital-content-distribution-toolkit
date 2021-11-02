@@ -370,7 +370,7 @@ namespace blendnet.device.listener.IntegrationEventHandling
                         else
                         {
                             //if the record already exists. update only if the data base record is not latest than the given one
-                            if (deviceContent.OperationTimeStamp <= contentdata.OperationTime)
+                            if (deviceContent.OperationTimeStamp < contentdata.OperationTime)
                             {
                                 deviceContent.IsDeleted = isDeleted;
                                 deviceContent.ContentProviderId = contentProviderId;
