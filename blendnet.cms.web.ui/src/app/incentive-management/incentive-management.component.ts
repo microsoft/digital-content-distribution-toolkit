@@ -48,8 +48,8 @@ export class IncentiveManagementComponent implements OnInit {
   isErrorRetailer = false;
   isErrorConsumer=false;
   selectedRetailerPartner;
-  selectedPlanType="REGULAR";
-
+  selectedPlanTypeR;
+  selectedPlanTypeC;
   constructor( private incentiveService: IncentiveService,
     public dialog: MatDialog,
     private toastr: ToastrService,
@@ -58,9 +58,12 @@ export class IncentiveManagementComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.statuses = [ 'REGULAR', 'MILESTONE'];
+    this.selectedPlanTypeR = this.statuses[0];
+    this.selectedPlanTypeC = this.statuses[0];
     this.getRetailerPartners();
     this.getContentProviders()
-    this.statuses = ['REGULAR', 'MILESTONE'];
+    
     //this.getRetailerIncentivePlans();
   }
 
@@ -77,11 +80,13 @@ export class IncentiveManagementComponent implements OnInit {
   }
 
   tabClick(event) {
-    this. selectedPlanType="REGULAR";
+    
     if(event.tab.textLabel === "RETAILER") {
+      this.selectedPlanTypeR=this.statuses[0];
       // this.getRetailerIncentivePlans();
-      this.getRPlansSelectedPartnerPlanType();
+      this.getRPlansSelectedPartnerPlanType(null);
     } else if(event.tab.textLabel === "CONSUMER"){
+      this.selectedPlanTypeC=this.statuses[0];
       this.getConsumerIncentivePlans();
     }
   }
@@ -117,15 +122,18 @@ export class IncentiveManagementComponent implements OnInit {
         this.partners = this.getPartnerCodes(res);
         sessionStorage.setItem("RETAILER_PARTNERS", JSON.stringify(this.partners));
         this.selectedRetailerPartner = this.partners[0];
-        this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanType);
+        this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanTypeR);
       },
       err => this.toastr.error("Unable to load retailer Partner.")
     );
   }
 
-  getRPlansSelectedPartnerPlanType() {
-    this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanType);
+  getRPlansSelectedPartnerPlanType(value) {
+    this.selectedPlanTypeR = value ? value : this.selectedPlanTypeR;
+    this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanTypeR);
   }
+
+
 
 
   getRetailerIncentivePlansForPartner(partner, type){
@@ -366,19 +374,19 @@ export class IncentiveManagementComponent implements OnInit {
   addIncentiveRetailer($event) {
     if($event) {
       this.selectedRetailerPartner = $event.partner,
-      this.selectedPlanType = $event.planType
+      this.selectedPlanTypeR = $event.planType
     }
     this.getContentProviders();
     this.selectedPlan = null;
     this.createRetailerIncentive = false;
-    this.getRPlansSelectedPartnerPlanType();
+    this.getRPlansSelectedPartnerPlanType(null);
     this.showRetailerIncentive = true;
     
   }
 
   addIncentiveConsumer($event) {
     if($event) {
-      this.selectedPlanType = $event
+      this.selectedPlanTypeC = $event
     }
     this.createConsumerIncentive = false;
     this.getConsumerIncentivePlans();
@@ -387,7 +395,7 @@ export class IncentiveManagementComponent implements OnInit {
 
   getConsumerIncentivePlans() {
     this.isErrorConsumer = false;
-    this.incentiveService.getConsumerIncentivesByPlanType(this.selectedPlanType).subscribe(
+    this.incentiveService.getConsumerIncentivesByPlanType(this.selectedPlanTypeC).subscribe(
       res => { 
           // const validResult = res.filter((result) => Array.isArray(result));
           // var mergedResult = [].concat.apply([], validResult);
@@ -398,7 +406,7 @@ export class IncentiveManagementComponent implements OnInit {
           this.dataSourceConsumers.sort = this.sort.toArray()[1];   
           this.selectedStatusConsumer= this.statuses[0];     
           this.applyFilterConsumer(null);  
-          this.getMissingPlansConsumer(this.dataSourceConsumers.data, this.selectedPlanType);  
+          this.getMissingPlansConsumer(this.dataSourceConsumers.data, this.selectedPlanTypeC);  
         },
       err => {
         this.missingListConsumer = {
@@ -563,7 +571,7 @@ deleteDraftRetailerIncentive(id, partner) {
   this.incentiveService.deleteDraftRetailerIncentivePlan(id, partner).subscribe(
     res => {
       this.toastr.success("Retailer Incentive plan deleted successfully");
-      // this.getRetailerIncentivePlans();
+      this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanTypeR);
     },
     err =>  {
       console.log(err);
@@ -590,7 +598,7 @@ deleteDraftConsumerIncentive(id){
     this.incentiveService.publishRetailerIncentivePlan(id, partner).subscribe(
       res => {
         this.toastr.success("Retailer Incentive plan published successfully");
-        this.getRPlansSelectedPartnerPlanType();
+        this.getRPlansSelectedPartnerPlanType(null);
       },
       err =>  {
         console.log(err);

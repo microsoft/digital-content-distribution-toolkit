@@ -10,20 +10,22 @@
                         <span class="cms-spacer"></span>
                         <mat-form-field  fxFlex="20" class="partner-select">
                             <mat-label>Retailer Partner</mat-label>
-                            <mat-select [(value)]="selectedRetailerPartner" (selectionChange)="getRPlansSelectedPartnerPlanType()">
+                            <mat-select [(value)]="selectedRetailerPartner" (selectionChange)="getRPlansSelectedPartnerPlanType(null)">
                               <mat-option *ngFor="let retailerPartner of partners" [value]="retailerPartner">
                                 {{retailerPartner}}
                               </mat-option>
                               </mat-select>
                         </mat-form-field>
 
-                        <mat-button-toggle-group [(value)]="selectedPlanType"  #planTypeToggle="matButtonToggleGroup" style="float: right;">
-                            <mat-button-toggle value="REGULAR" aria-label="REGULAR" (change)="getRPlansSelectedPartnerPlanType()">
+                        <mat-button-toggle-group [(value)]="selectedPlanTypeR"   #planTypeToggle="matButtonToggleGroup" style="float: right;">
+                            
+                            <mat-button-toggle value="REGULAR" aria-label="REGULAR" (change)="getRPlansSelectedPartnerPlanType($event.value)">
                               REGULAR
                             </mat-button-toggle>
-                            <mat-button-toggle value="MILESTONE" aria-label="MILESTONE" (change)="getRPlansSelectedPartnerPlanType()">
-                              MILESTONE
-                            </mat-button-toggle>
+                            <mat-button-toggle value="MILESTONE" aria-label="MILESTONE" (change)="getRPlansSelectedPartnerPlanType($event.value)">
+                                MILESTONE
+                              </mat-button-toggle>
+                           
                         </mat-button-toggle-group>
                     </h5>
                     
@@ -125,7 +127,7 @@
                             </mat-option>
                             </mat-select>
                         </mat-form-field> -->
-                        <mat-label>Date range where <b>{{selectedPlanType}}</b> Retailer incentive plans are <span style="color:red;">NOT Published</span> for <b>{{selectedRetailerPartner}}</b></mat-label>
+                        <mat-label>Date range where <b>{{selectedPlanTypeR}}</b> Retailer incentive plans are <span style="color:red;">NOT Published</span> for <b>{{selectedRetailerPartner}}</b></mat-label>
                         <br><br>
                         <span  *ngIf="missingListPartner">
                             <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start" 
@@ -176,7 +178,7 @@
                     <button mat-raised-button color="primary"
                     (click)="openNewIncentivePage('CONSUMER')">New Incentive</button>
                     <span class="cms-spacer" ></span>
-                    <mat-button-toggle-group [(value)]="selectedPlanType"  #planTypeToggle="matButtonToggleGroup" style="float: right;">
+                    <mat-button-toggle-group [(value)]="selectedPlanTypeC"  #planTypeToggle="matButtonToggleGroup" style="float: right;">
                         <mat-button-toggle value="REGULAR" aria-label="REGULAR" (change)="getConsumerIncentivePlans()">
                           REGULAR
                         </mat-button-toggle>
@@ -311,7 +313,3 @@
             </span>
         </mat-tab>
     </mat-tab-group>
-    
-
-
-
