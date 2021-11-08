@@ -1,6 +1,0 @@
-2020-12-29T12:27:12.9873860+05:30 [ERR] blendnet.crm.user.api// Exception occurred while processing message.
-System.NullReferenceException: Object reference not set to an instance of an object.
-   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
-2020-12-29T12:27:38.4864803+05:30 [ERR] blendnet.crm.user.api// Exception occurred while processing message.
-System.NullReferenceException: Object reference not set to an instance of an object.
-   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
