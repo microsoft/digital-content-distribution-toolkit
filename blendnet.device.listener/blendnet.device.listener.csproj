@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>e8d7fc6a-c471-413f-a115-b9caa7af3a89</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>

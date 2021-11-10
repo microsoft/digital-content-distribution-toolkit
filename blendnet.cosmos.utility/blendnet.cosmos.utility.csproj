@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-blendnet.cosmos.utility-F4E94243-A151-4396-A00A-A26782C883D4</UserSecretsId>
   </PropertyGroup>
 

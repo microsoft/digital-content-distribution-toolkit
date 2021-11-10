@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-blendnet.incentive.listener-24BE4600-9373-4A2D-ADDE-33E99524B737</UserSecretsId>
   </PropertyGroup>
 
