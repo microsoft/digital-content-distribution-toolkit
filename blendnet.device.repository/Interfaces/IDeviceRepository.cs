@@ -149,6 +149,14 @@ namespace blendnet.device.repository.Interfaces
         /// <returns></returns>
         Task<List<DeviceContent>> GetContentAvailability(Guid contentId, List<string> deviceIds);
 
+
+        /// <summary>
+        /// Returns the content availability count on given device ids
+        /// </summary>
+        /// <param name="deviceIds"></param>
+        /// <returns></returns>
+        Task<List<DeviceContentAvailability>> GetContentAvailabilityCount(List<string> deviceIds);
+
         /// <summary>
         /// Creates Device Content Mapping
         /// </summary>

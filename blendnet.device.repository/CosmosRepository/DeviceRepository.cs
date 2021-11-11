@@ -405,6 +405,32 @@ namespace blendnet.device.repository.CosmosRepository
         }
 
         /// <summary>
+        /// Returns the device content availability count on given device ids
+        /// This is an approximate count.
+        /// Case where Broadcast has cancelled and content is not deleted, then it will appear in this list
+        /// </summary>
+        /// <param name="deviceIds"></param>
+        /// <returns></returns>
+        public async Task<List<DeviceContentAvailability>> GetContentAvailabilityCount(List<string> deviceIds)
+        {
+            var query = $"SELECT COUNT(c) AS ActiveContentCount, c.deviceId FROM c " +
+                        $" WHERE ARRAY_CONTAINS(@deviceIds, c.deviceId) " +
+                        $" AND c.deviceContainerType = @deviceContainerType " +
+                        $" AND c.isDeleted = false " +
+                        $" Group by c.deviceId ";
+
+            var queryDef = new QueryDefinition(query);
+
+            queryDef.WithParameter("@deviceIds", deviceIds);
+
+            queryDef.WithParameter("@deviceContainerType", DeviceContainerType.DeviceContent.ToString());
+
+            var deviceContentAvailabilityList = await this._container.ExtractDataFromQueryIterator<DeviceContentAvailability>(queryDef);
+
+            return deviceContentAvailabilityList;
+        }
+
+        /// <summary>
         /// Returns list of failed upsert device contents 
         /// </summary>
         /// <param name="deviceContent"></param>

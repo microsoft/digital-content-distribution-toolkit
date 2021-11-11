@@ -159,4 +159,7 @@
   <data name="DVC_ERR_0014" xml:space="preserve">
     <value>DVC_ERR_0014-Filters were never updated on device. Make sure to update the filter successfully first.</value>
   </data>
+  <data name="DVC_ERR_0015" xml:space="preserve">
+    <value>DVC_ERR_0015-Device Id(s) are mandatory!</value>
+  </data>
 </root>

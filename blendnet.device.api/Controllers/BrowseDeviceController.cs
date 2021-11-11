@@ -121,5 +121,42 @@ namespace blendnet.device.api.Controllers
             }
 
         }
+
+
+        /// <summary>
+        /// Returns content availability count on device
+        /// This is an approximate count.
+        /// In case, a broadcast has been cancelled, it will take some time to get reflected here.
+        /// Currently there is a limitation from SES if device is Powered OFF for 24 hours after cancellation, it will never get notified here
+        /// </summary>
+        /// <param name="contentAvailabilityRequest"></param>
+        /// <returns></returns>
+        [HttpPost("contentavailabilitycount", Name = nameof(GetContentAvailabilityCount))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<List<DeviceContentAvailability>>> GetContentAvailabilityCount(ContentAvailabilityCountRequest contentAvailabilityCountRequest)
+        {
+            List<string> errorInfo = new List<string>();
+
+            if (contentAvailabilityCountRequest == null ||
+                contentAvailabilityCountRequest.DeviceIds == null ||
+                contentAvailabilityCountRequest.DeviceIds.Count() <= 0)
+            {
+                errorInfo.Add(_stringLocalizer["DVC_ERR_0015"]);
+
+                return BadRequest(errorInfo);
+            }
+
+            List<DeviceContentAvailability> deviceContentAvailability = await _deviceRepository.GetContentAvailabilityCount(contentAvailabilityCountRequest.DeviceIds);
+
+            if (deviceContentAvailability != null && deviceContentAvailability.Count > 0)
+            {
+                return Ok(deviceContentAvailability);
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
     }
 }
