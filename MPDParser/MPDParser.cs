@@ -53,7 +53,7 @@ namespace Microsoft.IIS.Media.DASH.MPDParser
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine("MPDParser::parse::"+e.Message);
-                throw e;
+                throw;
             }
             finally
             {
@@ -84,7 +84,7 @@ namespace Microsoft.IIS.Media.DASH.MPDParser
             {
                 System.Diagnostics.Debug.WriteLine("MPDParser::readSchema::" + e.Message);
                 System.Diagnostics.Debug.WriteLine("MPDParser::readSchema::" + e.StackTrace);
-                throw e;
+                throw;
             }
             return schemaReaderStream;
         }
@@ -112,7 +112,7 @@ namespace Microsoft.IIS.Media.DASH.MPDParser
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine("MPDParser::addSchemas::" + e.Message);
-                throw e;
+                throw;
             }
         }
 

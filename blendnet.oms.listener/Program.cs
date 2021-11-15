@@ -18,161 +18,159 @@ using System;
 using blendnet.api.proxy.Notification;
 using Microsoft.ApplicationInsights.Extensibility;
 using blendnet.common.infrastructure.ApplicationInsights;
+using blendnet.oms.listener;
 
-namespace blendnet.oms.listener
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var configuration = new ConfigurationBuilder()
-            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
+var configuration = new ConfigurationBuilder()
+           .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+           .AddJsonFile("appsettings.json")
+           .Build();
 
-            Log.Logger = new LoggerConfiguration()
-           .ReadFrom.Configuration(configuration)
-           .Enrich.FromLogContext()
-           .CreateLogger();
+Log.Logger = new LoggerConfiguration()
+.ReadFrom.Configuration(configuration)
+.Enrich.FromLogContext()
+.CreateLogger();
 
-            CreateHostBuilder(args).Build().Run();
+IHost host = Host.CreateDefaultBuilder(args)
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
 
-            Log.CloseAndFlush();
-        }
+                logging.AddConsole();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                 .ConfigureLogging(logging =>
-                 {
-                     logging.ClearProviders();
+                logging.AddDebug();
 
-                     logging.AddConsole();
-
-                     logging.AddDebug();
-
-                     logging.AddSerilog();
-                 })
-                .ConfigureAppConfiguration((context, config) =>
+                logging.AddSerilog();
+            })
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                //read the configuration from keyvault in case of production
+                //https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-5.0
+                if (context.HostingEnvironment.IsProduction())
                 {
-                    //read the configuration from keyvault in case of production
-                    //https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-5.0
-                    if (context.HostingEnvironment.IsProduction())
-                    {
-                        var builtConfig = config.Build();
+                    var builtConfig = config.Build();
 
-                        var secretClient = new SecretClient(
-                        new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
-                        new DefaultAzureCredential());
+                    var secretClient = new SecretClient(
+                    new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
+                    new DefaultAzureCredential());
 
-                        config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
-                    }
-                })
-                .ConfigureServices((hostContext, services) =>
+                    config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
+                }
+            })
+            .ConfigureServices((hostContext, services) =>
+            {
+                //Configure Application Settings
+                services.Configure<OmsAppSettings>(hostContext.Configuration);
+
+                services.AddLogging();
+
+                services.AddHostedService<EventListener>();
+
+                //set up application insights
+                services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
+                services.AddApplicationInsightsTelemetryWorkerService();
+
+                string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
+
+                services.AddAzureClients(builder =>
                 {
-                    //Configure Application Settings
-                    services.Configure<OmsAppSettings>(hostContext.Configuration);
+                    //Add Service Bus Client
+                    builder.AddServiceBusClient(serviceBusConnectionString);
 
-                    services.AddLogging();
-
-                    services.AddHostedService<EventListener>();
-
-                    //set up application insights
-                    services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
-                    services.AddApplicationInsightsTelemetryWorkerService();
-
-                    string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
-
-                    services.AddAzureClients(builder =>
-                    {
-                        //Add Service Bus Client
-                        builder.AddServiceBusClient(serviceBusConnectionString);
-
-                    });
-
-                    //Configure Event 
-                    ConfigureEventBus(hostContext, services);
-
-                    //Configure Http Clients
-                    ConfigureHttpClients(hostContext, services);
-
-                    //Configure Distribute Cache
-                    ConfigureDistributedCache(hostContext, services);
-
-                    //Configure User Proxy
-                    services.AddTransient<UserProxy>();
-
-                    //Configure Kaizala Notification Proxy
-                    services.AddTransient<NotificationProxy>();
                 });
 
-        /// <summary>
-        /// Configure Event Bus
-        /// </summary>
-        /// <param name="services"></param>
-        private static void ConfigureEventBus(HostBuilderContext context, IServiceCollection services)
-        {
-            //event bus related registrations
-            string serviceBusConnectionString = context.Configuration.GetValue<string>("ServiceBusConnectionString");
+                //Configure Event 
+                ConfigureEventBus(hostContext, services);
 
-            string serviceBusTopicName = context.Configuration.GetValue<string>("ServiceBusTopicName");
+                //Configure Http Clients
+                ConfigureHttpClients(hostContext, services);
 
-            string serviceBusSubscriptionName = context.Configuration.GetValue<string>("ServiceBusSubscriptionName");
+                //Configure Distribute Cache
+                ConfigureDistributedCache(hostContext, services);
 
-            int serviceBusMaxConcurrentCalls = context.Configuration.GetValue<int>("ServiceBusMaxConcurrentCalls");
+                //Configure User Proxy
+                services.AddTransient<UserProxy>();
 
-            services.AddSingleton<EventBusConnectionData>(ebcd =>
-            {
-                EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
+                //Configure Kaizala Notification Proxy
+                services.AddTransient<NotificationProxy>();
+            }).
+            Build();
 
-                eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
+await host.RunAsync();
 
-                eventBusConnectionData.TopicName = serviceBusTopicName;
+#region Private Methods
+/// <summary>
+/// Configure Event Bus
+/// </summary>
+/// <param name="services"></param>
+static void ConfigureEventBus(HostBuilderContext context, IServiceCollection services)
+{
+    //event bus related registrations
+    string serviceBusConnectionString = context.Configuration.GetValue<string>("ServiceBusConnectionString");
 
-                eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
+    string serviceBusTopicName = context.Configuration.GetValue<string>("ServiceBusTopicName");
 
-                eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
+    string serviceBusSubscriptionName = context.Configuration.GetValue<string>("ServiceBusSubscriptionName");
 
-                return eventBusConnectionData;
-            });
+    int serviceBusMaxConcurrentCalls = context.Configuration.GetValue<int>("ServiceBusMaxConcurrentCalls");
 
-            services.AddSingleton<IEventBus, EventServiceBus>();
+    services.AddSingleton<EventBusConnectionData>(ebcd =>
+    {
+        EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
 
-            services.AddTransient<OrderCompleteEventHandler>();
+        eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
 
-        }
+        eventBusConnectionData.TopicName = serviceBusTopicName;
 
-        /// <summary>
-        /// Configure Required Http Clients
-        /// </summary>
-        /// <param name="services"></param>
-        private static void ConfigureHttpClients(HostBuilderContext hostContext, IServiceCollection services)
-        {
-            //Configure Http Clients
-            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
-            {
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-            });
+        eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
 
-            string notificationBaseUrl = hostContext.Configuration.GetValue<string>("NotificationBaseUrl");
-            services.AddHttpClient(ApplicationConstants.HttpClientKeys.NOTIFICATION_HTTP_CLIENT, c =>
-            {
-                c.BaseAddress = new Uri(notificationBaseUrl);
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-            });
-        }
+        eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
 
-        /// <summary>
-        /// Configures Redis as distributed cache
-        /// </summary>
-        /// <param name="services"></param>
-        private static void ConfigureDistributedCache(HostBuilderContext hostContext, IServiceCollection services)
-        {
-            string redisCacheConnectionString = hostContext.Configuration.GetValue<string>("RedisCacheConnectionString");
+        return eventBusConnectionData;
+    });
 
-            services.AddStackExchangeRedisCache(options => {
-                options.Configuration = redisCacheConnectionString;
-            });
+    services.AddSingleton<IEventBus, EventServiceBus>();
 
-        }
-    }
+    services.AddTransient<OrderCompleteEventHandler>();
+
 }
+
+/// <summary>
+/// Configure Required Http Clients
+/// </summary>
+/// <param name="services"></param>
+static void ConfigureHttpClients(HostBuilderContext hostContext, IServiceCollection services)
+{
+    //Configure Http Clients
+    services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
+    {
+        c.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
+
+    string notificationBaseUrl = hostContext.Configuration.GetValue<string>("NotificationBaseUrl");
+    services.AddHttpClient(ApplicationConstants.HttpClientKeys.NOTIFICATION_HTTP_CLIENT, c =>
+    {
+        c.BaseAddress = new Uri(notificationBaseUrl);
+        c.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
+}
+
+/// <summary>
+/// Configures Redis as distributed cache
+/// </summary>
+/// <param name="services"></param>
+static void ConfigureDistributedCache(HostBuilderContext hostContext, IServiceCollection services)
+{
+    string redisCacheConnectionString = hostContext.Configuration.GetValue<string>("RedisCacheConnectionString");
+
+    services.AddStackExchangeRedisCache(options => {
+        options.Configuration = redisCacheConnectionString;
+    });
+
+}
+
+#endregion
+
+
+
+
+

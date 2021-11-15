@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "blendnet.notification.listener": {
+    "blendnet.oms.listener": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "environmentVariables": {

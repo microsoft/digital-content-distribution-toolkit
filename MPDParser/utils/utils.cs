@@ -27,9 +27,9 @@ namespace Microsoft.IIS.Media.DASH.MPDParser
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                throw;
             }
             return embeddedResourceStream;
         }

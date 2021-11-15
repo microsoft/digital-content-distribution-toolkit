@@ -25,231 +25,225 @@ using Polly.Extensions.Http;
 using Microsoft.ApplicationInsights.Extensibility;
 using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.api.proxy.Cms;
+using blendnet.device.listener;
 
-namespace blendnet.device.listener
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var configuration = new ConfigurationBuilder()
-            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
+var configuration = new ConfigurationBuilder()
+           .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+           .AddJsonFile("appsettings.json")
+           .Build();
 
-            Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(configuration)
-            .Enrich.FromLogContext()
-            .CreateLogger();
+Log.Logger = new LoggerConfiguration()
+.ReadFrom.Configuration(configuration)
+.Enrich.FromLogContext()
+.CreateLogger();
 
-            CreateHostBuilder(args).Build().Run();
 
-            Log.CloseAndFlush();
-        }
+IHost host = Host.CreateDefaultBuilder(args)
+            .ConfigureLogging(logging =>
+              {
+                  logging.ClearProviders();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                  .ConfigureLogging(logging =>
-                  {
-                      logging.ClearProviders();
+                  logging.AddConsole();
 
-                      logging.AddConsole();
+                  logging.AddDebug();
 
-                      logging.AddDebug();
-
-                      logging.AddSerilog();
-                  })
-                 .ConfigureAppConfiguration((context, config) =>
-                 {
-                     //read the configuration from keyvault in case of production
-                     //https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-5.0
-                     if (context.HostingEnvironment.IsProduction())
-                     {
-                         var builtConfig = config.Build();
-
-                         var secretClient = new SecretClient(
-                         new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
-                         new DefaultAzureCredential());
-
-                         config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
-                     }
-                 })
-                .ConfigureServices((hostContext, services) =>
+                  logging.AddSerilog();
+              })
+            .ConfigureAppConfiguration((context, config) =>
+             {
+                //read the configuration from keyvault in case of production
+                //https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-5.0
+                if (context.HostingEnvironment.IsProduction())
                 {
-                    //Configure Application Settings
-                    services.Configure<DeviceAppSettings>(hostContext.Configuration);
+                    var builtConfig = config.Build();
 
-                    services.AddLogging();
+                    var secretClient = new SecretClient(
+                    new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
+                    new DefaultAzureCredential());
 
-                    services.AddHostedService<EventListener>();
+                    config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
+                }
+             })
+            .ConfigureServices((hostContext, services) =>
+            {
+                //Configure Application Settings
+                services.Configure<DeviceAppSettings>(hostContext.Configuration);
 
-                    //set up application insights
-                    services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
-                    services.AddApplicationInsightsTelemetryWorkerService();
+                services.AddLogging();
 
-                    string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
+                services.AddHostedService<EventListener>();
 
-                    services.AddAzureClients(builder =>
-                    {
-                        //Add Service Bus Client
-                        builder.AddServiceBusClient(serviceBusConnectionString);
+                        //set up application insights
+                        services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
+                services.AddApplicationInsightsTelemetryWorkerService();
 
-                    });
+                string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
 
-                    //Configure Event 
-                    ConfigureEventBus(hostContext, services);
-
-                    //Configure the Cosmos DB
-                    ConfigureCosmosDB(hostContext, services);
-
-                    //Configure Http Clients
-                    ConfigureHttpClients(hostContext, services);
-
-                    //Configure Distribute Cache
-                    ConfigureDistributedCache(hostContext, services);
-
-                    //Configure Repository
-                    services.AddTransient<IDeviceRepository, DeviceRepository>();
-
-                    //Configure IOT Central Proxy
-                    services.AddTransient<IOTCentralProxy>();
-
-                    //Configure Kaizala Identity Proxy
-                    services.AddTransient<KaizalaIdentityProxy>();
-
-                    //Configure Content Proxy
-                    services.AddTransient<ContentProxy>();
+                services.AddAzureClients(builder =>
+                {
+                            //Add Service Bus Client
+                            builder.AddServiceBusClient(serviceBusConnectionString);
 
                 });
 
-        /// <summary>
-        /// Configure Event Bus
-        /// </summary>
-        /// <param name="services"></param>
-        private static void ConfigureEventBus(HostBuilderContext context, IServiceCollection services)
-        {
-            //event bus related registrations
-            string serviceBusConnectionString = context.Configuration.GetValue<string>("ServiceBusConnectionString");
+                //Configure Event 
+                ConfigureEventBus(hostContext, services);
 
-            string serviceBusTopicName = context.Configuration.GetValue<string>("ServiceBusTopicName");
+                //Configure the Cosmos DB
+                ConfigureCosmosDB(hostContext, services);
 
-            string serviceBusSubscriptionName = context.Configuration.GetValue<string>("ServiceBusSubscriptionName");
+                //Configure Http Clients
+                ConfigureHttpClients(hostContext, services);
 
-            int serviceBusMaxConcurrentCalls = context.Configuration.GetValue<int>("ServiceBusMaxConcurrentCalls");
+                //Configure Distribute Cache
+                ConfigureDistributedCache(hostContext, services);
 
-            services.AddSingleton<EventBusConnectionData>(ebcd =>
-            {
-                EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
+                //Configure Repository
+                services.AddTransient<IDeviceRepository, DeviceRepository>();
 
-                eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
+                //Configure IOT Central Proxy
+                services.AddTransient<IOTCentralProxy>();
 
-                eventBusConnectionData.TopicName = serviceBusTopicName;
+                //Configure Kaizala Identity Proxy
+                services.AddTransient<KaizalaIdentityProxy>();
 
-                eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
+                //Configure Content Proxy
+                services.AddTransient<ContentProxy>();
 
-                eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
+            })
+            .Build();
 
-                return eventBusConnectionData;
-            });
+await host.RunAsync();
 
-            services.AddSingleton<IEventBus, EventServiceBus>();
+#region Private Methods
 
-            //add device based event handler
-            services.AddTransient<FilterUpdateIntegrationEventHandler>();
+/// <summary>
+/// Configure Event Bus
+/// </summary>
+/// <param name="services"></param>
+static void ConfigureEventBus(HostBuilderContext context, IServiceCollection services)
+{
+    //event bus related registrations
+    string serviceBusConnectionString = context.Configuration.GetValue<string>("ServiceBusConnectionString");
 
-            services.AddTransient<IOTTelemetryCommandIntegrationEventHandler>();
+    string serviceBusTopicName = context.Configuration.GetValue<string>("ServiceBusTopicName");
 
-        }
+    string serviceBusSubscriptionName = context.Configuration.GetValue<string>("ServiceBusSubscriptionName");
 
-        /// <summary>
-        /// Set up Cosmos DB
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="services"></param>
-        private static void ConfigureCosmosDB(HostBuilderContext context, IServiceCollection services)
-        {
-            string account = context.Configuration.GetValue<string>("AccountEndPoint");
+    int serviceBusMaxConcurrentCalls = context.Configuration.GetValue<int>("ServiceBusMaxConcurrentCalls");
 
-            string databaseName = context.Configuration.GetValue<string>("DatabaseName");
+    services.AddSingleton<EventBusConnectionData>(ebcd =>
+    {
+        EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
 
-            string key = context.Configuration.GetValue<string>("AccountKey");
+        eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
 
-            services.AddSingleton<CosmosClient>((cc) => {
+        eventBusConnectionData.TopicName = serviceBusTopicName;
 
-                CosmosClient client = new CosmosClientBuilder(account, key)
-                           .WithSerializerOptions(new CosmosSerializationOptions()
-                           {
-                               PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                           })
-                           .Build();
+        eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
 
-                DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
+        eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
 
-                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Device, ApplicationConstants.CosmosContainers.DevicePartitionKey).Result;
+        return eventBusConnectionData;
+    });
 
-                return client;
-            });
-        }
+    services.AddSingleton<IEventBus, EventServiceBus>();
 
-        /// <summary>
-        /// Configure Required Http Clients
-        /// </summary>
-        /// <param name="services"></param>
-        private static void ConfigureHttpClients(HostBuilderContext hostContext, IServiceCollection services)
-        {
-            //Configure Http Clients
-            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
-            {
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-            });
+    //add device based event handler
+    services.AddTransient<FilterUpdateIntegrationEventHandler>();
 
-            string iotCentralBaseUrl = hostContext.Configuration.GetValue<string>("IOTCAPIBaseUrl");
-            int httpHandlerLifeTimeInMts = hostContext.Configuration.GetValue<int>("HttpHandlerLifeTimeInMts");
-            int httpClientRetryCount = hostContext.Configuration.GetValue<int>("HttpClientRetryCount");
+    services.AddTransient<IOTTelemetryCommandIntegrationEventHandler>();
 
-            services.AddHttpClient(ApplicationConstants.HttpClientKeys.IOTCENTRAL_HTTP_CLIENT, c =>
-            {
-                c.BaseAddress = new Uri(iotCentralBaseUrl);
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-            }).SetHandlerLifetime(TimeSpan.FromMinutes(httpHandlerLifeTimeInMts))  //Set lifetime to five minutes
-              .AddPolicyHandler(GetRetryPolicy(httpClientRetryCount));
-
-            //Configure Http Client for cms Proxy
-            string cmsBaseUrl = hostContext.Configuration.GetValue<string>("CmsBaseUrl");
-            services.AddHttpClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT, c =>
-            {
-                c.BaseAddress = new Uri(cmsBaseUrl);
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-            });
-
-        }
-
-        /// <summary>
-        /// Configures Redis as distributed cache
-        /// </summary>
-        /// <param name="services"></param>
-        private static void ConfigureDistributedCache(HostBuilderContext hostContext, IServiceCollection services)
-        {
-            string redisCacheConnectionString = hostContext.Configuration.GetValue<string>("RedisCacheConnectionString");
-
-            services.AddStackExchangeRedisCache(options => {
-                options.Configuration = redisCacheConnectionString;
-            });
-
-        }
-
-        /// <summary>
-        /// Retry Policy
-        /// </summary>
-        /// <param name="httpClientRetryCount"></param>
-        /// <returns></returns>
-        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(int httpClientRetryCount)
-        {
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-                .WaitAndRetryAsync(httpClientRetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-        }
-
-    }
 }
+
+/// <summary>
+/// Set up Cosmos DB
+/// </summary>
+/// <param name="context"></param>
+/// <param name="services"></param>
+static void ConfigureCosmosDB(HostBuilderContext context, IServiceCollection services)
+{
+    string account = context.Configuration.GetValue<string>("AccountEndPoint");
+
+    string databaseName = context.Configuration.GetValue<string>("DatabaseName");
+
+    string key = context.Configuration.GetValue<string>("AccountKey");
+
+    services.AddSingleton<CosmosClient>((cc) => {
+
+        CosmosClient client = new CosmosClientBuilder(account, key)
+                   .WithSerializerOptions(new CosmosSerializationOptions()
+                   {
+                       PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                   })
+                   .Build();
+
+        DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
+
+        ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Device, ApplicationConstants.CosmosContainers.DevicePartitionKey).Result;
+
+        return client;
+    });
+}
+
+/// <summary>
+/// Configure Required Http Clients
+/// </summary>
+/// <param name="services"></param>
+static void ConfigureHttpClients(HostBuilderContext hostContext, IServiceCollection services)
+{
+    //Configure Http Clients
+    services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
+    {
+        c.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
+
+    string iotCentralBaseUrl = hostContext.Configuration.GetValue<string>("IOTCAPIBaseUrl");
+    int httpHandlerLifeTimeInMts = hostContext.Configuration.GetValue<int>("HttpHandlerLifeTimeInMts");
+    int httpClientRetryCount = hostContext.Configuration.GetValue<int>("HttpClientRetryCount");
+
+    services.AddHttpClient(ApplicationConstants.HttpClientKeys.IOTCENTRAL_HTTP_CLIENT, c =>
+    {
+        c.BaseAddress = new Uri(iotCentralBaseUrl);
+        c.DefaultRequestHeaders.Add("Accept", "application/json");
+    }).SetHandlerLifetime(TimeSpan.FromMinutes(httpHandlerLifeTimeInMts))  //Set lifetime to five minutes
+      .AddPolicyHandler(GetRetryPolicy(httpClientRetryCount));
+
+    //Configure Http Client for cms Proxy
+    string cmsBaseUrl = hostContext.Configuration.GetValue<string>("CmsBaseUrl");
+    services.AddHttpClient(ApplicationConstants.HttpClientKeys.CMS_HTTP_CLIENT, c =>
+    {
+        c.BaseAddress = new Uri(cmsBaseUrl);
+        c.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
+
+}
+
+/// <summary>
+/// Configures Redis as distributed cache
+/// </summary>
+/// <param name="services"></param>
+static void ConfigureDistributedCache(HostBuilderContext hostContext, IServiceCollection services)
+{
+    string redisCacheConnectionString = hostContext.Configuration.GetValue<string>("RedisCacheConnectionString");
+
+    services.AddStackExchangeRedisCache(options => {
+        options.Configuration = redisCacheConnectionString;
+    });
+
+}
+
+/// <summary>
+/// Retry Policy
+/// </summary>
+/// <param name="httpClientRetryCount"></param>
+/// <returns></returns>
+static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(int httpClientRetryCount)
+{
+    return HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+        .WaitAndRetryAsync(httpClientRetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+}
+
+#endregion

@@ -7,6 +7,7 @@ using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.common.infrastructure.KeyVault;
 using blendnet.common.infrastructure.ServiceBus;
+using blendnet.retailer.listener;
 using blendnet.retailer.listener.IntegrationEventHandling;
 using blendnet.retailer.repository.CosmosRepository;
 using blendnet.retailer.repository.Interfaces;
@@ -21,189 +22,183 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 
-namespace blendnet.retailer.listener
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var configuration = new ConfigurationBuilder()
+
+var configuration = new ConfigurationBuilder()
             .SetBasePath(System.IO.Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
             .Build();
 
-            Log.Logger = new LoggerConfiguration()
-           .ReadFrom.Configuration(configuration)
-           .Enrich.FromLogContext()
-           .CreateLogger();
+Log.Logger = new LoggerConfiguration()
+.ReadFrom.Configuration(configuration)
+.Enrich.FromLogContext()
+.CreateLogger();
 
-            CreateHostBuilder(args).Build().Run();
 
-            Log.CloseAndFlush();
-        }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                 .ConfigureLogging(logging =>
-                 {
-                     logging.ClearProviders();
+IHost host = Host.CreateDefaultBuilder(args)
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
 
-                     logging.AddConsole();
+                logging.AddConsole();
 
-                     logging.AddDebug();
+                logging.AddDebug();
 
-                     logging.AddSerilog();
-                 })
-                .ConfigureAppConfiguration((context, config) =>
+                logging.AddSerilog();
+            })
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                //read the configuration from keyvault in case of production
+                //https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-5.0
+                if (context.HostingEnvironment.IsProduction())
                 {
-                    //read the configuration from keyvault in case of production
-                    //https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-5.0
-                    if (context.HostingEnvironment.IsProduction())
-                    {
-                        var builtConfig = config.Build();
+                    var builtConfig = config.Build();
 
-                        var secretClient = new SecretClient(
-                        new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
-                        new DefaultAzureCredential());
+                    var secretClient = new SecretClient(
+                    new Uri($"https://{builtConfig["KeyVaultName"]}.vault.azure.net/"),
+                    new DefaultAzureCredential());
 
-                        config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
-                    }
-                })
-                .ConfigureServices((hostContext, services) =>
+                    config.AddAzureKeyVault(secretClient, new PrefixKeyVaultSecretManager(builtConfig["KeyVaultPrefix"]));
+                }
+            })
+            .ConfigureServices((hostContext, services) =>
+            {
+                //Configure Application Settings
+                services.Configure<RetailerAppSettings>(hostContext.Configuration);
+
+                services.AddLogging();
+
+                services.AddHostedService<EventListener>();
+
+                //set up application insights
+                services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
+                services.AddApplicationInsightsTelemetryWorkerService();
+
+                string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
+
+                services.AddAzureClients(builder =>
                 {
-                    //Configure Application Settings
-                    services.Configure<RetailerAppSettings>(hostContext.Configuration);
+                    //Add Service Bus Client
+                    builder.AddServiceBusClient(serviceBusConnectionString);
 
-                    services.AddLogging();
-
-                    services.AddHostedService<EventListener>();
-
-                    //set up application insights
-                    services.AddSingleton<ITelemetryInitializer, BlendNetTelemetryInitializer>();
-                    services.AddApplicationInsightsTelemetryWorkerService();
-
-                    string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
-
-                    services.AddAzureClients(builder =>
-                    {
-                        //Add Service Bus Client
-                        builder.AddServiceBusClient(serviceBusConnectionString);
-
-                    });
-
-                    //Configure Event 
-                    ConfigureEventBus(hostContext, services);
-
-                    //Configure the Cosmos DB
-                    ConfigureCosmosDB(hostContext, services);
-
-                    //Configure Http Clients
-                    ConfigureHttpClients(services);
-
-                    //Configure Distribute Cache
-                    ConfigureDistributedCache(hostContext, services);
-
-                    //Configure Repository
-                    services.AddTransient<IRetailerRepository, RetailerRepository>();
-
-                    //Configure Kaizala Identity Proxy
-                    services.AddTransient<KaizalaIdentityProxy>();
                 });
 
+                //Configure Event 
+                ConfigureEventBus(hostContext, services);
 
-        /// <summary>
-        /// Configure Event Bus
-        /// </summary>
-        /// <param name="services"></param>
-        private static void ConfigureEventBus(HostBuilderContext context, IServiceCollection services)
-        {
-            //event bus related registrations
-            string serviceBusConnectionString = context.Configuration.GetValue<string>("ServiceBusConnectionString");
+                //Configure the Cosmos DB
+                ConfigureCosmosDB(hostContext, services);
 
-            string serviceBusTopicName = context.Configuration.GetValue<string>("ServiceBusTopicName");
+                //Configure Http Clients
+                ConfigureHttpClients(services);
 
-            string serviceBusSubscriptionName = context.Configuration.GetValue<string>("ServiceBusSubscriptionName");
+                //Configure Distribute Cache
+                ConfigureDistributedCache(hostContext, services);
 
-            int serviceBusMaxConcurrentCalls = context.Configuration.GetValue<int>("ServiceBusMaxConcurrentCalls");
+                //Configure Repository
+                services.AddTransient<IRetailerRepository, RetailerRepository>();
 
-            services.AddSingleton<EventBusConnectionData>(ebcd =>
-            {
-                EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
+                //Configure Kaizala Identity Proxy
+                services.AddTransient<KaizalaIdentityProxy>();
+            })
+            .Build();
 
-                eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
+await host.RunAsync();
 
-                eventBusConnectionData.TopicName = serviceBusTopicName;
+#region Private Methods
 
-                eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
+/// <summary>
+/// Configure Event Bus
+/// </summary>
+/// <param name="services"></param>
+static void ConfigureEventBus(HostBuilderContext context, IServiceCollection services)
+{
+    //event bus related registrations
+    string serviceBusConnectionString = context.Configuration.GetValue<string>("ServiceBusConnectionString");
 
-                eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
+    string serviceBusTopicName = context.Configuration.GetValue<string>("ServiceBusTopicName");
 
-                return eventBusConnectionData;
-            });
+    string serviceBusSubscriptionName = context.Configuration.GetValue<string>("ServiceBusSubscriptionName");
 
-            services.AddSingleton<IEventBus, EventServiceBus>();
+    int serviceBusMaxConcurrentCalls = context.Configuration.GetValue<int>("ServiceBusMaxConcurrentCalls");
 
-            services.AddTransient<RetailerCreatedIntegrationEventHandler>();
-            services.AddTransient<LinkRetailerIntegrationEventHandler>();
-        }
+    services.AddSingleton<EventBusConnectionData>(ebcd =>
+    {
+        EventBusConnectionData eventBusConnectionData = new EventBusConnectionData();
 
-        /// <summary>
-        /// Set up Cosmos DB
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="services"></param>
-        private static void ConfigureCosmosDB(HostBuilderContext context, IServiceCollection services)
-        {
-            string account = context.Configuration.GetValue<string>("AccountEndPoint");
+        eventBusConnectionData.ServiceBusConnectionString = serviceBusConnectionString;
 
-            string databaseName = context.Configuration.GetValue<string>("DatabaseName");
+        eventBusConnectionData.TopicName = serviceBusTopicName;
 
-            string key = context.Configuration.GetValue<string>("AccountKey");
+        eventBusConnectionData.SubscriptionName = serviceBusSubscriptionName;
 
-            services.AddSingleton<CosmosClient>((cc) => {
+        eventBusConnectionData.MaxConcurrentCalls = serviceBusMaxConcurrentCalls;
 
-                CosmosClient client = new CosmosClientBuilder(account, key)
-                           .WithSerializerOptions(new CosmosSerializationOptions()
-                           {
-                               PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                           })
-                           .Build();
-                
-                DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
+        return eventBusConnectionData;
+    });
 
-                ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Retailer, ApplicationConstants.CosmosContainers.RetailerPartitionKey).Result;
-                containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.RetailerProvider, ApplicationConstants.CosmosContainers.RetailerProviderPartitionKey).Result;
+    services.AddSingleton<IEventBus, EventServiceBus>();
 
-                return client;
-            });
-        }
-
-        /// <summary>
-        /// Configure Required Http Clients
-        /// </summary>
-        /// <param name="services"></param>
-        private static void ConfigureHttpClients(IServiceCollection services)
-        {
-            //Configure Http Clients
-            services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
-            {
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-            });
-        }
-
-        /// <summary>
-        /// Configures Redis as distributed cache
-        /// </summary>
-        /// <param name="services"></param>
-        private static void ConfigureDistributedCache(HostBuilderContext hostContext, IServiceCollection services)
-        {
-            string redisCacheConnectionString = hostContext.Configuration.GetValue<string>("RedisCacheConnectionString");
-
-            services.AddStackExchangeRedisCache(options => {
-                options.Configuration = redisCacheConnectionString;
-            });
-
-        }
-
-    }
+    services.AddTransient<RetailerCreatedIntegrationEventHandler>();
+    services.AddTransient<LinkRetailerIntegrationEventHandler>();
 }
+
+/// <summary>
+/// Set up Cosmos DB
+/// </summary>
+/// <param name="context"></param>
+/// <param name="services"></param>
+static void ConfigureCosmosDB(HostBuilderContext context, IServiceCollection services)
+{
+    string account = context.Configuration.GetValue<string>("AccountEndPoint");
+
+    string databaseName = context.Configuration.GetValue<string>("DatabaseName");
+
+    string key = context.Configuration.GetValue<string>("AccountKey");
+
+    services.AddSingleton<CosmosClient>((cc) => {
+
+        CosmosClient client = new CosmosClientBuilder(account, key)
+                   .WithSerializerOptions(new CosmosSerializationOptions()
+                   {
+                       PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                   })
+                   .Build();
+
+        DatabaseResponse database = client.CreateDatabaseIfNotExistsAsync(databaseName).Result;
+
+        ContainerResponse containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.Retailer, ApplicationConstants.CosmosContainers.RetailerPartitionKey).Result;
+        containerResponse = database.Database.CreateContainerIfNotExistsAsync(ApplicationConstants.CosmosContainers.RetailerProvider, ApplicationConstants.CosmosContainers.RetailerProviderPartitionKey).Result;
+
+        return client;
+    });
+}
+
+/// <summary>
+/// Configure Required Http Clients
+/// </summary>
+/// <param name="services"></param>
+static void ConfigureHttpClients(IServiceCollection services)
+{
+    //Configure Http Clients
+    services.AddHttpClient(ApplicationConstants.HttpClientKeys.KAIZALA_HTTP_CLIENT, c =>
+    {
+        c.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
+}
+
+/// <summary>
+/// Configures Redis as distributed cache
+/// </summary>
+/// <param name="services"></param>
+static void ConfigureDistributedCache(HostBuilderContext hostContext, IServiceCollection services)
+{
+    string redisCacheConnectionString = hostContext.Configuration.GetValue<string>("RedisCacheConnectionString");
+
+    services.AddStackExchangeRedisCache(options => {
+        options.Configuration = redisCacheConnectionString;
+    });
+
+}
+
+#endregion

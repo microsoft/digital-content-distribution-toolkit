@@ -315,19 +315,7 @@ namespace blendnet.cms.testutility
 
                 Console.ReadLine();
             }
-            catch (ApiErrorException e)
-            {
-                Console.WriteLine("Hit ApiErrorException");
-                Console.WriteLine($"\tCode: {e.Body.Error.Code}");
-                Console.WriteLine($"\tMessage: {e.Body.Error.Message}");
-                Console.WriteLine();
-                Console.WriteLine("Exiting, cleanup may be necessary...");
-
-                File.AppendAllLines(_outputLogPath, new string[] { $"{e.ToString()}",System.Environment.NewLine});
-
-                Console.ReadLine();
-
-            } catch (Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Hit GeneralErrorException");
 

@@ -229,7 +229,11 @@ namespace blendnet.cms.listener.IntegrationEventHandling
 
                     committedBlocks.Add(blockId);
 
-                    Task task = targetBlob.StageBlockFromUriAsync(new Uri(sourceBlobUrl), blockId, new HttpRange(offset, block.Size));
+                    StageBlockFromUriOptions stageBlockFromUriOptions = new StageBlockFromUriOptions();
+
+                    stageBlockFromUriOptions.SourceRange = new HttpRange(offset, block.Size);
+
+                    Task task = targetBlob.StageBlockFromUriAsync(new Uri(sourceBlobUrl), blockId, stageBlockFromUriOptions);
 
                     offset += block.Size;
 
