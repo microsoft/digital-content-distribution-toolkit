@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: blendnet-ingress
@@ -11,39 +11,66 @@ spec:
   - http:
       paths:
       - path: /cmsapi/*
+        pathType: Prefix
         backend:
-          serviceName: blendnet-cms-api
-          servicePort: 80
+          service:
+            name: blendnet-cms-api
+            port: 
+              number: 80
       - path: /userapi/*
+        pathType: Prefix
         backend:
-          serviceName: blendnet-user-api
-          servicePort: 80
+          service:
+            name: blendnet-user-api
+            port: 
+              number: 80
       - path: /retailerapi/*
+        pathType: Prefix
         backend:
-          serviceName: blendnet-retailer-api
-          servicePort: 80
+          service:
+            name: blendnet-retailer-api
+            port: 
+              number: 80
       - path: /omsapi/*
+        pathType: Prefix
         backend:
-          serviceName: blendnet-oms-api
-          servicePort: 80
+          service:
+            name: blendnet-oms-api
+            port: 
+              number: 80
       - path: /portal/*
+        pathType: Prefix
         backend:
-          serviceName: blendnet-cms-web-ui
-          servicePort: 80
+          service:
+            name: blendnet-cms-web-ui
+            port: 
+              number: 80
       - path: /user/*
+        pathType: Prefix
         backend:
-          serviceName: blendnet-crm-user-api
-          servicePort: 80
+          service:
+            name: blendnet-crm-user-api
+            port: 
+              number: 80
       - path: /incentiveapi/*
+        pathType: Prefix
         backend:
-          serviceName: blendnet-incentive-api
-          servicePort: 80
+          service:
+            name: blendnet-incentive-api
+            port: 
+              number: 80
       - path: /notificationapi/*
+        pathType: Prefix
         backend:
-          serviceName: blendnet-notification-api
-          servicePort: 80
+          service:
+            name: blendnet-notification-api
+            port: 
+              number: 80
       - path: /deviceapi/*
+        pathType: Prefix
         backend:
-          serviceName: blendnet-device-api
-          servicePort: 80
+          service:
+            name: blendnet-device-api
+            port: 
+              number: 80
       
