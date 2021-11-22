@@ -10,7 +10,8 @@ import { SubscriptionService } from "../services/subscription.service";
     styleUrls: ['subscription.component.css'],
   })
   export class AddSubscriptionDialog {
-     
+    
+    isUpdate = false;
     name;
     price;
     durationDays;
@@ -35,21 +36,27 @@ import { SubscriptionService } from "../services/subscription.service";
       }
   
     ngOnInit() {
-     this.createEmptyForm();
+     
      if(this.data) {
-      this.subForm.get('name').setValue(this.data.title);
-      this.subForm.get('price').setValue(this.data.price);
-      this.subForm.get('durationDays').setValue(this.data.durationDays);
-      this.subForm.get('startDate').setValue(this.data.startDate);
-      this.subForm.get('endDate').setValue(this.data.endDate);
-      if(this.data.isRedeemable) {
-        this.subForm.get('isRedeemable').setValue("Yes");
-        this.subForm.get('redemptionValue').setValue(this.data.redemptionValue);
-      } else {
-        this.subForm.get('isRedeemable').setValue("No");
-      }
+      this.isUpdate = true;
+      var isRedeemable = this.data.isRedeemable ? "Yes" : "No";
+      this.subForm = new FormGroup({
+        name :  new FormControl({value: this.data.title, disabled: true} ,[Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
+        price : new FormControl({value: this.data.price, disabled: true}, [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
+        durationDays : new FormControl({value: this.data.durationDays, disabled: true}, [Validators.required, Validators.max(365), Validators.min(1)]),
+        startDate : new FormControl({value: this.data.startDate, disabled: true}, [Validators.required]),
+        endDate : new FormControl({value: this.data.endDate, disabled: false}, [Validators.required]),
+        isRedeemable : new FormControl({value: isRedeemable, disabled: true}, [Validators.required]),
+        redemptionValue: new FormControl({value: this.data.redemptionValue, disabled: true})
+        });
+
+      this.minStart = this.data.startDate;
+      this.minEnd = this.data.startDate > new Date().toISOString() ? this.data.startDate : new Date();
       
-     } 
+     }  else {
+      this.isUpdate = false;
+      this.createEmptyForm();
+     }
     }
     
     createEmptyForm() {
@@ -69,7 +76,7 @@ import { SubscriptionService } from "../services/subscription.service";
     }
   
     isNotRedeemable() {
-      return this.subForm.get('isRedeemable').value !== 'Yes';
+      return this.subForm.get('isRedeemable').value !== 'Yes' || this.isUpdate;
     }
 
     editSubscription() {
@@ -124,6 +131,10 @@ import { SubscriptionService } from "../services/subscription.service";
     
     public errorHandling = (control: string, error: string) => {
         return this.subForm.controls[control].hasError(error);
+      }
+
+      closeDialog(): void {
+        this.dialogRef.close();
       }
    
   }
