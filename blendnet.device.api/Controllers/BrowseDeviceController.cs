@@ -93,7 +93,7 @@ namespace blendnet.device.api.Controllers
         /// <returns></returns>
         [HttpPost("contentavailability", Name = nameof(GetContentAvailability))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<List<string>>> GetContentAvailability(ContentAvailabilityRequest contentAvailabilityRequest)
+        public async Task<ActionResult<List<DeviceContentAvailability>>> GetContentAvailability(ContentAvailabilityRequest contentAvailabilityRequest)
         {
             List<string> errorInfo = new List<string>();
 
@@ -109,11 +109,27 @@ namespace blendnet.device.api.Controllers
 
             List<DeviceContent> deviceContents = await _deviceRepository.GetContentAvailability(contentAvailabilityRequest.ContentId, contentAvailabilityRequest.DeviceIds);
 
+            //devices where the given content exists
             if (deviceContents != null && deviceContents.Count > 0)
             {
-                var deviceIds = deviceContents.Select(dc => dc.DeviceId).ToList();
+                List<DeviceContentAvailability> devicesToReturn;
 
-                return Ok(deviceIds);
+                if (contentAvailabilityRequest.IncludeActiveContentCount)
+                {
+                    List<String> deviceIds = deviceContents.Select(dc => dc.DeviceId).ToList();
+
+                    //since these device ids are the one where the given content exists, the count method should return all the passed device ids back as it will have one content for sure.
+                    List<DeviceContentAvailability> deviceContentAvailability = await _deviceRepository.GetContentAvailabilityCount(deviceIds);
+
+                    devicesToReturn = deviceContentAvailability;
+
+                }
+                else
+                {
+                    devicesToReturn = deviceContents.Select(dc => { return new DeviceContentAvailability() { DeviceId = dc.DeviceId }; }).ToList();
+                }
+
+                return Ok(devicesToReturn);
             }
             else
             {
@@ -121,7 +137,7 @@ namespace blendnet.device.api.Controllers
             }
 
         }
-
+               
 
         /// <summary>
         /// Returns content availability count on device

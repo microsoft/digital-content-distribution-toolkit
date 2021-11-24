@@ -14,6 +14,10 @@ namespace blendnet.device.api.Model
 
         [Required]
         public List<string> DeviceIds { get; set; }
+
+        [Required]
+        public bool IncludeActiveContentCount { get; set; } = false;
+
     }
 
 

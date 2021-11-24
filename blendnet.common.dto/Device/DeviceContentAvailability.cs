@@ -19,7 +19,7 @@ namespace blendnet.common.dto.Device
         /// <summary>
         /// Total Active Content
         /// </summary>
-        public int ActiveContentCount { get; set; }
+        public int? ActiveContentCount { get; set; }
         
     }
 }
