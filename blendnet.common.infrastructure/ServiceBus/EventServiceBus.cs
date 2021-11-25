@@ -286,7 +286,7 @@ namespace blendnet.common.infrastructure.ServiceBus
 
                 Type subscriber =  eventTypeData.EventHandlerType;
 
-                object? integrationEvent;
+                object integrationEvent;
 
                 if (CheckIfSerializationNeeded(eventType))
                 {

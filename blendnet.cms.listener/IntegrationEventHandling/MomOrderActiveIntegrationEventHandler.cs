@@ -44,7 +44,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// </summary>
         /// <param name="integrationEvent"></param>
         /// <returns></returns>
-        public async Task Handle(MomOrderActiveIntegrationEvent integrationEvent)
+        public Task Handle(MomOrderActiveIntegrationEvent integrationEvent)
         {
             //await _momOrderIntegrationEventHandler.Handle(integrationEvent,
             //                                              "MomOrderActiveIntegrationEventHandler.Handle", 
@@ -55,6 +55,8 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             {
                 _logger.LogInformation($"Broadcast MomOrderActive status message recieved for command id: {integrationEvent.CorrelationId} Message Body : {integrationEvent.Body}");
             } 
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -30,6 +30,7 @@ stages:
       inputs:
         command: 'build'
         projects: 'blendnet.crm.contentprovider.api.sln'
+        arguments: '-warnaserror'
         configuration: Release
     - task: Npm@1
       displayName: npm install in web.ui

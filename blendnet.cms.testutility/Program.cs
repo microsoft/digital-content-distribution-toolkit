@@ -17,6 +17,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
+#pragma warning disable 162
 namespace blendnet.cms.testutility
 {
     class Program
@@ -61,7 +62,6 @@ namespace blendnet.cms.testutility
 
             return;
 
-            
             if (args == null || args.Length <=0)
             {
                 Console.WriteLine("Please provide media item url");
@@ -520,7 +520,7 @@ namespace blendnet.cms.testutility
         {
             using (FileStream stream = File.OpenRead(file))
             {
-                var sha = new SHA256Managed();
+                var sha = SHA256.Create();
                 byte[] checksum = sha.ComputeHash(stream);
                 return BitConverter.ToString(checksum).Replace("-", String.Empty).ToLowerInvariant();
             }

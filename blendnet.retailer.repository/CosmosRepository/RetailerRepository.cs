@@ -249,11 +249,7 @@ namespace blendnet.retailer.repository.CosmosRepository
                 return minValue;
 
             byte[] randomBytes = new byte[4];
-
-            using (RNGCryptoServiceProvider rNGCryptoServiceProvider = new RNGCryptoServiceProvider())
-            {
-                rNGCryptoServiceProvider.GetBytes(randomBytes);
-            }
+            RandomNumberGenerator.Fill(randomBytes);
 
             uint scale = BitConverter.ToUInt32(randomBytes, 0);
             return (int)(minValue + (maxValue - minValue) * (scale / ((uint.MaxValue - uint.MinValue) + 0.0)));

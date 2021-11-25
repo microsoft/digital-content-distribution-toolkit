@@ -42,7 +42,7 @@ namespace blendnet.cosmos.utility
         /// </summary>
         /// <param name="stoppingToken"></param>
         /// <returns></returns>
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation($"Process Started at {DateTime.Now}");
 
@@ -51,6 +51,8 @@ namespace blendnet.cosmos.utility
             //await _deviceFilterMigrationWorker.DoWork();
 
             _logger.LogInformation($"Process Completed at {DateTime.Now}");
+
+            return Task.CompletedTask;
         }
        
     }
