@@ -1,4 +1,4 @@
-﻿using blendnet.api.proxy.Device;
+using blendnet.api.proxy.Device;
 using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
@@ -115,7 +115,7 @@ namespace blendnet.retailer.api.Controllers
         /// <returns></returns>
         [HttpGet("{partnerCode}/{partnerProvidedRetailerId}/me")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.Retailer)]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Retailer)]
         public async Task<ActionResult<RetailerDto>> GetSelfRetailer(string partnerCode, string partnerProvidedRetailerId)
         {
             Guid callerUserId = UserClaimData.GetUserId(this.User.Claims);
@@ -123,8 +123,13 @@ namespace blendnet.retailer.api.Controllers
 
             RetailerDto retailer = await this._retailerRepository.GetRetailerByPartnerId(partnerId);
 
-            // for ME, we also match the caller details
-            if (retailer != null && retailer.UserId == callerUserId)
+            if (retailer is null)
+            {
+                return NotFound();
+            }
+
+            // return result if caller matches, or caller is super admin
+            if (retailer.UserId == callerUserId || UserClaimData.isSuperAdmin(this.User.Claims))
             {
                 return Ok(retailer);
             }
