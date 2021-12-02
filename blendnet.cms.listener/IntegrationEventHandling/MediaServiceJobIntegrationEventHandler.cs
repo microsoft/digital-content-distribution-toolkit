@@ -491,9 +491,17 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <returns></returns>
         private async Task<ContentKeyPolicy> GetOrCreateContentKeyPolicyAsync(IAzureMediaServicesClient amsclient)
         {
-            ContentKeyPolicy policy = await amsclient.ContentKeyPolicies.GetAsync(  _appSettings.AmsResourceGroupName,
+            ContentKeyPolicy policy = null;
+
+            try
+            {
+                policy = await amsclient.ContentKeyPolicies.GetAsync(_appSettings.AmsResourceGroupName,
                                                                                     _appSettings.AmsAccountName,
                                                                                     _appSettings.AmsContentPolicyName);
+            }
+            catch (ErrorResponseException ex) when (ex.Response.StatusCode == System.Net.HttpStatusCode.NotFound) 
+            { }
+
 
             if (policy == null)
             {
@@ -557,9 +565,17 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <returns></returns>
         private async Task<StreamingEndpoint> StartStreamingLocator(IAzureMediaServicesClient amsclient)
         {
-            StreamingEndpoint streamingEndpoint = await amsclient.StreamingEndpoints.GetAsync(_appSettings.AmsResourceGroupName,
+            StreamingEndpoint streamingEndpoint = null;
+
+            try
+            {
+                streamingEndpoint = await amsclient.StreamingEndpoints.GetAsync(_appSettings.AmsResourceGroupName,
                                                                                               _appSettings.AmsAccountName,
                                                                                               _appSettings.AmsStreamingEndpointName);
+            }
+            catch (ErrorResponseException ex) when (ex.Response.StatusCode == System.Net.HttpStatusCode.NotFound) 
+            { }
+
             if (streamingEndpoint != null)
             {
                 if (streamingEndpoint.ResourceState != StreamingEndpointResourceState.Running)

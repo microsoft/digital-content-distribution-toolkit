@@ -277,9 +277,17 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <returns></returns>
         private async Task<Transform> EnsureTransformExists(IAzureMediaServicesClient client)
         {
-            Transform transform = await client.Transforms.GetAsync(_appSettings.AmsResourceGroupName,
-                                                        _appSettings.AmsAccountName, 
+            Transform transform = null;
+
+            try
+            {
+                transform = await client.Transforms.GetAsync(_appSettings.AmsResourceGroupName,
+                                                        _appSettings.AmsAccountName,
                                                         _appSettings.AmsTransformationName);
+            }
+            catch (ErrorResponseException ex) when (ex.Response.StatusCode == System.Net.HttpStatusCode.NotFound) 
+            {}
+            
 
             if (transform == null)
             {
