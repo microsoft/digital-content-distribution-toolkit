@@ -1,0 +1,25 @@
+trigger:
+- manual
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+- job: Job_1
+  displayName: Build and Deploy Token Gen Service
+  steps:
+  - checkout: self
+    fetchDepth: 1
+  - task: Docker@2
+    displayName: 'Build And Push Container Image'
+    inputs:
+      containerRegistry: 56b70886-e637-4101-8c7a-7455af73e1f7
+      repository: blendnet-token-gen
+      Dockerfile: blendnet.devtokengen/Dockerfile
+  - task: AzureWebAppContainer@1
+    displayName: 'Azure Web App Deploy: blendnet-token-gen'
+    inputs:
+      azureSubscription: 8abac50f-e720-4df9-948f-ae5933aa91b7
+      appName: blendnet-token-gen
+      imageName: acrsameera.azurecr.io/blendnet-token-gen:$(Build.BuildId)
+
