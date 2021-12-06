@@ -1,0 +1,19 @@
+.cms-container {
+    height: 80%;
+    width: 90%;
+    margin-left: 5%;
+    margin-bottom: 5%;
+    margin-top: 3%;
+}
+
+.partner-select{
+    margin-right: 15px;
+}
+
+.retailer-details {
+    margin: 10px;
+}
+
+.submit-button {
+    margin: 10px;
+}

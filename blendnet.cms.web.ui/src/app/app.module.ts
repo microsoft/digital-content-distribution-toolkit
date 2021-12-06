@@ -46,6 +46,8 @@ import { AdditionalHistoryDialog } from './devices/device-additional-history.com
 import { DeviceAssignComponent } from './devices/device-assign.component';
 import { DeviceRetailerHistoryComponent } from './devices/device-retailer-history.component';
 import { DeviceContentsComponent } from './devices/device-contents.component';
+import { AdminRetailerDashboardComponent } from './admin-retailer-dashboard/admin-retailer-dashboard.component';
+import {RetailerModule} from './retailer/retailer.module';
 
 @NgModule({
   declarations: [
@@ -85,7 +87,8 @@ import { DeviceContentsComponent } from './devices/device-contents.component';
     AdditionalHistoryDialog,
     DeviceAssignComponent,
     DeviceRetailerHistoryComponent,
-    DeviceContentsComponent
+    DeviceContentsComponent,
+    AdminRetailerDashboardComponent,
   ],
   imports: [
     HttpClientModule,
@@ -103,7 +106,8 @@ import { DeviceContentsComponent } from './devices/device-contents.component';
       preventDuplicates: true
     }
     ),
-    CarouselModule
+    CarouselModule,
+    RetailerModule
   ],
   exports: [RouterModule],
   providers: [

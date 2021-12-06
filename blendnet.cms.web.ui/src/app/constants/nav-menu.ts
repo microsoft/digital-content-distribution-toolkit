@@ -72,6 +72,13 @@ export let menu: NavMenu[] = [
         roles: ['SuperAdmin']
     },
     {
+        displayName: 'Retailer Dashboard',
+        closedName: 'Retailer',
+        iconName: 'leaderboard',
+        routerLink: 'admin/retailer-dashboard',
+        roles: ['SuperAdmin']
+    },
+    {
         displayName: 'Dashboard',
         closedName: 'Dashboard',
         iconName: 'leaderboard',

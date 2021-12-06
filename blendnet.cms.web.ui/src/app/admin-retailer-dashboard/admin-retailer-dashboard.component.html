@@ -1,0 +1,22 @@
+<div class="cms-container">
+    <div>
+        <mat-form-field  class="retailer-details">
+            <mat-label>Partner Code</mat-label>
+            <input matInput  [formControl]="partnerCode" required maxlength="4" minlength="2">
+        </mat-form-field>
+        <mat-form-field  class="retailer-details">
+            <mat-label>Partner Id</mat-label>
+            <input matInput  [formControl]="partnerId" required maxlength="20" minlength="1">
+        </mat-form-field>
+        <button mat-raised-button 
+        color="primary" 
+        class="submit-button"
+        (click)="getRetailerDashboard()"
+        [disabled]="partnerCode.invalid || partnerId.invalid">Submit</button>
+    </div>
+
+    <div *ngIf="showDashboard">
+        <app-retailer-dashboard></app-retailer-dashboard>
+    </div>
+</div>
+

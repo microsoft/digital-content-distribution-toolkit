@@ -25,7 +25,7 @@ export class RetailerDashboardComponent implements OnInit {
   milestonesCarouselArr: Array<any> = [];
   monthSelect: any;
   partnerCode = sessionStorage.getItem('partnerCode');;
-  retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');;
+  retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
   carouselInit = false;
   contentProviders: any;
   customOptions: OwlOptions = {

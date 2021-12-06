@@ -16,6 +16,7 @@ import { IncentiveManagementComponent } from '../incentive-management/incentive-
 import { DeviceFilterHistoryComponent } from '../devices/device-filter-history.component';
 import { DeviceRetailerHistoryComponent } from '../devices/device-retailer-history.component';
 import { DeviceContentsComponent } from '../devices/device-contents.component';
+import { AdminRetailerDashboardComponent } from '../admin-retailer-dashboard/admin-retailer-dashboard.component';
 
 const routes: Routes = [
   {
@@ -149,6 +150,16 @@ const routes: Routes = [
     data: { 
       expectedRole: [environment.roles.SuperAdmin]
     } 
+  },
+  {
+    path: 'retailer-dashboard',
+    component: AdminRetailerDashboardComponent,
+    canActivate: [
+      RoleGuardService
+    ],
+    data: {
+      expectedRole: [environment.roles.SuperAdmin]
+    }
   }
 
 ];

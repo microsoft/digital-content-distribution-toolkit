@@ -23,7 +23,8 @@ export class RoleGuardService implements CanActivate {
     } else if(!sessionStorage.getItem("contentProviderId") 
       && route.routeConfig.path !== 'incentive-management'  &&  !route.routeConfig.path.includes('devices')
       &&  route.routeConfig.path !== 'manage-content' && route.routeConfig.path !== 'profile'
-      && route.routeConfig.path !== 'content-providers' && route.routeConfig.path !== 'notifications') {
+      && route.routeConfig.path !== 'content-providers' && route.routeConfig.path !== 'notifications'
+      && route.routeConfig.path !== 'retailer-dashboard') {
       window.alert("Please select a Content Provider to access the management services");
       this.router.navigate(['/admin/content-providers'])
       //return false;
