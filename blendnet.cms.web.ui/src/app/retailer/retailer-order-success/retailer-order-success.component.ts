@@ -32,11 +32,11 @@ export class RetailerOrderSuccessComponent implements OnInit {
       res => {
         // console.log(res);
         this.getIncentiveError = false;
-        let planDetail = res.planDetails.filter(obj => {
+        let planDetail = res.planDetails.find(obj => {
           return obj.eventType === "RETAILER_INCOME_ORDER_COMPLETED";
         });
 
-        if(planDetail.formula){
+        if(planDetail && planDetail.formula){
           // Will add more of formula type here
           if(planDetail.formula.formulaType === "PERCENTAGE") {
             let percentVal = planDetail.formula.firstOperand;
