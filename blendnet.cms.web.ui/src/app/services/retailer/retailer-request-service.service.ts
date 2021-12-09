@@ -31,14 +31,14 @@ export class RetailerRequestService {
     return this.http.post(url, payload).pipe(
       map((response: any) => {
         console.log("response: ", response);
-        return response.map(x => {
-          const subs = x.orderItems[0].subscription;
+        return response.map(order => {
+          const subs = order.orderItems[0].subscription;
           console.log('subs: ', subs);
-          const createdDate = new Date(subs.createdDate);
+          const createdDate = new Date(order.orderCreatedDate);
           const now = new Date();
           const diffTime = Math.abs(now.getTime() - createdDate.getTime());
           const diffDays = Math.ceil(diffTime / (1000*60*60*24));
-          return new CreatedOrder(x.id, subs.title, subs.price, diffDays);
+          return new CreatedOrder(order.id, subs.title, subs.price, diffDays);
         })
       })
     )
