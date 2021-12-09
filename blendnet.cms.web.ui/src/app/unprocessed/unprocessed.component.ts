@@ -128,7 +128,7 @@ export class UnprocessedComponent {
 
   isContentNotProcessable(row) {
     return row.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
-    || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED);
+    || (row.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED && row.contentTransformStatus !== ContentStatus.TRANSFORM_FAILED);
   }
 
   isContentNotDeletable(row) {
@@ -169,9 +169,9 @@ export class UnprocessedComponent {
       })).subscribe((event: any) => {
         if (typeof (event) === 'object') {
           console.log(event.body);
-          this.toastr.success("Content uploaded successfully.");
+          this.toastr.success(file.data.name + " Content uploaded successfully.");
           this.getUnprocessedContent();
-          // this.fileName ='';
+          this.fileName ='';
         }  
       });  
       this.jsonFileInput.nativeElement.value = '';

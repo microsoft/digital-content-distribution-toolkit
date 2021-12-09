@@ -44,7 +44,7 @@ export const environment = {
         "Central_India", "West_India", "North_India", "South_India"]
     },
     {
-      "filterName" : "Content Types",
+      "filterName" : "Content Type",
       "filterValues" : [
         "Test", "Development"]
     }
