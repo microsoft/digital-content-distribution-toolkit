@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 })
 export class RetailerOrdersComponent implements OnInit {
 
+  orderAmount;
   userContact: string = "";
   requestPage: boolean = true;
   emptyRequest:boolean = false;
@@ -70,28 +71,24 @@ export class RetailerOrdersComponent implements OnInit {
   completeOrder(order): void {
     console.log(order);
     const index = this.createdOrders.findIndex(x => x.id == order.id);
-  
+    this.orderAmount = order.price;
     const payload = {
       orderId: order.id,
       userPhoneNumber: this.userContact,
       retailerPartnerProvidedId: this.retailerPartnerProvidedId,
       retailerPartnerCode: this.partnerCode,
       amountCollected: order.price,
-      partnerReferenceNumber: "retailer-partner-ref1",
+      partnerReferenceNumber: this.retailerPartnerProvidedId,
       depositDate: new Date()
     }
-
-    // console.log('payload: ', payload);
+    
     this.retailerRequestService.completeOrder(payload).subscribe(
       response => {
         console.log('order complete successful');
         this.createdOrders[index].processed = true;
         this.createdOrders[index].processedStatus = OrderStatus.SUCCESS;
         this.getOrders();
-        this.orderCompleteRequestSuccess = true;
-        setTimeout(() => {
-          this.orderCompleteRequestSuccess = false;
-        }, 10000);
+        this.showOrderCompleteSuccess();
       },
       err => {
         console.log('order complete failed: ', err);
@@ -104,5 +101,12 @@ export class RetailerOrdersComponent implements OnInit {
 
   orderCompleteFailed(order) {
     return order.processedStatus === OrderStatus.FAILED;
+  }
+
+  showOrderCompleteSuccess() {
+    this.orderCompleteRequestSuccess = true;
+    setTimeout(() => {
+      this.orderCompleteRequestSuccess = false;
+    }, 5000);
   }
 }

@@ -11,6 +11,7 @@ export const environment = {
   userApiUrl: "/userapi/api/v1/User",
   createUserApiUrl: "/userapi/api/v1/UserBasic",
   incentiveApiUrl: "/incentiveapi/api/v1/Incentive",
+  incentiveBrowseApiUrl: "/incentiveapi/api/v1/IncentiveBrowse",
   omsApiUrl: "/omsapi/api/v1",
   retailerApiUrl: "/retailerapi/api/v1",
   retailerProviderUrl: "/retailerapi/api/v1/RetailerProvider",

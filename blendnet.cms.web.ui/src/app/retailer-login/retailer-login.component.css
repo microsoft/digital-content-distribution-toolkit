@@ -1,5 +1,6 @@
 .retailer-login {
     display: flex;
+    height: 100%;
     background: linear-gradient(180deg, #00B0EC 13.47%, #0078D4 95.94%);
 }
 
@@ -13,14 +14,14 @@
     width: 55%;
     margin-right: 0px;
     margin-left: auto;
-    height: 100vh;
     border-radius: 60px 0px 0px 60px;
     background: #FFFFFF;
 }
 
 .retailer-login-form {
-    margin-left: 146px;
-    margin-top: 232px;
+    margin-top: 20%;
+    margin-left: 25%;
+    margin-right: 10%;
 }
 
 .retailer-countrycode {
@@ -61,7 +62,7 @@
     font-size: 36px;
     line-height: 60px;
     color: #000000;
-    margin: 0 0 80px 0;
+    margin: 0 0 50px 0;
 }
 
 .retailer-login-subheader {
@@ -101,7 +102,8 @@
 } */
 
 .retailer-login-contact {
-    width: 486px;
+    /* width: 486px; */
+    width: calc(100% - 68px);
     height: 49px;
     padding-left: 12px;
     background: #FFFFFF;
@@ -144,7 +146,8 @@
 
 .retailer-login-next {
     border-radius: 30px;
-    width: 486px;
+    /* width: 486px; */
+    width: 100%;
     height: 44px;
     background-color: #1973EB;
 }
@@ -152,7 +155,7 @@
 .retailer-login-otp-text {
     width: 320px;
     height: 32px;
-    margin-top: 80px;
+    margin-top: 50px;
     margin-bottom: 12px;
     font-family: Mukta;
     font-style: normal;
@@ -183,9 +186,27 @@
     margin-bottom: 142px;
 }
 
-.retailer-login-id {
-    width: 486px;
+.retailer-provider-code {
+    width: 20%;
     height: 48px;
+    padding-left: 12px;
+    background: #FFFFFF;
+    border: 0.5px solid #D4E5F1;
+    box-sizing: border-box;
+    border-radius: 4px;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    color: #5D6973;
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+}
+
+.retailer-login-id {
+    width: 75%;
+    height: 48px;
+    margin-left: 5%;
     padding-left: 12px;
     background: #FFFFFF;
     border: 0.5px solid #D4E5F1;

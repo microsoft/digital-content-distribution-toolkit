@@ -31,6 +31,7 @@ export class RetailerLoginComponent implements OnInit {
   otp;
   countryCodes;
   contact;
+  partnerCode;
   retailerId;
   user;
 
@@ -55,6 +56,7 @@ export class RetailerLoginComponent implements OnInit {
     this.retailerLinkErrorMessage = "";
     this.contact = "";
     this.retailerId = "";
+    this.partnerCode = "";
     this.returnUrl = '/retailer/orders';
   }
 
@@ -119,7 +121,7 @@ export class RetailerLoginComponent implements OnInit {
           let response: any = res.body;
           this.roles = response.userRole;
           let retailerPayload = {
-            partnerCode: "TSTP",
+            partnerCode: this.partnerCode,
             partnerProvidedId: this.retailerId
           }
 
@@ -128,7 +130,7 @@ export class RetailerLoginComponent implements OnInit {
               sessionStorage.setItem("roles", this.roles);
               sessionStorage.setItem("accessedViaPartnerApp", "false");
               sessionStorage.setItem('loggedInUser', JSON.stringify(this.user));
-              sessionStorage.setItem('partnerCode', "TSTP");
+              sessionStorage.setItem('partnerCode', this.partnerCode);
               sessionStorage.setItem('partnerProvidedId', this.retailerId);
               // this.kaizalaService.currentUserNameSubject.next(this.contact);
               this.kaizalaService.loggedInUser.next(this.user);

@@ -1,5 +1,5 @@
 <div class="retailer-success-prompt" *ngIf="orderCompleteRequestSuccess">
-    <app-retailer-order-success></app-retailer-order-success>
+    <app-retailer-order-success [price]="orderAmount"></app-retailer-order-success>
 </div>
 <div class="retailer-request-header">
     <span *ngIf="requestPage" class="retailer-request-header-text">Requests</span>

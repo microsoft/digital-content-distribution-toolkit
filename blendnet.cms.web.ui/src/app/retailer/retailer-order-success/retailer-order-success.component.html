@@ -1,8 +1,11 @@
 <div class="retailer-order-success">
     <img src="../../{{baseHref}}/assets/images/retailer/order-success-prompt.png">
-    <div class="retailer-order-success-text">
+    <div class="retailer-order-success-text" *ngIf="incentiveVal">
         <span class="success-header">Congratulations!! You Earned</span>
-        <span class="success-amount">&#8377; 20</span>
+        <span class="success-amount">&#8377; {{incentiveVal}}</span>
         <span class="success-desc">Amount will reflect in your reports in 1 working day</span>
+    </div>
+    <div class="retailer-order-success-text" *ngIf="getIncentiveError">
+        <span class="success-header">Please check later!</span>
     </div>
 </div>

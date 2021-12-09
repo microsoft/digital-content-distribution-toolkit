@@ -58,9 +58,9 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
     let totalEarnings = 0;
     var startDate = new Date(dateObj.firstDateString);
     var endDate = new Date(dateObj.lastDateString);
-    endDate.setHours(endDate.getHours() + 23);
-    endDate.setMinutes(endDate.getMinutes() + 59);
-    endDate.setSeconds(endDate.getSeconds() + 59);
+    endDate.setHours(23);
+    endDate.setMinutes(59);
+    endDate.setSeconds(59);
     var endDateUTCString  = endDate.toISOString();
     var startDateUTCString  = startDate.toISOString()
     this.retailerDashboardService.getReferralsCommissionsInDetail(partnerCode, retailerPartnerProvidedId, startDateUTCString, endDateUTCString, 'RETAILER_INCOME_REFERRAL_COMPLETED').subscribe(

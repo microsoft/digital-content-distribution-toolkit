@@ -55,6 +55,7 @@
             <div *ngIf="isRetailerIdSection">
                 <span class="retailer-login-subheader">Enter Retailer Id</span>
                 <div class="retailer-id-details">
+                    <input [(ngModel)]="partnerCode" class="retailer-provider-code" />
                     <input [(ngModel)]="retailerId" class="retailer-login-id"/>
                     <mat-error *ngIf="retailerLinkErrorMessage" class="login-error-text">Incorrect retailer id. Please check and fill again.</mat-error>
                 </div>
