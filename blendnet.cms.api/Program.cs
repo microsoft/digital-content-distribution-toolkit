@@ -3,6 +3,7 @@ using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
 using blendnet.api.proxy;
 using blendnet.api.proxy.KaizalaIdentity;
+using blendnet.api.proxy.oms;
 using blendnet.cms.api;
 using blendnet.cms.api.Common;
 using blendnet.cms.repository.CosmosRepository;
@@ -25,7 +26,6 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using System.Configuration;
 using System.Globalization;
 using System.Text.Json.Serialization;
 
@@ -209,6 +209,7 @@ void ConfigureServices(IServiceCollection services)
     //registerations required for authhandler to work
     services.AddTransient<KaizalaIdentityProxy>();
     services.AddTransient<UserProxy>();
+    services.AddTransient<OrderProxy>();
     services.AddTransient<IUserDetails, UserDetailsByProxy>();
 
     //Configure Cosmos DB
@@ -367,6 +368,14 @@ void ConfigureHttpClients(IServiceCollection services)
     services.AddHttpClient(ApplicationConstants.HttpClientKeys.USER_HTTP_CLIENT, c =>
     {
         c.BaseAddress = new Uri(userBaseUrl);
+        c.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
+
+    //Configure Http Client for OMS Proxy
+    string omsBaseUrl = builder.Configuration.GetValue<string>("OmsBaseUrl");
+    services.AddHttpClient(ApplicationConstants.HttpClientKeys.OMS_HTTP_CLIENT, c =>
+    {
+        c.BaseAddress = new Uri(omsBaseUrl);
         c.DefaultRequestHeaders.Add("Accept", "application/json");
     });
 }

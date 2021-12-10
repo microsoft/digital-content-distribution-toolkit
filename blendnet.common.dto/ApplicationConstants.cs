@@ -112,7 +112,7 @@ namespace blendnet.common.dto
         public struct HttpClientKeys
         {
             public const string CMS_HTTP_CLIENT = "cms";
-            public const string ORDER_HTTP_CLIENT = "order";
+            public const string OMS_HTTP_CLIENT = "order";
             public const string RETAILER_HTTP_CLIENT = "retailer";
             public const string KAIZALA_HTTP_CLIENT = "kaizala";
             public const string USER_HTTP_CLIENT = "user";

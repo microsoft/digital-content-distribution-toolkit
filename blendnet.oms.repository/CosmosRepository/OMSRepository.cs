@@ -179,6 +179,30 @@ namespace blendnet.oms.repository.CosmosRepository
             }
         }
 
+        /// <summary>
+        /// Gets Count of Orders that were placed for a given subscription
+        /// </summary>
+        /// <param name="subscriptionId">Subscription ID</param>
+        /// <param name="cutoffDate">Cutoff date - orders after this date will be counted</param>
+        /// <returns>Count of orders</returns>
+        async Task<int> IOMSRepository.GetOrdersCountBySubscriptionId(Guid subscriptionId, DateTime cutoffDate)
+        {
+            // Generated the query string using the below LINQ:
+            // var queryLinq = _container.GetItemLinqQueryable<Order>()
+            //                     .Where(o => o.OrderItems.Where(oi => oi.Subscription.Id! == subscriptionId).Count() > 0)
+            //                     .Where(o => o.OrderCreatedDate >= cutoffDate)
+            //                     .Select(o => o.Id);
+
+            const string queryString = @"SELECT VALUE COUNT(root) FROM root 
+                                            JOIN (SELECT VALUE COUNT(1) FROM root JOIN oi0 IN root.orderItems WHERE (oi0.subscription.id = @subscriptionId)) AS v0 
+                                            WHERE (v0 > 0) AND root.orderCreatedDate >= @cutoffDate";
+            var queryDef = new QueryDefinition(queryString)
+                            .WithParameter("@subscriptionId", subscriptionId)
+                            .WithParameter("@cutoffDate", cutoffDate);
+
+            var ordersCount = await _container.ExtractFirstDataFromQueryIterator<int>(queryDef);
+            return ordersCount;
+        }
 
         #region private methods
 

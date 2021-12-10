@@ -1,3 +1,5 @@
+using blendnet.api.proxy.oms;
+using blendnet.cms.api.Model;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.User;
@@ -5,11 +7,6 @@ using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -23,16 +20,19 @@ namespace blendnet.cms.api.Controllers
     public class SubscriptionController : Controller
     {
         private readonly ILogger _logger;
-
-        private IContentProviderRepository _contentProviderRepository;
-
+        private readonly IContentProviderRepository _contentProviderRepository;
+        private readonly OrderProxy _orderProxy;
         IStringLocalizer<SharedResource> _stringLocalizer;
 
-        public SubscriptionController(ILogger<SubscriptionController> logger, IContentProviderRepository contentProviderRepository,
-            IStringLocalizer<SharedResource> stringLocalizer)
+        public SubscriptionController(
+                                        ILogger<SubscriptionController> logger, 
+                                        IContentProviderRepository contentProviderRepository,
+                                        OrderProxy orderProxy,
+                                        IStringLocalizer<SharedResource> stringLocalizer)
         {
             this._logger = logger;
             this._contentProviderRepository = contentProviderRepository;
+            this._orderProxy = orderProxy;
             _stringLocalizer = stringLocalizer;
         }
 
@@ -159,6 +159,12 @@ namespace blendnet.cms.api.Controllers
 
                 listOfValidationErrors.AddRange(ValidateSubscriptionData(subscription));
 
+                // Update is allowed only if there are no orders against this subscription ever
+                if (await OrdersExistForSubscription(subscriptionId, DateTime.MinValue))
+                {
+                    listOfValidationErrors.Add(string.Format(_stringLocalizer["CMS_ERR_0034"], subscriptionId));
+                }
+
                 if (listOfValidationErrors.Count > 0)
                 {
                     return BadRequest(listOfValidationErrors);
@@ -185,6 +191,48 @@ namespace blendnet.cms.api.Controllers
         }
 
         /// <summary>
+        /// Update a subscription's end date
+        /// </summary>
+        /// <param name="contentProviderId">contentProvider ID</param>
+        /// <param name="subscriptionId">subscription ID</param>
+        /// <param name="request">new data</param>
+        /// <returns></returns>
+        [HttpPost("{subscriptionId:guid}/updateEndDate")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<String>> UpdateSubscriptionEndDate(Guid contentProviderId,
+                                                                            Guid subscriptionId,
+                                                                            UpdateSubscriptionEndDateRequest request)
+        {
+            var existingSubscription = await _contentProviderRepository.GetSubscription(contentProviderId, subscriptionId);
+            if (existingSubscription is null)
+            {
+                return NotFound();
+            }
+
+            // end date should be after start date
+            if (request.EndDate < existingSubscription.StartDate)
+            {
+                return BadRequest(new string[] {
+                    _stringLocalizer["CMS_ERR_0021"],
+                });
+            }
+
+            // update is allowed only if there are no orders after the requested end date
+            if (await OrdersExistForSubscription(subscriptionId, request.EndDate))
+            {
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["CMS_ERR_0034"], subscriptionId),
+                });
+            }
+
+            // Now we are OK to update the end date
+            existingSubscription.EndDate = request.EndDate;
+
+            await _contentProviderRepository.UpdateSubscription(existingSubscription.ContentProviderId, existingSubscription);
+            return NoContent();
+        }
+
+        /// <summary>
         /// Delete a subscription
         /// </summary>
         /// <param name="contentProviderId">contentProvider ID</param>
@@ -195,10 +243,12 @@ namespace blendnet.cms.api.Controllers
         public async Task<ActionResult<String>> DeleteSubscription(Guid contentProviderId,
                                                                     Guid subscriptionId)
         {
-            // Delete is allowed only if there are no orders against this subscription
-            if (await OrdersExistForSubscription(subscriptionId))
+            // Delete is allowed only if there are no orders ever against this subscription
+            if (await OrdersExistForSubscription(subscriptionId, DateTime.MinValue))
             {
-                return Conflict();
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["CMS_ERR_0034"], subscriptionId)
+                });
             }
 
             var response = await this._contentProviderRepository.DeleteSubscription(contentProviderId, subscriptionId);
@@ -227,11 +277,11 @@ namespace blendnet.cms.api.Controllers
             return contentProvider != default(ContentProviderDto);
         }
 
-        private Task<bool> OrdersExistForSubscription(Guid subscriptionId)
+        private async Task<bool> OrdersExistForSubscription(Guid subscriptionId, DateTime cutoffDate)
         {
-            // TODO: implement this once Orders subsystem is available
-            // For now, returning false always
-            return Task.FromResult(false);
+            var ordersForSubscription = await _orderProxy.GetOrdersCountBySubscriptionId(subscriptionId, cutoffDate);
+            
+            return ordersForSubscription > 0;
         }
 
         private List<string> ValidateSubscriptionData(ContentProviderSubscriptionDto subscription)

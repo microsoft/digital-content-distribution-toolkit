@@ -63,5 +63,12 @@ namespace blendnet.oms.repository.Interfaces
         /// <returns></returns>
         Task<List<OrderItem>> GetActiveSubscriptionOrders(string phoneNumber);
 
+        /// <summary>
+        /// Gets Count of Orders that were placed for a given subscription
+        /// </summary>
+        /// <param name="subscriptionId">Subscription ID</param>
+        /// <param name="cutoffDate">Cutoff date - orders after this date will be counted</param>
+        /// <returns>Count of orders</returns>
+        Task<int> GetOrdersCountBySubscriptionId(Guid subscriptionId, DateTime cutoffDate);
     }
 }

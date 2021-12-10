@@ -15,7 +15,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using blendnet.common.infrastructure.Ams;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authorization;
 using static blendnet.common.dto.ApplicationConstants;
 using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure.Authentication;
@@ -597,6 +596,20 @@ namespace blendnet.oms.api.Controllers
             {
                 return Ok(orderItems);
             }
+        }
+
+        /// <summary>
+        /// API to get count of orders by subscription ID
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("countBySubscription", Name = nameof(GetOrdersCountBySubscription))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<List<Order>>> GetOrdersCountBySubscription(OrdersCountBySubscriptionRequest request)
+        {
+            var ordersCount = await _omsRepository.GetOrdersCountBySubscriptionId(request.SubscriptionId, request.CutoffDateTime);
+            return Ok(ordersCount);
         }
 
         #endregion

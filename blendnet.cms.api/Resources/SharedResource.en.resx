@@ -216,4 +216,7 @@
   <data name="CMS_ERR_0033" xml:space="preserve">
     <value>CMS_ERR_0033-Content Admin phone number is already assigned to anoter content provider.</value>
   </data>
+  <data name="CMS_ERR_0034" xml:space="preserve">
+    <value>CMS_ERR_0034-Orders exist against subscription ID {0}</value>
+  </data>
 </root>
