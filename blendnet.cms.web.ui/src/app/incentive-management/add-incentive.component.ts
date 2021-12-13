@@ -26,7 +26,7 @@ export class AddIncentiveComponent implements OnInit {
   @Output() newIncentiveEventC = new EventEmitter<any>();
 
 
-  displayedColumns: string[] = ['eventType','eventTitle','contentProvider', 'ruleType', 'formula',  'firstOperand', 'secondOperand', 'edit', 'delete'];
+  displayedColumns: string[] = ['eventType','eventTitle','contentProvider', 'ruleType', 'formula',  'firstOperand', 'secondOperand', 'view', 'edit', 'delete'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -547,10 +547,25 @@ openSelectCPModalButtons(): Array<any> {
       }
     }
 
+    openDetails(event, rowIndex): void {
+      const dialogRef = this.dialog.open(AddEventDialog, {
+        width: '60%',
+        data: {
+          isViewOnly: true,
+          event: event,
+          rowIndex: rowIndex,
+          audience : this.audience,
+          planType: this.incentiveFormGroup.get('type').value
+        }
+      });
+    }
+
+
     openDialog(event, rowIndex): void {
       const dialogRef = this.dialog.open(AddEventDialog, {
         width: '60%',
         data: {
+          isViewOnly: false,
           event: event,
           rowIndex: rowIndex,
           audience : this.audience,

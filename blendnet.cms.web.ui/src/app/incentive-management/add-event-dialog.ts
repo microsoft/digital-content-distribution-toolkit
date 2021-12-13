@@ -15,13 +15,13 @@ import { IncentiveService } from "../services/incentive.service";
 
     @Output() onEventCreate = new EventEmitter<any>();
     eventForm: FormGroup;
-    isPublished = false;
     showCP = false;
     ruleTypes = [];
     eventTypes:any;
     contentProviders=[];
     regularFormulas= [];
     milestoneFormulas =[];
+    isViewOnly = false;
     
 
     constructor(
@@ -34,53 +34,87 @@ import { IncentiveService } from "../services/incentive.service";
       }
   
     ngOnInit() {
-      
-     this.createEmptyForm();
-     if(this.data.event) {
-      this.eventForm.get('eventType').setValue(this.data.event.eventType);
-      this.eventForm.get('eventTitle').setValue(this.data.event.eventTitle);
-      if(this.data.event.eventSubType) {
-        this.eventForm.get('eventSubType').setValue(this.data.event.eventSubType);
-        this.showCP = true;
+      if(this.data.isViewOnly) {
+        this.isViewOnly = true;
+        this.eventForm = new FormGroup({
+          eventType :  new FormControl({value:this.data.event.eventType, disabled: true}),
+          eventTitle :  new FormControl({value:this.data.event.eventTitle, disabled: true}),
+          eventSubType :  new FormControl({value:this.data.event.eventSubType, disabled: true}),
+          ruleType : new FormControl({value: 'SUM', disabled: true}),
+          formula : new FormControl({value: this.data.event.formula.formulaType, disabled: true}),
+          firstOperand : new FormControl({value: this.data.event.formula.firstOperand, disabled: true}),
+          secondOperand : new FormControl({value: this.data.event.formula.secondOperand, disabled: true}),
+          ranges: this.formBuilder.array([this.createRange()])
+          });
+          //set range details config
+          if(this.data.event.formula.rangeOperand && this.data.event.formula.rangeOperand.length > 0) {
+            this.eventForm.get('ranges').patchValue([this.setRangeDetail(this.data.event.formula.rangeOperand)]);
+            this.eventForm.get('ranges').disable();
+            }
+      } else {
+        this.createEmptyForm();
+        this.setEventsData();
       }
-      this.eventForm.get('ruleType').setValue(this.data.event.ruleType);
-      this.eventForm.get('formula').setValue(this.data.event.formula.formulaType);
 
-      if(this.data.event.formula.firstOperand) {
-        this.eventForm.get('firstOperand').setValue(this.data.event.formula.firstOperand);
-      } else {
-        this.eventForm.get('firstOperand').clearValidators();
-        this.eventForm.get('firstOperand').updateValueAndValidity();
-      }
+       //get list of Content providers
+       var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
+       if(cpList && cpList.length > 0) {
+         this.contentProviders = cpList;
+       }
 
-      if(this.data.event.formula.secondOperand) {
-        this.eventForm.get('secondOperand').setValue(this.data.event.formula.secondOperand);
-      } else {
-        this.eventForm.get('secondOperand').clearValidators();
-        this.eventForm.get('secondOperand').updateValueAndValidity();
-      }
-      
-      
-      if(this.data.event.formula.rangeOperand && this.data.event.formula.rangeOperand.length > 0) {
-        this.eventForm.get('ranges').patchValue([this.setRangeDetail(this.data.event.formula.rangeOperand)]);
-      }
-     } 
+       //set formula config
+       this.setFormulaConfig();
 
-      var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
-      if(cpList && cpList.length > 0) {
-        this.contentProviders = cpList;
-      }
-      this.setFormulaConfig();
-      if(this.data.audience === "RETAILER") {
-        this.setConfigForRetailer();
-      } else {
-        this.setConfigForConsumer();
-      }
-      if(this.isMileStonePlanType()) {
-        this.ruleTypes = [RuleType.SUM,RuleType.COUNT];
-      } else {
-        this.ruleTypes = [RuleType.SUM];
-      }
+       //setting configurations
+       if(this.data.audience === "RETAILER") {
+         this.setConfigForRetailer();
+       } else {
+         this.setConfigForConsumer();
+       }
+
+       //setting milestone configs
+       if(this.isMileStonePlanType()) {
+         this.ruleTypes = [RuleType.SUM,RuleType.COUNT];
+       } else {
+         this.ruleTypes = [RuleType.SUM];
+       }
+    }
+
+
+    setEventsData() {
+      if(this.data.event) {
+          this.eventForm.get('eventType').setValue(this.data.event.eventType);
+          this.eventForm.get('eventTitle').setValue(this.data.event.eventTitle);
+
+          if(this.data.event.eventSubType) {
+            this.eventForm.get('eventSubType').setValue(this.data.event.eventSubType);
+            this.showCP = true;
+          }
+
+          this.eventForm.get('ruleType').setValue(this.data.event.ruleType);
+          this.eventForm.get('formula').setValue(this.data.event.formula.formulaType);
+  
+          // setting the operands
+          if(this.data.event.formula.firstOperand) {
+            this.eventForm.get('firstOperand').setValue(this.data.event.formula.firstOperand);
+          } else {
+            this.eventForm.get('firstOperand').clearValidators();
+            this.eventForm.get('firstOperand').updateValueAndValidity();
+          }
+
+          // setting the operands
+          if(this.data.event.formula.secondOperand) {
+            this.eventForm.get('secondOperand').setValue(this.data.event.formula.secondOperand);
+          } else {
+            this.eventForm.get('secondOperand').clearValidators();
+            this.eventForm.get('secondOperand').updateValueAndValidity();
+          }
+
+          // set range details config
+          if(this.data.event.formula.rangeOperand && this.data.event.formula.rangeOperand.length > 0) {
+            this.eventForm.get('ranges').patchValue([this.setRangeDetail(this.data.event.formula.rangeOperand)]);
+            }
+        } 
     }
 
     setRangeDetail(rangeOperand) {
@@ -172,7 +206,7 @@ import { IncentiveService } from "../services/incentive.service";
     }
 
     isRangeFormulaType() {
-      return this.eventForm.get('formula').value === FormulaType.RANGE_AND_MULTIPLY;
+      return (this.eventForm.get('formula').value === FormulaType.RANGE_AND_MULTIPLY);
     }
 
     onEventTypeChange() {

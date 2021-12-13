@@ -112,6 +112,21 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Second Operand</th>
                 <td mat-cell *matCellDef="let row"> {{row.formula?.secondOperand}} </td>
             </ng-container>
+
+            <!-- View Column -->
+            <ng-container matColumnDef="view">
+                <th mat-header-cell *matHeaderCellDef> 
+                    View
+                    </th>
+                <td mat-cell *matCellDef="let row ; let rowIndex = index" >
+                    <button mat-icon-button 
+                        (click)="openDetails(row, rowIndex )">
+                    <!-- [disabled]="!row.status"> -->
+                        <mat-icon mat-icon 
+                        matTooltip="Show Details">visibility</mat-icon> 
+                    </button>
+                </td>
+            </ng-container>
                 <!-- edit Column -->
                 <ng-container matColumnDef="edit">
                 <th mat-header-cell *matHeaderCellDef> 

@@ -9,7 +9,7 @@
             <mat-form-field>
               <mat-label>Event Type</mat-label>
               <mat-select  name="eventType" (ngModelChange)="onEventTypeChange()"
-              formControlName="eventType"  [disableControl]="isPublished" >
+              formControlName="eventType"   >
               <mat-option *ngFor="let event of eventTypes" [value]="event" [disabled]="isExpenseEvent(event)">
                   {{event}}
               </mat-option>
@@ -19,7 +19,7 @@
           <td>
             <mat-form-field >
                 <input matInput placeholder="Event Title" 
-                formControlName="eventTitle" required  [disableControl]="isPublished">
+                formControlName="eventTitle" required  >
                 <mat-error >{{getErrorMessage()}}</mat-error>
             </mat-form-field>
         </td>
@@ -28,7 +28,7 @@
             <mat-label>Content Provider</mat-label>
             <mat-select  name="contentProvider" 
             formControlName="eventSubType"
-            [disableControl]="isPublished || !showCP">
+            [disableControl]="!showCP">
             <mat-option *ngFor="let cp of contentProviders" [value]="cp.contentProviderId">
                 {{cp.name}}
             </mat-option>
@@ -41,7 +41,7 @@
               <mat-form-field >
                   <mat-label>Rule Type</mat-label>
                   <mat-select name="ruleType"
-                  formControlName="ruleType"  [disableControl]="isPublished">
+                  formControlName="ruleType"  >
                   <mat-option *ngFor="let rule of ruleTypes" [value]="rule">{{rule}}
                   </mat-option>
                   </mat-select>
@@ -52,7 +52,7 @@
             <mat-form-field>
               <mat-label>Formula</mat-label>
               <mat-select name="formula"
-              formControlName="formula"  [disableControl]="isPublished"
+              formControlName="formula"  
               (ngModelChange)="onFormulaChange()">
               <span *ngIf="isMileStonePlanType()">
                   <mat-option  *ngFor="let formula of milestoneFormulas" [value]="formula">
@@ -71,7 +71,7 @@
           <td *ngIf="!isMileStonePlanType()">
             <mat-form-field >
                 <input matInput placeholder="First Operand" 
-                formControlName="firstOperand" required  [disableControl]="isPublished">
+                formControlName="firstOperand" required  >
                 <mat-error >{{getErrorMessage()}}</mat-error>
             </mat-form-field>
           </td>
@@ -80,14 +80,14 @@
             <td>
               <mat-form-field >
                   <input matInput placeholder="First Operand" 
-                  formControlName="firstOperand" required  [disableControl]="isPublished || isRangeFormulaType()">
+                  formControlName="firstOperand" required  [disableControl]="isRangeFormulaType() || isViewOnly">
                   <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>
             <td >
               <mat-form-field >
                   <input matInput placeholder="Second Operand" 
-                  formControlName="secondOperand" required  [disableControl]="isPublished || isRangeFormulaType()">
+                  formControlName="secondOperand" required  [disableControl]="isRangeFormulaType() || isViewOnly">
                   <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>           
@@ -95,8 +95,8 @@
       </table>
       <br>
       <button mat-stroked-button color="primary" 
-      (click)="addRange()"  [disabled]="isPublished" 
-      *ngIf="isMileStonePlanType() && isRangeFormulaType()">
+      (click)="addRange()"  
+      *ngIf="isMileStonePlanType() && isRangeFormulaType() && !isViewOnly">
           <mat-icon matTooltip="Add Range">add</mat-icon>
           Add Range
       </button>
@@ -109,23 +109,23 @@
             <td>
               <mat-form-field>
                 <input matInput placeholder="Start" 
-                formControlName="start" required  [disableControl]="isPublished">
+                formControlName="start" required  >
               </mat-form-field>
             </td>
             <td>
               <mat-form-field>
                 <input matInput placeholder="End" 
-                formControlName="end" required  [disableControl]="isPublished">
+                formControlName="end" required  >
               </mat-form-field>
             </td> 
             <td>
               <mat-form-field>
                 <input matInput placeholder="Output" 
-                formControlName="output" required  [disableControl]="isPublished">
+                formControlName="output" required>
               </mat-form-field>
             </td>   
             <td>
-              <button mat-icon-button color="primary" *ngIf="j!==0 || getTotalRanges()>=2"
+              <button mat-icon-button color="primary" *ngIf="(j!==0 || getTotalRanges()>=2)  && !isViewOnly"
                 (click)="removeRange(j)">
                     <mat-icon>remove</mat-icon>
                 </button>
@@ -138,7 +138,7 @@
   </div>
   
 
-  <div mat-dialog-actions align="end">
+  <div mat-dialog-actions align="end" *ngIf="!isViewOnly">
     <button mat-raised-button [disabled]="eventForm.invalid"
     color="primary" (click)="addEvent()">Save</button>
 
