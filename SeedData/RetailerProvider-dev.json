@@ -7,9 +7,26 @@
         "startDate": "2021-07-26T08:04:16.345078Z",
         "endDate": "9999-12-31T23:59:59.9999999",
         "type": "RetailerProvider",
+        "supportedFeatures": {
+            "webRetailerDashboardEnabled": true,
+            "webOrderCompletionEnabled": true
+        },
         "createdByUserId": "ab49bdad-498a-4b74-9695-bc08479b558c",
-        "modifiedByByUserId": null,
-        "createdDate": "2021-07-26T08:04:16.345078Z",
-        "modifiedDate": null
+        "createdDate": "2021-07-26T08:04:16.345078Z"
+    },
+    {
+        "id": "NOVO",
+        "name": "NOVO",
+        "partnerCode": "NOVO",
+        "userId": "3c8104c0-eb91-4048-9654-99d8aae49927",
+        "startDate": "2021-07-26T08:04:16.345078Z",
+        "endDate": "9999-12-31T23:59:59.9999999",
+        "type": "RetailerProvider",
+        "supportedFeatures": {
+            "webRetailerDashboardEnabled": true,
+            "webOrderCompletionEnabled": false
+        },
+        "createdByUserId": "ab49bdad-498a-4b74-9695-bc08479b558c",
+        "createdDate": "2021-07-26T08:04:16.345078Z"
     }
 ]

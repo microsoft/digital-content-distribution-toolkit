@@ -208,6 +208,9 @@ void ConfigureServices(IServiceCollection services)
 
     //Configure Http Clients
     ConfigureHttpClients(services);
+
+    //Configure automapper
+    services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 }
 
 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

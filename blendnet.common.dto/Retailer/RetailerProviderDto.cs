@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.common.dto.Retailer
 {
@@ -45,5 +46,32 @@ namespace blendnet.common.dto.Retailer
         /// Container type
         /// </summary>
         public RetailerProviderContainerType Type => RetailerProviderContainerType.RetailerProvider;
+
+        /// <summary>
+        /// Features state
+        /// </summary>
+        [Required] // for API response
+        [JsonRequired] // for Database
+        public RetailerProviderFeatures SupportedFeatures { get; set; }
+    }
+
+    /// <summary>
+    /// Class to represent features enabled state for Retailer Providers
+    /// </summary>
+    public class RetailerProviderFeatures
+    {
+        /// <summary>
+        /// Is Retailer Dashboard enabled in web app?
+        /// </summary>
+        [Required] // for API response
+        [JsonRequired] // for Database
+        public bool WebRetailerDashboardEnabled { get; set; }
+
+        /// <summary>
+        /// Is Order Completion enabled in web app?
+        /// </summary>
+        [Required] // for API response
+        [JsonRequired] // for Database
+        public bool WebOrderCompletionEnabled { get; set; }
     }
 }

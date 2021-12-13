@@ -1,4 +1,3 @@
-using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
@@ -6,6 +5,7 @@ using blendnet.retailer.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using static blendnet.common.dto.ApplicationConstants;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace blendnet.retailer.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer)]
     public class RetailerProviderController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -43,6 +43,7 @@ namespace blendnet.retailer.api.Controllers
         /// <returns>Service Account ID of the retaielr provider</returns>
         [HttpPost("create")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<Guid>> CreateRetailerProvider(RetailerProviderDto retailerProvider)
         {
             // Validations
@@ -90,6 +91,7 @@ namespace blendnet.retailer.api.Controllers
         /// <returns></returns>
         [HttpGet("byUserId/{userId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<RetailerProviderDto>> GetRetailerProviderByServiceAccountId(Guid userId)
         {
             RetailerProviderDto retailerProvider = await _retailerProviderRepository.GetRetailerProviderByUserId(userId);
@@ -103,6 +105,7 @@ namespace blendnet.retailer.api.Controllers
         /// <returns></returns>
         [HttpGet("byPartnerCode/{partnerCode}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer)]
         public async Task<ActionResult<RetailerProviderDto>> GetRetailerProviderByPartnerCode(string partnerCode)
         {
             RetailerProviderDto retailerProvider = await _retailerProviderRepository.GetRetailerProviderByPartnerCode(partnerCode);
@@ -115,7 +118,8 @@ namespace blendnet.retailer.api.Controllers
         /// <returns></returns>
         [HttpGet("all")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<RetailerProviderDto>> GetAllRetailerProviders()
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<List<RetailerProviderDto>>> GetAllRetailerProviders()
         {
             var retailerProviders = await _retailerProviderRepository.GetAllRetailerProviders();
             return retailerProviders == null || retailerProviders.Count == 0 ? NotFound() : Ok(retailerProviders);
