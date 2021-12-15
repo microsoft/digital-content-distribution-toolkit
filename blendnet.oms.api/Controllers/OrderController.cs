@@ -1,5 +1,4 @@
-﻿using blendnet.api.proxy.Cms;
-using blendnet.oms.repository.Interfaces;
+﻿using blendnet.oms.repository.Interfaces;
 using blendnet.api.proxy;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto.Oms;
@@ -19,7 +18,6 @@ using blendnet.common.dto.Events;
 using Microsoft.Extensions.Localization;
 using blendnet.common.infrastructure;
 using Microsoft.ApplicationInsights;
-using blendnet.api.proxy.Incentive;
 using blendnet.oms.api.Common;
 
 namespace blendnet.oms.api.Controllers
@@ -41,6 +39,8 @@ namespace blendnet.oms.api.Controllers
 
         private RetailerProviderProxy _retailerProviderProxy;
 
+        private readonly SubscriptionProxy _subscriptionProxy;
+
         private IEventBus _eventBus;
 
         private OmsAppSettings _omsAppSettings;
@@ -53,12 +53,9 @@ namespace blendnet.oms.api.Controllers
 
         public OrderController(IOMSRepository omsRepository,
                                 ILogger<OrderController> logger,
-                                ContentProxy contentProxy,
                                 RetailerProxy retailerProxy,
                                 RetailerProviderProxy retailerProviderProxy,
                                 SubscriptionProxy subscriptionProxy,
-                                IncentiveEventProxy incentiveEventProxy,
-                                IncentiveProxy incentiveProxy,
                                 IEventBus eventBus,
                                 IOptionsMonitor<OmsAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
@@ -72,6 +69,8 @@ namespace blendnet.oms.api.Controllers
             _retailerProxy = retailerProxy;
 
             _retailerProviderProxy = retailerProviderProxy;
+
+            _subscriptionProxy = subscriptionProxy;
 
             _eventBus = eventBus;
 
@@ -278,6 +277,13 @@ namespace blendnet.oms.api.Controllers
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<List<Order>>> GetOrdersCountBySubscription(OrdersCountBySubscriptionRequest request)
         {
+            var subscription = await _subscriptionProxy.GetSubscription(request.ContentProviderId, request.SubscriptionId);
+
+            if (subscription == null)
+            {
+                return NotFound();
+            }
+
             var ordersCount = await _omsRepository.GetOrdersCountBySubscriptionId(request.SubscriptionId, request.CutoffDateTime);
             return Ok(ordersCount);
         }

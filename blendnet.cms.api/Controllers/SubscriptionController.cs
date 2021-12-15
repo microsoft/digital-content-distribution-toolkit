@@ -160,7 +160,7 @@ namespace blendnet.cms.api.Controllers
                 listOfValidationErrors.AddRange(ValidateSubscriptionData(subscription));
 
                 // Update is allowed only if there are no orders against this subscription ever
-                if (await OrdersExistForSubscription(subscriptionId, DateTime.MinValue))
+                if (await OrdersExistForSubscription(contentProviderId, subscriptionId, DateTime.MinValue))
                 {
                     listOfValidationErrors.Add(string.Format(_stringLocalizer["CMS_ERR_0034"], subscriptionId));
                 }
@@ -218,7 +218,7 @@ namespace blendnet.cms.api.Controllers
             }
 
             // update is allowed only if there are no orders after the requested end date
-            if (await OrdersExistForSubscription(subscriptionId, request.EndDate))
+            if (await OrdersExistForSubscription(contentProviderId, subscriptionId, request.EndDate))
             {
                 return BadRequest(new string[] {
                     string.Format(_stringLocalizer["CMS_ERR_0034"], subscriptionId),
@@ -244,7 +244,7 @@ namespace blendnet.cms.api.Controllers
                                                                     Guid subscriptionId)
         {
             // Delete is allowed only if there are no orders ever against this subscription
-            if (await OrdersExistForSubscription(subscriptionId, DateTime.MinValue))
+            if (await OrdersExistForSubscription(contentProviderId, subscriptionId, DateTime.MinValue))
             {
                 return BadRequest(new string[] {
                     string.Format(_stringLocalizer["CMS_ERR_0034"], subscriptionId)
@@ -277,9 +277,9 @@ namespace blendnet.cms.api.Controllers
             return contentProvider != default(ContentProviderDto);
         }
 
-        private async Task<bool> OrdersExistForSubscription(Guid subscriptionId, DateTime cutoffDate)
+        private async Task<bool> OrdersExistForSubscription(Guid contentProviderId, Guid subscriptionId, DateTime cutoffDate)
         {
-            var ordersForSubscription = await _orderProxy.GetOrdersCountBySubscriptionId(subscriptionId, cutoffDate);
+            var ordersForSubscription = await _orderProxy.GetOrdersCountBySubscriptionId(contentProviderId, subscriptionId, cutoffDate);
             
             return ordersForSubscription > 0;
         }

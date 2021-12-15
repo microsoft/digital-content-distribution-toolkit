@@ -31,16 +31,18 @@ namespace blendnet.api.proxy.oms
         /// <summary>
         /// Returns the count of orders placed by subscription ID
         /// </summary>
+        /// <param name="contentProviderId"></param>
         /// <param name="subscriptionId"></param>
         /// <param name="cutoffDate"></param>
         /// <returns></returns>
-        public async Task<int> GetOrdersCountBySubscriptionId(Guid subscriptionId, DateTime cutoffDate)
+        public async Task<int> GetOrdersCountBySubscriptionId(Guid contentProviderId, Guid subscriptionId, DateTime cutoffDate)
         {
             string url = $"Order/countBySubscription";
 
             var requestBody = new OrdersCountBySubscriptionRequest()
             {
                 CutoffDateTime = cutoffDate,
+                ContentProviderId = contentProviderId,
                 SubscriptionId = subscriptionId,
             };
 
@@ -48,7 +50,12 @@ namespace blendnet.api.proxy.oms
 
             int orders = 0;
 
-            orders = await _omsHttpClient.Post<OrdersCountBySubscriptionRequest, int>(url, requestBody, accessToken: accessToken);
+            try
+            {
+                orders = await _omsHttpClient.Post<OrdersCountBySubscriptionRequest, int>(url, requestBody, accessToken: accessToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { }
 
             return orders;
         }

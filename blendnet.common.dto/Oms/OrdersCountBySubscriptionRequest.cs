@@ -10,6 +10,12 @@ namespace blendnet.common.dto.Oms
     public class OrdersCountBySubscriptionRequest
     {
         /// <summary>
+        /// Content Provider ID
+        /// </summary>
+        [Required]
+        public Guid ContentProviderId {get; set; }
+
+        /// <summary>
         /// Subscription ID
         /// </summary>
         [Required]
