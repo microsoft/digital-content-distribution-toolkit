@@ -13,6 +13,7 @@ using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.KeyVault;
 using blendnet.common.infrastructure.ServiceBus;
+using blendnet.oms.api.Common;
 using blendnet.oms.repository.CosmosRepository;
 using blendnet.oms.repository.Interfaces;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -198,6 +199,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddTransient<UserProxy>();
     services.AddTransient<IncentiveEventProxy>();
     services.AddTransient<IncentiveProxy>();
+    services.AddTransient<OrderHelper>();
 
     //registerations required for authhandler to work
     services.AddTransient<KaizalaIdentityProxy>();
@@ -218,6 +220,9 @@ void ConfigureServices(IServiceCollection services)
 
     //Configure Redis Cache
     ConfigureDistributedCache(services);
+
+    // Configure mapper
+    services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 }
 
 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
