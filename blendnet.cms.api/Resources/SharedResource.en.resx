@@ -214,7 +214,7 @@
     <value>CMS_ERR_0032-Same phone number cannot be assigned to more than one admin.</value>
   </data>
   <data name="CMS_ERR_0033" xml:space="preserve">
-    <value>CMS_ERR_0033-Content Admin phone number is already assigned to anoter content provider.</value>
+    <value>CMS_ERR_0033-Content Admin phone number is already assigned to another content provider.</value>
   </data>
   <data name="CMS_ERR_0034" xml:space="preserve">
     <value>CMS_ERR_0034-Orders exist against subscription ID {0}</value>

@@ -117,16 +117,22 @@ namespace blendnet.cms.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<string>> CreateContentProvider(ContentProviderDto contentProvider)
         {
+            List<string> errorInfo = new List<string>();
+
             //Check for duplicate phone number
             if (DoesDuplicateAdminPhoneNumberExists(contentProvider))
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0032"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0032"]);
+
+                return BadRequest(errorInfo);
             }
 
             //Check if admin is already allocated to some other content provider
             if (await IsContentAdminAllocatedToAnotherContentProvider(contentProvider))
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0033"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0033"]);
+
+                return BadRequest(errorInfo);
             }
 
             //generate ids for content provider and administrator
@@ -168,15 +174,21 @@ namespace blendnet.cms.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateContentProvider(Guid contentProviderId, ContentProviderDto contentProvider)
         {
+            List<string> errorInfo = new List<string>();
+
             //Check for duplicate phone number
             if (DoesDuplicateAdminPhoneNumberExists(contentProvider))
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0032"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0032"]);
+
+                return BadRequest(errorInfo);
             }
 
             if (await IsContentAdminAllocatedToAnotherContentProvider(contentProvider))
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0033"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0033"]);
+
+                return BadRequest(errorInfo);
             }
 
             contentProvider.Id = contentProviderId;

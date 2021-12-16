@@ -121,9 +121,13 @@ namespace blendnet.cms.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<List<ContentInfo>>> GetContentProviderIds(List<Guid> contentIds)
         {
-            if(contentIds == null || contentIds.Count == 0)
+            List<string> errorInfo = new List<string>();
+
+            if (contentIds == null || contentIds.Count == 0)
             {
-                return BadRequest(_stringLocalizer["CMS_ERR_0030"]);
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0030"]);
+
+                return BadRequest(errorInfo);
             }
 
             var contents = await _contentRepository.GetContentByIds(contentIds);
