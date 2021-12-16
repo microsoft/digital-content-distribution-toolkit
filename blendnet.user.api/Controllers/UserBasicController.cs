@@ -12,13 +12,8 @@ using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace blendnet.user.api.Controllers
 {
@@ -76,7 +71,9 @@ namespace blendnet.user.api.Controllers
                 if (whitelistedUser is null)
                 {
                     // This user is not enlisted
-                    return BadRequest(_stringLocalizer["USR_ERR_016"]);
+                    return BadRequest(new string[] {
+                        _stringLocalizer["USR_ERR_016"]
+                    });
                 }
             }
 
@@ -97,7 +94,8 @@ namespace blendnet.user.api.Controllers
             Guid identityId = GetIdentityUserId(User.Claims);
             String phoneNumber = this.User.Identity.Name;
 
-            User user = await CreateUserIfNotExistsInternal(new CreateUserRequest() {
+            User user = await CreateUserIfNotExistsInternal(new CreateUserRequest()
+            {
                 ChannelId = Channel.CMSPortal,
                 UserName = "",
             });
@@ -125,7 +123,7 @@ namespace blendnet.user.api.Controllers
                         String.Format(_stringLocalizer["USR_ERR_015"], linkRetailerRequest.PartnerProvidedId, linkRetailerRequest.PartnerCode),
                     });
                 }
-            } 
+            }
 
             LinkRetailerIntegrationEvent linkRetailerIntegrationEvent = new LinkRetailerIntegrationEvent()
             {
