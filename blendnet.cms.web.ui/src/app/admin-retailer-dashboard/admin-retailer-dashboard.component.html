@@ -1,8 +1,16 @@
 <div class="cms-container">
     <div>
-        <mat-form-field  class="retailer-details">
+        <!-- <mat-form-field  class="retailer-details">
             <mat-label>Partner Code</mat-label>
             <input matInput  [formControl]="partnerCode" required maxlength="4" minlength="2">
+        </mat-form-field> -->
+        <mat-form-field  fxFlex="20" class="retailer-details">
+            <mat-label>Retailer Partner</mat-label>
+            <mat-select [(value)]="selectedRetailerPartner">
+              <mat-option *ngFor="let retailerPartner of partners" [value]="retailerPartner">
+                {{retailerPartner}}
+              </mat-option>
+              </mat-select>
         </mat-form-field>
         <mat-form-field  class="retailer-details">
             <mat-label>Partner Id</mat-label>
@@ -12,11 +20,15 @@
         color="primary" 
         class="submit-button"
         (click)="getRetailerDashboard()"
-        [disabled]="partnerCode.invalid || partnerId.invalid">Submit</button>
+        [disabled]="partnerId.invalid">Submit</button>
     </div>
 
     <div *ngIf="showDashboard">
         <app-retailer-dashboard></app-retailer-dashboard>
+    </div>
+
+    <div *ngIf="error">
+        <mat-error>Error while processing the request. Please try again</mat-error>
     </div>
 </div>
 

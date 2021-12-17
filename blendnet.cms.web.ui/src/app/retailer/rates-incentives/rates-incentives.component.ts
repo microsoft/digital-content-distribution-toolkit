@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service';
 import { EventType } from 'src/app/models/incentive.model';
 import { ContentProviderService } from 'src/app/services/content-provider.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-rates-incentives',
@@ -26,6 +27,7 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
   constructor(
     public userService: UserService,
     public router: Router,
+    public location: Location,
     public dialog: MatDialog,
     private retailerDashboardService: RetailerDashboardService,
     private contentProviderService: ContentProviderService
@@ -58,7 +60,7 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   navigateToDashboard() {
-    this.router.navigate(['/retailer/dashboard']);
+    this.location.back();
   }
 
   getContentProviders() {

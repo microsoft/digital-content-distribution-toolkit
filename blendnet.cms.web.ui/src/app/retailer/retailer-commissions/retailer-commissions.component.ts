@@ -1,12 +1,12 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { Router } from '@angular/router';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { RetailerCommissionDialogComponent } from '../retailer-commission-dialog/retailer-commission-dialog.component';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service'
-import { EventType } from '@azure/msal-browser';
 import { ContentProviderService } from 'src/app/services/content-provider.service';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -52,6 +52,7 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
   constructor(
     public userService: UserService,
     public router: Router,
+    public location: Location,
     public dialog: MatDialog,
     private retailerDashboardService: RetailerDashboardService,
     private contentProviderService: ContentProviderService
@@ -75,7 +76,7 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   navigateToDashboard() {
-    this.router.navigate(['/retailer/dashboard']);
+    this.location.back();
   }
 
   handleCarouselEvents($event) {
@@ -85,7 +86,6 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
   getDates = () => {
     for(let i=0; i<6;i++) {
       const date = new Date();
-      // con
       const firstDay = new Date(date.getFullYear(), date.getMonth()-i, 1);
       const lastDay = new Date(date.getFullYear(), date.getMonth()-i+1, 0);
       const monthName = firstDay.toLocaleString('default', { month: 'long' });
@@ -200,7 +200,8 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
               planDetail.earnText = 'Earn Rs.' + planDetail.formula.firstOperand + ' for each ' + this.contentProviders[planDetail.eventSubType] + ' order';
 
             }
-            planDetail.validTillText = res.endDate;
+            
+            planDetail.validTillText = this.retailerDashboardService.formatDateOnlyDay(res.endDate);
             commissionsCarouselArr.push(planDetail);
           }
         });

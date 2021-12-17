@@ -16,4 +16,5 @@
 
 .submit-button {
     margin: 10px;
+    height: fit-content;
 }

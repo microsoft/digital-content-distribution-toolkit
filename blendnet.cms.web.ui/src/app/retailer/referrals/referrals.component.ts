@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service'
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public userService: UserService,
     public router: Router,
+    public location: Location,
     private retailerDashboardService: RetailerDashboardService
   ) { }
 
@@ -45,7 +47,7 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   navigateToDashboard() {
-    this.router.navigate(['/retailer/dashboard']);
+    this.location.back();
   }
 
   selected(period: string) {
@@ -108,7 +110,6 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
   getDates = () => {
     for(let i=0; i<6;i++) {
       const date = new Date();
-      // con
       const firstDay = new Date(date.getFullYear(), date.getMonth()-i, 1);
       const lastDay = new Date(date.getFullYear(), date.getMonth()-i+1, 0);
       const monthName = firstDay.toLocaleString('default', { month: 'long' });

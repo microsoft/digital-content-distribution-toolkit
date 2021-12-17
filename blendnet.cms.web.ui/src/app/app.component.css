@@ -230,6 +230,6 @@ font-size: 10px;
 @media only screen and (min-width: 1024px) {
 .retailer-menu, .referrals-main-block {
     width: 900px;
-    margin-left: calc(50vw - 450px);
+    margin-left: 50px
 }
 }

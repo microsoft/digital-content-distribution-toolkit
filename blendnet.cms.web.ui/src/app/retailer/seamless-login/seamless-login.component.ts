@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import {KaizalaService } from 'src/app/services/kaizala.service'
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
 import jwt_decode from 'jwt-decode';
 
 @Component({
