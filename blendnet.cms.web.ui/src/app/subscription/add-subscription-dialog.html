@@ -40,7 +40,7 @@
               <mat-label>Start date</mat-label>
               <input matInput  [matDatepicker]="startpicker"
               formControlName="startDate" required disabled [min]="minStart">
-              <mat-datepicker-toggle *ngIf="!isUpdate" matSuffix [for]="startpicker"></mat-datepicker-toggle>
+              <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
               <mat-datepicker #startpicker disabled="false"></mat-datepicker>
             </mat-form-field>
           </td>

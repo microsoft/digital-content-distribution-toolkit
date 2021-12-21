@@ -1,0 +1,19 @@
+<form [formGroup]="subForm" >
+    <mat-form-field >
+        <mat-label>Current End Date</mat-label>
+        <input matInput formControlName="oldEndDate" disabled [matDatepicker]="oldEndpicker">
+        <mat-datepicker #oldEndpicker disabled="false"></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field >
+        <mat-label>New End date</mat-label>
+        <input matInput  [matDatepicker]="endpicker"
+        formControlName="newEndDate" required disabled [min]="minEnd">
+        <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+        <mat-datepicker #endpicker disabled="false"></mat-datepicker>
+      </mat-form-field>
+</form>
+<div mat-dialog-actions align="end">
+    <button mat-raised-button type="button" class="discard-btn" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button 
+    color="primary" (click)="changeEndDate()">Save</button>
+</div>

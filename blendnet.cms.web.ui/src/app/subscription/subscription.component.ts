@@ -7,6 +7,8 @@ import { AddSubscriptionDialog } from './add-subscription-dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { EditSubscriptionComponent } from './edit-subscription.component';
+import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 
 @Component({
   selector: 'app-subscription',
@@ -18,8 +20,8 @@ export class SubscriptionComponent {
   cpSubscriptions;
   today;
   minEnd: Date;
-
-  displayedColumns: string[] = ['status','title', 'price', 'durationDays', 'startDate', 'endDate', 'isRedeemable', 'redemptionValue', 'edit'];
+  deleteConfirmMessage: string = "Subscription against which an order is placed will not be deleted.  Please press Continue to delete the selected subscription.";
+  displayedColumns: string[] = ['status','title', 'price', 'durationDays', 'startDate', 'endDate', 'isRedeemable', 'redemptionValue', 'extend', 'edit', 'delete'];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -93,11 +95,33 @@ export class SubscriptionComponent {
   }
 
 
+   
+  changeEndDate(sub): void {
+    const dialogRef = this.dialog.open(EditSubscriptionComponent, {
+      width: '300px',
+      data: {
+        sub: sub
+      }
+    });
+
+    dialogRef.componentInstance.onDateChange.subscribe(data => {
+      this.toastr.success("Subscription end date changed successfully!");
+      this.getSubscriptions();
+      dialogRef.close();
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
  
   openDialog(sub): void {
     const dialogRef = this.dialog.open(AddSubscriptionDialog, {
       width: '50%',
-      data: sub
+      data: {
+        sub: sub
+      }
     });
 
     dialogRef.componentInstance.onSubCreate.subscribe(data => {
@@ -109,6 +133,54 @@ export class SubscriptionComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
+  }
+
+
+  openDeleteConfirmModal(row): void {
+    const dialogRef = this.dialog.open(CommonDialogComponent, {
+      data: {
+        heading: 'Confirm',
+        message: this.deleteConfirmMessage,
+        action: "DELETE",
+        sub: row,
+        buttons: this.openSelectCPModalButtons()
+      },
+      maxWidth: '400px'
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'proceed') {
+        this.onConfirmDelete(row.id);
+      }
+    });
+  
+  }
+  
+  onConfirmDelete(id): void {
+    this.subscriptionService.deleteSubscription(id).subscribe(
+      res => this.onDeleteSuccess(),
+      err => this.toastr.error(err));
+  }
+
+  onDeleteSuccess() {
+    this.toastr.success("Subscription deleted successfully");
+    this.getSubscriptions();
+  }
+    
+  openSelectCPModalButtons(): Array<any> {
+    return [{
+      label: 'Cancel',
+      type: 'basic',
+      value: 'cancel',
+      class: 'discard-btn'
+    },
+    {
+      label: 'Continue',
+      type: 'primary',
+      value: 'submit',
+      class: 'update-btn'
+    }
+    ]
   }
 
 }

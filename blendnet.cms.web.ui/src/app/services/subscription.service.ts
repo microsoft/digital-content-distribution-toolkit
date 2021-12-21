@@ -34,13 +34,19 @@ export class SubscriptionService {
     return this.http.put(url, subscription, { observe: 'response'});
   }
 
-  deleteSubscription(subscription): Observable<HttpResponse<any>>  {
+  deleteSubscription(id): Observable<HttpResponse<any>>  {
     let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") + 
-    "/Subscription/" + subscription.id;
+    "/Subscription/" + id;
     this.logger.log(`Deleting subscription`);
     return this.http.delete(url, { observe: 'response'});
   }
 
+
+  updateEndDate(id, date): Observable<HttpResponse<any>>  {
+    let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") +   "/Subscription/" + id + '/updateEndDate';
+    this.logger.log(`Updating end date for a subscription`);
+    return this.http.post(url, date, { observe: 'response'});
+  }
 
 
 }

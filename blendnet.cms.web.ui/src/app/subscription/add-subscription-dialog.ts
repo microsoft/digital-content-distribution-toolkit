@@ -31,31 +31,27 @@ import { SubscriptionService } from "../services/subscription.service";
  
         this.minStart = new Date();
         this.minEnd  = new Date();
-        this.minEnd.setDate(this.minEnd.getDate() +1);
   
       }
   
     ngOnInit() {
      
-     if(this.data) {
+     if(this.data.sub) {
       this.isUpdate = true;
-      var isRedeemable = this.data.isRedeemable ? "Yes" : "No";
-      this.subForm = new FormGroup({
-        name :  new FormControl({value: this.data.title, disabled: true} ,[Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
-        price : new FormControl({value: this.data.price, disabled: true}, [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
-        durationDays : new FormControl({value: this.data.durationDays, disabled: true}, [Validators.required, Validators.max(365), Validators.min(1)]),
-        startDate : new FormControl({value: this.data.startDate, disabled: true}, [Validators.required]),
-        endDate : new FormControl({value: this.data.endDate, disabled: false}, [Validators.required]),
-        isRedeemable : new FormControl({value: isRedeemable, disabled: true}, [Validators.required]),
-        redemptionValue: new FormControl({value: this.data.redemptionValue, disabled: true})
-        });
-
-      this.minStart = this.data.startDate;
-      this.minEnd = this.data.startDate > new Date().toISOString() ? this.data.startDate : new Date();
-      
-     }  else {
-      this.isUpdate = false;
-      this.createEmptyForm();
+      var isRedeemable = this.data.sub.isRedeemable ? "Yes" : "No";
+      this.minStart = null;
+      this.minEnd = null;
+        this.subForm = new FormGroup({
+              name :  new FormControl(this.data.sub.title,[Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
+              price : new FormControl(this.data.sub.price, [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
+              durationDays : new FormControl(this.data.sub.durationDays, [Validators.required, Validators.max(365), Validators.min(1)]),
+              startDate : new FormControl( this.data.sub.startDate, [Validators.required]),
+              endDate : new FormControl(this.data.sub.endDate, [Validators.required]),
+              isRedeemable : new FormControl(isRedeemable, [Validators.required]),
+              redemptionValue: new FormControl(this.data.sub.redemptionValue)
+              });
+      } else {
+        this.createEmptyForm();
      }
     }
     
@@ -76,12 +72,12 @@ import { SubscriptionService } from "../services/subscription.service";
     }
   
     isNotRedeemable() {
-      return this.subForm.get('isRedeemable').value !== 'Yes' || this.isUpdate;
+      return this.subForm.get('isRedeemable').value !== 'Yes';
     }
 
     editSubscription() {
       var sub = this.getSubDetails();
-      sub.id = this.data.id;
+      sub.id = this.data.sub.id;
       this.subscriptionService.editSubscription(sub).subscribe(
         res => this.onSubCreate.emit("Subscription updated successfully!"),
         err => this.toastr.error(err)
@@ -122,7 +118,7 @@ import { SubscriptionService } from "../services/subscription.service";
     }
 
     submitSubscription() {
-      if(this.data) {
+      if(this.data.sub) {
         this.editSubscription();
       } else {
         this.createSubscription();

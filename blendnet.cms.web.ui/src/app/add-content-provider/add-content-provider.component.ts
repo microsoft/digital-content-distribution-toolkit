@@ -119,11 +119,13 @@ export class AddContentProviderComponent implements OnInit {
     }
     if(newUpdatedCP.id) {
       this.contentProviderService.editContentProvider(newUpdatedCP).subscribe(res => {
-        console.log(res);
         if(res) {
           this.showSuccess("Update Successful");
         }
         this.onCPUpdateOrCreate.emit("Content Provider Updated");
+      },
+      err => {
+        this.showError(err);
       });
     } else {
       this.contentProviderService.createContentProvider(newUpdatedCP).subscribe(res => {

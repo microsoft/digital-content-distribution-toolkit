@@ -48,6 +48,7 @@ import { DeviceRetailerHistoryComponent } from './devices/device-retailer-histor
 import { DeviceContentsComponent } from './devices/device-contents.component';
 import { AdminRetailerDashboardComponent } from './admin-retailer-dashboard/admin-retailer-dashboard.component';
 import {RetailerModule} from './retailer/retailer.module';
+import { EditSubscriptionComponent } from './subscription/edit-subscription.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import {RetailerModule} from './retailer/retailer.module';
     DeviceRetailerHistoryComponent,
     DeviceContentsComponent,
     AdminRetailerDashboardComponent,
+    EditSubscriptionComponent,
   ],
   imports: [
     HttpClientModule,
