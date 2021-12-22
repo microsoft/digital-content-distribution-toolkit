@@ -1,9 +1,7 @@
 FROM cblmariner.azurecr.io/base/core:1.0 as build-step
 # manually install nodejs as pre-baked mariner-based image is not available
+RUN tdnf -y install ca-certificates
 RUN tdnf -y install nodejs
-
-# force cipher for nodejs due to compatibility issues with openssl. Tracking bug: https://microsoft.visualstudio.com/OS/_workitems/edit/36118736
-ENV NODE_OPTIONS=--tls-cipher-list='ECDHE-RSA-AES128-GCM-SHA256:!RC4'
 
 WORKDIR /app
 
