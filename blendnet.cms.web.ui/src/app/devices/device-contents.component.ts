@@ -31,6 +31,7 @@ export class DeviceContentsComponent implements OnInit {
   totalActiveBroacastedContent = 'NA';
   totalValidActiveAvailableContent= 0;
   totalValidActiveBroacastedContent= 'NA';
+  filterValue;
   constructor(
     private deviceService: DeviceService,
     public dialog: MatDialog,
@@ -42,6 +43,9 @@ export class DeviceContentsComponent implements OnInit {
 
   ) { 
     this.route.params.subscribe(device => this.deviceid = device.id);
+    this.route.paramMap.subscribe(params => {
+      this.filterValue = params.get("filterValue")
+     });
   }
 
   ngOnInit(): void {
@@ -140,7 +144,7 @@ export class DeviceContentsComponent implements OnInit {
 
   }
   showDevicesPage() {
-    this.router.navigateByUrl('/admin/devices');
+    this.router.navigate(['/admin/devices', {filterValue: this.filterValue}]);
   }
 
   viewContent(selectedContent) : void {

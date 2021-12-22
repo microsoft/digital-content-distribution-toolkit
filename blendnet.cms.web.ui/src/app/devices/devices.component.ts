@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
@@ -43,7 +43,7 @@ export class DevicesComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
+  filterValue;
   errMessage;
   error= false;
   isDeviceMgmtRole = true;
@@ -51,9 +51,12 @@ export class DevicesComponent {
     public dialog: MatDialog, 
     private toastr: ToastrService,
     private deviceService: DeviceService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
     ) {
-
+      this.route.paramMap.subscribe(params => {
+        this.filterValue =  params ? params.get("filterValue") ?  params.get("filterValue") : "" : "";
+       });
   }
 
   ngOnInit() {
@@ -61,6 +64,12 @@ export class DevicesComponent {
     this.isDeviceMgmtRole =  userRoles.includes(environment.roles.HubDeviceManagement);
     this.getDevices();
    
+   
+  }
+
+  refreshPage() {
+    this.filterValue = "";
+    this.getDevices();
   }
 
   getDevices() {
@@ -71,6 +80,9 @@ export class DevicesComponent {
           this.dataSource = this.createDataSource(data);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
+          if(this.filterValue){
+            this.applyFilter();
+          }
         } else {
           this.error = true;
           this.dataSource = this.createDataSource([]);
@@ -113,9 +125,8 @@ export class DevicesComponent {
     return new MatTableDataSource(dataSource);
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter() {
+    this.dataSource.filter = this.filterValue.trim().toLowerCase();
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
@@ -176,16 +187,17 @@ export class DevicesComponent {
   }
 
   showFilterHistory(deviceId): void {
-    this.router.navigateByUrl('/admin/devices/filters-history/'+ deviceId);
+    this.router.navigate(['/admin/devices/filters-history/'+ deviceId, {filterValue: this.filterValue}]);
   }
 
   showAssignHistory(deviceId): void {
-    this.router.navigateByUrl('/admin/devices/assignment-history/'+ deviceId);
+    this.router.navigate(['/admin/devices/assignment-history/'+ deviceId,  {filterValue: this.filterValue}]);
   }
 
   showDeviceContents(deviceId): void {
-    this.router.navigateByUrl('/admin/devices/contents/'+ deviceId);
+    this.router.navigate(['/admin/devices/contents/'+ deviceId,  {filterValue: this.filterValue}]);
   }
+  
   assignment(deviceId) {
     const dialogRef = this.dialog.open(DeviceAssignComponent, {
       width: '500px',

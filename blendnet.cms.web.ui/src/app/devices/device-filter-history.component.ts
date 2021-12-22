@@ -21,6 +21,7 @@ export class DeviceFilterHistoryComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   errMessage;
   error= false;
+  filterValue;
   constructor(
     private deviceService: DeviceService,
     public dialog: MatDialog,
@@ -30,6 +31,9 @@ export class DeviceFilterHistoryComponent implements OnInit {
 
   ) { 
     this.route.params.subscribe(device => this.deviceid = device.id);
+    this.route.paramMap.subscribe(params => {
+      this.filterValue = params.get("filterValue")
+     });
   }
 
   ngOnInit(): void {
@@ -89,7 +93,7 @@ export class DeviceFilterHistoryComponent implements OnInit {
     });
   }
   showDevicesPage() {
-    this.router.navigateByUrl('/admin/devices');
+    this.router.navigate(['/admin/devices', {filterValue: this.filterValue}]);
   }
 
 

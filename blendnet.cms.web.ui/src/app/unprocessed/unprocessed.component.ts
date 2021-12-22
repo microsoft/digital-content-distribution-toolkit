@@ -36,7 +36,7 @@ export class UnprocessedComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('jsonFileInput') jsonFileInput;
-  @ViewChild('UploadFileInput') uploadFileInput: ElementRef;
+  filterValue;
   myfilename = 'Choose a meta-data file to upload content';
   errMessage;
   error= false;
@@ -51,6 +51,11 @@ export class UnprocessedComponent {
   
 
   ngOnInit(): void {
+    this.getUnprocessedContent();
+  }
+
+  refreshPage() {
+    this.filterValue = '';
     this.getUnprocessedContent();
   }
 
@@ -138,9 +143,8 @@ export class UnprocessedComponent {
   }
 
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter() { 
+    this.dataSource.filter = this.filterValue.trim().toLowerCase();
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();

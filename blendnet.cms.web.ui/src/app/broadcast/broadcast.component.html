@@ -2,7 +2,7 @@
 <div class="cms-container">
     <h1 class="page-title">
         Broadcast Content
-        <button  matTooltip="Refresh" mat-stroked-button  color="primary" (click)="getBroadcastContent()"
+        <button  matTooltip="Refresh" mat-stroked-button  color="primary" (click)="refreshPage()"
         style="float: right;">
        <mat-icon>autorenew</mat-icon>Refresh
    </button>
@@ -11,7 +11,7 @@
 
 <mat-form-field>
     <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Don" #input [disabled]="error" >
+    <input matInput (keyup)="applyFilter()" placeholder="Ex. Don" [(ngModel)]="filterValue" [disabled]="error" >
   </mat-form-field>
   
   <div class="mat-elevation-z8">
@@ -119,7 +119,7 @@
             <!-- Row shown when there is no matching data. -->
             <tr class="mat-row" *matNoDataRow>
                 <td class="mat-cell" colspan="4" *ngIf="errMessage"><h4>{{errMessage}}</h4></td>
-                <td class="mat-cell" colspan="4" *ngIf="!errMessage && input.value?.length>0">No data matching the filter "{{input.value}}"</td>
+                <td class="mat-cell" colspan="4" *ngIf="!errMessage && filterValue?.length>0">No data matching the filter "{{filterValue}}"</td>
             </tr>
         </table>
     </div>

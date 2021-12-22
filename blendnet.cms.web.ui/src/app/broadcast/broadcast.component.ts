@@ -37,6 +37,7 @@ export class BroadcastComponent {
   allowedMaxSelection: number = environment.allowedMaxSelection;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  filterValue = "";
   errMessage;
   error= false;
   
@@ -51,6 +52,11 @@ export class BroadcastComponent {
   ngOnInit(): void {
     this.getBroadcastContent();
   };
+
+  refreshPage() {
+    this.filterValue ="";
+    this.getBroadcastContent();
+  }
 
   getBroadcastContent() {
     var broadcastContentFilters = {
@@ -178,10 +184,8 @@ getBroadcastDetails(selectedContent) {
     && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_SUBMITTED;
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
+  applyFilter() {
+    this.dataSource.filter = this.filterValue.trim().toLowerCase();
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }

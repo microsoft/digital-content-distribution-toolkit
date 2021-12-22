@@ -21,6 +21,7 @@ export class DeviceRetailerHistoryComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   errMessage;
   error= false;
+  filterValue;
 
   constructor(
     private retailerService: RetailerService,
@@ -31,6 +32,9 @@ export class DeviceRetailerHistoryComponent implements OnInit {
 
   ) { 
     this.route.params.subscribe(device => this.deviceid = device.id);
+    this.route.paramMap.subscribe(params => {
+      this.filterValue = params.get("filterValue")
+     });
   }
 
   ngOnInit(): void {
@@ -102,7 +106,7 @@ export class DeviceRetailerHistoryComponent implements OnInit {
   }
   
   showDevicesPage() {
-    this.router.navigateByUrl('/admin/devices');
+    this.router.navigate(['/admin/devices', {filterValue: this.filterValue}]);
   }
 
 

@@ -25,6 +25,7 @@ export class SubscriptionComponent {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  filterValue;
   errMessage;
   error= false;
 
@@ -48,6 +49,10 @@ export class SubscriptionComponent {
     this.getSubscriptions();
   }
 
+  refreshPage() {
+    this.filterValue ="";
+    this.getSubscriptions();
+  }
   getSubscriptions() {
     this.subscriptionService.getSubscriptionsForCP().subscribe(
       res => {
@@ -68,9 +73,8 @@ export class SubscriptionComponent {
       });
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter() {
+    this.dataSource.filter = this.filterValue.trim().toLowerCase();
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();

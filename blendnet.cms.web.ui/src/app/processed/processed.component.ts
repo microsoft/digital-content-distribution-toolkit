@@ -36,6 +36,7 @@ export class ProcessedComponent {
   selectedContents: number =0;
   allowedMaxSelection: number = environment.allowedMaxSelection;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  filterValue = "";
   @ViewChild(MatSort) sort: MatSort;
   color: ThemePalette = 'primary';
   errMessage;
@@ -50,6 +51,11 @@ export class ProcessedComponent {
   ngOnInit(): void {
     this.getProcessedContent();
   };
+
+  refreshPage() {
+    this.filterValue ="";
+    this.getProcessedContent();
+  }
 
   getProcessedContent() {
     var processedContentFilters = {
@@ -154,9 +160,8 @@ export class ProcessedComponent {
   }
 
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter() {
+    this.dataSource.filter = this.filterValue.trim().toLowerCase();
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
