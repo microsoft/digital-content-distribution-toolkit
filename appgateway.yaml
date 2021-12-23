@@ -16,40 +16,33 @@ spec:
           service:
             name: blendnet-cms-api
             port: 
-              number: 80
+              number: 5000
       - path: /userapi/*
         pathType: Prefix
         backend:
           service:
             name: blendnet-user-api
             port: 
-              number: 80
+              number: 5000
       - path: /retailerapi/*
         pathType: Prefix
         backend:
           service:
             name: blendnet-retailer-api
             port: 
-              number: 80
+              number: 5000
       - path: /omsapi/*
         pathType: Prefix
         backend:
           service:
             name: blendnet-oms-api
             port: 
-              number: 80
+              number: 5000
       - path: /portal/*
         pathType: Prefix
         backend:
           service:
             name: blendnet-cms-web-ui
-            port: 
-              number: 80
-      - path: /user/*
-        pathType: Prefix
-        backend:
-          service:
-            name: blendnet-crm-user-api
             port: 
               number: 80
       - path: /incentiveapi/*
@@ -58,19 +51,18 @@ spec:
           service:
             name: blendnet-incentive-api
             port: 
-              number: 80
+              number: 5000
       - path: /notificationapi/*
         pathType: Prefix
         backend:
           service:
             name: blendnet-notification-api
             port: 
-              number: 80
+              number: 5000
       - path: /deviceapi/*
         pathType: Prefix
         backend:
           service:
             name: blendnet-device-api
             port: 
-              number: 80
-      
+              number: 5000

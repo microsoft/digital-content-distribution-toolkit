@@ -9,6 +9,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0-cbl-mariner1.0-distroless AS final
 WORKDIR /app
 EXPOSE 5000
 ENV ASPNETCORE_URLS=http://+:5000
-
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "blendnet.devtokengen.dll"]
