@@ -821,6 +821,12 @@ namespace blendnet.incentive.api.Controllers
                 return errorInfo;
             }
 
+            if (endDate < plan.StartDate)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0001"]);
+                return errorInfo;
+            }
+
             List<IncentivePlan> overlappingPlans = await _incentiveRepository.GetIncentivePlanList(plan.PlanType, plan.Audience, endDate);
 
             if (overlappingPlans != null && overlappingPlans.Count > 0)
