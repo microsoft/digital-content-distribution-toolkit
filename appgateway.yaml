@@ -44,7 +44,7 @@ spec:
           service:
             name: blendnet-cms-web-ui
             port: 
-              number: 80
+              number: 5000
       - path: /incentiveapi/*
         pathType: Prefix
         backend:

@@ -23,11 +23,11 @@ spec:
             memory: "4Gi"
             cpu: "2"
         ports:
-        - containerPort: 80
+        - containerPort: 5000
         readinessProbe:
           httpGet:
             path: /
-            port: 80
+            port: 5000
           periodSeconds: 3
           timeoutSeconds: 1
 ---
@@ -37,7 +37,7 @@ metadata:
   name: blendnet-cms-web-ui
 spec:
   ports:
-  - port: 80
-    targetPort : 80
+  - port: 5000
+    targetPort : 5000
   selector:
     app: blendnet-cms-web-ui
