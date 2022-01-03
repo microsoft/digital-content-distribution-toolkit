@@ -1,18 +1,18 @@
 ﻿using blendnet.api.proxy.Ses;
+using blendnet.cms.listener.Model;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto.cms;
 using blendnet.common.dto.Cms;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Ses;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.Extensions;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace blendnet.cms.listener.IntegrationEventHandling
@@ -117,6 +117,20 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                     else
                     {
                         await UpdateSucessStatus(content, broadcastCancellationCommand);
+
+                        //populate completed AI event
+                        CancelBroadcastAIEvent cancelBroadcastAIEvent = new CancelBroadcastAIEvent()
+                        {
+                            Title = content.Title,
+                            ShortDescription = content.ShortDescription,
+                            ContentId = content.Id.Value,
+                            ContentProviderId = content.ContentProviderId,
+                            CommandId = broadcastCancellationCommand.Id.Value,
+                            CancelationDate = content.ModifiedDate.Value
+                        };
+
+                        _telemetryClient.TrackEvent(cancelBroadcastAIEvent);
+
                     }
 
                     _logger.LogInformation($"Broadcast Cancellation for content id: {integrationEvent.ContentBroadcastCancellationCommand.ContentId} command id : {broadcastCancellationCommand.Id.Value}");

@@ -9,6 +9,7 @@ using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.KeyVault;
+using blendnet.common.infrastructure.Middleware;
 using blendnet.notification.api;
 using blendnet.notification.repository;
 using blendnet.notification.repository.Interfaces;
@@ -237,6 +238,9 @@ void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 
         app.UseForwardedHeaders();
     }
+
+    // Add other security headers
+    app.UseMiddleware<SecurityHeadersMiddleware>();
 
     app.UseHttpsRedirection();
 

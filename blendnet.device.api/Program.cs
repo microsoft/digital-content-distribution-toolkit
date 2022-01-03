@@ -10,6 +10,7 @@ using blendnet.common.infrastructure.ApplicationInsights;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.KeyVault;
+using blendnet.common.infrastructure.Middleware;
 using blendnet.common.infrastructure.ServiceBus;
 using blendnet.device.api;
 using blendnet.device.repository.CosmosRepository;
@@ -239,6 +240,9 @@ void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 
         app.UseForwardedHeaders();
     }
+
+    // Add other security headers
+    app.UseMiddleware<SecurityHeadersMiddleware>();
 
     app.UseHttpsRedirection();
 

@@ -1,9 +1,12 @@
-﻿using blendnet.cms.repository.Interfaces;
+﻿using blendnet.cms.api.Model;
+using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.common.infrastructure.Extensions;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -28,9 +31,12 @@ namespace blendnet.cms.api.Controllers
 
         IStringLocalizer<SharedResource> _stringLocalizer;
 
+        private TelemetryClient _telemetryClient;
+
         public ContentProviderController(IContentProviderRepository contentProviderRepository,
                                             ILogger<ContentProviderController> logger,
                                             IEventBus eventBus,
+                                            TelemetryClient telemetryClient,
                                             IStringLocalizer<SharedResource> stringLocalizer)
             : base(contentProviderRepository)
         {
@@ -41,6 +47,8 @@ namespace blendnet.cms.api.Controllers
             _eventBus = eventBus;
 
             _stringLocalizer = stringLocalizer;
+
+            _telemetryClient = telemetryClient;
         }
 
 
@@ -158,6 +166,11 @@ namespace blendnet.cms.api.Controllers
 
             await _eventBus.Publish(contentProviderCreatedIntegrationEvent);
 
+            //publish application insights event
+            ContentProviderCreatedAIEvent contentProviderAIEvent = new ContentProviderCreatedAIEvent() { ContentProviderId = contentProviderId, Name = contentProvider.Name };
+
+            _telemetryClient.TrackEvent(contentProviderAIEvent);
+
             return CreatedAtAction(nameof(GetContentProvider),
                                     new { contentProviderId = contentProviderId, Version = ApiVersion.Default.MajorVersion.ToString() },
                                     contentProviderId);
@@ -241,6 +254,14 @@ namespace blendnet.cms.api.Controllers
 
             if (statusCode == (int)System.Net.HttpStatusCode.NoContent)
             {
+                //publish application insights event
+                ContentProviderDeletedAIEvent contentProviderAIEvent = new ContentProviderDeletedAIEvent() 
+                { 
+                    ContentProviderId = contentProviderId
+                };
+
+                _telemetryClient.TrackEvent(contentProviderAIEvent);
+
                 return NoContent();
             }
             else

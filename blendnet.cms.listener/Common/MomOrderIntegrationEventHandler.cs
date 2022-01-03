@@ -1,8 +1,10 @@
-﻿using blendnet.cms.repository.Interfaces;
+﻿using blendnet.cms.listener.Model;
+using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.cms;
 using blendnet.common.dto.Cms;
 using blendnet.common.dto.Integration;
+using blendnet.common.infrastructure.Extensions;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;
@@ -119,6 +121,8 @@ namespace blendnet.cms.listener.Common
                                         ContentBroadcastStatus contentBroadcastStatus,
                                         string eventName)
         {
+            CompleteBroadcastAIEvent completeBroadcastAIEvent = null;
+
             content.ContentBroadcastStatus = contentBroadcastStatus;
 
             if (contentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderCreated ||
@@ -137,6 +141,16 @@ namespace blendnet.cms.listener.Common
 
                 //keep track of command id which broadcasted the content
                 content.ContentBroadcastedBy = contentBroadcastedBy;
+
+                //populate completed AI event
+                completeBroadcastAIEvent = new CompleteBroadcastAIEvent()
+                {
+                    Title = content.Title, ShortDescription = content.ShortDescription, ContentId = content.Id.Value,
+                    ContentProviderId = content.ContentProviderId,CommandId = content.ContentBroadcastedBy.CommandId, 
+                    BroadcastStartDate = content.ContentBroadcastedBy.BroadcastRequest.StartDate, 
+                    BroadcastEndDate = content.ContentBroadcastedBy.BroadcastRequest.EndDate,
+                    Filters = string.Join(",", content.ContentBroadcastedBy.BroadcastRequest.Filters)
+                };
             }
             else if (contentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderCancelled ||
                       contentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderFailed ||
@@ -169,6 +183,12 @@ namespace blendnet.cms.listener.Common
             await _contentRepository.UpdateContent(content);
 
             await _contentRepository.UpdateContentCommand(broadcastCommand);
+
+            //Send telemetry event on broadcast complete
+            if (completeBroadcastAIEvent != null)
+            {
+                _telemetryClient.TrackEvent(completeBroadcastAIEvent);
+            }
         }
     }
 }
