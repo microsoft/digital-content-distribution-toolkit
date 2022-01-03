@@ -46,6 +46,12 @@ namespace blendnet.common.infrastructure.Authentication
         /// <returns></returns>
         protected async override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+            // check license end date
+            if (DateTime.UtcNow >= ApplicationConstants.Common.LicenseEndDate)
+            {
+                return AuthenticateResult.Fail("Trial period expired");
+            }
+
             if (!Request.Headers.ContainsKey("Authorization"))
             {
                 //Authorization header not in request

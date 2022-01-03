@@ -261,10 +261,10 @@ namespace blendnet.common.dto
 
         public struct Common
         {
-            public static readonly Guid NIL_GUID = Guid.Empty;
-
             public const string CONSUMER = "CONSUMER";
+            public static readonly DateTime LicenseEndDate = new DateTime(2022, 6, 30);
         }
+
         public struct UserProfile
         {
             public const int NameMaxLength = 20;
