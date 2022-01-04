@@ -49,13 +49,13 @@
             <!-- created date Column -->
             <ng-container matColumnDef="assignmentStartDate">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Date </th>
-                <td mat-cell *matCellDef="let row">{{row.assignmentStartDate | date: 'short'}}</td>
+                <td mat-cell *matCellDef="let row">{{row.assignmentStartDateString }}</td>
             </ng-container>
 
             <!-- created date Column -->
             <ng-container matColumnDef="assignmentEndDate">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>End Date </th>
-                <td mat-cell *matCellDef="let row">{{row.assignmentEndDate | date: 'short'}}</td>
+                <td mat-cell *matCellDef="let row">{{row.assignmentEndDateString }}</td>
             </ng-container>
          
 

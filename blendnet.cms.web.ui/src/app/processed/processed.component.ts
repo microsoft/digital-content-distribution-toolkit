@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Inject, Output, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Inject, LOCALE_ID, Output, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -13,6 +13,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
 import { ThemePalette } from '@angular/material/core';
+import { DatePipe } from '@angular/common';
 
 
 export interface DialogData {
@@ -41,11 +42,14 @@ export class ProcessedComponent {
   color: ThemePalette = 'primary';
   errMessage;
   error= false;
+  pipe;
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    @Inject(LOCALE_ID) locale: string
     ) {
+      this.pipe = new DatePipe(locale);
   }
 
   ngOnInit(): void {
@@ -53,7 +57,7 @@ export class ProcessedComponent {
   };
 
   refreshPage() {
-    this.filterValue ="";
+    this.filterValue = "";
     this.getProcessedContent();
   }
 
@@ -122,6 +126,8 @@ export class ProcessedComponent {
             && data.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE) ? 
           data.contentBroadcastStatus : data.contentTransformStatus
           data.isSelected = false;
+          data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
+          data.modifiedDateString =  this.pipe.transform(data.modifiedDate, 'short');
           dataSource.push(data);
         } else {
           var today = new Date();
@@ -130,6 +136,8 @@ export class ProcessedComponent {
               && data.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE) ? 
             data.contentBroadcastStatus : data.contentTransformStatus
             data.isSelected = false;
+            data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
+            data.modifiedDateString =  this.pipe.transform(data.modifiedDate, 'short');
             dataSource.push(data);
           }
         }

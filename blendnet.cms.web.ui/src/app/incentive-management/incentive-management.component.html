@@ -31,7 +31,7 @@
                     
                     <mat-form-field>
                         <mat-label>Search Incentive</mat-label>
-                        <input matInput (keyup)="applyFilterRetailer($event)"  #input
+                        <input matInput (keyup)="applyFilterRetailer()" [(ngModel)]="filterValueR"
                         [disabled]="isErrorRetailer" placeholder="Ex. Incentive Plan">
                         <!-- <mat-icon matSuffix>search</mat-icon> -->
                     </mat-form-field>
@@ -54,13 +54,13 @@
                                 <!--Start  Date  Column -->
                                 <ng-container matColumnDef="startDate">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.startDate | date: 'dd-MMM-yyy'}} </td>
+                                    <td mat-cell *matCellDef="let row"> {{row.startDateString}} </td>
                                 </ng-container>
     
                                 <!--End  Date  Column -->
                                 <ng-container matColumnDef="endDate">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> End Date </th>
-                                    <td mat-cell *matCellDef="let row"> {{row.endDate | date: 'dd-MMM-yyy'}} </td>
+                                    <td mat-cell *matCellDef="let row"> {{row.endDateString}} </td>
                                 </ng-container>
             
                             <!-- Partner Column -->
@@ -109,7 +109,7 @@
                             <!-- Row shown when there is no matching data. -->
                             <tr class="mat-row" *matNoDataRow>
                                 <td class="mat-cell" colspan="4" *ngIf="errMessage"><h4>{{errMessage}}</h4></td>
-                                <td class="mat-cell" colspan="4" *ngIf="!errMessage && input.value?.length>0">No data matching the filter "{{input.value}}"</td>
+                                <td class="mat-cell" colspan="4" *ngIf="!errMessage && filterValueR?.length>0">No data matching the filter "{{filterValueR}}"</td>
                             </tr>
             
                             </table>
@@ -189,7 +189,7 @@
                 </h5>
                 <mat-form-field>
                     <mat-label>Search Incentive</mat-label>
-                        <input matInput (keyup)="applyFilterConsumer($event)" placeholder="Ex. Incentive Plan" #inputC
+                        <input matInput (keyup)="applyFilterConsumer()" placeholder="Ex. Incentive Plan" [(ngModel)]="filterValueC"
                         [disabled]="isErrorConsumer">
                         <!-- <mat-icon matSuffix>search</mat-icon> -->
                   </mat-form-field>
@@ -213,13 +213,13 @@
                             <!--Start  Date  Column -->
                             <ng-container matColumnDef="startDate">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </th>
-                                <td mat-cell *matCellDef="let row"> {{row.startDate | date: 'dd-MMM-yyy'}} </td>
+                                <td mat-cell *matCellDef="let row"> {{row.startDateString}} </td>
                             </ng-container>
 
                             <!--End  Date  Column -->
                             <ng-container matColumnDef="endDate" >
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> End Date </th>
-                                <td mat-cell *matCellDef="let row"> {{row.endDate | date: 'dd-MMM-yyy'}} </td>
+                                <td mat-cell *matCellDef="let row"> {{row.endDateString}} </td>
                             </ng-container>
         
         
@@ -263,7 +263,7 @@
                          <!-- Row shown when there is no matching data. -->
                          <tr class="mat-row" *matNoDataRow>
                             <td class="mat-cell" colspan="4" *ngIf="errMessageCust"><h4>{{errMessageCust}}</h4></td>
-                            <td class="mat-cell" colspan="4" *ngIf="!errMessageCust && inputC.value?.length>0">No data matching the filter "{{inputC.value}}"</td>
+                            <td class="mat-cell" colspan="4" *ngIf="!errMessageCust && filterValueC?.length>0">No data matching the filter "{{filterValueC}}"</td>
                         </tr>
 
                         </table>

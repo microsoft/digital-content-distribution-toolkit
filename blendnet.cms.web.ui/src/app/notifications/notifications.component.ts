@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import {MatAccordion} from '@angular/material/expansion';
 import { MatPaginator } from '@angular/material/paginator';
@@ -8,6 +8,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import { Content } from '../models/content.model';
 import { NotificationService } from '../services/notification.service';
 import { MatSort } from '@angular/material/sort';
+import { DatePipe } from '@angular/common';
 
 
 
@@ -28,7 +29,7 @@ export class NotificationsComponent implements OnInit {
   sendDate: Date;
   errMessage;
   error= false;
-
+  pipe;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   
@@ -37,13 +38,12 @@ export class NotificationsComponent implements OnInit {
   constructor( 
     private notificationService: NotificationService,
     private toastr: ToastrService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    @Inject(LOCALE_ID) locale: string
     ) {
       var date = new Date();
       this.today = date.toISOString();
-      const currentYear = new Date().getFullYear();
-      const currentMonth = new Date().getMonth();
-      const currentDay = new Date().getDate();
+      this.pipe = new DatePipe(locale);
      }
 
      ngOnInit(): void {
@@ -104,6 +104,7 @@ export class NotificationsComponent implements OnInit {
       this.errMessage = "";
       this.error = false;
       rawData.forEach( data => {
+        data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
         dataSource.push(data);
       });
     } else {

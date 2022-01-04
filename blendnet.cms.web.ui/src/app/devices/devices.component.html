@@ -42,7 +42,7 @@
              <!-- status_update_date Column -->
              <ng-container matColumnDef="status_update_date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Device Status Update Date </th>
-                <td mat-cell *matCellDef="let row">   {{row.deviceStatusUpdatedOn | date: 'short'}} </td>
+                <td mat-cell *matCellDef="let row">   {{row.deviceStatusUpdatedOnString}} </td>
             </ng-container>
         
         

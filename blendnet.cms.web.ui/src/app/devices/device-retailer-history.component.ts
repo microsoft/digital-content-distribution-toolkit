@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -22,19 +23,21 @@ export class DeviceRetailerHistoryComponent implements OnInit {
   errMessage;
   error= false;
   filterValue;
+  pipe;
 
   constructor(
     private retailerService: RetailerService,
     public dialog: MatDialog,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
-
+    private router: Router,
+    @Inject(LOCALE_ID) locale: string
   ) { 
     this.route.params.subscribe(device => this.deviceid = device.id);
     this.route.paramMap.subscribe(params => {
       this.filterValue = params.get("filterValue")
      });
+     this.pipe = new DatePipe(locale);
   }
 
   ngOnInit(): void {
@@ -69,8 +72,8 @@ export class DeviceRetailerHistoryComponent implements OnInit {
             name: rawData.name,
             phoneNumber: rawData.phoneNumber,
             partnerCode: rawData.partnerCode,
-            assignmentStartDate: currentDevice.assignmentStartDate,
-            assignmentEndDate: currentDevice.assignmentEndDate
+            assignmentStartDateString: this.pipe.transform(currentDevice.assignmentStartDate, 'short'),
+            assignmentEndDateString: this.pipe.transform(currentDevice.assignmentEndDate, 'short')
           }
           dataSource.push(data);
         });

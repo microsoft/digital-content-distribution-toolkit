@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -22,18 +23,21 @@ export class DeviceFilterHistoryComponent implements OnInit {
   errMessage;
   error= false;
   filterValue;
+  pipe;
   constructor(
     private deviceService: DeviceService,
     public dialog: MatDialog,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    @Inject(LOCALE_ID) locale: string
 
   ) { 
     this.route.params.subscribe(device => this.deviceid = device.id);
     this.route.paramMap.subscribe(params => {
       this.filterValue = params.get("filterValue")
      });
+     this.pipe = new DatePipe(locale);
   }
 
   ngOnInit(): void {
@@ -61,6 +65,7 @@ export class DeviceFilterHistoryComponent implements OnInit {
       this.errMessage = "";
       this.error = false;
       rawDataList.forEach( rawData => {
+        rawData.createdDateString =  this.pipe.transform(rawData.createdDate, 'short');
         dataSource.push(rawData);
       });
       dataSource.sort((a, b) => (a.createdDate < b.createdDate ? 1: -1));

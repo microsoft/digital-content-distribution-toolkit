@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -49,6 +49,7 @@ import { DeviceContentsComponent } from './devices/device-contents.component';
 import { AdminRetailerDashboardComponent } from './admin-retailer-dashboard/admin-retailer-dashboard.component';
 import {RetailerModule} from './retailer/retailer.module';
 import { EditSubscriptionComponent } from './subscription/edit-subscription.component';
+
 
 @NgModule({
   declarations: [
@@ -127,7 +128,8 @@ import { EditSubscriptionComponent } from './subscription/edit-subscription.comp
       provide: HTTP_INTERCEPTORS,
       useClass: SpinnerInterceptor,
       multi: true,
-    }
+    },
+    { provide: LOCALE_ID, useValue: 'en-IN' },
   ],
   bootstrap: [AppComponent]
 })

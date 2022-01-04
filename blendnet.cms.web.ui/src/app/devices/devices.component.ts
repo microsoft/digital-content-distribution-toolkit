@@ -1,5 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component,ViewChild} from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component,Inject,LOCALE_ID,ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -40,7 +41,7 @@ export class DevicesComponent {
   allowMultiSelect = true;
   selection = new SelectionModel<any>(this.allowMultiSelect, this.initialSelection);
   cancelConfirmMessage: string = "WARNING!!!!! Please use this action cautiously. Cancelling a command takes few minutes. Press Continue to CANCEL the command.";
-
+  pipe;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   filterValue;
@@ -52,11 +53,13 @@ export class DevicesComponent {
     private toastr: ToastrService,
     private deviceService: DeviceService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    @Inject(LOCALE_ID) locale: string
     ) {
       this.route.paramMap.subscribe(params => {
         this.filterValue =  params ? params.get("filterValue") ?  params.get("filterValue") : "" : "";
        });
+       this.pipe = new DatePipe(locale);
   }
 
   ngOnInit() {
@@ -116,6 +119,7 @@ export class DevicesComponent {
       this.errMessage = "";
       this.error = false;
       rawDataList.forEach( rawData => {
+        rawData.deviceStatusUpdatedOnString =  this.pipe.transform(rawData.deviceStatusUpdatedOn, 'short');
         dataSource.push(rawData);
       });
     } else {

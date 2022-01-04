@@ -67,7 +67,7 @@
                 <!-- Download Column -->
                 <ng-container matColumnDef="operationTimeStamp">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Downloaded on</th>
-                    <td mat-cell *matCellDef="let row"> {{row.operationTimeStamp | date :'short'}} </td>
+                    <td mat-cell *matCellDef="let row"> {{row.operationTimeStampString}} </td>
                 </ng-container>
 
                 <!-- metadata Column -->

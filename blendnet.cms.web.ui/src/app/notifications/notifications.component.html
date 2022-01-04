@@ -40,7 +40,7 @@
     
             <ng-container matColumnDef="createdDate" >
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On </th>
-                <td mat-cell *matCellDef="let element"> {{element.createdDate |  date: 'short'}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.createdDateString}} </td>
             </ng-container>
 
   

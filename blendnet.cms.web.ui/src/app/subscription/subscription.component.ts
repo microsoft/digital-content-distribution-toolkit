@@ -1,5 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
-import {MatAccordion} from '@angular/material/expansion';
+import {Component, Inject, LOCALE_ID, ViewChild} from '@angular/core';
 import { SubscriptionService } from '../services/subscription.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog} from '@angular/material/dialog';
@@ -9,6 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { EditSubscriptionComponent } from './edit-subscription.component';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-subscription',
@@ -22,6 +22,7 @@ export class SubscriptionComponent {
   minEnd: Date;
   deleteConfirmMessage: string = "Subscription against which an order is placed will not be deleted.  Please press Continue to delete the selected subscription.";
   displayedColumns: string[] = ['status','title', 'price', 'durationDays', 'startDate', 'endDate', 'isRedeemable', 'redemptionValue', 'extend', 'edit', 'delete'];
+  pipe;
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -32,10 +33,11 @@ export class SubscriptionComponent {
   constructor(
     private subscriptionService: SubscriptionService,
     private toastr: ToastrService,
-    public dialog: MatDialog
-    
+    public dialog: MatDialog,
+    @Inject(LOCALE_ID) locale: string
   ) {
     // this.cpSubscriptions = subscriptions;
+    this.pipe = new DatePipe(locale);
     var date = new Date();
     this.today = date.toISOString();
     const currentYear = new Date().getFullYear();
@@ -89,6 +91,8 @@ export class SubscriptionComponent {
       rawDataList.forEach( rawData => {
         rawData.status = (rawData.endDate >= this.today || rawData.startDate >= this.today)
                        ? true : false;
+        rawData.startDateString =  this.pipe.transform(rawData.startDate, 'short');
+        rawData.endDateString =  this.pipe.transform(rawData.endDate, 'short');
         dataSource.push(rawData);
       });
     } else {

@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import { Component, ElementRef, Inject, LOCALE_ID, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -13,6 +13,7 @@ import {  HttpEventType } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -41,11 +42,14 @@ export class UnprocessedComponent {
   errMessage;
   error= false;
   fileName = '';
+  pipe;
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    @Inject(LOCALE_ID) locale: string
     ) {
+      this.pipe = new DatePipe(locale);
   }
 
   
@@ -122,6 +126,8 @@ export class UnprocessedComponent {
         data.status = data.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED ? 
         data.contentTransformStatus : data.contentUploadStatus;
         data.isSelected = false;
+        data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
+        data.modifiedDateString =  this.pipe.transform(data.modifiedDate, 'short');
         dataSource.push(data);
       });
     } else {

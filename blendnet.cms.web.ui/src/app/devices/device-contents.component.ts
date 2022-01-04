@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -11,7 +12,6 @@ import { ContentProviderService } from '../services/content-provider.service';
 import { ContentService } from '../services/content.service';
 import { DeviceService } from '../services/device.service';
 import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
-import { AdditionalHistoryDialog } from './device-additional-history.component';
 
 @Component({
   selector: 'app-device-contents',
@@ -32,6 +32,7 @@ export class DeviceContentsComponent implements OnInit {
   totalValidActiveAvailableContent= 0;
   totalValidActiveBroacastedContent= 'NA';
   filterValue;
+  pipe;
   constructor(
     private deviceService: DeviceService,
     public dialog: MatDialog,
@@ -39,13 +40,15 @@ export class DeviceContentsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private contentProviderService: ContentProviderService,
-    private contentService: ContentService
+    private contentService: ContentService,
+    @Inject(LOCALE_ID) locale: string
 
   ) { 
     this.route.params.subscribe(device => this.deviceid = device.id);
     this.route.paramMap.subscribe(params => {
       this.filterValue = params.get("filterValue")
      });
+    this.pipe = new DatePipe(locale);
   }
 
   ngOnInit(): void {
@@ -108,7 +111,7 @@ export class DeviceContentsComponent implements OnInit {
         content.title = rawData.validActiveBroadcastedContent.title;
         content.id = rawData.validActiveBroadcastedContent.id;
         content.availability = rawData.isAvailableOnDevice;
-        content.operationTimeStamp = rawData.deviceContent?.operationTimeStamp;
+        content.operationTimeStampString = this.pipe.transform(rawData.deviceContent?.operationTimeStamp, 'short');
         content.details = rawData;
         dataSource.push(content);
       });

@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Inject, ViewChild} from '@angular/core';
+import { Component, Inject, LOCALE_ID, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -12,6 +12,7 @@ import { ContentStatus } from '../models/content-status.enum';
 import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { ContentTokenDialog } from '../processed/processed.component';
+import { DatePipe } from '@angular/common';
 
 export interface DialogData {
   message: string;
@@ -40,11 +41,14 @@ export class BroadcastComponent {
   filterValue = "";
   errMessage;
   error= false;
+  pipe;
   
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    @Inject(LOCALE_ID) locale: string
     ) {
+      this.pipe = new DatePipe(locale);
   }
 
   
@@ -163,6 +167,8 @@ getBroadcastDetails(selectedContent) {
       rawData.forEach( data => {
         data.status = data.contentBroadcastStatus;
         data.isSelected = false;
+        data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
+        data.modifiedDateString =  this.pipe.transform(data.modifiedDate, 'short');
         dataSource.push(data);
       });
     } else {

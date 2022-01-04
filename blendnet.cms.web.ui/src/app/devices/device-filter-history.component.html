@@ -44,7 +44,7 @@
                 <!-- created date Column -->
                 <ng-container matColumnDef="createdDate">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Created Date </th>
-                    <td mat-cell *matCellDef="let row"> {{row.createdDate | date: 'short'}} </td>
+                    <td mat-cell *matCellDef="let row"> {{row.createdDateString}} </td>
                 </ng-container>
             
 
