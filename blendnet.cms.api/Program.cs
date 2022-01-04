@@ -89,7 +89,9 @@ void ConfigureServices(WebApplicationBuilder builder)
                           {
                               if (corsUrls != null && corsUrls.Count > 0)
                               {
-                                  builder.WithOrigins(corsUrls.ToArray());
+                                  builder.WithOrigins(corsUrls.ToArray())
+                                         .AllowAnyHeader();
+
                               }
                           });
     });
