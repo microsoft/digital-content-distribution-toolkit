@@ -13,6 +13,7 @@ export class RetailerRequestService {
 
   baseUrl:string = environment.baseUrl+environment.omsApiUrl;
   incentiveBrowseUrl: string = environment.baseUrl+environment.incentiveBrowseApiUrl;
+  retailerUrl = environment.baseUrl +  environment.retailerApiUrl;
 
   constructor(
     private logger: LogService,
@@ -53,6 +54,12 @@ export class RetailerRequestService {
   getIncentivePlan(partnerCode: string, retailerPartnerProvidedId: string): Observable<any> {
     let url = `${this.incentiveBrowseUrl}/retailer/active/${retailerPartnerProvidedId}/REGULAR/${partnerCode}`;
     this.logger.log('Getting incentive plan for order complete');
+    return this.http.get(url);
+  }
+
+  getConfig(partnerCode: string): Observable<any> {
+    let url = `${this.retailerUrl}/RetailerProvider/byPartnerCode/${partnerCode}`;
+    this.logger.log('Getting config file');
     return this.http.get(url);
   }
 

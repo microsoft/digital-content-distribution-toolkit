@@ -3,5 +3,6 @@ export interface NavMenu {
     closedName: string,
     iconName: string,
     routerLink: string,
-    roles: String[]
+    roles: String[],
+    featureName: string
 }

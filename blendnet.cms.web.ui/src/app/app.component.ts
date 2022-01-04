@@ -169,10 +169,13 @@ export class AppComponent {
     }
 
 
-    shouldShow(expectedRoles:string[]) {
+    shouldShow(expectedRoles:string[], featureName:string) {
+      
       let roles = sessionStorage.getItem("roles")?.split(",");
+      let supportedFeatures = JSON.parse(sessionStorage.getItem("supportedFeatures"));
+      let showFeature = (supportedFeatures && featureName.length>0) ? supportedFeatures[featureName] : true;
       if(roles) {
-        return expectedRoles.some(expectedRole => roles.includes(expectedRole));
+        return expectedRoles.some(expectedRole => roles.includes(expectedRole)) && showFeature;
       }
       return false
     }

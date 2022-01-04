@@ -58,5 +58,20 @@ export const environment = {
     "User" : "User",
     "Retailer": "Retailer",
     "HubDeviceManagement": "HubDeviceManagement"
+  },
+  featureName: {
+    "Home": "",
+    "ContentProviders": "",
+    "SASKey": "",
+    "Unprocessed": "",
+    "Processed": "",
+    "Broadcast": "",
+    "Subscriptions": "",
+    "Incentives": "",
+    "Devices": "",
+    "Notifications": "",
+    "RetailerDashboard": "",
+    "Dashboard": "webRetailerDashboardEnabled",
+    "Order": "webOrderCompletionEnabled"
   }
  };

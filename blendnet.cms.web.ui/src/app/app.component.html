@@ -37,7 +37,7 @@
 			<div class="submenu" [ngClass]="{'expanded' : true}" *ngFor="let item of menu">
 				<a mat-list-item
 				 [routerLink]="[item.routerLink]" 
-				 *ngIf="shouldShow(item.roles)"
+				 *ngIf="shouldShow(item.roles, item.featureName)"
 				 [ngClass]="{'active': item.routerLink ? router.isActive(item.routerLink, false): false}">
 				 <div class="cms-sidenav-details">
 					<mat-icon mat-list-icon class="nav-icon">

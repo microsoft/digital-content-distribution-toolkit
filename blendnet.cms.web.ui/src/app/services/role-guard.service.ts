@@ -9,27 +9,37 @@ export class RoleGuardService implements CanActivate {
   constructor(private kaizalaService: KaizalaService, private router: Router) {}
   
   canActivate(route: ActivatedRouteSnapshot): boolean {
-    const expectedRoles = route.data.expectedRole;
+    
     const userRoles = sessionStorage.getItem("roles")?.split(",");
   
     if(!userRoles) {
       window.alert('Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
       this.kaizalaService.logout();
       return false;
-    } else if (expectedRoles && !expectedRoles.some(expectedRole => userRoles.includes(expectedRole))) {
+    } else if (this.validateRole(route) || this.validateFeatureAccess(route)) {
       window.alert('You do not have access as expected role is missing. Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
-      this.kaizalaService.logout();
+      // this.kaizalaService.logout();
       return false;
-    } else if(!sessionStorage.getItem("contentProviderId") 
-      && route.routeConfig.path !== 'incentive-management'  &&  !route.routeConfig.path.includes('devices')
-      &&  route.routeConfig.path !== 'manage-content' && route.routeConfig.path !== 'profile'
-      && route.routeConfig.path !== 'content-providers' && route.routeConfig.path !== 'notifications'
-      && route.routeConfig.path !== 'retailer-dashboard') {
+    } else if((route.routeConfig.path === 'sas-key' || route.routeConfig.path === 'unprocessed-content'
+      || route.routeConfig.path === 'unprocessed-content' ||  route.routeConfig.path === 'processed-content'
+      || route.routeConfig.path === 'broadcast-content' || route.routeConfig.path === 'subscriptions')
+      && !sessionStorage.getItem("contentProviderId")) {
       window.alert("Please select a Content Provider to access the management services");
       this.router.navigate(['/admin/content-providers'])
-      //return false;
     }
     return true;
+  }
+
+  validateRole(route: ActivatedRouteSnapshot) {
+    const expectedRoles = route.data.expectedRole;
+    const userRoles = sessionStorage.getItem("roles")?.split(",");
+    return (expectedRoles && !expectedRoles.some(expectedRole => userRoles.includes(expectedRole)));
+  }
+
+  validateFeatureAccess(route: ActivatedRouteSnapshot) {
+    const featureName = route.data.featureName;
+    const supportedFeatures = JSON.parse(sessionStorage.getItem("supportedFeatures"));
+    return (featureName && !supportedFeatures[featureName]);
   }
 
 }

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { KaizalaService } from 'src/app/services/kaizala.service';
 import { UserService } from 'src/app/services/user.service';
 import { environment } from 'src/environments/environment';
+import { RetailerRequestService } from '../services/retailer/retailer-request-service.service';
 
 @Component({
   selector: 'app-retailer-login',
@@ -36,12 +37,13 @@ export class RetailerLoginComponent implements OnInit {
   constructor(
     private userService: UserService,
     private kaizalaService: KaizalaService,
+    private retailerService: RetailerRequestService,
     private router: Router,
     private route: ActivatedRoute
   ) {
     // Redirect to home if retailer already logged in
     if(this.kaizalaService.loggedInValue && this.userService.registeredUserValue) {
-      this.router.navigate(['/retailer/orders']);
+      this.router.navigate(['/retailer/dashboard']);
     }
    }
 
@@ -55,7 +57,7 @@ export class RetailerLoginComponent implements OnInit {
     this.contact = "";
     this.retailerId = "";
     this.partnerCode = "";
-    this.returnUrl = '/retailer/orders';
+    this.returnUrl = '/retailer/dashboard';
   }
 
   goToPreviousPage() {
@@ -122,17 +124,25 @@ export class RetailerLoginComponent implements OnInit {
             partnerCode: this.partnerCode,
             partnerProvidedId: this.retailerId
           }
-
           this.userService.linkRetailer(retailerPayload).subscribe(
             res => {
-              sessionStorage.setItem("roles", this.roles);
-              sessionStorage.setItem("accessedViaPartnerApp", "false");
-              sessionStorage.setItem('loggedInUser', JSON.stringify(this.user));
-              sessionStorage.setItem('partnerCode', this.partnerCode);
-              sessionStorage.setItem('partnerProvidedId', this.retailerId);
-              // this.kaizalaService.currentUserNameSubject.next(this.contact);
-              this.kaizalaService.loggedInUser.next(this.user);
-              this.router.navigate([this.returnUrl]);
+              this.retailerService.getConfig(this.partnerCode).subscribe (
+                res => {
+                  sessionStorage.setItem("roles", this.roles);
+                  sessionStorage.setItem("accessedViaPartnerApp", "false");
+                  sessionStorage.setItem('loggedInUser', JSON.stringify(this.user));
+                  sessionStorage.setItem('partnerCode', this.partnerCode);
+                  sessionStorage.setItem('partnerProvidedId', this.retailerId);
+                  // this.kaizalaService.currentUserNameSubject.next(this.contact);
+                  this.kaizalaService.loggedInUser.next(this.user);
+                  sessionStorage.setItem("supportedFeatures", JSON.stringify(res.supportedFeatures));
+                  this.router.navigate([this.returnUrl]);
+                },
+                err => {
+                  console.log(err);
+                  this.retailerLinkErrorMessage = "Unable to fetch config file. Please try again.";
+                }
+              );
             },
             err => {
               console.log(err);

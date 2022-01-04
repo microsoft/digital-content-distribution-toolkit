@@ -25,15 +25,23 @@ const routes: Routes = [
     path: 'dashboard', 
     component: RetailerDashboardComponent,
     data: { 
-      expectedRole: [environment.roles.Retailer]
-    } 
+      expectedRole: [environment.roles.Retailer],
+      featureName: environment.featureName.Dashboard
+    },
+    canActivate: [
+      RoleGuardService
+    ]
   },
   {
     path: 'orders', 
     component: RetailerOrdersComponent,
+    canActivate: [
+      RoleGuardService
+    ],
     data: { 
-      expectedRole: [environment.roles.Retailer]
-    } 
+      expectedRole: [environment.roles.Retailer],
+      featureName: environment.featureName.Order
+    }
   },
   {
     path: 'referrals', 
