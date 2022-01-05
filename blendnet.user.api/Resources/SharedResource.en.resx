@@ -174,4 +174,7 @@
   <data name="USR_ERR_019" xml:space="preserve">
     <value>USR_ERR_019-Limit Reached</value>
   </data>
+  <data name="USR_ERR_020" xml:space="preserve">
+    <value>USR_ERR_020-Account deletion in progress</value>
+  </data>
 </root>

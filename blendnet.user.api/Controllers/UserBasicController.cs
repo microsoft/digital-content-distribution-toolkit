@@ -79,6 +79,27 @@ namespace blendnet.user.api.Controllers
 
             User user = await CreateUserIfNotExistsInternal(request);
 
+            // check for user's account status
+            string inactiveAccountReason = null;
+            switch (user.AccountStatus)
+            {
+                case UserAccountStatus.Active:
+                    {
+                        inactiveAccountReason = string.Empty;
+                        break;
+                    }
+                case UserAccountStatus.Blocked_DeletionInProgress:
+                    {
+                        inactiveAccountReason = _stringLocalizer["USR_ERR_020"];
+                        break;
+                    }
+            }
+
+            if (!string.IsNullOrEmpty(inactiveAccountReason))
+            {
+                return BadRequest(new string[] { inactiveAccountReason });
+            }
+
             return Ok(user.UserId);
         }
 
@@ -199,6 +220,7 @@ namespace blendnet.user.api.Controllers
                 CreatedDate = DateTime.UtcNow,
                 CreatedByUserId = generatedId,
                 IdentityId = identityId,
+                AccountStatus = UserAccountStatus.Active,
             };
 
             await _userRepository.CreateUser(user);

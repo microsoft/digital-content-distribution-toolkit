@@ -448,6 +448,43 @@ namespace blendnet.user.api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// API to request deletion of user's account
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("user", Name = nameof(DeleteUserAccount))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        public async Task<ActionResult> DeleteUserAccount()
+        {
+            string callerPhoneNumber = this.User.Identity.Name;
+            Guid callerUserId = UserClaimData.GetUserId(this.User.Claims);
+
+            User user = await _userRepository.GetUserByPhoneNumber(callerPhoneNumber);
+
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            // mark user for deletion
+            user.AccountStatus = UserAccountStatus.Blocked_DeletionInProgress;
+            user.ModifiedByByUserId = callerUserId;
+            user.ModifiedDate = DateTime.UtcNow;
+
+            await _userRepository.UpdateUser(user);
+
+            // record telemetry
+            var aiEvent = new DeleteUserDataAIEvent()
+            {
+                UserId = callerUserId,
+            };
+
+            _telemetryClient.TrackEvent(aiEvent);
+
+            return NoContent();
+        }
+
+
         #region private methods
 
         /// <summary>
@@ -509,6 +546,7 @@ namespace blendnet.user.api.Controllers
                     ChannelId = Channel.NovoRetailerApp, // TODO: this should be from the Claim / partnerCode
                     CreatedDate = now,
                     CreatedByUserId = callerUserId,
+                    AccountStatus = UserAccountStatus.Active,
                 };
 
                 await _userRepository.CreateUser(user);

@@ -17,6 +17,16 @@ namespace blendnet.common.dto.User
     }
 
     /// <summary>
+    /// User Account Status
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum UserAccountStatus
+    {
+        Active = 0,
+        Blocked_DeletionInProgress = 1,
+    }
+
+    /// <summary>
     /// User
     /// </summary>
     public class User : BaseDto
@@ -61,6 +71,11 @@ namespace blendnet.common.dto.User
         /// ID of Data Export Request command
         /// </summary>
         public Guid? DataExportRequestedBy { get; set; }
+
+        /// <summary>
+        /// Account status
+        /// </summary>
+        public UserAccountStatus AccountStatus { get; set; } = UserAccountStatus.Active;
 
         public static bool IsPhoneNumberValid(string phoneNumber)
         {
