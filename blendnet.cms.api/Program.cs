@@ -32,6 +32,12 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//remove server header
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.AddServerHeader = false;
+});
+
 const string C_CORS_POLICYNAME = "BlendNetSpecificOrigins";
 
 Log.Logger = new LoggerConfiguration()

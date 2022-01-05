@@ -40,6 +40,13 @@ using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//remove server header
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.AddServerHeader = false;
+});
+
+
 const string C_CORS_POLICYNAME = "BlendNetSpecificOrigins";
 
 Log.Logger = new LoggerConfiguration()
@@ -68,7 +75,7 @@ builder.Logging.AddDebug();
 builder.Logging.AddSerilog();
 
 //Configure Services
-ConfigureServices(builder.Services);
+ConfigureServices(builder);
 
 var app = builder.Build();
 
@@ -81,19 +88,24 @@ app.Run();
 #region Private Methods
 
 // This method gets called by the runtime. Use this method to add services to the container.
-void ConfigureServices(IServiceCollection services)
+void ConfigureServices(WebApplicationBuilder builder)
 {
+    IServiceCollection services = builder.Services;
+
+    // Read AllowedCORSUrls list
+    List<string> corsUrls = builder.Configuration.GetSection("AllowedCORSUrls").Get<List<string>>();
+
     services.AddCors(options =>
     {
         options.AddPolicy(name: C_CORS_POLICYNAME,
                           builder =>
                           {
-                                      //To Do: Remove any Origin and have right value
-                                      //builder.WithOrigins("http://example.com",
-                                      //                    "http://www.contoso.com");
-                                      builder.AllowAnyHeader();
-                              builder.AllowAnyMethod();
-                              builder.AllowAnyOrigin();
+                              if (corsUrls != null && corsUrls.Count > 0)
+                              {
+                                  builder.WithOrigins(corsUrls.ToArray())
+                                         .AllowAnyHeader();
+
+                              }
                           });
     });
 
