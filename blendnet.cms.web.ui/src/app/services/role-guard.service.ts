@@ -37,6 +37,9 @@ export class RoleGuardService implements CanActivate {
   }
 
   validateFeatureAccess(route: ActivatedRouteSnapshot) {
+    if(!route.data.featureName || !sessionStorage.getItem("supportedFeatures")) {
+      return false;
+    }
     const featureName = route.data.featureName;
     const supportedFeatures = JSON.parse(sessionStorage.getItem("supportedFeatures"));
     return (featureName && !supportedFeatures[featureName]);
