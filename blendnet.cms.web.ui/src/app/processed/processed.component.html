@@ -114,7 +114,6 @@
             <td mat-cell *matCellDef="let row" >
                     <mat-slide-toggle [color]="color"
                         [checked]="row.isActive"
-                        [disabled]="!(row.status === 'TransformComplete')"
                         (click)="onToggleChange($event, row)"
                         (keyup.space)="onToggleChange($event, row)"
                         matTooltip="{{row.isActive ? 'Deactivate' : 'Activate'}}">

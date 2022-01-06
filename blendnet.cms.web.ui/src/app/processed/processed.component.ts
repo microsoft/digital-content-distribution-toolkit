@@ -190,7 +190,10 @@ export class ProcessedComponent {
           (d.contentTransformStatus !== ContentStatus.TRANSFORM_COMPLETE 
             || d.contentUploadStatus !== ContentStatus.UPLOAD_COMPLETE
           || (d.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED
-          && d.contentBroadcastStatus!== ContentStatus.BROADCAST_FAILED)));
+          && d.contentBroadcastStatus!== ContentStatus.BROADCAST_FAILED 
+          && (d.contentTransformStatus === ContentStatus.TRANSFORM_COMPLETE 
+          && d.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE 
+          && d.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE))));
           if(notEligibleForBroadcast.length > 0) {
             this.toastr.warning("One or more selected content/s cannot be broadcast");
           } else {
@@ -227,9 +230,6 @@ export class ProcessedComponent {
     ]
   }
   onToggleChange($event, row) {
-    if(!(row.contentTransformStatus === 'TransformComplete' && row.contentBroadcastStatus === 'BroadcastNotInitialized')) {
-      $event.stopPropagation();
-    } else{
       $event.preventDefault();
       var newStatus = row.isActive ? "INACTIVATE" : "ACTIVATE";
       var newStatusValue = !row.isActive;
@@ -243,11 +243,12 @@ export class ProcessedComponent {
         if (result === 'proceed') {
           this.contentService.changeContentActiveStatus(row.id, newStatusValue).subscribe(res =>{
             this.getProcessedContent();
+          },
+          err => {
+            this.toastr.error(err);
           });
         }
-      });
-    }
-   
+      });   
   }
 
 openBroadcastConfirmDialog(content): void {
@@ -351,10 +352,8 @@ export class ContentTokenDialog {
         this.contentToken = res;
         this.dashUrl =  environment.dashUrlPrefix.concat(this.data.content.dashUrl).concat(
           environment.widewineTokenPrefix).concat(this.contentToken);
-         console.log(this.dashUrl);
       },
       err => this.toastr.error(err));
-    //this.data.content;
   }
   onClose(): void {
     this.dialogRef.close();
