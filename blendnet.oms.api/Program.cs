@@ -14,6 +14,7 @@ using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.KeyVault;
 using blendnet.common.infrastructure.Middleware;
 using blendnet.common.infrastructure.ServiceBus;
+using blendnet.oms.api;
 using blendnet.oms.api.Common;
 using blendnet.oms.repository.CosmosRepository;
 using blendnet.oms.repository.Interfaces;
@@ -121,6 +122,11 @@ void ConfigureServices(WebApplicationBuilder builder)
     ConfigureLocalization(services);
 
     services.AddControllers()
+    .AddDataAnnotationsLocalization(options =>
+    {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SharedResource));
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;

@@ -16,7 +16,8 @@ namespace blendnet.common.dto.Device
         /// </summary>
         [JsonProperty(PropertyName = "id")]
         [Required]
-        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumeric)]
+        [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Title_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumeric, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumeric_ErrorCode)]
         public string Id 
         {
             get

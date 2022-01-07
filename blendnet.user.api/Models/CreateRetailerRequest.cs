@@ -11,6 +11,8 @@ namespace blendnet.user.api.Models
         /// ID assigned by the partner to the retailer
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Title_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string RetailerId { get; set; }
 
         /// <summary>
@@ -23,12 +25,16 @@ namespace blendnet.user.api.Models
         /// Phone number without country code
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.Phone_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Phone_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.Numeric, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.Numeric_ErrorCode)]
         public string PhoneNumber { get; set; }
 
         /// <summary>
         /// Retailer name
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Title_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string Name { get; set; }
 
         /// <summary>

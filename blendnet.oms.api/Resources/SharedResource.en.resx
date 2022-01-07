@@ -180,4 +180,16 @@
   <data name="OMS_ERR_0021" xml:space="preserve">
     <value>OMS_ERR_0021-RetailerPartnerCode parameter is mandatory for superadmin or retailer</value>
   </data>
+	<data name="GLBL_ERR_0001" xml:space="preserve">
+    <value>GLBL_ERR_0001-Only alphanumeric string allowed with no special characters.</value>
+  </data>
+	<data name="GLBL_ERR_0002" xml:space="preserve">
+    <value>GLBL_ERR_0002-Only alphanumeric string allowed with limited character set like _@./#&amp;+,()=:!"-</value>
+  </data>
+	<data name="GLBL_ERR_0003" xml:space="preserve">
+    <value>GLBL_ERR_0003-Only numeric allowed.</value>
+  </data>
+	<data name="GLBL_ERR_0004" xml:space="preserve">
+    <value>GLBL_ERR_0004-Valid url only allowed.</value>
+  </data>
 </root>

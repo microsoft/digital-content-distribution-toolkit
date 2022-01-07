@@ -165,4 +165,16 @@
   <data name="RMS_ERR_0016" xml:space="preserve">
     <value>RMS_ERR_0016-Requested End Date should be greater than assignment start date</value>
   </data>
+	<data name="GLBL_ERR_0001" xml:space="preserve">
+    <value>GLBL_ERR_0001-Only alphanumeric string allowed with no special characters.</value>
+  </data>
+	<data name="GLBL_ERR_0002" xml:space="preserve">
+    <value>GLBL_ERR_0002-Only alphanumeric string allowed with limited character set like _@./#&amp;+,()=:!"-</value>
+  </data>
+	<data name="GLBL_ERR_0003" xml:space="preserve">
+    <value>GLBL_ERR_0003-Only numeric allowed.</value>
+  </data>
+	<data name="GLBL_ERR_0004" xml:space="preserve">
+    <value>GLBL_ERR_0004-Valid url only allowed.</value>
+  </data>
 </root>

@@ -243,4 +243,16 @@
   <data name="INC_ERR_0042" xml:space="preserve">
     <value>INC_ERR_0042-Operand value must be greater than 0</value>
   </data>
+	<data name="GLBL_ERR_0001" xml:space="preserve">
+    <value>GLBL_ERR_0001-Only alphanumeric string allowed with no special characters.</value>
+  </data>
+	<data name="GLBL_ERR_0002" xml:space="preserve">
+    <value>GLBL_ERR_0002-Only alphanumeric string allowed with limited character set like _@./#&amp;+,()=:!"-</value>
+  </data>
+	<data name="GLBL_ERR_0003" xml:space="preserve">
+    <value>GLBL_ERR_0003-Only numeric allowed.</value>
+  </data>
+	<data name="GLBL_ERR_0004" xml:space="preserve">
+    <value>GLBL_ERR_0004-Valid url only allowed.</value>
+  </data>
 </root>

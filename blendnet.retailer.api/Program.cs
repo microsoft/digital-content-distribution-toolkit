@@ -10,6 +10,7 @@ using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.common.infrastructure.KeyVault;
 using blendnet.common.infrastructure.Middleware;
+using blendnet.retailer.api;
 using blendnet.retailer.repository.CosmosRepository;
 using blendnet.retailer.repository.Interfaces;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -119,6 +120,11 @@ void ConfigureServices(WebApplicationBuilder builder)
     ConfigureLocalization(services);
 
     services.AddControllers()
+    .AddDataAnnotationsLocalization(options =>
+    {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SharedResource));
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;

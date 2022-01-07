@@ -265,12 +265,6 @@ namespace blendnet.common.dto
             public static readonly DateTime LicenseEndDate = new DateTime(2022, 6, 30);
         }
 
-        public struct UserProfile
-        {
-            public const int NameMaxLength = 20;
-        }
-
-
         public struct HubProxyModuleCommandNames
         {
             public const string FilterUpdate = "FilterUpdate";
@@ -281,9 +275,50 @@ namespace blendnet.common.dto
             public const string HubServer = "HUBServer";
         }
 
+        /// <summary>
+        /// Regular Expression for Strict Alpha Numeric & Alpha Numeric
+        /// </summary>
         public struct ValidationRegularExpressions
         {
             public const string AlphaNumeric = "^[a-zA-Z0-9]*$";
+            public const string AlphaNumeric_ErrorCode = "GLBL_ERR_0001";
+
+            public const string AlphaNumericLimitedSplChars = "^[a-zA-Z0-9_@./#&+,()=:!\"-]+( [a-zA-Z0-9_@./#&+,()=:!\"-]+)*$";
+            public const string AlphaNumericLimitedSplChars_ErrorCode = "GLBL_ERR_0002";
+            
+            public const string Numeric = "^[0-9]*$";
+            public const string Numeric_ErrorCode = "GLBL_ERR_0003";
+
+
+            public const string URL = "^[a-zA-Z0-9_@./#&+,()-=:?]*$";
+            public const string URL_ErrorCode = "GLBL_ERR_0004";
+
+        }
+
+        /// <summary>
+        /// Min Max Length
+        /// </summary>
+        public struct MaxMinLength
+        {
+            public const int Title_Min_Length = 1;
+            public const int Title_Max_Length = 100;
+
+            public const int Description_Min_Length = 1;
+            public const int Description_Max_Length = 200;
+
+            public const int LongDescription_Min_Length = 1;
+            public const int LongDescription_Max_Length = 500;
+
+            public const int Phone_Min_Length = 10;
+            public const int Phone_Max_Length = 10;
+
+            public const int Zip_Min_Length = 6;
+            public const int Zip_Max_Length = 6;
+
+            public const int Url_Min_Length = 1;
+            public const int Url_Max_Length = 1000;
+
+
         }
 
         public struct ApplicationInsightsDefaultEventProperty

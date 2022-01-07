@@ -43,56 +43,76 @@ namespace blendnet.common.dto.Cms
         /// Title
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Title_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string Title { get; set; }
 
         /// <summary>
         /// Short Description of the media content
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Description_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string ShortDescription { get; set; }
 
         /// <summary>
         /// Long Description of the media content
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.LongDescription_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.LongDescription_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string LongDescription { get; set; }
 
         /// <summary>
         /// Additional Description of the media content
         /// </summary>
+        [StringLength(ApplicationConstants.MaxMinLength.LongDescription_Max_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string AdditionalDescription1 { get; set; }
 
         /// <summary>
         /// AdditionalDescription2
         /// </summary>
+        [StringLength(ApplicationConstants.MaxMinLength.LongDescription_Max_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string AdditionalDescription2 { get; set; }
 
         /// <summary>
         /// Genre
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Description_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string Genre { get; set; }
 
         /// <summary>
         /// Age Appropriateness
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Description_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string AgeAppropriateness { get; set; }
 
         /// <summary>
         /// ContentAdvisory
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Description_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string ContentAdvisory { get; set; }
 
         /// <summary>
         /// Year of Release
         /// </summary>
+        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string YearOfRelease { get; set; }
 
         /// <summary>
         /// Language
         /// </summary>
+        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string Language { get; set; }
 
         /// <summary>
@@ -103,22 +123,30 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Content Rating
         /// </summary>
+        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string Rating { get; set; }
 
         /// <summary>
         /// Media File Name
         /// </summary>
         [Required]
+        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Description_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string MediaFileName { get; set; }
 
         /// <summary>
         /// To Resolve Episode
         /// </summary
+        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string Hierarchy { get; set; }
 
         /// <summary>
         /// Dash Url
         /// </summary>
+        [StringLength(ApplicationConstants.MaxMinLength.Url_Max_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.URL, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.URL_ErrorCode)]
         public string DashUrl { get; set; }
 
         /// <summary>
@@ -240,6 +268,8 @@ namespace blendnet.common.dto.Cms
 
     public class People
     {
+        [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string Name { get; set; }
         
         public Role Role { get; set; }
@@ -247,6 +277,8 @@ namespace blendnet.common.dto.Cms
 
     public class Attachment
     {
+        [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string Name { get; set; }
 
         public AttachmentType Type { get; set; }

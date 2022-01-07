@@ -18,7 +18,7 @@ namespace blendnet.cosmos.utility.DeviceFilterMigration
         /// </summary>
         [JsonProperty(PropertyName = "id")]
         [Required]
-        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumeric)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumeric, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumeric_ErrorCode)]
         public string Id
         {
             get
