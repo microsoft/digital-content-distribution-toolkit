@@ -46,8 +46,7 @@ namespace blendnet.common.dto
         /// PinCode
         /// </summary>
         [Required]
-        [StringLength(ApplicationConstants.MaxMinLength.Zip_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Zip_Min_Length)]
-        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.Numeric, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.Numeric_ErrorCode)]
+        [Range(100000, 999999)]
         public int PinCode { get; set; }
 
         /// <summary>
