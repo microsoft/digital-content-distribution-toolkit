@@ -68,14 +68,24 @@ namespace blendnet.common.dto.User
         public UserContainerType Type => UserContainerType.User;
 
         /// <summary>
-        /// ID of Data Export Request command
-        /// </summary>
-        public Guid? DataExportRequestedBy { get; set; }
-
-        /// <summary>
         /// Account status
         /// </summary>
         public UserAccountStatus AccountStatus { get; set; } = UserAccountStatus.Active;
+
+        /// <summary>
+        /// ID of Data Export Request command
+        /// </summary>
+        public Guid? DataExportStatusUpdatedBy { get; set; }
+
+        /// <summary>
+        /// Data Export Request Status
+        /// </summary>
+        public DataExportRequestStatus DataExportRequestStatus { get; set; } = DataExportRequestStatus.NotInitialized;
+
+        /// <summary>
+        /// Data last Exported by command id
+        /// </summary>
+        public DataExportedBy DataExportedBy { get; set; }
 
         public static bool IsPhoneNumberValid(string phoneNumber)
         {
@@ -84,5 +94,16 @@ namespace blendnet.common.dto.User
                     && !phoneNumber.StartsWith("+")
                     && long.TryParse(phoneNumber, out _);
         }
+    }
+
+    /// <summary>
+    /// Last sucess data exported by
+    /// </summary>
+    public class DataExportedBy
+    {
+        public Guid? CommandId { get; set; }
+
+        public DataExportResult DataExportResult { get; set; }
+
     }
 }

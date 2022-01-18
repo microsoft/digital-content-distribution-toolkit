@@ -204,6 +204,37 @@ namespace blendnet.oms.repository.CosmosRepository
             return ordersCount;
         }
 
+
+        /// <summary>
+        /// Get User Orders for export
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <returns></returns>
+        public async Task<List<OrderToExport>> GetUserOrders(string userPhoneNumber)
+        {
+            string queryString = @"   SELECT    o.retailerPartnerId as orderCompletedBy, 
+                                                oi.subscription.title as subscriptionTitle,    
+                                                oi.subscription.durationDays as subscriptionDurationDays,    
+                                                oi.subscription.price as subscriptionPrice,    
+                                                oi.subscription.redemptionValue as subscriptionRedemptionValue,    
+                                                o.totalAmountCollected,
+                                                o.orderStatus,o.depositDate, 
+                                                o.isRedeemed,o.totalRedemmedValue,
+                                                o.orderCreatedDate,o.orderCompletedDate,o.orderCancelledDate
+                                        FROM o JOIN oi IN o.orderItems 
+                                        WHERE o.phoneNumber = @userPhoneNumber
+                                        ORDER BY o.orderCreatedDate ";
+
+
+            var queryDefinition = new QueryDefinition(queryString)
+                .WithParameter("@userPhoneNumber", userPhoneNumber);
+                
+
+            var userOrders = await _container.ExtractDataFromQueryIterator<OrderToExport>(queryDefinition);
+
+            return userOrders;
+        }
+
         #region private methods
 
         #endregion

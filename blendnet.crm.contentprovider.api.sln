@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30503.244
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.common.dto", "blendnet.common.dto\blendnet.common.dto.csproj", "{679DF957-5786-4884-BA05-7F2110AF1824}"
 EndProject
@@ -66,7 +66,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.device.listener", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.device.repository", "blendnet.device.repository\blendnet.device.repository.csproj", "{2014E0E9-E165-4A43-9642-F1980BD33AFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.cosmos.utility", "blendnet.cosmos.utility\blendnet.cosmos.utility.csproj", "{B1969CB8-931C-46AE-8014-AB4457224C4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.cosmos.utility", "blendnet.cosmos.utility\blendnet.cosmos.utility.csproj", "{B1969CB8-931C-46AE-8014-AB4457224C4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.user.listener", "blendnet.user.listener\blendnet.user.listener.csproj", "{2693E4C3-9E0F-4287-9398-92B9B0A8B5E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -174,6 +176,10 @@ Global
 		{B1969CB8-931C-46AE-8014-AB4457224C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1969CB8-931C-46AE-8014-AB4457224C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1969CB8-931C-46AE-8014-AB4457224C4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2693E4C3-9E0F-4287-9398-92B9B0A8B5E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2693E4C3-9E0F-4287-9398-92B9B0A8B5E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2693E4C3-9E0F-4287-9398-92B9B0A8B5E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2693E4C3-9E0F-4287-9398-92B9B0A8B5E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

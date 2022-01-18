@@ -70,5 +70,12 @@ namespace blendnet.oms.repository.Interfaces
         /// <param name="cutoffDate">Cutoff date - orders after this date will be counted</param>
         /// <returns>Count of orders</returns>
         Task<int> GetOrdersCountBySubscriptionId(Guid subscriptionId, DateTime cutoffDate);
+
+        /// <summary>
+        /// Get User Orders for export
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <returns></returns>
+        Task<List<OrderToExport>> GetUserOrders(string userPhoneNumber);
     }
 }

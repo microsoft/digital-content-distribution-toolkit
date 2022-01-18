@@ -30,5 +30,6 @@
   <ItemGroup>
     <ProjectReference Include="..\blendnet.common.infrastructure\blendnet.common.infrastructure.csproj" />
     <ProjectReference Include="..\blendnet.common.dto\blendnet.common.dto.csproj" />
+    <ProjectReference Include="..\blendnet.oms.repository\blendnet.oms.repository.csproj" />
   </ItemGroup>
 </Project>

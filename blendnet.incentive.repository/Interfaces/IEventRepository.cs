@@ -38,6 +38,12 @@ namespace blendnet.incentive.repository.Interfaces
         /// <returns></returns>
         public Task<List<EventAggregrateResponse>> GetEventAggregrates(EventAggregrateRequest request);
 
+        /// <summary>
+        /// Get User Events for export
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <returns></returns>
+        public Task<List<IncentiveEventToExport>> GetUserEvents(string userPhoneNumber);
     }
 
 }

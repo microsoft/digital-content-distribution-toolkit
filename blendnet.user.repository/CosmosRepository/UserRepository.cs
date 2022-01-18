@@ -8,11 +8,15 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using User = blendnet.common.dto.User.User;
 
 namespace blendnet.user.repository.CosmosRepository
 {
+    /// <summary>
+    /// User Repository 
+    /// </summary>
     public class UserRepository : IUserRepository
     {
         private readonly Container _container;
@@ -20,6 +24,12 @@ namespace blendnet.user.repository.CosmosRepository
         private readonly ILogger _logger;
         private readonly UserAppSettings _appSettings;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dbClient"></param>
+        /// <param name="optionsMonitor"></param>
+        /// <param name="logger"></param>
         public UserRepository(CosmosClient dbClient,
                                 IOptionsMonitor<UserAppSettings> optionsMonitor,
                                 ILogger<UserRepository> logger)
@@ -195,8 +205,17 @@ namespace blendnet.user.repository.CosmosRepository
         /// <returns>Data Export Command</returns>
         async Task<UserDataExportCommand> IUserRepository.GetDataExportCommand(string phoneNumber, Guid commandId)
         {
-            UserDataExportCommand command = await _container.ReadItemAsync<UserDataExportCommand>(commandId.ToString(), new PartitionKey(phoneNumber));
-            return command;
+            try
+            {
+                UserDataExportCommand command = await _container.ReadItemAsync<UserDataExportCommand>(commandId.ToString(), new PartitionKey(phoneNumber));
+
+                return command;
+            }
+            catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+           
         }
 
         /// <summary>
@@ -240,6 +259,54 @@ namespace blendnet.user.repository.CosmosRepository
             {
                 return (int)ex.StatusCode;
             }        
+        }
+
+        /// <summary>
+        /// Update User and Export Command in Batch
+        /// </summary>
+        /// <param name="userDataExportCommand"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        async Task<int> IUserRepository.UpdateDataExportCommandBatch(   UserDataExportCommand userDataExportCommand, 
+                                                                        User user,
+                                                                        bool performETAGValidation)
+        {
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(userDataExportCommand.PhoneNumber));
+
+
+            TransactionalBatchItemRequestOptions userRequestOptions = null;
+
+            TransactionalBatchItemRequestOptions dataExportRequestOptions = null;
+
+            if (performETAGValidation)
+            {
+                userRequestOptions = new TransactionalBatchItemRequestOptions()
+                {
+                    IfMatchEtag = user.ETag
+                };
+
+                dataExportRequestOptions = new TransactionalBatchItemRequestOptions()
+                {
+                    IfMatchEtag = userDataExportCommand.ETag
+                };
+            }
+
+            TransactionalBatchResponse batchResponse = await batch.ReplaceItem<UserDataExportCommand>(userDataExportCommand.Id.ToString(), 
+                                                                                                      userDataExportCommand,
+                                                                                                      dataExportRequestOptions)
+                                                                  .ReplaceItem<User>(   user.UserId.ToString(), 
+                                                                                        user,
+                                                                                        userRequestOptions)
+                                                                  .ExecuteAsync();
+
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(IUserRepository.UpdateDataExportCommandBatch)} failed for user ID {user.UserId} and export command ID {userDataExportCommand.Id}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
         }
 
         #region private methods

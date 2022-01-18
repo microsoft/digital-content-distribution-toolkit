@@ -129,6 +129,8 @@ namespace blendnet.common.dto
             public const string RawReadWriteAll = "rawreadwriteall";
             public const string MezzanineReadOnly = "mezzaninereadonly";
             public const string ProcessedReadOnly = "processedreadonly";
+            public const string UserDataReadOnly = "userdatareadonly";
+
         }
 
         public struct StorageContainerSuffix
@@ -144,6 +146,7 @@ namespace blendnet.common.dto
             public const string CMSStorage = "CMSStorage";
             public const string CMSCDNStorage = "CMSCDNStorage";
             public const string BroadcastStorage = "BroadcastStorage";
+            public const string UserDataStorage = "UserDataStorage";
         }
 
         public struct SupportedFileFormats 
@@ -324,6 +327,21 @@ namespace blendnet.common.dto
         public struct ApplicationInsightsDefaultEventProperty
         {
             public const string BlendNetCustomEvent = "BlendNetCustomEvent";
+        }
+
+
+        /// <summary>
+        /// Name of all BlendNet Services
+        /// </summary>
+        public struct BlendNetServices
+        {
+            public const string CMSService = "CMSService";
+            public const string DeviceService = "DeviceService";
+            public const string IncentiveService = "IncentiveService";
+            public const string NotificationService = "NotificationService";
+            public const string OMSService = "OMSService";
+            public const string RetailerService = "RetailerService";
+            public const string UserService = "UserService";
         }
 
     }

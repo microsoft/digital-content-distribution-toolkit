@@ -177,16 +177,22 @@
   <data name="USR_ERR_020" xml:space="preserve">
     <value>USR_ERR_020-Account deletion in progress</value>
   </data>
-	<data name="GLBL_ERR_0001" xml:space="preserve">
+  <data name="GLBL_ERR_0001" xml:space="preserve">
     <value>GLBL_ERR_0001-Only alphanumeric string allowed with no special characters.</value>
   </data>
-	<data name="GLBL_ERR_0002" xml:space="preserve">
+  <data name="GLBL_ERR_0002" xml:space="preserve">
     <value>GLBL_ERR_0002-Only alphanumeric string allowed with limited character set like _@./#&amp;+,()=:!"-</value>
   </data>
-	<data name="GLBL_ERR_0003" xml:space="preserve">
+  <data name="GLBL_ERR_0003" xml:space="preserve">
     <value>GLBL_ERR_0003-Only numeric allowed.</value>
   </data>
-	<data name="GLBL_ERR_0004" xml:space="preserve">
+  <data name="GLBL_ERR_0004" xml:space="preserve">
     <value>GLBL_ERR_0004-Valid url only allowed.</value>
+  </data>
+  <data name="USR_ERR_021" xml:space="preserve">
+    <value>USR_ERR_021-In-Process Request already exists</value>
+  </data>
+  <data name="USR_ERR_022" xml:space="preserve">
+    <value>USR_ERR_022-Export request should be in submitted state.</value>
   </data>
 </root>

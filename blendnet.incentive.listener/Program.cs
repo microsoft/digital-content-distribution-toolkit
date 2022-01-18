@@ -1,5 +1,6 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Azure.Storage.Blobs;
 using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
@@ -85,8 +86,15 @@ namespace blendnet.incentive.listener
 
                     string serviceBusConnectionString = hostContext.Configuration.GetValue<string>("ServiceBusConnectionString");
 
+                    string userDataStorageConnectionString = hostContext.Configuration.GetValue<string>("UserDataStorageConnectionString");
+
                     services.AddAzureClients(builder =>
                     {
+                        // Register blob service client and initialize it using the Storage section of configuration
+                        builder.AddBlobServiceClient(userDataStorageConnectionString)
+                                .WithName(ApplicationConstants.StorageInstanceNames.UserDataStorage)
+                                .WithVersion(BlobClientOptions.ServiceVersion.V2019_02_02);
+
                         //Add Service Bus Client
                         builder.AddServiceBusClient(serviceBusConnectionString);
 
@@ -153,6 +161,8 @@ namespace blendnet.incentive.listener
             services.AddTransient<UserAppOpenIncentiveIntegrationEventHandler>();
             services.AddTransient<UserStreamContentIncentiveIntegrationEventHandler>();
             services.AddTransient<UserOnboardingRatingSubmittedIncentiveIntegrationEventHandler>();
+            services.AddTransient<ExportUserDataIntegrationEventHandler>();
+
         }
 
         /// <summary>

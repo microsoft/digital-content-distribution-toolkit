@@ -268,45 +268,7 @@ namespace blendnet.user.api.Controllers
 
             return Ok(referralData);
         }
-
-        /// <summary>
-        /// API to get the latest Data Export Request for a user
-        /// </summary>
-        /// <param name="request">Request for user (needed only for admin, ignored for others)</param>
-        /// <returns></returns>
-        [HttpPost("dataExport", Name = nameof(GetDataExportCommand))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<UserDataExportCommand>> GetDataExportCommand(UserForDataExportRequest request)
-        {
-            string phoneNumber;
-
-            if (UserClaimData.isSuperAdmin(this.User.Claims))
-            {
-                // expect a phone number in requestUrl
-                phoneNumber = request.PhoneNumber;
-            }
-            else
-            {
-                phoneNumber = this.User.Identity.Name;
-            }
-
-            var existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
-            if (existingUser is null || !existingUser.DataExportRequestedBy.HasValue)
-            {
-                return NotFound();
-            }
-
-            var dataExportCommand = await _userRepository.GetDataExportCommand(phoneNumber, existingUser.DataExportRequestedBy.Value);
-            if (dataExportCommand is null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(dataExportCommand);
-            }
-        }
-
+        
         /// <summary>
         /// API to create a new data export request for user
         /// </summary>
@@ -315,38 +277,51 @@ namespace blendnet.user.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<int>> CreateDataExportCommand()
         {
+            List<string> errorInfo = new List<string>();
+
             string phoneNumber = this.User.Identity.Name;
+            
             var userId = UserClaimData.GetUserId(this.User.Claims);
 
             var existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
+
             if (existingUser is null)
             {
                 return NotFound();
             }
 
-            if (existingUser.DataExportRequestedBy.HasValue)
+            //if the request is in progress do not accept another request
+            if (existingUser.DataExportRequestStatus != DataExportRequestStatus.NotInitialized &&
+                existingUser.DataExportRequestStatus != DataExportRequestStatus.ExportedDataNotified )
             {
-                var existingDataExportCommand = await _userRepository.GetDataExportCommand(phoneNumber, existingUser.DataExportRequestedBy.Value);
-                if (existingDataExportCommand is not null && existingDataExportCommand.Status != DataExportRequestStatus.Completed)
-                {
-                    return BadRequest(new string[] {
-                        "Request already exists"
-                    });
-                }
+                errorInfo.Add(_stringLocalizer["USR_ERR_021"]);
+
+                return BadRequest(errorInfo);
             }
 
             var now = DateTime.UtcNow;
 
+            //create new command
             var newDataExportCommand = new UserDataExportCommand()
             {
                 CreatedByUserId = userId,
                 CreatedDate = now,
                 Id = Guid.NewGuid(),
                 PhoneNumber = phoneNumber,
-                Status = DataExportRequestStatus.Active,
+                Status = DataExportRequestStatus.Submitted,
+                UserId = userId
             };
 
-            existingUser.DataExportRequestedBy = newDataExportCommand.Id;
+            DataExportCommandExecutionDetails executionDetails = new DataExportCommandExecutionDetails()
+            {
+                DataExportRequestStatus = DataExportRequestStatus.Submitted,
+                EventDateTime = now
+            };
+
+            newDataExportCommand.ExecutionDetails.Add(executionDetails);
+
+            existingUser.DataExportRequestStatus = DataExportRequestStatus.Submitted;
+            existingUser.DataExportStatusUpdatedBy = newDataExportCommand.Id;
             existingUser.ModifiedByByUserId = userId;
             existingUser.ModifiedDate = now;
 
@@ -364,88 +339,78 @@ namespace blendnet.user.api.Controllers
         }
 
         /// <summary>
-        /// API to update the result in a Data Export Request
+        /// Complete the data export command
         /// </summary>
-        /// <param name="resultRequest">request</param>
-        /// <returns>status code</returns>
-        [HttpPost("dataExport/updateResult", Name = nameof(UpdateDataExportResult))]
+        /// <returns></returns>
+        [HttpPost("dataExport/complete", Name = nameof(CompleteDataExportCommand))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<int>> UpdateDataExportResult(UserDataExportResultRequest resultRequest)
+        public async Task<ActionResult> CompleteDataExportCommand(CompleteDataExportCommandRequest completeDataExportCommandRequest)
         {
-            Guid callerUserId = UserClaimData.GetUserId(this.User.Claims);
-            string phoneNumber = resultRequest.PhoneNumber;
+            List<string> errorInfo = new List<string>();
+
+            string phoneNumber = completeDataExportCommandRequest.UserPhoneNumber;
+
+            var userId = UserClaimData.GetUserId(this.User.Claims);
+
             var existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
-            if (existingUser is null)
+
+            if (existingUser is null || !existingUser.DataExportStatusUpdatedBy.HasValue)
             {
-                return BadRequest(new string[] {
-                    "User not found"
-                });
+                return NotFound();
             }
 
-            if (!existingUser.DataExportRequestedBy.HasValue)
+            //get existing command details
+            UserDataExportCommand existingExportCommand = await _userRepository.GetDataExportCommand(phoneNumber, existingUser.DataExportStatusUpdatedBy.Value);
+
+            if (existingExportCommand is null)
             {
-                return BadRequest(new string[] {
-                    "No valid data export request found"
-                });
+                return NotFound();
             }
 
-            var existingDataExportCommand = await _userRepository.GetDataExportCommand(phoneNumber, existingUser.DataExportRequestedBy.Value);
-            if (existingDataExportCommand is null || existingDataExportCommand.Status != DataExportRequestStatus.Active)
+            //if the request is in progress do not accept another request
+            //command and user status should be in submitted state
+            if (existingUser.DataExportRequestStatus != DataExportRequestStatus.Submitted ||
+                existingExportCommand.Status != DataExportRequestStatus.Submitted
+                )
             {
-                return BadRequest(new string[] {
-                    "No valid data export request found"
-                });
+                errorInfo.Add(_stringLocalizer["USR_ERR_022"]);
+
+                return BadRequest(errorInfo);
             }
 
-            var now = DateTime.UtcNow;
+            DateTime now = DateTime.UtcNow;
 
-            existingDataExportCommand.Result = new UserDataExportResult()
+            existingUser.DataExportRequestStatus = DataExportRequestStatus.ExportInProgress;
+            existingUser.ModifiedByByUserId = userId;
+            existingUser.ModifiedDate = now;
+
+            existingExportCommand.Status = DataExportRequestStatus.ExportInProgress;
+            existingExportCommand.ModifiedByByUserId = userId;
+            existingExportCommand.ModifiedDate = now;
+
+            DataExportCommandExecutionDetails executionDetails = new DataExportCommandExecutionDetails()
             {
-                DateCompleted = now,
-                ExportedDataUrl = resultRequest.ExportedDataUrl,
-                ExportedDataValidity = resultRequest.ExportedDataValidity,
+                DataExportRequestStatus = DataExportRequestStatus.ExportInProgress,
+                EventDateTime = now
             };
 
-            existingDataExportCommand.Status = DataExportRequestStatus.Completed;
-            existingDataExportCommand.ModifiedByByUserId = callerUserId;
-            existingDataExportCommand.ModifiedDate = now;
+            existingExportCommand.ExecutionDetails.Add(executionDetails);
 
-            var result = await _userRepository.UpdateDataExportCommand(existingDataExportCommand);
+            //update the command and user object 
+            await _userRepository.UpdateDataExportCommandBatch(existingExportCommand, existingUser);
 
-            if (result == (int)System.Net.HttpStatusCode.OK)
+            //publish the event so that each individual listener can export the data and notify back
+            ExportUserDataIntegrationEvent exportUserDataIntegrationEvent = new ExportUserDataIntegrationEvent()
             {
-                // send notification
-                NotificationRequest notificationRequest = new NotificationRequest()
-                {
-                    Title = "Download data",
-                    Body = "Your data is ready to download",
-                    Type = PushNotificationType.UserDataExportComplete,
-                    UserData = new List<UserData>()
-                    {
-                        new UserData()
-                        {
-                            PhoneNumber = existingUser.PhoneNumber,
-                            UserId = existingUser.UserId,
-                        }
-                    },
-                };
+                UserId = existingUser.UserId,
+                UserPhoneNumber = existingUser.PhoneNumber,
+                CommandId = existingExportCommand.Id,
+            };
 
-                try
-                {
-                    await _notificationProxy.SendNotification(notificationRequest);
-                }
-                catch(Exception ex)
-                {
-                    _logger.LogError(ex, $"Failed to send notification for Data Export Complete for user id {existingUser.UserId}");
-                }
-            }
-            else
-            {
-                _logger.LogInformation($"Skipped sending notification due to error while saving result: {result}");
-            }
+            await _eventBus.Publish(exportUserDataIntegrationEvent);
 
-            return Ok(result);
+            return NoContent();
         }
 
         /// <summary>

@@ -19,5 +19,7 @@ namespace blendnet.common.dto.User
         public int WhitelistedUsersGlobalLimit { get; set; }
         
         public int WhitelistedUsersPerSourceLimit { get; set; }
+
+        public int ExportDataSASExpiryInMts { get; set; }
     }
 }

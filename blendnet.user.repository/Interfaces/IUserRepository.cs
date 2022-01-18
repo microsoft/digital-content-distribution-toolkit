@@ -13,14 +13,14 @@ namespace blendnet.user.repository.Interfaces
         /// </summary>
         /// <param name="User"></param>
         /// <returns>Status</returns>
-        public Task<int> CreateUser(User user);
+        public Task<int> CreateUser(common.dto.User.User user);
 
         /// <summary>
         /// Create BlendNet user
         /// </summary>
         /// <param name="User"></param>
         /// <returns></returns>
-        public Task<int> UpdateUser(User user);
+        public Task<int> UpdateUser(common.dto.User.User user);
 
         /// <summary>
         /// Returns the BlendNet User By PhoneNumber
@@ -86,7 +86,7 @@ namespace blendnet.user.repository.Interfaces
         /// <param name="userDataExportCommand">Command to be created</param>
         /// <param name="user">user</param>
         /// <returns>status code</returns>
-        Task<int> CreateDataExportCommandBatch(UserDataExportCommand userDataExportCommand, User user);
+        Task<int> CreateDataExportCommandBatch(UserDataExportCommand userDataExportCommand, common.dto.User.User user);
 
         /// <summary>
         /// Updates the data export Command
@@ -94,5 +94,15 @@ namespace blendnet.user.repository.Interfaces
         /// <param name="userDataExportCommand">Command to be updated</param>
         /// <returns>status code</returns>
         Task<int> UpdateDataExportCommand(UserDataExportCommand userDataExportCommand);
+
+        /// <summary>
+        /// Update the user and export command in batch
+        /// </summary>
+        /// <param name="userDataExportCommand"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<int> UpdateDataExportCommandBatch(UserDataExportCommand userDataExportCommand,
+                                               common.dto.User.User user,
+                                               bool performETAGValidation = false);
     }
 }

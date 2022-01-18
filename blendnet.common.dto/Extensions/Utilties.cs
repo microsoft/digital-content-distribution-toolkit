@@ -14,10 +14,15 @@ namespace blendnet.common.dto.Extensions
         /// GetJsonSerializerOptions
         /// </summary>
         /// <returns></returns>
-        public static JsonSerializerOptions GetJsonSerializerOptions()
+        public static JsonSerializerOptions GetJsonSerializerOptions(bool ignoreNull = false)
         {
             JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
+            if (ignoreNull)
+            {
+                _jsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            }
+            
             _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
             return _jsonSerializerOptions;

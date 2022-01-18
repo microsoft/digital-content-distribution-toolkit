@@ -33,6 +33,8 @@ namespace blendnet.oms.listener
 
             _eventBus.Subscribe<OrderCompletedIntegrationEvent, OrderCompleteEventHandler>();
 
+            _eventBus.Subscribe<ExportUserDataIntegrationEvent, ExportUserDataIntegrationEventHandler>();
+
             await _eventBus.StartProcessing();
 
             _logger.LogInformation("Subscribe complete by blendnet.oms.listener");

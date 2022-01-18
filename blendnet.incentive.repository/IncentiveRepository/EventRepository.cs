@@ -172,5 +172,32 @@ namespace blendnet.incentive.repository.IncentiveRepository
             return eventAggregrates;
 
         }
+
+
+        /// <summary>
+        /// Get User Events for export
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <returns></returns>
+        public async Task<List<IncentiveEventToExport>> GetUserEvents(string userPhoneNumber)
+        {
+            string queryString = @"   SELECT  c.eventCreatedFor, c.eventType, 
+                                              c.eventCategoryType , c.eventOccuranceTime ,
+                                              c.calculatedValue as coins         
+                                      FROM c where c.eventCreatedFor = @eventCreatedFor 
+                                      AND c.audience.audienceType = @audienceType 
+                                      ORDER BY c.createdDate ";
+
+            
+            var queryDefinition = new QueryDefinition(queryString)
+                .WithParameter("@eventCreatedFor", userPhoneNumber)
+                .WithParameter("@audienceType", AudienceType.CONSUMER);
+
+            var userIncentiveEvents = await _container.ExtractDataFromQueryIterator<IncentiveEventToExport>(queryDefinition);
+
+            return userIncentiveEvents;
+        }
+
+       
     }
 }

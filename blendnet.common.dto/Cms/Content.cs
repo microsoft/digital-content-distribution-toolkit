@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using blendnet.common.dto.Validation;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -185,11 +186,13 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Artist list
         /// </summary>
+        [ValidateCollection]
         public List<People> People { get; set; }
 
         /// <summary>
         /// List of Attachments
         /// </summary>
+        [ValidateCollection]
         public List<Attachment> Attachments { get; set; }
 
         /// <summary>
@@ -270,6 +273,7 @@ namespace blendnet.common.dto.Cms
     {
         [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length)]
         [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
+        [Required]
         public string Name { get; set; }
         
         public Role Role { get; set; }
@@ -279,6 +283,7 @@ namespace blendnet.common.dto.Cms
     {
         [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length)]
         [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
+        [Required]
         public string Name { get; set; }
 
         public AttachmentType Type { get; set; }
