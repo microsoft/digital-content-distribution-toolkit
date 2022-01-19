@@ -1,0 +1,24 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blendnet-user-listener
+  labels:
+    app: blendnet-user-listener
+spec:
+  replicas: pod_count
+  selector:
+    matchLabels:
+      app: blendnet-user-listener
+  template:
+    metadata:
+      labels:
+        app: blendnet-user-listener
+        aadpodidbinding: pod_identity_name
+    spec:
+      containers:
+      - name: blendnet-user-listener
+        image: image_name
+        resources:
+          limits:
+            memory: "4Gi"
+            cpu: "2"
