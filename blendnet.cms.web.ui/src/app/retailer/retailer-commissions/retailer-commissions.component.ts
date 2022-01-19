@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service'
 import { ContentProviderService } from 'src/app/services/content-provider.service';
 import { Location } from '@angular/common';
+import { ContentProviderLtdInfo } from 'src/app/models/contentprovider.model';
 
 
 @Component({
@@ -48,7 +49,7 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
   nestedCommissions = [];
   totalEarnings = 0;
   baseHref = this.retailerDashboardService.getBaseHref();
-  contentProviders: any;
+  contentProviders: ContentProviderLtdInfo[];
   constructor(
     public userService: UserService,
     public router: Router,
@@ -164,6 +165,7 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
       err => {
         this.nestedCommissions = [];
         this.totalEarnings = 0;
+        console.error(err);
       }
     )
   }
@@ -176,8 +178,8 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
       }); 
     } else {
       this.contentProviderService.browseContentProviders().subscribe(res => {
-        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(res));
         this.contentProviders = res;
+        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(this.contentProviders));
         this.contentProviders.forEach(contentProvider => {
           this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
         }); 

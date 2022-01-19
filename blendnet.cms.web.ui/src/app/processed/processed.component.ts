@@ -14,6 +14,8 @@ import { CommonDialogComponent } from '../common-dialog/common-dialog.component'
 import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
 import { ThemePalette } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
+import { processedContentFilters } from '../constants/content-status-filters';
+import { ContentView } from '../models/content-view.model';
 
 
 export interface DialogData {
@@ -27,7 +29,7 @@ export interface DialogData {
 })
 export class ProcessedComponent {
   displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'url', 'view', 'isBroadcastable', 'activeStatus'];
-  dataSource: MatTableDataSource<Content>;
+  dataSource: MatTableDataSource<ContentView>;
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";
   processConfirmMessage: string = "Please press Continue to begin the transformation.";
@@ -62,28 +64,9 @@ export class ProcessedComponent {
   }
 
   getProcessedContent() {
-    var processedContentFilters = {
-      "contentUploadStatuses": [
-        ContentStatus.UPLOAD_COMPLETE
-      ],
-      "contentTransformStatuses": [
-        ContentStatus.TRANSFORM_COMPLETE
-      ],
-      "contentBroadcastStatuses": [
-        ContentStatus.BROADCAST_NOT_INITIALIZED, 
-        ContentStatus.BROADCAST_SUBMITTED,
-        ContentStatus.BROADCAST_INPROGRESS,
-        ContentStatus.BROADCAST_FAILED,
-        ContentStatus.BROADCAST_CANCEL_COMPLETE,
-        ContentStatus.BROADCAST_ORDER_CANCELLED,
-        ContentStatus.BROADCAST_ORDER_REJECTED,
-        ContentStatus.BROADCAST_ORDER_FAILED,
-        ContentStatus.BROADCAST_ORDER_COMPLETE
-      ]
-    }
     this.contentService.getContentByCpIdAndFilters(processedContentFilters).subscribe(
     res => {
-      this.dataSource = this.createDataSource(res.body);
+      this.dataSource = this.createDataSource(res);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
       this.selectedContents=0;
@@ -115,29 +98,27 @@ export class ProcessedComponent {
   }
 
 
-  createDataSource(rawData) {
-    var dataSource: Content[] =[];
+  createDataSource(rawData: ContentView[]) {
+    var dataSource: ContentView[] =[];
     if(rawData && rawData.length > 0) {
       this.errMessage = "";
       this.error = false;
       rawData.forEach( data => {
         if(data.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE) {
-          data.status = (data.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED 
+          data.displayStatus = (data.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED 
             && data.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE) ? 
-          data.contentBroadcastStatus : data.contentTransformStatus
+          data.contentBroadcastStatus : data.contentTransformStatus;
           data.isSelected = false;
-          data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
-          data.modifiedDateString =  this.pipe.transform(data.modifiedDate, 'short');
+          data.displayCreatedDate =  this.pipe.transform(data.createdDate, 'short');
+          data.displayModifiedDate =  this.pipe.transform(data.modifiedDate, 'short');
           dataSource.push(data);
         } else {
           var today = new Date();
-          if(data.contentBroadcastedBy.broadcastRequest.endDate < today.toISOString()) {
-            data.status = (data.contentBroadcastStatus !== ContentStatus.BROADCAST_NOT_INITIALIZED 
-              && data.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE) ? 
-            data.contentBroadcastStatus : data.contentTransformStatus
+          if(data.contentBroadcastedBy.broadcastRequest.endDate < today) {
+            data.displayStatus = data.contentTransformStatus;
             data.isSelected = false;
-            data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
-            data.modifiedDateString =  this.pipe.transform(data.modifiedDate, 'short');
+            data.displayCreatedDate =  this.pipe.transform(data.createdDate, 'short');
+            data.displayModifiedDate =  this.pipe.transform(data.modifiedDate, 'short');
             dataSource.push(data);
           }
         }
@@ -203,16 +184,22 @@ export class ProcessedComponent {
     }
   }
 
-  viewContent(selectedContent) : void {
-    const dialogRef = this.dialog.open(ContentDetailsDialog, {
-      data: {content: selectedContent}
-    });
+  viewContent(id) : void {
+    this.contentService.getContentById(id).subscribe(
+      res => {
+        const dialogRef = this.dialog.open(ContentDetailsDialog, {
+          data: {content: res}
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      },
+      err => {
+        this.toastr.error(err);
+      });
+   }
   
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
-  
-  }
 
   toggleButtons(): Array<any> {
     return [{

@@ -7,7 +7,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { RetailerService } from '../services/retailer.service';
-import { AdditionalHistoryDialog } from './device-additional-history.component';
 
 @Component({
   selector: 'app-device-retailer-history',
@@ -95,19 +94,6 @@ export class DeviceRetailerHistoryComponent implements OnInit {
     }
   }
 
-  openAdditionalDetailsHistory(row) {
-    const dialogRef = this.dialog.open(AdditionalHistoryDialog, {
-      data: {
-        history : row
-      },
-      width: '60%'
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
-  }
-  
   showDevicesPage() {
     this.router.navigate(['/admin/devices', {filterValue: this.filterValue}]);
   }

@@ -41,3 +41,7 @@
 .mat-button-toggle-group{
   height: 40px !important;
 }
+
+mat-cell, .mat-cell {
+  padding: 12px 16px 12px 0;
+}

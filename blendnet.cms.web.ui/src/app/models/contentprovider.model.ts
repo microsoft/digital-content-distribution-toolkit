@@ -6,11 +6,15 @@ export class Contentprovider {
         public id: string,
         public name: string,
         public logoUrl: string,
-        // public isActive:boolean,
-        // public activationDate: Date,
-        // public deactivationDate: Date,
         public contentAdministrators: ContentproviderAdmin[]
         
     ) {}
+}
+
+export class ContentProviderLtdInfo {
+    constructor(
+        public contentProviderId: string,
+        public name: string
+    ){}
 }
 

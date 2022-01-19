@@ -13,6 +13,9 @@ import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { ContentTokenDialog } from '../processed/processed.component';
 import { DatePipe } from '@angular/common';
+import { CommandDetail } from '../models/command-detail.model';
+import { ContentView } from '../models/content-view.model';
+import { broadcastContentFilters } from '../constants/content-status-filters';
 
 export interface DialogData {
   message: string;
@@ -27,7 +30,7 @@ export interface DialogData {
 })
 export class BroadcastComponent {
   displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate',  'isBroadcastCancellable', 'view', 'url', 'broadcastDetails'];
-  dataSource: MatTableDataSource<Content>;
+  dataSource: MatTableDataSource<ContentView>;
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once archived can not be restored. Please press Continue to begin the archival.";
   cancelConfirmMessage: string = "Please press Continue to CANCEL the broadcast.";
@@ -63,33 +66,10 @@ export class BroadcastComponent {
   }
 
   getBroadcastContent() {
-    var broadcastContentFilters = {
-      "contentUploadStatuses": [
-        ContentStatus.UPLOAD_COMPLETE
-      ],
-      "contentTransformStatuses": [
-        ContentStatus.TRANSFORM_COMPLETE
-      ],
-      "contentBroadcastStatuses": [
-        ContentStatus.BROADCAST_COMPLETE,
-        ContentStatus.BROADCAST_TAR_PUSHED,
-        ContentStatus.BROADCAST_CANCEL_INPROGRESS,
-        ContentStatus.BROADCAST_ORDER_ACTIVE,
-        ContentStatus.BROADCAST_ORDER_CANCELLED,
-        ContentStatus.BROADCAST_ORDER_CREATED,
-        ContentStatus.BROADCAST_ORDER_COMPLETE,
-        ContentStatus.BROADCAST_ORDER_REJECTED,
-        ContentStatus.BROADCAST_ORDER_FAILED,
-        ContentStatus.BROADCAST_COMPLETE,
-        ContentStatus.BROADCAST_CANCEL_SUBMITTED,
-        ContentStatus.BROADCAST_CANCEL_INPROGRESS,
-        ContentStatus.BROADCAST_CANCEL_FAILED,
-        ContentStatus.BROADCAST_CANCEL_COMPLETE
-      ]
-    }
     this.contentService.getContentByCpIdAndFilters(broadcastContentFilters).subscribe(
     res => {
-      this.dataSource = this.createDataSource(res.body);
+      var data: ContentView[] = res;
+      this.dataSource = this.createDataSource(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
       this.selectedContents=0;
@@ -106,16 +86,23 @@ export class BroadcastComponent {
     });
   }
 
-  viewContent(selectedContent) : void {
-    const dialogRef = this.dialog.open(ContentDetailsDialog, {
-      data: {content: selectedContent}
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
-  
-  }
+
+  viewContent(id) : void {
+    this.contentService.getContentById(id).subscribe(
+      res => {
+        const dialogRef = this.dialog.open(ContentDetailsDialog, {
+          data: {content: res}
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      },
+      err => {
+        this.toastr.error(err);
+      });
+   }
+
   isBroadcastNotActive(selectedContent) {
     var today = new Date();
     return selectedContent.contentBroadcastedBy?.broadcastRequest.endDate < today.toISOString();
@@ -159,16 +146,16 @@ getBroadcastDetails(selectedContent) {
     return (!row.isSelected && this.selectedContents >= this.allowedMaxSelection);
   }
 
-  createDataSource(rawData) {
-    var dataSource: Content[] =[];
+  createDataSource(rawData: ContentView[]) {
+    var dataSource: ContentView[] =[];
     if(rawData && rawData.length > 0) {
       this.errMessage = "";
       this.error = false;
       rawData.forEach( data => {
-        data.status = data.contentBroadcastStatus;
+        data.displayStatus = data.contentBroadcastStatus;
         data.isSelected = false;
-        data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
-        data.modifiedDateString =  this.pipe.transform(data.modifiedDate, 'short');
+        data.displayCreatedDate =  this.pipe.transform(data.createdDate, 'short');
+        data.displayModifiedDate =  this.pipe.transform(data.modifiedDate, 'short');
         dataSource.push(data);
       });
     } else {
@@ -221,7 +208,7 @@ getBroadcastDetails(selectedContent) {
   onConfirmCancelBroadcast(content): void {
   this.contentService.cancelBroadcast(content.id).subscribe(
     res => {
-      this.toastr.success("Cancellation request for the broadcast submitted successfully");
+      this.toastr.success("Broadcast cancellation request for content" + content.id + "submitted successfully");
       this.getBroadcastContent();
     },
     err => this.toastr.error(err));
@@ -257,26 +244,26 @@ export class BroadcastDetailsDialog {
   constructor(
     public dialogRef: MatDialogRef<ContentTokenDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public contentService: ContentService,
-    private toastr: ToastrService) {}
+    public contentService: ContentService) {}
     startDate;
     endDate;
     filters;
-    additionalData;
+    additionalData: CommandDetail;
     additionalDataJson;
   ngOnInit(): void {
     this.contentService.getCommandDetails(this.data.content.id, 
       this.data.content.contentBroadcastedBy.commandId).subscribe(
       res => {
-        this.additionalDataJson = JSON.stringify(res);
+        this.additionalData = res;
+        this.additionalDataJson = JSON.stringify(this.additionalData);
+        this.startDate = this.data.content.contentBroadcastedBy.broadcastRequest.startDate;
+        this.endDate = this.data.content.contentBroadcastedBy.broadcastRequest.endDate;
+        this.filters = this.data.content.contentBroadcastedBy.broadcastRequest.filters.join();
       },
       err => {
         this.additionalDataJson = err;
         }
       );
-      this.startDate = this.data.content.contentBroadcastedBy.broadcastRequest.startDate;
-      this.endDate = this.data.content.contentBroadcastedBy.broadcastRequest.endDate;
-      this.filters = this.data.content.contentBroadcastedBy.broadcastRequest.filters.join();
     }
 
   onClose(): void {

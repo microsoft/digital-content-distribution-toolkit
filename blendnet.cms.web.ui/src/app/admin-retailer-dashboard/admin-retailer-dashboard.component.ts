@@ -46,7 +46,7 @@ export class AdminRetailerDashboardComponent implements OnInit {
         this.showDashboard = true;
       },
       err => {
-        console.log(err);
+        console.error(err);
         this.showDashboard = false;
         this.error = true;
       }

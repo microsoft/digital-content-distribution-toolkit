@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { SasToken } from '../models/sas-token.model';
 import { ContentProviderService } from '../services/content-provider.service';
 
 @Component({
@@ -10,6 +11,7 @@ import { ContentProviderService } from '../services/content-provider.service';
 export class SasKeyComponent implements OnInit {
   sasKey:string ="";
   expiresIn:string= "";
+  sasToken: SasToken;
 
   constructor( 
     private contentProviderService: ContentProviderService,
@@ -30,9 +32,10 @@ export class SasKeyComponent implements OnInit {
     if(cpId) {
       this.contentProviderService.generateSASKey(cpId)
       .subscribe( res => {
-        this.sasKey  = res.sasUri;
+        this.sasToken = res;
+        this.sasKey  = this.sasToken.sasUri;
         var today = new Date();
-        today.setMinutes(today.getMinutes() + res.expiryInMinutes);
+        today.setMinutes(today.getMinutes() + this.sasToken.expiryInMinutes);
         this.expiresIn = today + "";
         this.showSuccess("SAS Uri Generated sucessfully");
       },

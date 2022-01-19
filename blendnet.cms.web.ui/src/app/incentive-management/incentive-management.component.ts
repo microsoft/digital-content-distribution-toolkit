@@ -6,6 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { ContentProviderLtdInfo } from '../models/contentprovider.model';
 import { Incentive, PlanType, PublishMode } from '../models/incentive.model';
 import { ContentProviderService } from '../services/content-provider.service';
 import { IncentiveService } from '../services/incentive.service';
@@ -31,18 +32,14 @@ export class IncentiveManagementComponent implements OnInit {
   createRetailerIncentive = false;
   showConsumerIncentive = true;
   createConsumerIncentive = false;
-
   plans= [];
- 
   selectedStatusConsumer;
   selectedPlan = null;
-  // missingListPartner: any[] = [];
   missingListConsumer: any ={};
   missingListPartner: any = {};
   partners = [];
   selectedPartner;
   missingPlansforPartner;
-
   errMessage;
   errMessageCust;
   error= false;
@@ -52,9 +49,9 @@ export class IncentiveManagementComponent implements OnInit {
   selectedPlanTypeR;
   selectedPlanTypeC;
   pipe;
-
   filterValueC;
   filterValueR;
+  cpInfoList: ContentProviderLtdInfo[];
 
   constructor( private incentiveService: IncentiveService,
     public dialog: MatDialog,
@@ -72,8 +69,6 @@ export class IncentiveManagementComponent implements OnInit {
     this.selectedPlanTypeC = this.plans[0];
     this.getRetailerPartners();
     this.getContentProviders()
-    
-    //this.getRetailerIncentivePlans();
   }
 
   getContentProviders() {
@@ -81,7 +76,8 @@ export class IncentiveManagementComponent implements OnInit {
     if(!cpList || cpList.length < 1) {
       this.contentProviderService.browseContentProviders().subscribe(
         res => {
-          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(res));
+          this.cpInfoList = res;
+          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(this.cpInfoList));
         },
         err => this.toastr.warning("Unable to fetch content providers. Please contact admin")
       )
@@ -122,12 +118,12 @@ export class IncentiveManagementComponent implements OnInit {
   getRetailerIncentivePlansForPartner(partner, type){
     this.isErrorRetailer = false;
     this.incentiveService.getRetailerIncentivesByPartnerAndPlanType(partner, type).subscribe(res => {
-      var resArr: any = res.body;
+      var resArr: any = res;
       resArr.sort((a, b) => (a.createdDate < b.createdDate ? 1: -1));
       this.dataSourceRetailers = this.createDataSource(resArr);
       this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
       this.dataSourceRetailers.sort = this.sort.toArray()[0]; 
-      this.getMissingPlansPerPartner(res.body, type);
+      this.getMissingPlansPerPartner(res, type);
     }, err => {
       this.missingListPartner = {
         missingListRegular: [],

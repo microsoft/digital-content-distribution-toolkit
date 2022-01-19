@@ -5,10 +5,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog} from '@angular/material/dialog';
 import { NotificationsDialog } from './notifications-dialog';
 import {MatTableDataSource} from '@angular/material/table';
-import { Content } from '../models/content.model';
 import { NotificationService } from '../services/notification.service';
 import { MatSort } from '@angular/material/sort';
 import { DatePipe } from '@angular/common';
+import { Notification } from '../models/notification.model';
+import { AdditionalHistoryDialog } from '../devices/device-additional-history.component';
 
 
 
@@ -21,7 +22,7 @@ import { DatePipe } from '@angular/common';
 export class NotificationsComponent implements OnInit {
   expiresIn:string= "";
   selectedNotifications: number=0;
-  displayedColumns: string[] = [ 'title', 'body', 'type', 'attachmentUrl', 'tags','createdDate'];
+  displayedColumns: string[] = [ 'title', 'body', 'type', 'attachmentUrl', 'tags','createdDate', 'metadata'];
 
   @ViewChild(MatAccordion) accordion: MatAccordion;
   cpSubscriptions;
@@ -54,7 +55,7 @@ export class NotificationsComponent implements OnInit {
 
         this.notificationService.getAllNotifications().subscribe(
           res => {
-            this.dataSource = this.createDataSource(res.data);
+            this.dataSource = this.createDataSource(res);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
           },
@@ -98,13 +99,13 @@ export class NotificationsComponent implements OnInit {
     });
   }
 
-  createDataSource(rawData) {
-    var dataSource: Content[] =[];
+  createDataSource(rawData: Notification[]) {
+    var dataSource: Notification[] =[];
     if(rawData && rawData.length > 0) {
       this.errMessage = "";
       this.error = false;
       rawData.forEach( data => {
-        data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
+        data.displayCreatedDate =  this.pipe.transform(data.createdDate, 'short');
         dataSource.push(data);
       });
     } else {
@@ -114,5 +115,20 @@ export class NotificationsComponent implements OnInit {
     return new MatTableDataSource(dataSource);
   }
 
+  getNotificationDetails(notif) {
+    var notificationDetails = {
+      title: notif.title,
+      description: notif.description,
+      attachment: notif.attachment,
+      tags: notif.tags
+    }
+    const dialogRef = this.dialog.open(AdditionalHistoryDialog, {
+      data: {content: notificationDetails},
+      width: '60%'
+    });
   
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
 }

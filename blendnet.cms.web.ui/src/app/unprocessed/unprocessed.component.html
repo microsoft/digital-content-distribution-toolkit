@@ -64,19 +64,19 @@
         <!-- Status Column -->
         <ng-container matColumnDef="status">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-            <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.displayStatus}} </td>
         </ng-container>
 
          <!-- CreatedDate Column -->
          <ng-container matColumnDef="createdDate">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
-            <td mat-cell *matCellDef="let row"> {{row.createdDateString}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.displayCreatedDate}} </td>
         </ng-container>
 
          <!-- ModifiedDate Column -->
          <ng-container matColumnDef="modifiedDate">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Modified Date </th>
-            <td mat-cell *matCellDef="let row"> {{row.modifiedDateString ?  row.modifiedDateString : row.createdDateString}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.displayModifiedDate ?  row.displayModifiedDate : row.displayCreatedDate}} </td>
         </ng-container>
 
     
@@ -89,7 +89,7 @@
                 </button> -->
              </th>
             <td mat-cell *matCellDef="let row" >
-                <button mat-icon-button  (click)="viewContent(row)">
+                <button mat-icon-button  (click)="viewContent(row.id)">
                     <mat-icon mat-list-icon 
                     matTooltip="View content">visibility</mat-icon> 
                 </button>

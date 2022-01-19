@@ -232,7 +232,7 @@ import { IncentiveService } from "../services/incentive.service";
               this.eventTypes = res.body;
               sessionStorage.setItem("RETAILERS_EVENTS",  JSON.stringify(res.body));
             },
-            err => console.log(err)
+            err => console.error(err)
           );
         }
         
@@ -251,7 +251,7 @@ import { IncentiveService } from "../services/incentive.service";
             this.eventTypes = res.body;
             sessionStorage.setItem("CONSUMER_EVENTS",  JSON.stringify(res.body));
           },
-          err => console.log(err)
+          err => console.error(err)
         );
       }
     }
@@ -259,8 +259,6 @@ import { IncentiveService } from "../services/incentive.service";
     onFormulaChange() {
       var formula = this.eventForm.get('formula');
       if(formula.value === FormulaType.DIVIDE_AND_MULTIPLY) {
-        //this.eventForm.removeControl('ranges');
-        //this.eventForm.addControl('milestoneTarget', new FormControl('', [Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/),  Validators.min(1)]));
         this.eventForm.get('firstOperand').setValidators([Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]);
         this.eventForm.get('firstOperand').updateValueAndValidity();
         this.eventForm.get('secondOperand').setValidators([Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]);

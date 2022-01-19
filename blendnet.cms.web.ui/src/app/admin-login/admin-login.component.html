@@ -14,20 +14,23 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div>
-                    <mat-form-field  class="cms-login-contact">
-                        <mat-label>Phone Number</mat-label>
-                        <input matInput  [formControl]="contact" required maxlength="10" minlength="10">
-                        <mat-icon matSuffix>phone</mat-icon>
-                    </mat-form-field>
-                </div>
-                <br>
-                
-                <mat-form-field  class="cms-login-contact">
-                    <mat-label>OTP</mat-label>
-                    <input matInput [formControl]="otp" type="password" required>
-                    <mat-icon matSuffix>otp</mat-icon>
-                </mat-form-field>
+                <form [formGroup]="loginForm">
+                    <div>
+                        <mat-form-field  class="cms-login-contact">
+                            <mat-label>Phone Number</mat-label>
+                            <input matInput  formControlName="contact" required maxlength="10" minlength="10">
+                            <mat-icon matSuffix>phone</mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <br>
+                    <div>
+                        <mat-form-field  class="cms-login-contact">
+                            <mat-label>OTP</mat-label>
+                            <input matInput formControlName="otp" type="password" required autocomplete="off">
+                            <mat-icon matSuffix>otp</mat-icon>
+                        </mat-form-field>
+                    </div>
+                </form>
                 <div>
                     <a class="otp-link" (click)="generateOTP()">CLICK TO GET ONE TIME PASSWORD (OTP)</a>
                 </div>
@@ -35,83 +38,16 @@
                 <div *ngIf="otpVerifyErrorMessage" class="cms-login-validation-errors">
                     <mat-error> {{otpVerifyErrorMessage}}</mat-error>   
                 </div>
-                <div *ngIf="otpSendErrorMessage && !contact.invalid" class="cms-login-validation-errors">
+                <div *ngIf="otpSendErrorMessage" class="cms-login-validation-errors">
                     <mat-error> {{otpSendErrorMessage}}</mat-error>   
                </div>
                 
                 <br>
                 <div>
                     <button mat-raised-button color="primary" 
-                    [disabled]="otp.invalid" (click)="verifyOTP()">Verify OTP</button>
+                    [disabled]="loginForm.invalid" (click)="verifyOTP()">Verify OTP</button>
                 </div>
             </div>
-<!-- 
-                <div *ngIf="isCountryCodeSection">
-                    <div class="cms-login-form">
-                        <h3><b>Sign up or Sign in</b></h3>
-                        <div>
-                            <mat-form-field appearance="outline" class="cms-login-contact">
-                                <mat-label>Country Code</mat-label>
-                                <mat-select [(ngModel)]="selectedCountryCodeValue" name="countrycode">
-                                  <mat-option *ngFor="let ccode of countryCodes" [value]="ccode.value">
-                                    {{ccode.viewValue}}
-                                  </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <div>
-                            <mat-form-field appearance="outline" class="cms-login-contact">
-                                <mat-label>Phone Number</mat-label>
-                                <input matInput  [formControl]="contact" required>
-                                <mat-icon matSuffix>phone</mat-icon>
-                                <mat-error *ngIf="contact.invalid">{{getContactErrorMessage()}}</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div *ngIf="otpSendErrorMessage && !contact.invalid" class="cms-login-validation-errors">
-                             <mat-error> {{otpSendErrorMessage}}</mat-error>   
-                        </div>
-                        <br>
-                        <div>
-                            <button mat-raised-button color="primary" 
-                            (click)="showOTPSection()" [disabled]="contact.invalid">
-                            Send OTP</button>
-                        </div>
-                    </div>
-                    
-                        
-                  
-                </div>
-                <div *ngIf="isOTPSection">
-                    <div>
-                        <button mat-button (click)="showCountryCodeSection()"><mat-icon>arrow_left</mat-icon>Cancel</button>
-                    </div>
-                    <br><br>
-                    <div class="cms-login-form">
-                        <b>Enter the OTP received on {{contact.value}}</b>
-                        <mat-form-field appearance="outline" class="cms-login-contact">
-                            <mat-label>Verification Code</mat-label>
-                            <input matInput [formControl]="otp" type="password" required>
-                            <mat-icon matSuffix>otp</mat-icon>
-                            <mat-error *ngIf="otp.invalid">{{getOTPErrorMessage()}}</mat-error>
-                        </mat-form-field>
-                        <div *ngIf="otpVerifyErrorMessage && !otp.invalid" class="cms-login-validation-errors">
-                            <mat-error> {{otpVerifyErrorMessage}}</mat-error>   
-                       </div>
-                       <br>
-                        <div>
-                            <button mat-raised-button color="primary" (click)="verifyOTP()"
-                            [disabled]="otp.invalid">Verify OTP</button>
-                        </div>
-                        <br>
-                        <div class="cms-resend-otp">
-                            Didn't receive the OTP? <a href="#" (click)="resendOTP()">Resend OTP</a>
-                        </div>
-                    </div>
-                       
-            
-                   
-                </div>
-                 -->
         
         </mat-card>  
     </div>

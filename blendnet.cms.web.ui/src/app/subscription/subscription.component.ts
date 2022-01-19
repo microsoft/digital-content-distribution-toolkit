@@ -9,6 +9,7 @@ import { MatSort } from '@angular/material/sort';
 import { EditSubscriptionComponent } from './edit-subscription.component';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { DatePipe } from '@angular/common';
+import { CPSubscription } from '../models/subscription.model';
 
 @Component({
   selector: 'app-subscription',
@@ -29,6 +30,7 @@ export class SubscriptionComponent {
   filterValue;
   errMessage;
   error= false;
+  subscriptions: CPSubscription[];
 
   constructor(
     private subscriptionService: SubscriptionService,
@@ -58,7 +60,8 @@ export class SubscriptionComponent {
   getSubscriptions() {
     this.subscriptionService.getSubscriptionsForCP().subscribe(
       res => {
-        this.dataSource = this.createDataSource(res.body);
+        this.subscriptions = res;
+        this.dataSource = this.createDataSource(this.subscriptions);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
 

@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { BroadcastDetailsDialog } from '../broadcast/broadcast.component';
+import { ContentProviderLtdInfo } from '../models/contentprovider.model';
 import { ContentProviderService } from '../services/content-provider.service';
 import { ContentService } from '../services/content.service';
 import { DeviceService } from '../services/device.service';
@@ -24,6 +25,7 @@ export class DeviceContentsComponent implements OnInit {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  cpInfoList: ContentProviderLtdInfo[];
   cpList;
   selectedCP;
   errMessage;
@@ -63,7 +65,8 @@ export class DeviceContentsComponent implements OnInit {
     if(! this.cpList ||  this.cpList.length < 1) {
       this.contentProviderService.browseContentProviders().subscribe(
         res => {
-          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(res));
+          this.cpInfoList = res;
+          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(this.cpInfoList));
           this.cpList =  JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
           this.selectedCP = this.cpList[0].contentProviderId;
           this.getContentForDeviceByCP(this.selectedCP);

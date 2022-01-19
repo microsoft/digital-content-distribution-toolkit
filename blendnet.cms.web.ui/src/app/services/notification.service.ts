@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { Notification } from '../models/notification.model';
 import { LogService } from './log.service';
 
 @Injectable({
@@ -18,10 +20,15 @@ export class NotificationService {
 
   }
 
-  getAllNotifications(): Observable<any>{
+  getAllNotifications(): Observable<Notification[]>{
     let url = this.notificationBaseUrl + '/notifications';
     this.logger.log(`Fetching all notifications`);
-    return this.http.get(url);
+    return this.http.get<any>(url)
+      .pipe(map(response => {
+       return response.data.map(notification => {
+          return new Notification(notification.title, notification.body, notification.type, notification.attachmentUrl, notification.tags, notification.createdDate, null);
+        });
+      }));
   }
 
 

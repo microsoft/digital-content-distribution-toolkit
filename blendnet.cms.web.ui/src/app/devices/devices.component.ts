@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
+import { Device } from '../models/device.model';
 import { DeviceService } from '../services/device.service';
 import { DeviceAssignComponent } from './device-assign.component';
 import { DeviceDialogComponent } from './device-dialog.component';
@@ -78,7 +79,7 @@ export class DevicesComponent {
   getDevices() {
     this.deviceService.getDevices().subscribe(
       res => {
-        var data:any = res.body;
+        var data:Device[] = res;
         if(data.length>0) {
           this.dataSource = this.createDataSource(data);
           this.dataSource.paginator = this.paginator;

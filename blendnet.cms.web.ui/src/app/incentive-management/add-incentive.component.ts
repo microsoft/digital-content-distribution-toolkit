@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddEventDialog } from './add-event-dialog';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { RetailerService } from '../services/retailer.service';
+import { ContentProviderLtdInfo } from '../models/contentprovider.model';
 
 @Component({
   selector: 'app-add-incentive',
@@ -44,13 +45,10 @@ export class AddIncentiveComponent implements OnInit {
   selectedEventType: any;
   selectedRuleType;
   partners = [];
-
-
   disablePlanTypePartner = false;
   isPublished = false;
   isDraft = false;
-
-
+  cpInfoList: ContentProviderLtdInfo[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -72,7 +70,8 @@ export class AddIncentiveComponent implements OnInit {
     if(!cpList || cpList.length < 1) {
       this.contentProviderService.browseContentProviders().subscribe(
         res => {
-          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(res));
+          this.cpInfoList = res;
+          sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(this.cpInfoList));
           this.initializeValues();
         },
         err => this.toastr.error("Unable to fetch content providers. Please contact admin")

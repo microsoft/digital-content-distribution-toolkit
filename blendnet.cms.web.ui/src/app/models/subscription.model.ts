@@ -2,11 +2,15 @@
 export class CPSubscription {
 
     constructor(
-        public title: string,
+        public id: string,
+        public type: string,
         public durationDays: number,
-        public price: number,
-        public startDate:Date,
-        public endDate: Date
-        
-    ) {}
+        public startDate: Date,
+        public endDate: Date,
+        public displayStartDate: Date,
+        public displayEndDate: Date,
+        public isReedemable: Boolean,
+        public redemptionValue: number
+    ){}
+
 }

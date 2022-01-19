@@ -4,6 +4,7 @@ import { RetailerDashboardService } from 'src/app/services/retailer/retailer-das
 import { OwlOptions } from 'ngx-owl-carousel-o';
 import { EventType, Contentproviders } from '../models/incentive.model';
 import { ContentProviderService } from 'src/app/services/content-provider.service';
+import { ContentProviderLtdInfo } from '../models/contentprovider.model';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class RetailerLandingPageComponent implements OnInit {
   partnerCode: string;
   retailerPartnerProvidedId: string;
   carouselInit = false;
-  contentProviders: any;
+  contentProviders: ContentProviderLtdInfo[];
   customOptions: OwlOptions = {
     loop: false,
     mouseDrag: true,
@@ -78,8 +79,8 @@ export class RetailerLandingPageComponent implements OnInit {
       }); 
     } else {
       this.contentProviderService.browseContentProviders().subscribe(res => {
-        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(res));
         this.contentProviders = res;
+        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(res));
         this.contentProviders.forEach(contentProvider => {
           this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
         }); 

@@ -5,7 +5,7 @@
             *ngFor="let cp of cps$ | async; index as i;">
             <div *ngIf="cp.id !== null">
                 <mat-card-header>
-                    <mat-card-title>{{cp.name}}</mat-card-title>
+                    <mat-card-title style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:150px; min-height:25px">{{cp.name}}</mat-card-title>
                 </mat-card-header>
                 
                 <mat-card-content  style="display:flex; flex-direction: column;">

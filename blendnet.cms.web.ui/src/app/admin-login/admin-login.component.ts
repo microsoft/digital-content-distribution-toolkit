@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { KaizalaService } from '../services/kaizala.service';
@@ -30,11 +30,10 @@ export class AdminLoginComponent implements OnInit {
   isCountryCodeSection: boolean = true;
   isContactOnlySection: boolean = true;
   isOTPSection: boolean = false;
-  contact;
-  otp;
   countryCodes;
   returnUrl: string;
   user;
+  loginForm: FormGroup;
 
 
 
@@ -55,8 +54,10 @@ export class AdminLoginComponent implements OnInit {
   ngOnInit(): void {
     this.countryCodes = environment.countryCodes;
     this.selectedCountryCodeValue = this.countryCodes[0].value;
-    this.contact = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
-    this.otp = new FormControl('', [Validators.required, Validators.pattern(/^\d{4}$/)]);
+    this.loginForm = new FormGroup({
+        contact: new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
+        otp: new FormControl('', [Validators.required, Validators.pattern(/^\d{4}$/)])
+    });
     this.otpSendErrorMessage = "";
     this.otpVerifyErrorMessage = "";
     // get return url from route parameters or default to '/'
@@ -66,13 +67,13 @@ export class AdminLoginComponent implements OnInit {
 
  
   generateOTP() {
-    this.kaizalaService.getOTP(this.selectedCountryCodeValue.concat(this.contact.value)).subscribe(
+    this.kaizalaService.getOTP(this.selectedCountryCodeValue.concat(this.loginForm.get('contact').value)).subscribe(
       res => {
         if(res.status === 200) {
           this.isContactOnlySection = false;
           this.isCountryCodeSection = false;
           this.isOTPSection = true;
-          this.toastr.success(`OTP sent to mobile number ${this.contact.value}`, "", {
+          this.toastr.success(`OTP sent to mobile number ${this.loginForm.get('contact').value}`, "", {
             timeOut: 5000,
           });
         }    
@@ -86,17 +87,17 @@ export class AdminLoginComponent implements OnInit {
   verifyOTP () {
     this.otpVerifyErrorMessage = "";
     this.otpSendErrorMessage = "";
-    this.kaizalaService.verifyOTP(this.otp.value, this.selectedCountryCodeValue, this.contact.value).subscribe(
+    this.kaizalaService.verifyOTP(this.loginForm.get('otp').value, this.selectedCountryCodeValue, this.loginForm.get('contact').value).subscribe(
       res => {
           this.user = res;
           var payload: any;
           payload = {
-            userName : this.contact.value,
+            userName : this.loginForm.get('contact').value,
             channelId : environment.channelName
           }
           this.userService.createUser(payload).subscribe(res => {
             console.log("User created successfully");
-            this.kaizalaService.getUserRoles(this.contact.value).subscribe(
+            this.kaizalaService.getUserRoles(this.loginForm.get('contact').value).subscribe(
               res => {
                 var response: any = res.body;
                 sessionStorage.setItem("roles", response.userRole);
@@ -111,19 +112,19 @@ export class AdminLoginComponent implements OnInit {
               },
               err => {
                 this.otpVerifyErrorMessage = err.code + " " + err.msg;
-                this.otp.value="";
+                this.loginForm.get('contact').setValue("");
               }
             )
           },
           err => {
-            console.log(err);
-            this.otp.value="";
+            console.error(err);
+            this.loginForm.get('otp').setValue("");
             this.toastr.error("User could not be resgitered. Please contact admin.")
             this.otpVerifyErrorMessage ="User could not be resgitered. Please contact admin";
           });
       },
       err => {
-        this.otp.value="";
+        this.loginForm.get('otp').setValue("");
         if(err.status === 401) {
           this.otpVerifyErrorMessage = "Please enter valid OTP code received on the phone";
         } else if(err.status === 409) {

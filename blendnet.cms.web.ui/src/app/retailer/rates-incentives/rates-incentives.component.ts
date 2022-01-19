@@ -6,6 +6,7 @@ import { RetailerDashboardService } from 'src/app/services/retailer/retailer-das
 import { EventType } from 'src/app/models/incentive.model';
 import { ContentProviderService } from 'src/app/services/content-provider.service';
 import { Location } from '@angular/common';
+import { ContentProviderLtdInfo } from 'src/app/models/contentprovider.model';
 
 @Component({
   selector: 'app-rates-incentives',
@@ -19,7 +20,7 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
   partnerCode;
   retailerPartnerProvidedId;
   eventType = EventType;
-  contentProviders;
+  contentProviders: ContentProviderLtdInfo[];
   referralsValid;
   milestonesValid;
   incentivesValid;
@@ -71,8 +72,8 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
       }); 
     } else {
       this.contentProviderService.browseContentProviders().subscribe(res => {
-        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(res));
         this.contentProviders = res;
+        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(this.contentProviders));
         this.contentProviders.forEach(contentProvider => {
           this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
         }); 
@@ -81,9 +82,6 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   getRatesAndIncentives() {
-
-    // this.contentProviderService.browseContentProviders().subscribe(
-    //   res => {
         this.retailerDashboardService.getRegularRatesIncentives(this.partnerCode, this.retailerPartnerProvidedId).subscribe(
           res => {
             if(res["planDetails"] && res["planDetails"].length) {
@@ -99,16 +97,9 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
             }
           },
           err => {
-    
+            console.log(err);
           }
         )
-        // this.contentProviders = res;
-        // this.contentProviders.forEach(contentProvider => {
-        //   this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
-        // }); 
-    //   },
-    //   err => console.log(err)
-    // )
   
   }
 

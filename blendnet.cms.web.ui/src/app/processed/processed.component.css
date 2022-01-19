@@ -1,7 +1,7 @@
 table {
     width: 100%;
   }
-  
+
   .mat-form-field {
     font-size: 14px;
     width: 100%;
@@ -58,4 +58,8 @@ td.mat-footer-cell:last-of-type {
 
   .note{
     border: 1px solid #2196f3;
+  }
+
+  mat-cell, .mat-cell {
+    padding: 12px 16px 12px 0;
   }

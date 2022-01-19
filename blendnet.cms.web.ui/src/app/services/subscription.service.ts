@@ -3,6 +3,7 @@ import { LogService } from './log.service';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { CPSubscription } from '../models/subscription.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,37 +16,37 @@ export class SubscriptionService {
     private http: HttpClient
   ) { }
 
-  getSubscriptionsForCP() {
+  getSubscriptionsForCP(): Observable<CPSubscription[]> {
     let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") + "/Subscription";
     this.logger.log(`Fetching subscriptions for content providers`);
-    return this.http.get(url, { observe: 'response'});
+    return this.http.get<CPSubscription[]>(url);
   }
 
-  createSubscription(subscription) : Observable<HttpResponse<any>>{
+  createSubscription(subscription) {
     let url = this.baseUrl +  "/" + sessionStorage.getItem("contentProviderId") + "/Subscription";
     this.logger.log(`Creating subscription`);
-    return this.http.post(url, subscription, { observe: 'response'});
+    return this.http.post(url, subscription);
   }
 
-  editSubscription(subscription) : Observable<HttpResponse<any>> {
+  editSubscription(subscription){
     let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") + 
     "/Subscription/" + subscription.id;
     this.logger.log(`Editing subscription`);
-    return this.http.put(url, subscription, { observe: 'response'});
+    return this.http.put(url, subscription);
   }
 
-  deleteSubscription(id): Observable<HttpResponse<any>>  {
+  deleteSubscription(id)  {
     let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") + 
     "/Subscription/" + id;
     this.logger.log(`Deleting subscription`);
-    return this.http.delete(url, { observe: 'response'});
+    return this.http.delete(url);
   }
 
 
-  updateEndDate(id, date): Observable<HttpResponse<any>>  {
+  updateEndDate(id, date)  {
     let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId") +   "/Subscription/" + id + '/updateEndDate';
     this.logger.log(`Updating end date for a subscription`);
-    return this.http.post(url, date, { observe: 'response'});
+    return this.http.post(url, date);
   }
 
 

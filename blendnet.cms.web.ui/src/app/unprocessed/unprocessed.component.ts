@@ -14,6 +14,8 @@ import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { DatePipe } from '@angular/common';
+import { ContentView } from '../models/content-view.model';
+import { unprocessedContentFilters } from '../constants/content-status-filters';
 
 
 @Component({
@@ -23,7 +25,7 @@ import { DatePipe } from '@angular/common';
 })
 export class UnprocessedComponent {
   displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'view', 'isDeletable', 'isProcessable'];
-  dataSource: MatTableDataSource<Content>;
+  dataSource: MatTableDataSource<ContentView>;
   fileUploadError: string ="";
   showDialog: boolean = false;
   deleteConfirmMessage: string = "Content once deleted can not be restored. Please press Continue to begin the deletion.";
@@ -43,6 +45,7 @@ export class UnprocessedComponent {
   error= false;
   fileName = '';
   pipe;
+  contentList: ContentView[] = [];
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
@@ -63,33 +66,14 @@ export class UnprocessedComponent {
     this.getUnprocessedContent();
   }
 
-  getUnprocessedContent() {
-    var unprocessedContentFilters = {
-      "contentUploadStatuses": [
-         ContentStatus.UPLOAD_SUBMITTED, 
-         ContentStatus.UPLOAD_INPROGRESS, 
-         ContentStatus.UPLOAD_FAILED,
-         ContentStatus.UPLOAD_COMPLETE
-      ],
-      "contentTransformStatuses": [
-        ContentStatus.TRANSFORM_NOT_INITIALIZED,
-        ContentStatus.TRANSFORM_SUBMITTED,
-        ContentStatus.TRANSFORM_INPROGRESS,
-        ContentStatus.TRANSFORM_AMS_JOB_INPROGRESS,
-        ContentStatus.TRANSFORM_DOWNLOAD_INPROGRESS,
-        ContentStatus.TRANSFORM_FAILED
-      ],
-      "contentBroadcastStatuses": [
-         ContentStatus.BROADCAST_NOT_INITIALIZED
-      ]
-    }
+  getUnprocessedContent() { 
     this.contentService.getContentByCpIdAndFilters(unprocessedContentFilters).subscribe(
       res => {
-        this.dataSource = this.createDataSource(res.body);
+        this.contentList = res;
+        this.dataSource = this.createDataSource(res);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.selectedContents = 0;
-
       },
       err => {
         this.error = true;
@@ -117,17 +101,17 @@ export class UnprocessedComponent {
     return (!row.isSelected && this.selectedContents >= this.allowedMaxSelection);
   }
 
-  createDataSource(rawData) {
-    var dataSource: Content[] =[];
+  createDataSource(rawData: ContentView[]) {
+    var dataSource: ContentView[] =[];
     if(rawData && rawData.length > 0) {
       this.errMessage = "";
       this.error = false;
       rawData.forEach( data => {
-        data.status = data.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED ? 
+        data.displayStatus = data.contentTransformStatus !== ContentStatus.TRANSFORM_NOT_INITIALIZED ? 
         data.contentTransformStatus : data.contentUploadStatus;
         data.isSelected = false;
-        data.createdDateString =  this.pipe.transform(data.createdDate, 'short');
-        data.modifiedDateString =  this.pipe.transform(data.modifiedDate, 'short');
+        data.displayCreatedDate =  this.pipe.transform(data.createdDate, 'short');
+        data.displayModifiedDate=  this.pipe.transform(data.modifiedDate, 'short');
         dataSource.push(data);
       });
     } else {
@@ -321,17 +305,21 @@ openDeleteConfirmModal(row): void {
     this.getUnprocessedContent();
   }
 
-viewContent(selectedContent) : void {
-  const dialogRef = this.dialog.open(ContentDetailsDialog, {
-    data: {content: selectedContent}
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    console.log('The dialog was closed');
-  });
-
-}
-
+viewContent(id) : void {
+  this.contentService.getContentById(id).subscribe(
+    res => {
+      const dialogRef = this.dialog.open(ContentDetailsDialog, {
+        data: {content: res}
+      });
+    
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+      });
+    },
+    err => {
+      this.toastr.error(err);
+    });
+ }
 }
 
 @Component({

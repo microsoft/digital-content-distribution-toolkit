@@ -2,6 +2,12 @@ import { HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LogService } from './log.service';
 import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
+import { Content } from '../models/content.model';
+import { CommandDetail } from '../models/command-detail.model';
+import { ContentView } from '../models/content-view.model';
+import { map } from 'rxjs/operators';
+import { title } from 'process';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +22,16 @@ export class ContentService {
   ) { }
 
 
-  getContentByCpIdAndFilters(unprocessedContentFilters) {
+  getContentByCpIdAndFilters(unprocessedContentFilters): Observable<ContentView[]> {
     let url = this.baseUrl + "/"+ sessionStorage.getItem("contentProviderId") + "/contentlist";
     this.logger.log(`Fetching content by contentprovider and filters`);
-    return this.http.post(url, unprocessedContentFilters, { observe: 'response'});
+    return this.http.post<Content[]>(url, unprocessedContentFilters)
+      .pipe(map(contents => {
+        return contents.map(content => {
+          return new ContentView(content.id, content.title, content.createdDate, content.modifiedDate, content.isActive, content.contentBroadcastStatus,
+            content.contentTransformStatus, content.contentUploadStatus, null, null, null, null , content.contentBroadcastedBy);
+        });
+      }));
   }
  
   uploadContent(formData){
@@ -32,13 +44,13 @@ export class ContentService {
   processContent(contendIds) {
     let url = this.baseUrl + "/transform";
     this.logger.log(`Processing`);
-    return this.http.post(url, contendIds, { observe: 'response'});
+    return this.http.post(url, contendIds);
   }
 
   broadcastContent(broadcastContentRequest) {
     let url = this.baseUrl + "/broadcast";
     this.logger.log(`Broadcasting`);
-    return this.http.post(url, broadcastContentRequest, { observe: 'response'});
+    return this.http.post(url, broadcastContentRequest);
   }
 
   getContentToken(id) {
@@ -53,16 +65,16 @@ export class ContentService {
     return this.http.delete(url);
   }
 
-  cancelBroadcast(id) {
+  cancelBroadcast(id): Observable<string> {
     let url = this.baseUrl + "/" + id  + "/cancelbroadcast";
     this.logger.log(`Cancelling the broadcast`);
-    return this.http.post(url, id);
+    return this.http.post<string>(url, id);
   }
 
-  getCommandDetails(contentId, commandId) {
+  getCommandDetails(contentId, commandId): Observable<CommandDetail>{
     let url = this.baseUrl + '/' +contentId  + '/command/' + commandId;
     this.logger.log(`Getting the details for the content `);
-    return this.http.get(url);
+    return this.http.get<CommandDetail>(url);
   }
 
   changeContentActiveStatus(contentId, status) {

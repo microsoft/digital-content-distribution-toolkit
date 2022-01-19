@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./devices.component.css']
 })
 export class AdditionalHistoryDialog implements OnInit {
-  history;
+  content;
  
 
   constructor(
@@ -17,7 +17,7 @@ export class AdditionalHistoryDialog implements OnInit {
   }
 
   ngOnInit(): void {
-   this.history =this.data.history;
+   this.content =this.data.content;
    
   }
 

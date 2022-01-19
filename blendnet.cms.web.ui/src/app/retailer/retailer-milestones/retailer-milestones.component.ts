@@ -5,6 +5,7 @@ import { UserService } from '../../services/user.service';
 import { EventType } from 'src/app/models/incentive.model';
 import { ContentProviderService } from 'src/app/services/content-provider.service';
 import { Location } from '@angular/common';
+import { ContentProviderLtdInfo } from 'src/app/models/contentprovider.model';
 
 @Component({
   selector: 'app-retailer-milestones',
@@ -17,7 +18,7 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
   partnerCode = sessionStorage.getItem('partnerCode');
   retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
   baseHref = this.retailerDashboardService.getBaseHref();
-  contentProviders;
+  contentProviders: ContentProviderLtdInfo[];
   constructor(
     private retailerDashboardService: RetailerDashboardService,
     public router: Router,
@@ -31,7 +32,6 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
     this.partnerCode = this.retailerDashboardService.getpartnerCode();
     this.retailerPartnerProvidedId = this.retailerDashboardService.getRetailerPartnerProvidedId();
     this.getMilestoneTotal();
-    // this.getRegularRatesIncentives();
   }
 
 
@@ -43,8 +43,8 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
       }); 
     } else {
       this.contentProviderService.browseContentProviders().subscribe(res => {
-        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(res));
         this.contentProviders = res;
+        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(this.contentProviders));
         this.contentProviders.forEach(contentProvider => {
           this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
         }); 

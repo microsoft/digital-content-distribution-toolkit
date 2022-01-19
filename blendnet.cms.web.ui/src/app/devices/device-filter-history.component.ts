@@ -42,7 +42,7 @@ export class DeviceFilterHistoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.deviceService.getDeviceHistory(this.deviceid).subscribe(res => {
-      this.dataSource = this.createDataSource(res.body);
+      this.dataSource = this.createDataSource(res);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     },
@@ -88,7 +88,7 @@ export class DeviceFilterHistoryComponent implements OnInit {
   openAdditionalDetailsHistory(row) {
     const dialogRef = this.dialog.open(AdditionalHistoryDialog, {
       data: {
-        history : row
+        content : row
       },
       width: '60%'
     });

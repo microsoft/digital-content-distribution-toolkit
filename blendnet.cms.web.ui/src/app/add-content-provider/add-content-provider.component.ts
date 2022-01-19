@@ -24,6 +24,8 @@ export class AddContentProviderComponent implements OnInit {
   cp: Contentprovider;
   @Output() onCPUpdateOrCreate = new EventEmitter<any>();
   isSuperAdmin: boolean = false;
+  currentContentProvider: Contentprovider;
+  newCPID: string;
 
 
 
@@ -119,9 +121,8 @@ export class AddContentProviderComponent implements OnInit {
     }
     if(newUpdatedCP.id) {
       this.contentProviderService.editContentProvider(newUpdatedCP).subscribe(res => {
-        if(res) {
-          this.showSuccess("Update Successful");
-        }
+        this.currentContentProvider = res; 
+        this.showSuccess("Update Successful");
         this.onCPUpdateOrCreate.emit("Content Provider Updated");
       },
       err => {
@@ -129,12 +130,11 @@ export class AddContentProviderComponent implements OnInit {
       });
     } else {
       this.contentProviderService.createContentProvider(newUpdatedCP).subscribe(res => {
-        if(res.status === 201) {
-          this.showSuccess("New content provider created Successful");
-        } else {
-          this.showError("Content Provider creation failed !")
-        }
+        this.newCPID = res;
+        this.showSuccess("New content provider created Successful with ID " + this.newCPID);
         this.onCPUpdateOrCreate.emit("Content Provider Created");
+      }, err => {
+        this.showError("Content Provider creation failed !")
       });
     }
   }

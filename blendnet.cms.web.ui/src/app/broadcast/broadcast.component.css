@@ -47,3 +47,7 @@ td.mat-footer-cell:last-of-type {
   .note{
     border: 1px solid #2196f3;
   }
+
+  mat-cell, .mat-cell {
+    padding: 12px 16px 12px 0;
+  }
