@@ -8,5 +8,6 @@ namespace blendnet.user.api.Models
     /// </summary>
     public class CreateRetailerAIEvent : BaseCreateRetailerAIEvent
     {
+        public Guid UserId { get; internal set; }
     }
 }

@@ -558,6 +558,7 @@ namespace blendnet.user.api.Controllers
                 RetailerPartnerId = retailer.PartnerId,
                 State = retailer.Address.State,
                 AdditionalAttributes = retailer.AdditionalAttibutes,
+                UserId = user.UserId,
             };
 
             _telemetryClient.TrackEvent(createRetailerAIEvent);
