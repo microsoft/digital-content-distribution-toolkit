@@ -1,8 +1,10 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
 using blendnet.common.dto;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -78,7 +80,8 @@ namespace blendnet.common.infrastructure.Storage
         public static async Task UploadUserDataToBlob(BlobServiceClient blobServiceClient,
                                                 string containerName,
                                                 string filePath,
-                                                string fileContent)
+                                                string fileContent,
+                                                ILogger logger)
         {
             
             //check if user container exists or not. If not create one and also create an access policy
@@ -86,14 +89,20 @@ namespace blendnet.common.infrastructure.Storage
 
             if (!containerExists)
             {
-                BlobContainerInfo containerInfo = await blobServiceClient.GetBlobContainerClient(containerName).CreateAsync(PublicAccessType.None);
+                try
+                {
+                    BlobContainerInfo containerInfo = await blobServiceClient.GetBlobContainerClient(containerName).CreateAsync(PublicAccessType.None);
 
-                //Create ReadOnly User Policy
-                await CreateContainerPolicy(blobServiceClient,
-                                                            containerName,
-                                                            ApplicationConstants.StorageContainerPolicyNames.UserDataReadOnly,
-                                                            ApplicationConstants.Policy.ReadOnlyPolicyPermissions);
-
+                    //Create ReadOnly User Policy
+                    await CreateContainerPolicy(blobServiceClient,
+                                                                containerName,
+                                                                ApplicationConstants.StorageContainerPolicyNames.UserDataReadOnly,
+                                                                ApplicationConstants.Policy.ReadOnlyPolicyPermissions);
+                }
+                catch (RequestFailedException ex) when (ex.Status == (int)System.Net.HttpStatusCode.Conflict)
+                {
+                    logger.LogWarning($"Conflict occurred while creating container. Container Name {containerName}. StackTrace : {ex}");
+                }
             }
 
             BlobContainerClient userDataContainer = blobServiceClient.GetBlobContainerClient(containerName);

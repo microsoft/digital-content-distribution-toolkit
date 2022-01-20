@@ -30,6 +30,13 @@ namespace blendnet.user.repository.Interfaces
         public Task<common.dto.User.User> GetUserByPhoneNumber(string phoneNumber);
 
         /// <summary>
+        /// Returns the list of users for export
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<common.dto.User.User>> GetUsersForExport();
+
+
+        /// <summary>
         /// Get Referral data based on retailer partner id and given date range
         /// </summary>
         /// <param name="retailerPartnerId"></param>
@@ -104,5 +111,6 @@ namespace blendnet.user.repository.Interfaces
         Task<int> UpdateDataExportCommandBatch(UserDataExportCommand userDataExportCommand,
                                                common.dto.User.User user,
                                                bool performETAGValidation = false);
+
     }
 }

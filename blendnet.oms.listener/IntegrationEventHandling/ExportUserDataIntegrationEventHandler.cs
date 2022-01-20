@@ -134,7 +134,7 @@ namespace blendnet.oms.listener.IntegrationEventHandling
             //serialize the data as json
             string dataJson = JsonSerializer.Serialize(userOrders, Utilties.GetJsonSerializerOptions(ignoreNull:true));
 
-            await StorageUtilities.UploadUserDataToBlob(_userDataBlobServiceClient, containerName, blobUploadPath, dataJson);
+            await StorageUtilities.UploadUserDataToBlob(_userDataBlobServiceClient, containerName, blobUploadPath, dataJson,_logger);
 
         }
 

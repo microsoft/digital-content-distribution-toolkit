@@ -203,7 +203,6 @@ namespace blendnet.common.dto
             public const string USERBYPHONEKEY = "-USRBYPH";
         }
 
-
         public struct DistributedCacheDurationsInHrs
         {
             public const int Long = 24;
@@ -214,6 +213,9 @@ namespace blendnet.common.dto
         public const string IngestTemplateFileName = "ingest_template.xml";
 
         public const string BroadcastDateFormat = "yyyy-MM-ddTHH:mm:ss";
+
+        //marking static just becuase cannot have constant array. Avoid static otherwise
+        public static readonly string[] AllowedCORS_Headers = new string[] { "PUT", "POST", "DELETE", "GET" };
 
         public struct AdaptiveSetTypes
         {

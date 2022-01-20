@@ -96,6 +96,7 @@ void ConfigureServices(WebApplicationBuilder builder)
                               if (corsUrls != null && corsUrls.Count > 0)
                               {
                                   builder.WithOrigins(corsUrls.ToArray())
+                                         .WithMethods(ApplicationConstants.AllowedCORS_Headers)
                                          .AllowAnyHeader();
 
                               }

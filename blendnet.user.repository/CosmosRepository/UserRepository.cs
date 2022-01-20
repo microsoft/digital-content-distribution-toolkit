@@ -54,7 +54,7 @@ namespace blendnet.user.repository.CosmosRepository
                 var response = await this._container.CreateItemAsync<User>(user, new PartitionKey(user.PhoneNumber));
                 return (int)response.StatusCode;
             }
-            catch (CosmosException ex) 
+            catch (CosmosException ex)
             {
                 return (int)ex.StatusCode;
             }
@@ -86,7 +86,7 @@ namespace blendnet.user.repository.CosmosRepository
         public async Task<User> GetUserByPhoneNumber(string phoneNumber)
         {
             var queryString = "select * from c where c.phoneNumber = @phoneNumber and c.type = @type";
-            
+
             var queryDef = new QueryDefinition(queryString)
                                                 .WithParameter("@phoneNumber", phoneNumber)
                                                 .WithParameter("@type", UserContainerType.User);
@@ -117,6 +117,27 @@ namespace blendnet.user.repository.CosmosRepository
             var referralData = await _container.ExtractDataFromQueryIterator<ReferralSummary>(queryDef);
 
             return referralData;
+        }
+
+        /// <summary>
+        /// Returns the list of users who have ever raised a request for export of data.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<common.dto.User.User>> GetUsersForExport()
+        {
+            var queryString = @"    SELECT  *
+                                    FROM c
+                                    where c.type = @type
+                                    AND c.dataExportRequestStatus <> null
+                                    ORDER BY c.modifiedDate DESC";
+
+            var queryDef = new QueryDefinition(queryString)
+                               .WithParameter("@type", UserContainerType.User);
+
+            var users = await this._container.ExtractDataFromQueryIterator<common.dto.User.User>(queryDef);
+
+            return users;
+
         }
 
         /// <summary>
