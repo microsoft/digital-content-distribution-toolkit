@@ -106,7 +106,7 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="User"></param>
         /// <returns>User Object</returns>
-        [HttpGet("user/exportlist", Name = nameof(GetUsersForExport))]
+        [HttpGet("dataExport/list", Name = nameof(GetUsersForExport))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<List<User>>> GetUsersForExport()
