@@ -11,7 +11,7 @@
       <div class="cms-validation"
       *ngIf="f.cpname.invalid && (f.cpname.dirty || f.cpname.touched)">
         <mat-error>
-          You must provide a name (max length 10)
+          You must provide a valid name (max length {{titleMaxLength}})
         </mat-error>
       </div>
       <mat-form-field>

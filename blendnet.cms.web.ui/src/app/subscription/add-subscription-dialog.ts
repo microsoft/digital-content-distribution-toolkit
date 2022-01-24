@@ -2,6 +2,8 @@ import { Component, EventEmitter, Inject, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
+import { lengthConstants } from "../constants/length-constants";
+import { CustomValidator } from "../custom-validator/custom-validator";
 import { SubscriptionService } from "../services/subscription.service";
 
 @Component({
@@ -42,8 +44,10 @@ import { SubscriptionService } from "../services/subscription.service";
       this.minStart = null;
       this.minEnd = null;
         this.subForm = new FormGroup({
-              name :  new FormControl(this.data.sub.title,[Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
-              price : new FormControl(this.data.sub.price, [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
+              name :  new FormControl(this.data.sub.title,[Validators.maxLength(lengthConstants.titleMaxLength),
+                Validators.minLength(lengthConstants.titleMinLength),
+               CustomValidator.alphaNumericSplChar]),
+              price : new FormControl(this.data.sub.price, [Validators.required, CustomValidator.numeric, Validators.min(1)]),
               durationDays : new FormControl(this.data.sub.durationDays, [Validators.required, Validators.max(365), Validators.min(1)]),
               startDate : new FormControl( this.data.sub.startDate, [Validators.required]),
               endDate : new FormControl(this.data.sub.endDate, [Validators.required]),
@@ -57,8 +61,11 @@ import { SubscriptionService } from "../services/subscription.service";
     
     createEmptyForm() {
       this.subForm = new FormGroup({
-        name :  new FormControl('', [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
-        price : new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
+        name :  new FormControl('', [Validators.required, 
+          Validators.maxLength(lengthConstants.titleMaxLength),
+          Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.alphaNumericSplChar]),
+        price : new FormControl('', [Validators.required, CustomValidator.numeric, Validators.min(1)]),
         durationDays : new FormControl('', [Validators.required, Validators.max(365), Validators.min(1)]),
         startDate : new FormControl(null, [Validators.required]),
         endDate : new FormControl(null, [Validators.required]),
@@ -123,6 +130,10 @@ import { SubscriptionService } from "../services/subscription.service";
       } else {
         this.createSubscription();
       }
+    }
+
+    get f() { 
+      return this.subForm.controls; 
     }
     
     public errorHandling = (control: string, error: string) => {

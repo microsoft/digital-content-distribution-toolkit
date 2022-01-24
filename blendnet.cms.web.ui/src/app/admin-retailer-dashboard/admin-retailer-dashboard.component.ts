@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { lengthConstants } from '../constants/length-constants';
+import { CustomValidator } from '../custom-validator/custom-validator';
 import { RetailerService } from '../services/retailer.service';
 import { RetailerDashboardService } from '../services/retailer/retailer-dashboard.service';
 
@@ -23,7 +25,9 @@ export class AdminRetailerDashboardComponent implements OnInit {
     private retailerDashboardService: RetailerDashboardService) { }
 
   ngOnInit(): void {
-    this.partnerId = new FormControl('', [Validators.required]);
+    this.partnerId = new FormControl('', [Validators.maxLength(lengthConstants.titleMaxLength), 
+      Validators.minLength(lengthConstants.titleMinLength), 
+      CustomValidator.alphaNumericSplChar]);
     this.getRetailerPartners();
     if(sessionStorage.getItem('partnerCode') && sessionStorage.getItem('partnerProvidedId')) {
       this.partnerId.value = sessionStorage.getItem('partnerProvidedId');

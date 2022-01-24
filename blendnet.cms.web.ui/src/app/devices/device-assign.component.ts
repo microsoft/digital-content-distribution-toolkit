@@ -2,6 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { lengthConstants } from '../constants/length-constants';
+import { CustomValidator } from '../custom-validator/custom-validator';
 import { RetailerService } from '../services/retailer.service';
 
 @Component({
@@ -12,8 +14,12 @@ import { RetailerService } from '../services/retailer.service';
 export class DeviceAssignComponent implements OnInit {
 
   retailerForm = new FormGroup({
-    retailerID: new FormControl('',  [Validators.required, Validators.pattern(/^[-a-zA-Z0-9_]+$/)]),
-    partnerCode: new FormControl('',  [Validators.required, Validators.pattern(/^[-a-zA-Z0-9_]+$/)]),
+    retailerID: new FormControl('',  [Validators.maxLength(lengthConstants.titleMaxLength), 
+      Validators.minLength(lengthConstants.titleMinLength), 
+      CustomValidator.alphaNumericSplChar]),
+    partnerCode: new FormControl('',  [Validators.maxLength(lengthConstants.titleMaxLength), 
+      Validators.minLength(lengthConstants.titleMinLength), 
+      CustomValidator.alphaNumericSplChar]),
     // startDate: new FormControl()
   });
   // minStart: Date;
@@ -46,8 +52,12 @@ export class DeviceAssignComponent implements OnInit {
         this.toastr.error("Something went wrong...!!");
       }
       this.retailerForm = new FormGroup({
-        retailerID: new FormControl(retailerId, [Validators.required, Validators.pattern(/^[-a-zA-Z0-9_]+$/)]),
-        partnerCode: new FormControl(partnerCode, [Validators.required, Validators.pattern(/^[-a-zA-Z0-9_]+$/)])
+        retailerID: new FormControl(retailerId, [Validators.maxLength(lengthConstants.titleMaxLength), 
+          Validators.minLength(lengthConstants.titleMinLength), 
+          CustomValidator.alphaNumericSplChar]),
+        partnerCode: new FormControl(partnerCode, [Validators.maxLength(lengthConstants.titleMaxLength), 
+          Validators.minLength(lengthConstants.titleMinLength), 
+          CustomValidator.alphaNumericSplChar])
       });
     })
   }

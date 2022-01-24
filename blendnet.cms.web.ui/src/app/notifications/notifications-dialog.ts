@@ -6,6 +6,8 @@ import { DialogData } from "../broadcast/broadcast.component";
 import {MatChipInputEvent} from '@angular/material/chips';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { NotificationService } from "../services/notification.service";
+import { lengthConstants } from "../constants/length-constants";
+import { CustomValidator } from "../custom-validator/custom-validator";
 
 @Component({
     selector: 'app-notifications-dialog',
@@ -38,8 +40,12 @@ import { NotificationService } from "../services/notification.service";
   
     ngOnInit() {
       this.notifFormGroup = new FormGroup({
-        title :  new FormControl('', [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
-        body : new FormControl('', [Validators.required, Validators.maxLength(70), Validators.pattern(/^[^\s].*[^\s]$/)]),
+        title :  new FormControl('', [Validators.maxLength(lengthConstants.titleMaxLength),
+          Validators.minLength(lengthConstants.titleMinLength), 
+          CustomValidator.alphaNumericSplChar]),
+        body : new FormControl('', [Validators.maxLength(lengthConstants.longDescriptionMaxLength),
+          Validators.minLength(lengthConstants.longDescriptionMinLength),
+          CustomValidator.alphaNumericSplChar]),
         attachmentUrl :  new FormControl(''),
         // type :  new FormControl(0),
         // topic: new FormControl('', [Validators.required]),

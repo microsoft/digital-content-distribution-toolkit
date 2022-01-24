@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Inject, Output } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { lengthConstants } from "../constants/length-constants";
+import { CustomValidator } from "../custom-validator/custom-validator";
 import { FormulaType, PlanType, RuleType } from "../models/incentive.model";
 import { IncentiveService } from "../services/incentive.service";
 
@@ -148,22 +150,33 @@ import { IncentiveService } from "../services/incentive.service";
     
     createEmptyForm() {
       this.eventForm = new FormGroup({
-        eventType :  new FormControl('',  [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
-        eventTitle :  new FormControl('',  [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
-        eventSubType :  new FormControl('',  [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
+        eventType :  new FormControl('',  [ Validators.maxLength(lengthConstants.titleMaxLength), 
+          Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.alphaNumericSplChar]),
+        eventTitle :  new FormControl('',  [ Validators.maxLength(lengthConstants.titleMaxLength), 
+          Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.alphaNumericSplChar]),
+        eventSubType :  new FormControl('',  [ Validators.maxLength(lengthConstants.titleMaxLength), 
+          Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.alphaNumericSplChar]),
         ruleType : new FormControl('SUM', [Validators.required]),
         formula : new FormControl('', [Validators.required]),
-        firstOperand : new FormControl('',[Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
-        secondOperand : new FormControl('', [Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
+        firstOperand : new FormControl('',[Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.numeric]),
+        secondOperand : new FormControl('', [Validators.required, Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.numeric]),
         ranges: this.formBuilder.array([this.createRange()])
         });
     }
   
     createRange() : FormGroup {
       return this.formBuilder.group({
-        start: new FormControl('', [Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]),
-        end: new FormControl('', [Validators.pattern(/^-?(0|[1-9]\d*)?$/),  Validators.min(1)]),
-        output: new FormControl('', [Validators.pattern(/^-?(0|[1-9]\d*)?$/),  Validators.min(1)])
+        start: new FormControl('',[Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.numeric]),
+        end: new FormControl('', [Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.numeric]),
+        output: new FormControl('', [Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.numeric])
       })
     }
 
@@ -259,9 +272,11 @@ import { IncentiveService } from "../services/incentive.service";
     onFormulaChange() {
       var formula = this.eventForm.get('formula');
       if(formula.value === FormulaType.DIVIDE_AND_MULTIPLY) {
-        this.eventForm.get('firstOperand').setValidators([Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]);
+        this.eventForm.get('firstOperand').setValidators([Validators.required, Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.numeric]);
         this.eventForm.get('firstOperand').updateValueAndValidity();
-        this.eventForm.get('secondOperand').setValidators([Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]);
+        this.eventForm.get('secondOperand').setValidators([Validators.required, Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.numeric]);
         this.eventForm.get('secondOperand').updateValueAndValidity();
         this.eventForm.updateValueAndValidity();
       } else if(formula.value === FormulaType.RANGE_AND_MULTIPLY) {
@@ -276,7 +291,8 @@ import { IncentiveService } from "../services/incentive.service";
       } else if(!this.isMileStonePlanType()){
         //this.eventForm.addControl('incentive', new FormControl('', [Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/),  Validators.min(1)]));
         //this.eventForm.removeControl('milestoneTarget');
-        this.eventForm.get('firstOperand').setValidators([Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.min(1)]);
+        this.eventForm.get('firstOperand').setValidators([Validators.required, Validators.minLength(lengthConstants.titleMinLength),
+          CustomValidator.numeric]);
         this.eventForm.get('secondOperand').clearValidators();
         this.eventForm.get('secondOperand').updateValueAndValidity();
         // this.eventForm.updateValueAndValidity();

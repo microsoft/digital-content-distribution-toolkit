@@ -6,7 +6,8 @@ import { KaizalaService } from '../services/kaizala.service';
 import { UserService } from '../services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
-
+import { lengthConstants } from '../constants/length-constants';
+import { CustomValidator } from '../custom-validator/custom-validator';
 
 @Component({
   selector: 'app-admin-login',
@@ -55,8 +56,12 @@ export class AdminLoginComponent implements OnInit {
     this.countryCodes = environment.countryCodes;
     this.selectedCountryCodeValue = this.countryCodes[0].value;
     this.loginForm = new FormGroup({
-        contact: new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
-        otp: new FormControl('', [Validators.required, Validators.pattern(/^\d{4}$/)])
+        contact: new FormControl('', [Validators.maxLength(lengthConstants.phoneMaxLength), 
+          Validators.minLength(lengthConstants.phoneMinLength), 
+          CustomValidator.numeric]),
+        otp: new FormControl('', [Validators.maxLength(lengthConstants.otpMaxLength), 
+          Validators.minLength(lengthConstants.otpMinLength), 
+          CustomValidator.numeric])
     });
     this.otpSendErrorMessage = "";
     this.otpVerifyErrorMessage = "";

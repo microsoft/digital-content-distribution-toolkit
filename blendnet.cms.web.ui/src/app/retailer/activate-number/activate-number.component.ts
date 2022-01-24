@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { lengthConstants } from 'src/app/constants/length-constants';
+import { CustomValidator } from 'src/app/custom-validator/custom-validator';
 import { ActivateNumberService } from 'src/app/services/retailer/activate-number.service';
 
 @Component({
@@ -21,7 +23,9 @@ export class ActivateNumberComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.phoneNumber = new FormControl('', [Validators.required, Validators.pattern(/^[0][1-9]\d{9}$|^[1-9]\d{9}$/)]);
+    this.phoneNumber = new FormControl('', [Validators.minLength(lengthConstants.phoneMinLength),
+      Validators.minLength(lengthConstants.phoneMinLength),
+      CustomValidator.numeric]);
     this.error = "";
     this.activateNumberRequestSuccess = false;
     this.limitReached = false;

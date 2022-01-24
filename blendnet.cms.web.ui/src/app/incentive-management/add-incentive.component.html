@@ -28,6 +28,7 @@
                     <mat-form-field>
                         <input matInput placeholder="Plan Name" 
                         formControlName="name" required  [disableControl]="isPublished">
+                        <mat-error *ngIf="f.name.invalid">Please enter the valid plan name</mat-error>
                     </mat-form-field>
                 </td>
                 <td>

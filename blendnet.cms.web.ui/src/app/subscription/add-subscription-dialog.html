@@ -8,8 +8,8 @@
             <mat-form-field>
               <input matInput placeholder="Name" 
               formControlName="name" required >
-              <mat-error *ngIf="errorHandling('name', 'required')" > 
-                Please enter the name of the subscription
+              <mat-error *ngIf="f.name.invalid" > 
+                Please enter the valid name of the subscription
               </mat-error>
             </mat-form-field>
           </td>

@@ -12,6 +12,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddEventDialog } from './add-event-dialog';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
 import { RetailerService } from '../services/retailer.service';
+import { lengthConstants } from '../constants/length-constants';
+import { CustomValidator } from '../custom-validator/custom-validator';
 import { ContentProviderLtdInfo } from '../models/contentprovider.model';
 
 @Component({
@@ -209,7 +211,10 @@ export class AddIncentiveComponent implements OnInit {
 
   createEmptyFormDraft() {
     this.incentiveFormGroup = this.formBuilder.group({
-      name :  new FormControl('', [Validators.required, Validators.pattern(/^[^\s].*[^\s]$/)]),
+      name :  new FormControl('',[ Validators.maxLength(lengthConstants.titleMaxLength), 
+        Validators.minLength(lengthConstants.titleMinLength),
+        CustomValidator.alphaNumericSplChar]),
+        
       type : new FormControl('REGULAR',[Validators.required]),
       partner: new FormControl(''),
       startDate: new FormControl('',[Validators.required]),
@@ -535,6 +540,10 @@ openSelectCPModalButtons(): Array<any> {
 
     isEventFormNotValid(){
       return this.dataSource.data.length < 1;
+    }
+
+    get f() { 
+      return this.incentiveFormGroup.controls; 
     }
 
     updateDraftPlan() {

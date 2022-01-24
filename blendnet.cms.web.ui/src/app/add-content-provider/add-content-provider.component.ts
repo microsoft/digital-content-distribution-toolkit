@@ -7,7 +7,8 @@ import { ContentProviderService } from '../services/content-provider.service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../services/user.service';
 import { environment } from 'src/environments/environment';
-
+import { lengthConstants } from '../constants/length-constants';
+import { CustomValidator } from '../custom-validator/custom-validator';
 
 @Component({
   selector: 'app-add-content-provider',
@@ -24,17 +25,23 @@ export class AddContentProviderComponent implements OnInit {
   cp: Contentprovider;
   @Output() onCPUpdateOrCreate = new EventEmitter<any>();
   isSuperAdmin: boolean = false;
+  titleMaxLength: number = lengthConstants.titleMaxLength;
   currentContentProvider: Contentprovider;
   newCPID: string;
 
 
 
   cpForm = new FormGroup({
-    cpname :  new FormControl('', [Validators.required, Validators.maxLength(20), Validators.pattern(/^[^\s].*[^\s]$/)]),
+    cpname :  new FormControl('', [Validators.required, 
+      Validators.minLength(lengthConstants.titleMinLength),
+      Validators.maxLength(lengthConstants.titleMaxLength), 
+      CustomValidator.alphaNumericSplChar]),
     logoUrl : new FormControl(''),
     admins: new FormControl(''),
     contentAdministrators : new FormControl(this.contentAdministrators),
-    adminUpn: new FormControl('',  [Validators.maxLength(10), Validators.minLength(10), Validators.pattern(/^-?(0|[1-9]\d*)?$/)])
+    adminUpn: new FormControl('',  [Validators.maxLength(lengthConstants.phoneMaxLength), 
+      Validators.minLength(lengthConstants.phoneMinLength), 
+      CustomValidator.numeric])
   });
 
 
