@@ -70,6 +70,7 @@ export const environment = {
     "Incentives": "",
     "Devices": "",
     "Notifications": "",
+    "Export": "",
     "RetailerDashboard": "",
     "Dashboard": "webRetailerDashboardEnabled",
     "Order": "webOrderCompletionEnabled"

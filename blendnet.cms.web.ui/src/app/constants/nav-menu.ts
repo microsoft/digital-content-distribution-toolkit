@@ -83,6 +83,15 @@ export let menu: NavMenu[] = [
         featureName: environment.featureName.Notifications
     },
     {
+        displayName: 'Export',
+        closedName: 'Export',
+        iconName: 'send_to_mobile',
+        routerLink: 'admin/export',
+        roles: ['SuperAdmin'],
+        featureName: environment.featureName.Export
+    },
+    
+    {
         displayName: 'Retailer Dashboard',
         closedName: 'Retailer',
         iconName: 'leaderboard',

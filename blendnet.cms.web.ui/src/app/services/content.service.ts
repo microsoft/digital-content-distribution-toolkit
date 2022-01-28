@@ -28,8 +28,11 @@ export class ContentService {
     return this.http.post<Content[]>(url, unprocessedContentFilters)
       .pipe(map(contents => {
         return contents.map(content => {
-          return new ContentView(content.id, content.title, content.createdDate, content.modifiedDate, content.isActive, content.contentBroadcastStatus,
-            content.contentTransformStatus, content.contentUploadStatus, null, null, null, null , content.contentBroadcastedBy);
+          return new ContentView(content.id, content.title, content.createdDate, content.modifiedDate, content.isActive, 
+            content.contentBroadcastStatus, content.contentBroadcastStatusUpdatedBy,
+            content.contentTransformStatus, content.contentTransformStatusUpdatedBy,
+            content.contentUploadStatus, content.contentUploadStatusUpdatedBy,
+            null, null, null, null , content.contentBroadcastedBy);
         });
       }));
   }

@@ -59,4 +59,8 @@ export class ContentProviderService {
     this.logger.log(`Fetching SAS key`);
     return this.http.get<SasToken>(url);
   }
+
+  getBaseHref() {
+    return environment.baseHref;
+  }
 }

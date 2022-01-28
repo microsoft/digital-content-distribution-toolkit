@@ -171,11 +171,7 @@ getBroadcastDetails(selectedContent) {
     || (row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_FAILED);
   }
 
-  showBroadcastDetails(row) {
-    return row.contentBroadcastStatus !== ContentStatus.BROADCAST_ORDER_COMPLETE && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_COMPLETE 
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_FAILED && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_INPROGRESS
-    && row.contentBroadcastStatus !== ContentStatus.BROADCAST_CANCEL_SUBMITTED;
-  }
+
 
   applyFilter() {
     this.dataSource.filter = this.filterValue.trim().toLowerCase();
@@ -252,13 +248,13 @@ export class BroadcastDetailsDialog {
     additionalDataJson;
   ngOnInit(): void {
     this.contentService.getCommandDetails(this.data.content.id, 
-      this.data.content.contentBroadcastedBy.commandId).subscribe(
+      this.data.content.contentBroadcastStatusUpdatedBy).subscribe(
       res => {
         this.additionalData = res;
         this.additionalDataJson = JSON.stringify(this.additionalData);
-        this.startDate = this.data.content.contentBroadcastedBy.broadcastRequest.startDate;
-        this.endDate = this.data.content.contentBroadcastedBy.broadcastRequest.endDate;
-        this.filters = this.data.content.contentBroadcastedBy.broadcastRequest.filters.join();
+        this.startDate = this.additionalData.broadcastRequest.startDate;
+        this.endDate = this.additionalData.broadcastRequest.endDate;
+        this.filters = this.additionalData.broadcastRequest.filters.join();
       },
       err => {
         this.additionalDataJson = err;

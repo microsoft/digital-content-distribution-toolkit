@@ -49,6 +49,7 @@ import { DeviceContentsComponent } from './devices/device-contents.component';
 import { AdminRetailerDashboardComponent } from './admin-retailer-dashboard/admin-retailer-dashboard.component';
 import {RetailerModule} from './retailer/retailer.module';
 import { EditSubscriptionComponent } from './subscription/edit-subscription.component';
+import { ExportUserDataComponent } from './export-user-data/export-user-data.component';
 
 
 @NgModule({
@@ -92,6 +93,7 @@ import { EditSubscriptionComponent } from './subscription/edit-subscription.comp
     DeviceContentsComponent,
     AdminRetailerDashboardComponent,
     EditSubscriptionComponent,
+    ExportUserDataComponent,
   ],
   imports: [
     HttpClientModule,

@@ -1,6 +1,5 @@
 import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import {MatAccordion} from '@angular/material/expansion';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog} from '@angular/material/dialog';
 import { NotificationsDialog } from './notifications-dialog';
@@ -21,10 +20,8 @@ import { AdditionalHistoryDialog } from '../devices/device-additional-history.co
 })
 export class NotificationsComponent implements OnInit {
   expiresIn:string= "";
-  selectedNotifications: number=0;
   displayedColumns: string[] = [ 'title', 'body', 'type', 'attachmentUrl', 'tags','createdDate', 'metadata'];
 
-  @ViewChild(MatAccordion) accordion: MatAccordion;
   cpSubscriptions;
   today;
   sendDate: Date;
@@ -34,7 +31,7 @@ export class NotificationsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   
-  dataSource: MatTableDataSource<any>;
+  dataSource: MatTableDataSource<Notification>;
 
   constructor( 
     private notificationService: NotificationService,

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { ExportDataReq } from '../models/export-user-data-req.model';
 import { LogService } from './log.service';
 
 @Injectable({
@@ -59,6 +60,18 @@ export class UserService {
     let url = this.createUserBaseUrl + '/linkRetailer';
     this.logger.log('Linking retailer id with userid');
     return this.http.post(url, payload);
+  }
+
+  getExportUserDataRequests(): Observable<ExportDataReq[]>{
+    let url = this.userBaseUrl + '/dataExport/list';
+    this.logger.log('Fetch all open export data list');
+    return this.http.get<ExportDataReq[]>(url);
+  }
+
+  completeDataExportRequest(user){
+    let url = this.userBaseUrl + '/dataExport/complete';
+    this.logger.log('Complete the export data request');
+    return this.http.post(url, user);
   }
 
   // setRetailerRouted(flag) {

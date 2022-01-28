@@ -24,6 +24,7 @@ export class ContentProviderComponent implements OnInit {
   deleteMessage: string = "Please press OK to continue.";
   selectedCP: Contentprovider;
   errorMsg: string;
+  baseHref: string;
 
   constructor(public dialog: MatDialog,
     public contentProviderService: ContentProviderService,
@@ -31,6 +32,7 @@ export class ContentProviderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.baseHref = this.contentProviderService.getBaseHref();
     this.getContentProviders();
   }
 
@@ -60,7 +62,7 @@ export class ContentProviderComponent implements OnInit {
        if (cp.logoUrl !== "") {
         cpList.push(cp);
        } else {
-         cp.logoUrl = "https://cdn-icons-png.flaticon.com/512/1055/1055662.png"
+         cp.logoUrl = "../../" + this.baseHref + "/assets/images/cp-default-logo/cp-default-logo.png"
          cpList.push(cp);
        }
       

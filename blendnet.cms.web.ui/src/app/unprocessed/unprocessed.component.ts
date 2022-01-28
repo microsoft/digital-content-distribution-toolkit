@@ -266,10 +266,10 @@ onConfirmProcess(contents): void {
 }
 
 successEmit(res) {
-  if(res.body.length == 0) {
+  if(res.length == 0) {
     this.toastr.success("Content/s submitted successfully for transformation");
   } else {
-    this.toastr.warning(res.body[0]);
+    this.toastr.warning(res[0]);
   }
   this.getUnprocessedContent();
 }

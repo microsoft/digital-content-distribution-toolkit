@@ -17,6 +17,7 @@ import { DeviceFilterHistoryComponent } from '../devices/device-filter-history.c
 import { DeviceRetailerHistoryComponent } from '../devices/device-retailer-history.component';
 import { DeviceContentsComponent } from '../devices/device-contents.component';
 import { AdminRetailerDashboardComponent } from '../admin-retailer-dashboard/admin-retailer-dashboard.component';
+import { ExportUserDataComponent } from '../export-user-data/export-user-data.component';
 
 const routes: Routes = [
   {
@@ -160,7 +161,17 @@ const routes: Routes = [
     data: {
       expectedRole: [environment.roles.SuperAdmin]
     }
-  }
+  },
+  {
+    path: 'export', 
+    component: ExportUserDataComponent,
+    canActivate: [
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin]
+    } 
+  },
 
 ];
 
