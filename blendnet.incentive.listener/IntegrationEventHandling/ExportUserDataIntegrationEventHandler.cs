@@ -130,7 +130,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             string blobUploadPath = $"{integrationEvent.CommandId}/{ApplicationConstants.BlendNetServices.IncentiveService}.json";
 
             //serialize the data as json
-            string dataJson = JsonSerializer.Serialize(userIncentiveEvents, Utilties.GetJsonSerializerOptions(ignoreNull: true));
+            string dataJson = JsonSerializer.Serialize(userIncentiveEvents, Utilties.GetJsonSerializerOptions(ignoreNull: true, prettyPrint: true));
 
             await StorageUtilities.UploadUserDataToBlob(_userDataBlobServiceClient, containerName, blobUploadPath, dataJson,_logger);
            

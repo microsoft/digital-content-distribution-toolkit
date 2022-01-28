@@ -14,6 +14,11 @@ namespace blendnet.common.dto.User
         public string PhoneNumber { get; set; }
 
         /// <summary>
+        /// Display name of the person
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Partner ID of the retailer who referred the customer
         /// </summary>
         public string ReferredBy { get; set; }

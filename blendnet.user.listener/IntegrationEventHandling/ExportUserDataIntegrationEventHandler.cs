@@ -96,7 +96,11 @@ namespace blendnet.user.listener.IntegrationEventHandling
                         return;
                     }
 
-                    UserToExport userToExport = new UserToExport() { PhoneNumber = user.PhoneNumber };
+                    UserToExport userToExport = new UserToExport() 
+                    {
+                        PhoneNumber = user.PhoneNumber,
+                        Name = user.Name,
+                    };
 
                     if (user.ReferralInfo != null)
                     {
@@ -136,7 +140,7 @@ namespace blendnet.user.listener.IntegrationEventHandling
             string blobUploadPath = $"{integrationEvent.CommandId}/{ApplicationConstants.BlendNetServices.UserService}.json";
 
             //serialize the data as json
-            string dataJson = JsonSerializer.Serialize(userToExport, Utilties.GetJsonSerializerOptions(ignoreNull: true));
+            string dataJson = JsonSerializer.Serialize(userToExport, Utilties.GetJsonSerializerOptions(ignoreNull: true, prettyPrint: true));
 
             await StorageUtilities.UploadUserDataToBlob(_userDataBlobServiceClient, containerName, blobUploadPath, dataJson, _logger);
 

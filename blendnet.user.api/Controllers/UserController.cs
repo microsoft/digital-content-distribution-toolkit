@@ -1,3 +1,4 @@
+using AutoMapper;
 using blendnet.api.proxy.Notification;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
@@ -43,6 +44,8 @@ namespace blendnet.user.api.Controllers
 
         private readonly IStringLocalizer<SharedResource> _stringLocalizer;
 
+        private readonly IMapper _mapper;
+
         private readonly TelemetryClient _telemetryClient;
 
         public UserController(IUserRepository userRepository,
@@ -53,6 +56,7 @@ namespace blendnet.user.api.Controllers
                               IEventBus eventBus,
                               IOptionsMonitor<UserAppSettings> optionsMonitor,
                               IStringLocalizer<SharedResource> stringLocalizer,
+                              IMapper mapper,
                               TelemetryClient telemetryClient)
         {
             _logger = logger;
@@ -63,6 +67,7 @@ namespace blendnet.user.api.Controllers
             _eventBus = eventBus;
             _appSettings = optionsMonitor.CurrentValue;
             _stringLocalizer = stringLocalizer;
+            _mapper = mapper;
             _telemetryClient = telemetryClient;
         }
 
@@ -124,11 +129,20 @@ namespace blendnet.user.api.Controllers
         /// <returns>User Object</returns>
         [HttpGet("me", Name = nameof(GetUser))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<User>> GetUser()
+        public async Task<ActionResult<UserResponse>> GetUser()
         {
-            UserByPhoneRequest userByPhoneRequest = new UserByPhoneRequest() { PhoneNumber = this.User.Identity.Name };
+            var callerPhoneNumber = this.User.Identity.Name;
 
-            return await GetUserByPhoneNumber(userByPhoneRequest);
+            var user = await _userRepository.GetUserByPhoneNumber(callerPhoneNumber);
+
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            var mappedUser = _mapper.Map<UserResponse>(user);
+
+            return Ok(mappedUser);
         }
 
         /// <summary>
@@ -164,7 +178,7 @@ namespace blendnet.user.api.Controllers
         /// <returns>/returns>
         [HttpPost("assignretailer/{referralCode}", Name = nameof(AssignRetailer))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<User>> AssignRetailer(string referralCode)
+        public async Task<ActionResult> AssignRetailer(string referralCode)
         {
             List<string> errorInfo = new List<string>();
 

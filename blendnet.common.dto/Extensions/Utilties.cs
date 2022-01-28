@@ -14,7 +14,7 @@ namespace blendnet.common.dto.Extensions
         /// GetJsonSerializerOptions
         /// </summary>
         /// <returns></returns>
-        public static JsonSerializerOptions GetJsonSerializerOptions(bool ignoreNull = false)
+        public static JsonSerializerOptions GetJsonSerializerOptions(bool ignoreNull = false, bool prettyPrint = false)
         {
             JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
@@ -25,6 +25,11 @@ namespace blendnet.common.dto.Extensions
             
             _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
+            if (prettyPrint)
+            {
+                _jsonSerializerOptions.WriteIndented = true;
+            }
+            
             return _jsonSerializerOptions;
         }
     }

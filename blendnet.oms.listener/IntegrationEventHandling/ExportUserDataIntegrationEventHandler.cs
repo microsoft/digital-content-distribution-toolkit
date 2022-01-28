@@ -132,7 +132,7 @@ namespace blendnet.oms.listener.IntegrationEventHandling
             string blobUploadPath = $"{integrationEvent.CommandId}/{ApplicationConstants.BlendNetServices.OMSService}.json";
 
             //serialize the data as json
-            string dataJson = JsonSerializer.Serialize(userOrders, Utilties.GetJsonSerializerOptions(ignoreNull:true));
+            string dataJson = JsonSerializer.Serialize(userOrders, Utilties.GetJsonSerializerOptions(ignoreNull:true, prettyPrint: true));
 
             await StorageUtilities.UploadUserDataToBlob(_userDataBlobServiceClient, containerName, blobUploadPath, dataJson,_logger);
 
