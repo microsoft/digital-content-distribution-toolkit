@@ -1,5 +1,7 @@
+using AutoMapper;
 using blendnet.common.dto;
 using blendnet.common.dto.Retailer;
+using blendnet.retailer.api.Models;
 using blendnet.retailer.repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,23 +22,29 @@ namespace blendnet.retailer.api.Controllers
     {
         private readonly ILogger _logger;
 
-        private IRetailerRepository _retailerRepository;
+        private readonly IRetailerRepository _retailerRepository;
 
-        IStringLocalizer<SharedResource> _stringLocalizer;
+        private readonly IStringLocalizer<SharedResource> _stringLocalizer;
+
+        private readonly IMapper _mapper;
 
         private const double DISTANCE_METERS_MIN = 500; // 500m
         private const double DISTANCE_METERS_MAX = 100 * 1000; // 100km
 
-        public BrowseRetailerController(ILogger<BrowseRetailerController> logger, IRetailerRepository retailerRepository, IStringLocalizer<SharedResource> stringLocalizer)
+        public BrowseRetailerController(    ILogger<BrowseRetailerController> logger, 
+                                            IRetailerRepository retailerRepository, 
+                                            IStringLocalizer<SharedResource> stringLocalizer, 
+                                            IMapper mapper)
         {
             this._logger = logger;
             this._retailerRepository = retailerRepository;
             _stringLocalizer = stringLocalizer;
+            _mapper = mapper;
         }
 
         [HttpGet("nearby")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<List<RetailerWithDistanceDto>>> GetRetailersForLocation( double lat,
+        public async Task<ActionResult<List<RetailerWithDistanceResponse>>> GetRetailersForLocation( double lat,
                                                                                                 double lng,
                                                                                                 double distanceMeters)
         {
@@ -70,7 +78,9 @@ namespace blendnet.retailer.api.Controllers
                 nearbyRetailer.Retailer.DeviceAssignments = nearbyRetailer.Retailer.DeviceAssignments.Where(assignment => assignment.IsActive).ToList();
             }
 
-            return nearbyActiveRetailers;
+            var nearbyActiveRetailersMapped = _mapper.Map<List<RetailerWithDistanceResponse>>(nearbyActiveRetailers);
+
+            return nearbyActiveRetailersMapped;
         }
     }
 }

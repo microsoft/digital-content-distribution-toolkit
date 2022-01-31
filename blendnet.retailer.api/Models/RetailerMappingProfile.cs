@@ -10,6 +10,8 @@ namespace blendnet.retailer.api.Models
     {
         public RetailerMappingProfile()
         {
+            CreateMap<RetailerWithDistanceDto, RetailerWithDistanceResponse>();
+            CreateMap<RetailerDto, RetailerResponse>();
         }
     }
 }
