@@ -480,6 +480,27 @@ namespace blendnet.user.api.Controllers
         }
 
 
+        /// <summary>
+        /// Get command details
+        /// </summary>
+        /// <param name="User"></param>
+        /// <returns>User Object</returns>
+        [HttpPost("dataExport/command", Name = nameof(GetCommand))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<UserDataExportCommand>> GetCommand(UserExportCommandRequest request)
+        {
+            UserDataExportCommand userDataExportCommand = await _userRepository.GetDataExportCommand(request.PhoneNumber, request.CommandId);
+
+            if (userDataExportCommand is null)
+            {
+                return NotFound();
+            }else
+            {
+                return Ok(userDataExportCommand);
+            }
+        }
+
         #region private methods
 
         /// <summary>
