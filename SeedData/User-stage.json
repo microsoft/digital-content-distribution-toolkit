@@ -31,5 +31,18 @@
         "type": "User",
         "createdByUserId": "89000eb5-f18b-40e6-a5b8-756ab42ba870",
         "createdDate": "2021-07-26T05:59:48.157342Z"
+    },
+    {
+        "id": "bab66d83-7fdb-490e-acf9-720ac533be67",
+        "identityId": "638d10b4-e4f7-44bd-81e2-8dd4d283f71e",
+        "phoneNumber": "1111111150",
+        "name": "ANALYTICS REPORTER",
+        "channelId": "System",
+        "referralInfo": null,
+        "type": "User",
+        "createdByUserId": "bab66d83-7fdb-490e-acf9-720ac533be67",
+        "modifiedByByUserId": null,
+        "createdDate": "2022-01-25T16:25:48.157342Z",
+        "modifiedDate": null
     }
 ]

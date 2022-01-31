@@ -1,7 +1,7 @@
 [
     {
         "id": "ab49bdad-498a-4b74-9695-bc08479b558c",
-        "kaizalaIdentityId": "0583d21a-1245-4158-8b62-629b24a08797",
+        "identityId": "0583d21a-1245-4158-8b62-629b24a08797",
         "phoneNumber": "1111111110",
         "name": "SUPER ADMIN",
         "channelId": "System",
@@ -14,7 +14,7 @@
     },
     {
         "id": "99d41ad0-9281-4899-a2a4-24fa2b446074",
-        "kaizalaIdentityId": "404002c4-3b2b-4255-b838-ed38ce2696f3",
+        "identityId": "404002c4-3b2b-4255-b838-ed38ce2696f3",
         "phoneNumber": "1111111120",
         "name": "RetailerProvider Test Account",
         "channelId": "System",
@@ -23,6 +23,32 @@
         "createdByUserId": "99d41ad0-9281-4899-a2a4-24fa2b446074",
         "modifiedByByUserId": null,
         "createdDate": "2021-07-26T07:29:30.163958Z",
+        "modifiedDate": null
+    },
+    {
+        "id": "3c8104c0-eb91-4048-9654-99d8aae49927",
+        "identityId": "a19f4345-876c-4ef2-a154-0c32a38b5ed2",
+        "phoneNumber": "1111111140",
+        "name": "NOVO Service Account",
+        "channelId": "System",
+        "referralInfo": null,
+        "type": "User",
+        "createdByUserId": "3c8104c0-eb91-4048-9654-99d8aae49927",
+        "modifiedByByUserId": null,
+        "createdDate": "2021-07-27T11:03:35.3072663Z",
+        "modifiedDate": null
+    },
+    {
+        "id": "23ae2b99-1c01-457f-bd92-bc42fe20b0de",
+        "identityId": "01f61b00-6fc2-4b3c-be21-6b26a2a0dc11",
+        "phoneNumber": "1111111150",
+        "name": "ANALYTICS REPORTER",
+        "channelId": "System",
+        "referralInfo": null,
+        "type": "User",
+        "createdByUserId": "23ae2b99-1c01-457f-bd92-bc42fe20b0de",
+        "modifiedByByUserId": null,
+        "createdDate": "2022-01-25T16:25:48.157342Z",
         "modifiedDate": null
     }
 ]

@@ -32,5 +32,13 @@ namespace blendnet.devtokengen.Controllers
             string accessToken = await Util.FetchToken(serviceId, "https://api-preprod.kaiza.la", "cloudapi-svc-stg-account", "kv-blendnet-stage");
             return accessToken;
         }
+
+        [HttpGet("analyticsReporter")]
+        public async Task<string> AnalyticsReporterToken()
+        {
+            string serviceId = "638d10b4-e4f7-44bd-81e2-8dd4d283f71e"; // Analytics Reporter
+            string accessToken = await Util.FetchToken(serviceId, "https://api-preprod.kaiza.la", "cloudapi-svc-stg-account", "kv-blendnet-stage");
+            return accessToken;
+        }
     }
 }

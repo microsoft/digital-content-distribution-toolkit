@@ -49,5 +49,13 @@ namespace blendnet.devtokengen.Controllers
             string accessToken = await Util.FetchToken(serviceId, "https://api-alpha.kaiza.la", "hubdevice", "shwg");
             return accessToken;
         }
+
+        [HttpGet("analyticsReporter")]
+        public async Task<string> AnalyticsReporter()
+        {
+            string serviceId = "01f61b00-6fc2-4b3c-be21-6b26a2a0dc11"; // Analytics Reporter
+            string accessToken = await Util.FetchToken(serviceId, "https://api-alpha.kaiza.la", "cloudapi-svc-account", "kv-blendnet-dev");
+            return accessToken;
+        }
     }
 }

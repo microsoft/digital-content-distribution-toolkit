@@ -28,19 +28,19 @@
 
 | Container | file path | Contents |
 | - | - | - |
-| User | [User-dev.json](User-dev.json) | SuperAdmin, TSTP |
-| RetailerProvider | [RetailerProvider-dev.json](RetailerProvider-dev.json) | TSTP |
+| User | [User-dev.json](User-dev.json) | SuperAdmin <br> TSTP <br> Novopay <br> Analytics Reporter |
+| RetailerProvider | [RetailerProvider-dev.json](RetailerProvider-dev.json) | TSTP <br> Novopay |
 
 ### Stage
 
 | Container | file path | Contents |
 | - | - | - |
-| User | [User-stage.json](User-stage.json) | SuperAdmin, TSTP, Novopay |
-| RetailerProvider | [RetailerProvider-stage.json](RetailerProvider-stage.json) | TSTP, Novopay |
+| User | [User-stage.json](User-stage.json) | SuperAdmin <br> TSTP <br> Novopay <br> Analytics Reporter |
+| RetailerProvider | [RetailerProvider-stage.json](RetailerProvider-stage.json) | TSTP <br> Novopay |
 
 ### Prod
 
 | Container | file path | Contents |
 | - | - | - |
-| User | | SuperAdmin |
-| RetailerProvider | |  |
+| User | | |
+| RetailerProvider | | |
