@@ -129,15 +129,16 @@ namespace blendnet.user.repository.CosmosRepository
                                     FROM c
                                     where c.type = @type
                                     AND c.dataExportRequestStatus <> null
+                                    AND c.dataExportRequestStatus <> @status
                                     ORDER BY c.modifiedDate DESC";
 
             var queryDef = new QueryDefinition(queryString)
-                               .WithParameter("@type", UserContainerType.User);
+                               .WithParameter("@type", UserContainerType.User)
+                               .WithParameter("@status", DataExportRequestStatus.NotInitialized);
 
             var users = await this._container.ExtractDataFromQueryIterator<common.dto.User.User>(queryDef);
 
             return users;
-
         }
 
         /// <summary>
