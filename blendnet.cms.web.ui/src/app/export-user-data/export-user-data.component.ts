@@ -85,14 +85,25 @@ export class ExportUserDataComponent implements OnInit {
 
 
   getRequestDetails(e) {
-    const dialogRef = this.dialog.open(AdditionalHistoryDialog, {
-      data: {content: e},
-      width: '60%'
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+    var request = {
+      "phoneNumber": e.phoneNumber,
+      "commandId": e.dataExportStatusUpdatedBy
+    }
+    
+    this.userService.getExportRequestDetails(request).subscribe(
+      res => {
+        const dialogRef = this.dialog.open(AdditionalHistoryDialog, {
+          data: {content: res},
+          width: '60%'
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      },
+      err => this.toastr.error(err)
+    );
+   
   
   }
 
@@ -123,7 +134,10 @@ export class ExportUserDataComponent implements OnInit {
   }
     this.userService.completeDataExportRequest(user).subscribe(
       res => 
-      this.toastr.success("Export data request for user " + e.phoneNumber + "send for completion"),
+      {
+        this.toastr.success("Export data request for user " + e.phoneNumber + "send for completion");
+        this.getAllExportUserDataRequests();
+      },
       err => this.toastr.error(err));
   }
 

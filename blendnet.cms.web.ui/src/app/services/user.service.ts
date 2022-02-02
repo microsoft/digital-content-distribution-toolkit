@@ -74,6 +74,12 @@ export class UserService {
     return this.http.post(url, user);
   }
 
+  getExportRequestDetails(request){
+    let url = this.userBaseUrl + '/dataExport/command';
+    this.logger.log('Getting the export user data request details');
+    return this.http.post(url, request);
+  }
+
   // setRetailerRouted(flag) {
   //   console.log('setting routed to' + flag)
   //   this.isRetailerRouted = flag;
