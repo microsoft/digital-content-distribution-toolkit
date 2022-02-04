@@ -32,7 +32,7 @@ export class ContentService {
             content.contentBroadcastStatus, content.contentBroadcastStatusUpdatedBy,
             content.contentTransformStatus, content.contentTransformStatusUpdatedBy,
             content.contentUploadStatus, content.contentUploadStatusUpdatedBy,
-            null, null, null, null , content.contentBroadcastedBy);
+            null, null, null, null , content.contentBroadcastedBy, content.dashUrl);
         });
       }));
   }

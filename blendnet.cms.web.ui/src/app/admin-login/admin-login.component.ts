@@ -89,6 +89,9 @@ export class AdminLoginComponent implements OnInit {
     );
   }
 
+  phoneNoInvalid() {
+    return this.loginForm.get('contact').invalid;
+  }
   verifyOTP () {
     this.otpVerifyErrorMessage = "";
     this.otpSendErrorMessage = "";

@@ -17,6 +17,7 @@ export class ContentView {
         public displayCreatedDate: string,
         public displayModifiedDate: string,
         public isSelected: boolean,
-        public contentBroadcastedBy : ContentBroadcastDetails
+        public contentBroadcastedBy : ContentBroadcastDetails,
+        public dashUrl: string
     ) {} 
 }

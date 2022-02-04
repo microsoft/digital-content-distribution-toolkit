@@ -32,7 +32,9 @@
                     </div>
                 </form>
                 <div>
-                    <a class="otp-link" (click)="generateOTP()">CLICK TO GET ONE TIME PASSWORD (OTP)</a>
+                    <button mat-button color="primary" (click)="generateOTP()" [disabled]="phoneNoInvalid()" class="otp-click">
+                        CLICK TO GET ONE TIME PASSWORD (OTP)
+                    </button>
                 </div>
                <br>
                 <div *ngIf="otpVerifyErrorMessage" class="cms-login-validation-errors">

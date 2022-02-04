@@ -23,7 +23,6 @@
     height: calc(100vh - 3px);
     border: 1px solid rgba(0, 0, 0, 0.5);
 }
-.otp-link {
-    cursor: pointer;
-    color: rgb(78, 122, 245);
+.otp-click {
+    padding: 0px !important;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Contentprovider, ContentProviderLtdInfo } from '../models/contentprovider.model';
 import { LogService } from './log.service';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { SasToken } from '../models/sas-token.model';

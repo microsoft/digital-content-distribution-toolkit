@@ -16,6 +16,7 @@ export class AdminRetailerDashboardComponent implements OnInit {
   partnerId;
   selectedRetailerPartner;
   error;
+  errMsg;
   partners = [];
   showDashboard: Boolean = false;
 
@@ -53,6 +54,12 @@ export class AdminRetailerDashboardComponent implements OnInit {
         console.error(err);
         this.showDashboard = false;
         this.error = true;
+        if(err === "Not Found") {
+          this.errMsg="No retailer found! Please provide valid details.";
+        } else {
+          this.errMsg="Something went wrong! Please try again.";
+        }
+        
       }
     )
   }
