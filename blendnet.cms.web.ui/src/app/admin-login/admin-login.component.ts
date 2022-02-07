@@ -127,8 +127,8 @@ export class AdminLoginComponent implements OnInit {
           err => {
             console.error(err);
             this.loginForm.get('otp').setValue("");
-            this.toastr.error("User could not be resgitered. Please contact admin.")
-            this.otpVerifyErrorMessage ="User could not be resgitered. Please contact admin";
+            this.toastr.error("User could not be registered. Please contact admin.")
+            this.otpVerifyErrorMessage ="User could not be registered. Please contact admin";
           });
       },
       err => {

@@ -44,11 +44,16 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         .pipe(
           retry(1),
           catchError((error: HttpErrorResponse) => {
-            // if (this.isValidRequestForInterceptor(request.url) && [401, 403].indexOf(error.status) !== -1) {
-            //   // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-            //   this.kaizalaService.logout();
-            //   location.reload(true);
-            // }
+            if (this.isValidRequestForInterceptor(request.url) && [401, 403].indexOf(error.status) !== -1) {
+              if(error.status === 401) {
+                window.alert("You are unauthorized. Please login again");
+              } else if(error.status === 403) {
+                window.alert("You dont have permission to access the page. Please login again");
+              }
+              
+              this.kaizalaService.logout();
+              location.reload();
+            }
             if(error.url.includes(environment.kaizalaSignUpSignIn) || 
             error.url.includes(environment.kaizalaVerifyOTP) || 
             error.url.includes(environment.kaizalaGetUserRoles)) {
