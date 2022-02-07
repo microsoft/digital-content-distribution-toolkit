@@ -11,6 +11,7 @@ namespace blendnet.incentive.api.Model
             CreateMap<IncentivePlanDto, IncentivePlan>();
             CreateMap<PlanDetail, PlanDetailDto>();
             CreateMap<PlanDetailDto, PlanDetail>();
+            CreateMap<IncentiveEvent, IncentiveEventDto>();
         }
     }
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using blendnet.common.dto.Incentive;
+using blendnet.common.dto.Common;
+using blendnet.incentive.api.Model;
 
 namespace blendnet.incentive.api.Common
 {
@@ -91,9 +93,8 @@ namespace blendnet.incentive.api.Common
         {
             EventAggregrateRequest eventAggregrateRequest = new EventAggregrateRequest()
             {
-                AggregrateType = RuleType.SUM,
                 AudienceType = AudienceType.RETAILER,
-                EventCreatedFor = retailerPartnerId,
+                EventCreatedFor = new string[] { retailerPartnerId },
                 StartDate = startDate,
                 EndDate = endDate
             };
@@ -103,7 +104,7 @@ namespace blendnet.incentive.api.Common
             EventAggregateData eventAggregateData = new EventAggregateData()
             {
                 EventAggregateResponses = response,
-                TotalValue = response.Select(x => x.AggregratedValue).Sum()
+                TotalValue = response.Select(x => x.AggregratedCalculatedValue).Sum()
             };
 
             return eventAggregateData;
@@ -123,9 +124,8 @@ namespace blendnet.incentive.api.Common
         {
             EventAggregrateRequest eventAggregrateRequest = new EventAggregrateRequest()
             {
-                AggregrateType = RuleType.SUM,
                 AudienceType = AudienceType.CONSUMER,
-                EventCreatedFor = phoneNumber,
+                EventCreatedFor = new string[] { phoneNumber },
                 StartDate = startDate,
                 EndDate = endDate
             };
@@ -135,7 +135,7 @@ namespace blendnet.incentive.api.Common
             EventAggregateData eventAggregateData = new EventAggregateData()
             {
                 EventAggregateResponses = response,
-                TotalValue = response.Select(x => x.AggregratedValue).Sum()
+                TotalValue = response.Select(x => x.AggregratedCalculatedValue).Sum()
             };
 
             return eventAggregateData;
@@ -150,9 +150,8 @@ namespace blendnet.incentive.api.Common
         {
             EventAggregrateRequest eventAggregrateRequest = new EventAggregrateRequest()
             {
-                AggregrateType = RuleType.SUM,
                 AudienceType = AudienceType.CONSUMER,
-                EventCreatedFor = phoneNumber
+                EventCreatedFor = new string[] { phoneNumber }
             };
 
             List<EventAggregrateResponse> response = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
@@ -160,11 +159,79 @@ namespace blendnet.incentive.api.Common
             EventAggregateData eventAggregateData = new EventAggregateData()
             {
                 EventAggregateResponses = response,
-                TotalValue = response.Select(x => x.AggregratedValue).Sum()
+                TotalValue = response.Select(x => x.AggregratedCalculatedValue).Sum()
             };
 
             return eventAggregateData;
         }
+
+        /// <summary>
+        /// Calculates Incentive Plan for unique retailer or consumers
+        /// </summary>
+        /// <param name="incentivePlan"></param>
+        /// <param name="continuationToken"></param>
+        /// <param name="batchSize"></param>
+        /// <returns></returns>
+
+        public async Task<CalculatedIncentivePlan> CalculateIncentivePlan(IncentivePlan incentivePlan,
+                                                                          DateTime reportingDateTime,
+                                                                          string[] eventCreatedFor)
+        {
+            CalculatedIncentivePlan calculatedIncentivePlan = new CalculatedIncentivePlan();
+
+            calculatedIncentivePlan.IncentivePlan = incentivePlan;
+
+            //Get the unique Rules with assosiated events
+            List<EventType> uniqueEvents = incentivePlan.PlanDetails.Select(pd => pd.EventType).Distinct().ToList();
+
+            EventAggregrateRequest eventAggregrateRequest = new EventAggregrateRequest()
+            {
+                EventTypes = uniqueEvents,
+                AudienceType = incentivePlan.Audience.AudienceType,
+                SubTypeName = incentivePlan.Audience.SubTypeName,
+                StartDate = incentivePlan.StartDate,
+                EndDate = reportingDateTime,
+                EventCreatedFor = eventCreatedFor
+            };
+
+            //get the data for the given list of retailers.
+            List<EventAggregrateResponse> eventAggregrates = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
+
+            //ideally this should never happen and count should be greater than 0
+            if (eventAggregrates != null && eventAggregrates.Count > 0)
+            {
+                calculatedIncentivePlan.CalculatedPlanDetails = new List<CalculatedPlanDetails>();
+
+                CalculatedPlanDetails calculatedPlanDetails;
+
+                foreach (string uniqueAudience in eventCreatedFor)
+                {
+                    //create the clone for plan detail collection
+                    List<PlanDetail> planDetails = incentivePlan.PlanDetails.Select(item => (PlanDetail)item.Clone()).ToList();
+
+                    //this method set the result for each event on the plan detail
+                    CalculatePlanDetails(incentivePlan.PlanType, planDetails, eventAggregrates, uniqueAudience);
+
+                    //remove all the plan details where no result was calculated
+                    planDetails.RemoveAll(pd => pd.Result == null);
+
+                    //in case none of the events have result calculated, dont return back.
+                    if (planDetails.Count > 0)
+                    {
+                        calculatedPlanDetails = new CalculatedPlanDetails()
+                        {
+                            CalculatedFor = uniqueAudience,
+                            PlanDetails = planDetails
+                        };
+
+                        calculatedIncentivePlan.CalculatedPlanDetails.Add(calculatedPlanDetails);
+                    }
+                }
+            }
+
+            return calculatedIncentivePlan;
+        }
+
 
         /// <summary>
         /// Returns incentive events for consumer
@@ -210,7 +277,9 @@ namespace blendnet.incentive.api.Common
         private async Task<List<IncentiveEvent>> GetIncentiveEvents(string eventCreatedFor, AudienceType audienceType, EventType eventType, DateTime startDate, DateTime endDate)
         {
             List<EventType> eventTypes = new List<EventType>();
+
             eventTypes.Add(eventType);
+            
             EventCriteriaRequest eventCriteriaRequest = new EventCriteriaRequest()
             {
                 EventCreatedFor = eventCreatedFor,
@@ -221,6 +290,7 @@ namespace blendnet.incentive.api.Common
             };
 
             List<IncentiveEvent> incentiveEvents = await _eventRepository.GetEvents(eventCriteriaRequest);
+            
             return incentiveEvents;
         }
 
@@ -238,15 +308,26 @@ namespace blendnet.incentive.api.Common
                 incentivePlan.PlanDetails != null &&
                 incentivePlan.PlanDetails.Count > 0)
             {
-                await CalculatePlanDetails(incentivePlan.PlanType,
-                                            incentivePlan.Audience.AudienceType,
-                                            incentivePlan.PlanDetails,
-                                            incentivePlan.StartDate,
-                                            incentivePlan.EndDate,
-                                            eventCreatedFor);
+                List<EventType> uniqueEvents = incentivePlan.PlanDetails.Select(pd => pd.EventType).Distinct().ToList();
+
+                //create event aggregrate request
+                EventAggregrateRequest eventAggregrateRequest = new EventAggregrateRequest()
+                {
+                    EventTypes = uniqueEvents,
+                    AudienceType = incentivePlan.Audience.AudienceType,
+                    EventCreatedFor = new string[] { eventCreatedFor },
+                    StartDate = incentivePlan.StartDate,
+                    EndDate = incentivePlan.EndDate
+                };
+
+                List<EventAggregrateResponse> eventAggregrates = await _eventRepository.GetEventAggregrates(eventAggregrateRequest);
+
+                CalculatePlanDetails( incentivePlan.PlanType,
+                                      incentivePlan.PlanDetails,
+                                      eventAggregrates,
+                                      eventCreatedFor);
             }
         }
-
 
         /// <summary>
         /// Calculates Incentive Plan
@@ -254,23 +335,12 @@ namespace blendnet.incentive.api.Common
         /// <param name="planDetails"></param>
         /// <param name="eventCreatedFor"></param>
         /// <returns></returns>
-        private async Task CalculatePlanDetails(PlanType planType,
-                                                AudienceType audienceType,
-                                                List<PlanDetail> planDetails,
-                                                DateTime startDate,
-                                                DateTime endDate,
-                                                string eventCreatedFor)
+        private void CalculatePlanDetails(  PlanType planType,
+                                            List<PlanDetail> planDetails,
+                                            List<EventAggregrateResponse> eventAggregrates,
+                                            string eventCreatedFor)
         {
-            //Get the unique Rules with assosiated events
-            Dictionary<RuleType, List<EventType>> uniqueRuleWithEvents = GetUniqueRuleWithEvents(planDetails);
-
-            //Get the COUNT / SUM from actual event data EACH UNIQUE EVENT TYPE and EVENT SUBTYPE
-            List<EventAggregrateResponse> eventAggregrates = await GetEventAggregrates(audienceType,
-                                                                                        startDate,
-                                                                                        endDate,
-                                                                                        eventCreatedFor,
-                                                                                        uniqueRuleWithEvents);
-
+            
             //check if there is sum data / events recorded in database for any of the events mentioned in incentive plan
             if (eventAggregrates != null && eventAggregrates.Count > 0)
             {
@@ -278,94 +348,75 @@ namespace blendnet.incentive.api.Common
                 {
                     EventAggregrateResponse eventAggregrate = eventAggregrates.Where(ea => (ea.EventType == planDetail.EventType
                                                                                             && ea.EventSubType == planDetail.EventSubType
-                                                                                            && ea.RuleType == planDetail.RuleType)).FirstOrDefault();
+                                                                                            && ea.EventCreatedFor.Equals(eventCreatedFor))).FirstOrDefault();
                     if (eventAggregrate != default(EventAggregrateResponse))
                     {
+                        //get the calculated value
+                        double calculatedValue = GetCalculatedValue(planType, planDetail.RuleType, eventAggregrate);
+
                         //Formula is applied at the time of insertion hence formula is not required to be applied here.
                         if (planType == PlanType.REGULAR)
                         {
-                            planDetail.Result = new Result() { Value = eventAggregrate.AggregratedValue };
+                            planDetail.Result = new Result() { Value = calculatedValue };
 
-                            //Formula needes to be applied for Milestone types of plan
-                        }
+                            planDetail.Result.RawData = new RawData()
+                            {
+                                AggregratedCalculatedValue = eventAggregrate.AggregratedCalculatedValue,
+                                AggregratedOriginalValue = eventAggregrate.AggregratedOriginalValue,
+                                AggregratedCount = eventAggregrate.AggregratedCount
+                            };
+
+                        }//Formula needes to be applied for Milestone types of plan
                         else if (planType == PlanType.MILESTONE)
                         {
-                            planDetail.Result = ApplyFormula(planDetail.Formula, eventAggregrate.AggregratedValue);
+                            planDetail.Result = ApplyFormula(planDetail.Formula, calculatedValue);
+
+                            planDetail.Result.RawData = new RawData()
+                            {
+                                AggregratedCalculatedValue = eventAggregrate.AggregratedCalculatedValue,
+                                AggregratedOriginalValue = eventAggregrate.AggregratedOriginalValue,
+                                AggregratedCount = eventAggregrate.AggregratedCount
+                            };
                         }
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// Returns the unique combination of Rule Type with the associated events
-        /// </summary>
-        /// <param name="planDetails"></param>
-        /// <returns></returns>
-        private Dictionary<RuleType, List<EventType>> GetUniqueRuleWithEvents(List<PlanDetail> planDetails)
-        {
-            Dictionary<RuleType, List<EventType>> ruleEventCombinations = new Dictionary<RuleType, List<EventType>>();
-
-            foreach (PlanDetail planDetail in planDetails)
-            {
-                if (ruleEventCombinations.ContainsKey(planDetail.RuleType))
-                {
-                    //if the same event type has been added with different subtype, add only once to the value collection
-                    if (!ruleEventCombinations[planDetail.RuleType].Exists(etype => (etype == planDetail.EventType)))
-                    {
-                        ruleEventCombinations[planDetail.RuleType].Add(planDetail.EventType);
-                    }
-                }
-                else
-                {
-                    List<EventType> eventTypes = new List<EventType>();
-
-                    eventTypes.Add(planDetail.EventType);
-
-                    ruleEventCombinations.Add(planDetail.RuleType, eventTypes);
-                }
-            }
-
-            return ruleEventCombinations;
-        }
-
 
         /// <summary>
-        /// Get Event Aggregrates for the unique Rule and List<EventTypes> combinations
-        /// This makes the call to  repository hence can be costly but the call is on partition key
+        /// Get Calculated Value
         /// </summary>
-        /// <param name="incentivePlan"></param>
-        /// <param name="eventCreatedFor"></param>
-        /// <param name="uniqueRuleWithEvents"></param>
+        /// <param name="planType"></param>
+        /// <param name="ruleType"></param>
+        /// <param name="eventAggregrate"></param>
         /// <returns></returns>
-        private async Task<List<EventAggregrateResponse>> GetEventAggregrates(AudienceType audienceType,
-                                                                                DateTime startDate,
-                                                                                DateTime endDate,
-                                                                                string eventCreatedFor,
-                                                                                Dictionary<RuleType, List<EventType>> uniqueRuleWithEvents)
+        private double GetCalculatedValue(  PlanType planType, 
+                                            RuleType ruleType, 
+                                            EventAggregrateResponse eventAggregrate)
         {
-            List<EventAggregrateResponse> eventAggregrates = new List<EventAggregrateResponse>();
+            double calculatedValue = double.MinValue;
 
-            EventAggregrateRequest eventAggregrateRequest = null;
-
-            foreach (KeyValuePair<RuleType, List<EventType>> rule in uniqueRuleWithEvents)
+            if (ruleType == RuleType.SUM)
             {
-                eventAggregrateRequest = new EventAggregrateRequest()
+                if (planType == PlanType.REGULAR)
                 {
-                    AggregrateType = rule.Key,
-                    EventTypes = rule.Value,
-                    AudienceType = audienceType,
-                    EventCreatedFor = eventCreatedFor,
-                    StartDate = startDate,
-                    EndDate = endDate
-                };
-
-                eventAggregrates.AddRange(await _eventRepository.GetEventAggregrates(eventAggregrateRequest));
+                    calculatedValue = eventAggregrate.AggregratedCalculatedValue;
+                }
+                else if (planType == PlanType.MILESTONE)
+                {
+                    calculatedValue = eventAggregrate.AggregratedOriginalValue;
+                }
+            }
+            else if (ruleType == RuleType.COUNT)
+            {
+                calculatedValue = eventAggregrate.AggregratedCount;
             }
 
-            return eventAggregrates;
+            return calculatedValue;
         }
 
+        
         /// <summary>
         /// Apply formula on the retrieved aggregrated value
         /// </summary>
@@ -406,7 +457,7 @@ namespace blendnet.incentive.api.Common
 
                         break;
                     }
-                case FormulaType.RANGE_AND_MULTIPLY:
+                case FormulaType.RANGE:
                     {
                         RangeValue rangeValue = formula.RangeOperand.Where(rv => (value >= rv.StartRange && value <= rv.EndRange)).FirstOrDefault();
 

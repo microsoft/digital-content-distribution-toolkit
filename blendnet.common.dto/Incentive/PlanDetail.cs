@@ -3,11 +3,12 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace blendnet.common.dto.Incentive
 {
 
-    public class PlanDetail
+    public class PlanDetail:ICloneable
     {
         /// <summary>
         /// Unique id associated with detail
@@ -50,16 +51,37 @@ namespace blendnet.common.dto.Incentive
         /// </summary>
         public Result Result { get; set; }
 
+        public object Clone()
+        {
+            PlanDetail planDetail = (PlanDetail)MemberwiseClone();
+
+            planDetail.Formula = Formula != null ? (Formula)Formula.Clone() : null ;
+
+            planDetail.Result = Result != null ? (Result)Result.Clone() : null;
+
+            return planDetail;
+        }
     }
 
-    public class Result
+    public class Result:ICloneable
     {
         public double Value { get; set; }
 
         public double ResidualValue { get; set; }
+
+        public RawData RawData { get; set; }
+
+        public object Clone()
+        {
+            Result result = (Result)MemberwiseClone();
+
+            result.RawData = RawData != null ? (RawData)RawData.Clone() : null;
+
+            return result;
+        }
     }
 
-    public class Formula
+    public class Formula : ICloneable
     {
         /// <summary>
         /// Formula type
@@ -81,10 +103,22 @@ namespace blendnet.common.dto.Incentive
         /// List of ranges to decide the value
         /// </summary>
         public List<RangeValue> RangeOperand { get; set; }
+
+        public object Clone()
+        {
+            Formula formula =  (Formula) MemberwiseClone();
+
+            if (RangeOperand != null && RangeOperand.Count > 0)
+            {
+                formula.RangeOperand = RangeOperand.Select(item => (RangeValue)item.Clone()).ToList();
+            }
+
+            return formula;
+        }
     }
 
 
-    public class RangeValue
+    public class RangeValue : ICloneable
     {
         /// <summary>
         /// Start number of range
@@ -100,6 +134,11 @@ namespace blendnet.common.dto.Incentive
         /// Value associated with the range
         /// </summary>
         public double Output { get; set; }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -110,7 +149,7 @@ namespace blendnet.common.dto.Incentive
         MULTIPLY = 2,
         PERCENTAGE = 3,
         DIVIDE_AND_MULTIPLY = 4,
-        RANGE_AND_MULTIPLY = 5
+        RANGE = 5
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -131,6 +170,29 @@ namespace blendnet.common.dto.Incentive
         {
             return HashCode.Combine(item.EventType, item.EventSubType);
 
+        }
+    }
+
+    public class RawData: ICloneable
+    {
+        /// <summary>
+        /// Aggregrate Sum of Calculated Value
+        /// </summary>
+        public double AggregratedCalculatedValue { get; set; }
+
+        /// <summary>
+        /// Aggregrated Sum of Original Value
+        /// </summary>
+        public double AggregratedOriginalValue { get; set; }
+
+        /// <summary>
+        /// Aggregrated Count
+        /// </summary>
+        public double AggregratedCount { get; set; }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }

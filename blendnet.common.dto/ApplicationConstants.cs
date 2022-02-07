@@ -96,6 +96,8 @@ namespace blendnet.common.dto
 
             public const string HubDevice = "HubDevice";
 
+            public const string AnalyticsReporter = "AnalyticsReporter";
+
         }
 
         /// <summary>

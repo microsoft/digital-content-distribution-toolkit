@@ -1,4 +1,5 @@
 using blendnet.common.dto;
+using blendnet.common.dto.Common;
 using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.retailer.repository.Interfaces;
@@ -118,6 +119,39 @@ namespace blendnet.retailer.repository.CosmosRepository
             var resultList = await this._container.ExtractDataFromQueryIterator<RetailerDto>(query);
             var result = resultList.FirstOrDefault();
             return result;
+        }
+
+        /// <summary>
+        /// Returns the list of retailer
+        /// </summary>
+        /// <param name="continuationToken"></param>
+        /// <param name="shouldGetInactiveRetailer"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        async Task<ResultData<RetailerDto>> IRetailerRepository.GetRetailersByPartnerCode(  string partnerCode,                                                                                
+                                                                                            string continuationToken, 
+                                                                                            bool shouldGetInactiveRetailer, 
+                                                                                            int pageSize)
+        {
+            const string queryString =
+                @"  SELECT * FROM r 
+                    WHERE r.type = @type
+                    AND r.partnerCode = @partnerCode
+                    AND (@shouldGetInactiveRetailer OR (r.startDate < @now AND r.endDate > @now)) ";
+
+            DateTime now = DateTime.UtcNow;
+
+            var query = new QueryDefinition(queryString)
+                                .WithParameter("@type", RetailerContainerType.Retailer)
+                                .WithParameter("@partnerCode", partnerCode)
+                                .WithParameter("@shouldGetInactiveRetailer", shouldGetInactiveRetailer)
+                                .WithParameter("@now", now);
+
+            continuationToken = String.IsNullOrEmpty(continuationToken) ? null : continuationToken;
+
+            var retailers = await this._container.ExtractDataFromQueryIteratorWithToken<RetailerDto>(query,continuationToken,pageSize);
+           
+            return retailers;
         }
 
         /// <summary>

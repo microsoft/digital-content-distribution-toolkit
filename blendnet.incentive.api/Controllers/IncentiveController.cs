@@ -23,7 +23,7 @@ namespace blendnet.incentive.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
+    [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer)]
     public class IncentiveController : ControllerBase
     {
         private const string C_CONSUMER = "CONSUMER";
@@ -44,13 +44,16 @@ namespace blendnet.incentive.api.Controllers
 
         private IMapper _mapper;
 
-        public IncentiveController(IIncentiveRepository incentiveRepository,
-                                ILogger<IncentiveController> logger,
-                                IOptionsMonitor<IncentiveAppSettings> optionsMonitor,
-                                IStringLocalizer<SharedResource> stringLocalizer,
-                                RetailerProviderProxy retailerProviderProxy,
-                                IncentiveCalculationHelper incentiveCalculationHelper,
-                                IMapper mapper)
+        private RetailerProxy _retailerProxy;
+
+        public IncentiveController( IIncentiveRepository incentiveRepository,
+                                    ILogger<IncentiveController> logger,
+                                    IOptionsMonitor<IncentiveAppSettings> optionsMonitor,
+                                    IStringLocalizer<SharedResource> stringLocalizer,
+                                    RetailerProviderProxy retailerProviderProxy,
+                                    IncentiveCalculationHelper incentiveCalculationHelper,
+                                    RetailerProxy retailerProxy,
+                                    IMapper mapper)
         {
             _incentiveRepository = incentiveRepository;
 
@@ -65,6 +68,8 @@ namespace blendnet.incentive.api.Controllers
             _incentiveCalculationHelper = incentiveCalculationHelper;
 
             _mapper = mapper;
+
+            _retailerProxy = retailerProxy;
         }
 
         #region Incentive management methods
@@ -76,6 +81,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPost("retailer", Name = nameof(CreateRetailerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> CreateRetailerIncentivePlan(IncentivePlanRequest incentivePlanRequest)
         {
             List<string> errorInfo = new List<string>();
@@ -109,6 +115,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPost("consumer", Name = nameof(CreateConsumerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> CreateConsumerIncentivePlan(IncentivePlanRequest incentivePlanRequest)
         {
             List<string> errorInfo = new List<string>();
@@ -140,6 +147,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPut("retailer/{planId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateRetailerIncentivePlan(Guid planId, IncentivePlanRequest updatePlanRequest)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, updatePlanRequest.Audience.SubTypeName);
@@ -154,11 +162,11 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPut("consumer/{planId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateConsumerIncentivePlan(Guid planId, IncentivePlanRequest updatePlanRequest)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, updatePlanRequest.Audience.SubTypeName);
             return await UpdatePlan(planId, updatePlanRequest, plan);
-
         }
 
         /// <summary>
@@ -169,6 +177,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpDelete("retailer/{planId:guid}/{subtypeName}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> DeleteRetailerIncentivePlan(Guid planId, string subtypeName)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subtypeName);
@@ -184,6 +193,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpDelete("consumer/{planId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> DeleteConsumerIncentivePlan(Guid planId)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
@@ -198,6 +208,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPut("consumer/changeenddate/{planId:guid}/{endDate}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> ChangeConsumerIncentivePlan(Guid planId, DateTime endDate)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
@@ -238,6 +249,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPut("retailer/changeenddate/{planId:guid}/{subTypeName}/{endDate}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> ChangeRetailerIncentivePlan(Guid planId, string subTypeName, DateTime endDate)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subTypeName);
@@ -278,6 +290,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPut("retailer/publish/{planId:guid}/{subtypeName}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> PublishRetailerPlan(Guid planId, string subtypeName)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subtypeName);
@@ -294,6 +307,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpPut("consumer/publish/{planId:guid}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> PublishConsumerPlan(Guid planId)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
@@ -312,6 +326,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("retailer/{planId:guid}/{subtypeName}", Name = nameof(GetRetailerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<IncentivePlan>> GetRetailerIncentivePlan(Guid planId, string subtypeName)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, subtypeName);
@@ -331,6 +346,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("consumer/{planId:guid}", Name = nameof(GetConsumerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<IncentivePlan>> GetConsumerIncentivePlan(Guid planId)
         {
             IncentivePlan plan = await _incentiveRepository.GetPlan(planId, ApplicationConstants.Common.CONSUMER);
@@ -350,6 +366,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("consumer/{planType}", Name=nameof(GetConsumerIncentivePlans))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<List<IncentivePlan>>> GetConsumerIncentivePlans(PlanType planType)
         {
             Audience audience = new Audience()
@@ -376,6 +393,7 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("retailer/{planType}/{subTypeName}", Name = nameof(GetRetailerIncentivePlans))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<List<IncentivePlan>>> GetRetailerIncentivePlans(PlanType planType, string subTypeName)
         {
             Audience audience = new Audience()
@@ -396,6 +414,7 @@ namespace blendnet.incentive.api.Controllers
 
         [HttpGet("eventlist/{audienceType}", Name = nameof(GetEventTypes))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public ActionResult<List<string>> GetEventTypes(AudienceType audienceType)
         {
             List<string> eventTypes = new List<string>();
@@ -425,7 +444,8 @@ namespace blendnet.incentive.api.Controllers
         /// <returns></returns>
         [HttpGet("consumer/active/{planType}", Name = nameof(GetConsumerActiveIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<IncentivePlanDto>> GetConsumerActiveIncentivePlan(PlanType planType)
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<IncentivePlan>> GetConsumerActiveIncentivePlan(PlanType planType)
         {
             IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(planType);
 
@@ -435,6 +455,77 @@ namespace blendnet.incentive.api.Controllers
             }
 
             return Ok(incentivePlan);
+        }
+
+        #endregion
+
+        #region Retailer Specific
+        /// <summary>
+        /// Returns retailer current active incentive plan with given plan type
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        [HttpGet("retailer/active/{retailerPartnerProvidedId}/{planType}/{subtypeName}", Name = nameof(GetRetailerActivePlan))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer)]
+        public async Task<ActionResult<IncentivePlanDto>> GetRetailerActivePlan(string retailerPartnerProvidedId, PlanType planType, string subtypeName)
+        {
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, subtypeName);
+
+            List<string> errorInfo = ValidateRetailer(retailer);
+
+            if (errorInfo.Count > 0)
+            {
+                return BadRequest(errorInfo);
+            }
+
+            IncentivePlan incentivePlan = await _incentiveRepository.GetCurrentRetailerActivePlan(planType, subtypeName);
+
+            if (incentivePlan == null)
+            {
+                return NotFound();
+            }
+
+            IncentivePlanDto incentivePlanDto = _mapper.Map<IncentivePlan, IncentivePlanDto>(incentivePlan);
+
+            return Ok(incentivePlanDto);
+        }
+
+        /// <summary>
+        /// Returns retailer incentive plans with given plan type
+        /// </summary>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        [HttpGet("retailer/all/{retailerPartnerProvidedId}/{planType}/{subtypeName}", Name = nameof(GetRetailerAllIncentivePlans))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer)]
+        public async Task<ActionResult<List<IncentivePlanDto>>> GetRetailerAllIncentivePlans(string retailerPartnerProvidedId, PlanType planType, string subtypeName)
+        {
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(retailerPartnerProvidedId, subtypeName);
+
+            List<string> errorInfo = ValidateRetailer(retailer);
+
+            if (errorInfo.Count > 0)
+            {
+                return BadRequest(errorInfo);
+            }
+
+            Audience audience = new Audience()
+            {
+                AudienceType = AudienceType.RETAILER,
+                SubTypeName = subtypeName
+            };
+
+            List<IncentivePlan> incentivePlans = await _incentiveRepository.GetIncentivePlans(audience, planType);
+
+            if (incentivePlans == null || incentivePlans.Count == 0)
+            {
+                return NotFound();
+            }
+
+            List<IncentivePlanDto> incentivePlanDto = _mapper.Map<List<IncentivePlan>, List<IncentivePlanDto>>(incentivePlans);
+
+            return Ok(incentivePlanDto);
         }
 
         #endregion
@@ -676,7 +767,7 @@ namespace blendnet.incentive.api.Controllers
                     return errorInfo;
                 }
             } 
-            else if(formulaType == FormulaType.RANGE_AND_MULTIPLY)
+            else if(formulaType == FormulaType.RANGE)
             {
                 if(formula.RangeOperand == null || formula.RangeOperand.Count == 0)
                 {
@@ -933,6 +1024,39 @@ namespace blendnet.incentive.api.Controllers
             return BadRequest(errorInfo);
         }
 
+        /// <summary>
+        /// Checks if retailer exists and if retailer id is same as current user id
+        /// </summary>
+        /// <param name="retailer"></param>
+        /// <param name="retailerPartnerProvidedId"></param>
+        /// <param name="partnerCode"></param>
+        /// <returns></returns>
+        private List<string> ValidateRetailer(RetailerDto retailer)
+        {
+            List<string> errorInfo = new List<string>();
+
+            if (retailer == null)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0025"]);
+                return errorInfo;
+            }
+
+            if (User.IsInRole(KaizalaIdentityRoles.SuperAdmin))
+            {
+                // Retailer specific validation is not required for superadmin
+                return errorInfo;
+            }
+
+            Guid userId = UserClaimData.GetUserId(User.Claims);
+
+            if (!userId.Equals(retailer.UserId))
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0026"]);
+                return errorInfo;
+            }
+
+            return errorInfo;
+        }
 
         #endregion
     }

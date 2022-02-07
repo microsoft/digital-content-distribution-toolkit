@@ -1,4 +1,5 @@
 ﻿using blendnet.common.dto;
+using blendnet.common.dto.Common;
 using blendnet.common.dto.Retailer;
 using System;
 using System.Collections.Generic;
@@ -55,5 +56,17 @@ namespace blendnet.retailer.repository.Interfaces
         /// <param name="deviceId">device ID</param>
         /// <returns>Retailers as list</returns>
         Task<List<RetailerDto>> GetRetailersByDeviceId(string deviceId);
+
+        /// <summary>
+        /// Returns the list of all retailers for the give partner code
+        /// </summary>
+        /// <param name="shouldGetInactiveRetailer"></param>
+        /// <returns></returns>
+        Task<ResultData<RetailerDto>> GetRetailersByPartnerCode(string partnerCode,
+                                                                string continuationToken,
+                                                                bool shouldGetInactiveRetailer = true, 
+                                                                int pageSize = 50);
+
+
     }
 }

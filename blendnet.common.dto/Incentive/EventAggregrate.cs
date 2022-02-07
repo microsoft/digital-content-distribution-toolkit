@@ -12,13 +12,13 @@ namespace blendnet.common.dto.Incentive
     /// </summary>
     public class EventAggregrateRequest
     {
-        public RuleType AggregrateType { get; set; }
-
         public List<EventType> EventTypes { get; set; }
 
-        public string EventCreatedFor { get; set; }
+        public string[] EventCreatedFor { get; set; }
 
         public AudienceType AudienceType { get; set; }
+
+        public string SubTypeName { get; set; }
 
         public DateTime? StartDate { get; set; }
 
@@ -31,10 +31,25 @@ namespace blendnet.common.dto.Incentive
     public class EventAggregrateResponse
     {
         /// <summary>
-        /// Aggregrate Value
+        /// Aggregrate Sum of Calculated Value
         /// </summary>
-        public double AggregratedValue { get; set; }
+        public double AggregratedCalculatedValue { get; set; }
 
+        /// <summary>
+        /// Aggregrated Sum of Original Value
+        /// </summary>
+        public double AggregratedOriginalValue { get; set; }
+
+        /// <summary>
+        /// Aggregrated Count
+        /// </summary>
+        public double AggregratedCount { get; set; }
+
+        /// <summary>
+        /// Event Create for
+        /// </summary>
+        public string EventCreatedFor { get; set; }
+        
         /// <summary>
         /// Event Type
         /// </summary>
@@ -45,10 +60,6 @@ namespace blendnet.common.dto.Incentive
         /// </summary>
         public string EventSubType { get; set; }
 
-        /// <summary>
-        /// Rule Type for which value is obtained
-        /// </summary>
-        public RuleType RuleType { get; set; }
     }
 
     public class EventAggregateData

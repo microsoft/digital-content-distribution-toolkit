@@ -3,21 +3,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
-using Microsoft.AspNetCore.Authorization;
 using blendnet.incentive.repository.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Localization;
 using blendnet.api.proxy.Retailer;
 using blendnet.incentive.api.Common;
 using Microsoft.Extensions.Options;
-using static blendnet.common.dto.ApplicationConstants;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using Microsoft.Extensions.Configuration;
+using blendnet.incentive.api.Model;
+using static blendnet.common.dto.ApplicationConstants;
+using System.Globalization;
 
 namespace blendnet.incentive.api.Controllers
 {
@@ -27,7 +26,9 @@ namespace blendnet.incentive.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [Authorize]
+    [AuthorizeRoles(KaizalaIdentityRoles.Retailer, 
+                    KaizalaIdentityRoles.SuperAdmin, 
+                    KaizalaIdentityRoles.AnalyticsReporter)]
     public class IncentiveEventController : ControllerBase
     {
         private const string C_CONSUMER = "CONSUMER";
@@ -113,10 +114,10 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
-        [HttpGet("retailer/milestone/{retailerPartnerProvidedId}/{partnerCode}", Name = nameof(GetRetailerCalculatedMilestone))]
+        [HttpGet("retailer/milestone/{partnerCode}/{retailerPartnerProvidedId}", Name = nameof(GetRetailerCalculatedMilestone))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<IncentivePlan>> GetRetailerCalculatedMilestone(string retailerPartnerProvidedId, string partnerCode, Guid? planId)
+        public async Task<ActionResult<IncentivePlan>> GetRetailerCalculatedMilestone(string partnerCode, string retailerPartnerProvidedId,Guid? planId)
         {
             IncentivePlan incentivePlan = null;
 
@@ -153,39 +154,16 @@ namespace blendnet.incentive.api.Controllers
         }
 
         /// <summary>
-        /// Returns the calculated regular incentive plan for the consumer
-        /// If the plan id is passed, calculates the same
-        /// If plan id is not passed, find the active and returns the details
-        /// </summary>
-        /// <param name="planId"></param>
-        /// <returns></returns>
-        [HttpGet("consumer/regular", Name = nameof(GetConsumerCalculatedRegular))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<EventAggregateData>> GetConsumerCalculatedRegular()
-        {
-            string phoneNumber = User.Identity.Name;
-
-            var response = await _incentiveCalculationHelper.CalculateRandomIncentiveForConsumer(phoneNumber);
-
-            if(response.EventAggregateResponses.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(response);
-        }
-
-        /// <summary>
         /// Returns the milestone for the given user phone number
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        [HttpGet("consumer/regular/{phoneNumber}", Name = nameof(GetConsumerCalculatedRegularByPhoneNumber))]
+        [HttpPost("consumer/regular", Name = nameof(GetConsumerCalculatedRegularByPhoneNumber))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<EventAggregateData>> GetConsumerCalculatedRegularByPhoneNumber(string phoneNumber)
+        public async Task<ActionResult<EventAggregateData>> GetConsumerCalculatedRegularByPhoneNumber(ConsumerCalculatedRegularByPhoneNumberRequest request)
         {
-            var response = await _incentiveCalculationHelper.CalculateRandomIncentiveForConsumer(phoneNumber);
+            var response = await _incentiveCalculationHelper.CalculateRandomIncentiveForConsumer(request.PhoneNumber);
 
             if (response.EventAggregateResponses.Count == 0)
             {
@@ -243,43 +221,30 @@ namespace blendnet.incentive.api.Controllers
         }
 
         /// <summary>
-        /// Returns the event aggregrates for consumer the given start date and end date
+        /// Returns the retailer regular incetive data for reporting
         /// </summary>
-        /// <param name="phoneNumber"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
         /// <returns></returns>
-        [HttpGet("consumer/regular/range", Name = nameof(GetConsumerCalculatedRndmIncentives))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<EventAggregateData>> GetConsumerCalculatedRndmIncentives(DateTime startDate,
-                                                                                                      DateTime endDate)
+        [HttpPost("retailer/regular/report", Name = nameof(GetRetailerRegularReportCalculated))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.AnalyticsReporter)]
+        public async Task<ActionResult<CalculatedIncentivePlan>> GetRetailerRegularReportCalculated(IncentiveReportRequest reportRequest)
         {
-            string phoneNumber = User.Identity.Name;
-            List<string> errorInfo = new List<string>();
-
-            if (startDate == default(DateTime) || endDate == default(DateTime))
-            {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0001"]);
-                return BadRequest(errorInfo);
-            }
-
-            if(startDate > endDate)
-            {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0001"]);
-                return BadRequest(errorInfo);
-            }
-
-            var eventAggregrateResponses = await _incentiveCalculationHelper.CalculateRandomIncentiveForConsumer(phoneNumber, startDate, endDate);
-
-            if(eventAggregrateResponses.EventAggregateResponses.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(eventAggregrateResponses);
-           
+            return await GetRetailerReportCalculated(reportRequest, PlanType.REGULAR);
         }
 
+        /// <summary>
+        /// Returns the retailer milestone incetive data for reporting
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("retailer/milestone/report", Name = nameof(GetRetailerMilestoneReportCalculated))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.AnalyticsReporter)]
+        public async Task<ActionResult<CalculatedIncentivePlan>> GetRetailerMilestoneReportCalculated(IncentiveReportRequest reportRequest)
+        {
+            return await GetRetailerReportCalculated(reportRequest, PlanType.MILESTONE);
+        }
+
+      
         /// <summary>
         /// Returns the event aggregrates for retailer the given start date and end date
         /// </summary>
@@ -330,52 +295,6 @@ namespace blendnet.incentive.api.Controllers
             }
 
             return Ok(eventAggregrateResponses);
-        }
-
-        /// <summary>
-        /// Returns the event lists consumer events in the given start date and end date
-        /// </summary>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <returns></returns>
-        [HttpGet("consumer/events", Name = nameof(GetConsumerEvents))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<List<IncentiveEvent>>> GetConsumerEvents(EventType eventType, DateTime startDate, DateTime endDate)
-        {
-            List<string> errorInfo = new List<string>();
-
-            string phoneNumber = User.Identity.Name;
-
-            if(!eventType.ToString().StartsWith(C_CONSUMER))
-            {
-                errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0029"], eventType));
-                return BadRequest(errorInfo);
-            }
-
-            if(startDate > endDate)
-            {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0001"]);
-                return BadRequest(errorInfo);
-            }
-
-            var numberOfDays = (endDate - startDate).TotalDays;
-
-            int maxDaysGap = _configuration.GetValue<int>("MaxDaysGapInQuery");
-
-            if (numberOfDays > maxDaysGap)
-            {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0030"]);
-                return BadRequest(errorInfo);
-            }
-
-            List<IncentiveEvent> incentiveEvents = await _incentiveCalculationHelper.GetConsumerIncentiveEvents(phoneNumber, eventType, startDate, endDate);
-
-            if(incentiveEvents.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(incentiveEvents);
         }
 
         /// <summary>
@@ -490,6 +409,63 @@ namespace blendnet.incentive.api.Controllers
             }
 
             return errorInfo;
+        }
+
+        /// <summary>
+        /// Get Retailer Report Calculated
+        /// </summary>
+        /// <param name="reportRequest"></param>
+        /// <param name="planType"></param>
+        /// <returns></returns>
+        private async Task<ActionResult<CalculatedIncentivePlan>> GetRetailerReportCalculated(  IncentiveReportRequest reportRequest, 
+                                                                                                PlanType planType)
+        {
+            List<string> errorInfo = new List<string>();
+
+            DateTime reportingDate;
+
+            bool isDateCorrect = DateTime.TryParseExact($"{reportRequest.ReportingDate.Year}{reportRequest.ReportingDate.Month.ToString("00")}{reportRequest.ReportingDate.Day.ToString("00")}",
+                                                          DateTimeFormats.FormatYYYYMMDD,
+                                                          CultureInfo.InvariantCulture,
+                                                          DateTimeStyles.None,
+                                                          out reportingDate);
+
+            if (!isDateCorrect)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0043"]);
+
+                return BadRequest(errorInfo);
+            }
+
+            //in  case no partner ids are passed.
+            if (reportRequest.PartnerIds == null || reportRequest.PartnerIds.Length <= 0)
+            {
+                errorInfo.Add(_stringLocalizer["INC_ERR_0044"]);
+
+                return BadRequest(errorInfo);
+            }
+
+            //set the reporting date to end of IST represented in UTC.
+            reportingDate = new DateTime(reportingDate.Year,
+                                         reportingDate.Month,
+                                         reportingDate.Day, 18, 29, 59, DateTimeKind.Utc);
+
+            //get the published plan for reporting date
+            IncentivePlan incentivePlan = await _incentiveRepository.GetRetailerPublishedPlan(planType, reportRequest.PartnerCode, reportingDate);
+
+            errorInfo = ValidateIncentivePlan(incentivePlan);
+
+            if (errorInfo.Count > 0)
+            {
+                return BadRequest(errorInfo);
+            }
+
+            //calculate incentive plan
+            CalculatedIncentivePlan calculatedIncentivePlan = await _incentiveCalculationHelper.CalculateIncentivePlan(incentivePlan,
+                                                                                                                        reportingDate,
+                                                                                                                        reportRequest.PartnerIds);
+
+            return Ok(calculatedIncentivePlan);
         }
 
         #endregion

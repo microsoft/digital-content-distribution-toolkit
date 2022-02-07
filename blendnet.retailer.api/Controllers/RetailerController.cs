@@ -1,5 +1,6 @@
 using blendnet.api.proxy.Device;
 using blendnet.common.dto;
+using blendnet.common.dto.Common;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
@@ -7,6 +8,7 @@ using blendnet.common.infrastructure.Extensions;
 using blendnet.retailer.api.Models;
 using blendnet.retailer.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,7 +21,10 @@ namespace blendnet.retailer.api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Retailer, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
+    [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, 
+                    ApplicationConstants.KaizalaIdentityRoles.Retailer, 
+                    ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement,
+                    ApplicationConstants.KaizalaIdentityRoles.AnalyticsReporter)]
     public class RetailerController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -380,6 +385,78 @@ namespace blendnet.retailer.api.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Returns the list of retailer 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("byPartnerCode", Name = nameof(GetRetailersByPartnerCode))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.AnalyticsReporter)]
+        public async Task<ActionResult<ResultData<RetailerDto>>> GetRetailersByPartnerCode(RetailersByPartnerCodeRequest request)
+        {
+            var retailerProvider = await _retailerProviderRepository.GetRetailerProviderByPartnerCode(request.PartnerCode);
+            
+            if (retailerProvider is null)
+            {
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0007"], request.PartnerCode),
+                });
+            }
+
+            ResultData<RetailerDto> retailers = await _retailerRepository.GetRetailersByPartnerCode(request.PartnerCode,
+                                                                                                    request.ContinuationToken,
+                                                                                                    request.ShouldGetInactiveRetailer,
+                                                                                                    request.PageSize);
+            
+            if (retailers is null || retailers.Data is null || retailers.Data.Count == 0)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(retailers);
+            }
+        }
+
+        /// <summary>
+        /// Only returns the ids for the given partner code
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+
+        [HttpPost("byPartnerCode/ids", Name = nameof(GetRetailerIdssByPartnerCode))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.AnalyticsReporter)]
+        public async Task<ActionResult<ResultData<string>>> GetRetailerIdssByPartnerCode(RetailersByPartnerCodeRequest request)
+        {
+            var retailerProvider = await _retailerProviderRepository.GetRetailerProviderByPartnerCode(request.PartnerCode);
+
+            if (retailerProvider is null)
+            {
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0007"], request.PartnerCode),
+                });
+            }
+
+            ResultData<RetailerDto> retailers = await _retailerRepository.GetRetailersByPartnerCode(request.PartnerCode,
+                                                                                                    request.ContinuationToken,
+                                                                                                    request.ShouldGetInactiveRetailer,
+                                                                                                    request.PageSize);
+
+            if (retailers is null || retailers.Data is null || retailers.Data.Count == 0)
+            {
+                return NotFound();
+            }
+            else
+            {
+                List<string> retailerIds = retailers.Data.Select(r=>r.PartnerId).ToList();
+
+                ResultData<string> result = new ResultData<string>(retailerIds, retailers.ContinuationToken);
+
+                return Ok(result);
+            }
+        }
         #endregion
     }
 }

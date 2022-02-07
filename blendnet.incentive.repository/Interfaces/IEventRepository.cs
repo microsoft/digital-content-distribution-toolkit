@@ -1,4 +1,5 @@
-﻿using blendnet.common.dto.Incentive;
+﻿using blendnet.common.dto.Common;
+using blendnet.common.dto.Incentive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,13 @@ namespace blendnet.incentive.repository.Interfaces
         /// <param name=""></param>
         /// <returns></returns>
         public Task<List<IncentiveEvent>> GetEvents(EventCriteriaRequest eventCriteria);
+
+        /// <summary>
+        /// Returns the unique list or retailer id or phone number.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public Task<ResultData<string>> GetUniqueAudienceForEventAggregrates(EventAggregrateRequest request, string continuationToken, int batchSize);
 
         /// <summary>
         /// Returns the COUNT or SUM aggregrate for the given list of events.
