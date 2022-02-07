@@ -20,6 +20,9 @@ using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.incentive.listener.IntegrationEventHandling
 {
+    /// <summary>
+    /// Generates the incentive on order completion for Retailer and Consumer
+    /// </summary>
     public class OrderCompletedEventIntegrationEventHandler : IIntegrationEventHandler<OrderCompletedIntegrationEvent>
     {
         private const string C_OrderId = "OrderId";
@@ -70,7 +73,11 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
                         foreach (var retailerEvent in retailerEvents)
                         {
+                            //save the retailer incentive to database
                             await _eventRepository.CreateIncentiveEvent(retailerEvent);
+
+                            //report the same info to AI for analytics consumption
+                            _telemetryClient.TrackEvent( new IncentiveAIEvent(retailerEvent));
                         }
 
                         IncentivePlan activeConsumerRegularPlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
@@ -79,7 +86,11 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
                         foreach (var consumerEvent in consumerEvents)
                         {
+                            //save the consumer incentive
                             await _eventRepository.CreateIncentiveEvent(consumerEvent);
+
+                            //report the same info to AI for analytics consumption
+                            _telemetryClient.TrackEvent(new IncentiveAIEvent(consumerEvent));
                         }
                     }else
                     {
@@ -112,7 +123,12 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             {
                 try
                 {
+                    //save redemption event to database
                     await _eventRepository.CreateIncentiveEvent(consumerEvent);
+
+                    //report the same info to AI for analytics consumption
+                    _telemetryClient.TrackEvent(new IncentiveAIEvent(consumerEvent));
+
                 }
                 catch (Exception ex)
                 {
@@ -295,8 +311,6 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             return incentiveEvents;
 
         }
-
-
 
         /// <summary>
         /// Adds all order related details in the properties which can be used on client side for further tracking or processing

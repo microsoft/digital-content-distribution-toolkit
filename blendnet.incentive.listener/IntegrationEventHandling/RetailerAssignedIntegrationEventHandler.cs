@@ -2,6 +2,7 @@
 using blendnet.common.dto.Incentive;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
+using blendnet.incentive.listener.Model;
 using blendnet.incentive.listener.Util;
 using blendnet.incentive.repository.Interfaces;
 using Microsoft.ApplicationInsights;
@@ -9,9 +10,8 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.incentive.listener.IntegrationEventHandling
 {
@@ -66,7 +66,10 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                     IncentiveEvent incentiveEvent = GetIncentiveEventForReferral(user, activeRetailerRegularPlan);
 
                     await _eventRepository.CreateIncentiveEvent(incentiveEvent);
-                    
+
+                    //report the same info to AI for analytics consumption
+                    _telemetryClient.TrackEvent(new IncentiveAIEvent(incentiveEvent));
+
                     _logger.LogInformation($"Done adding event in RetailerAssignedIntegrationEventHandler for retailer {integrationEvent.User.ReferralInfo.RetailerPartnerId} and user {integrationEvent.User.UserId} ");
                 }
             }

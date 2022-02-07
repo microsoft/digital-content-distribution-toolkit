@@ -10,6 +10,8 @@ using System;
 using System.Threading.Tasks;
 using blendnet.common.dto;
 using System.Linq;
+using blendnet.incentive.listener.Model;
+using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.incentive.listener.IntegrationEventHandling
 {
@@ -54,7 +56,9 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                     var activePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
 
                     var oldCalculatedValue = incentiveEvent.CalculatedValue;
+                    
                     CalculateValue(incentiveEvent, activePlan);
+                    
                     var newCalculatedValue = incentiveEvent.CalculatedValue;
 
                     // skip update if calculated value is not changed
@@ -64,6 +68,10 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                     }
 
                     int response = await _eventRepository.UpdateIncentiveEvent(incentiveEvent);
+                    
+                    //report the same info to AI for analytics consumption
+                    _telemetryClient.TrackEvent(new IncentiveAIEvent(incentiveEvent));
+
                     if (response == (int)System.Net.HttpStatusCode.OK)
                     {
                         _logger.LogInformation($"Done Updating {incentiveEvent.EventType} event for user {userId}");
@@ -88,6 +96,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             if (planDetail == null)
             {
                 _logger.LogWarning($"Storing orphan event as no active plan exists for consumer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventCreatedFor} and event type {incentiveEvent.EventType}");
+                
                 incentiveEvent.CalculatedValue = 0;
             }
             else
