@@ -31,7 +31,11 @@
                                     <!-- <span class="milestone-heading-1">Earn Rs. {{k.secondOperand}} Bonus</span> <br> -->
                                     <span class="milestone-heading-1">Rs. {{k.value}}</span> Earned <br> 
                                     <span class="detailed-milestone-info">Rs.{{k.secondOperand}} on every 
-                                        {{k.ruleType === 'SUM' ? "Rs." : "" }}{{k.firstOperand}}  {{k.referral ? 'Referrals': 'Orders'}} {{k.ruleType === 'SUM' ? " Commission earned" : "completed" }}</span>
+                                        <span *ngIf="k.ruleType!=='SUM'">{{k.firstOperand}} {{k.referral  ? 'Referrals': 'Orders'}}</span>
+                                        <span *ngIf="k.ruleType==='SUM'">Rs.{{k.firstOperand}} {{k.referral  ? 'Referrals': 'Orders'}} commission earned</span>
+    
+                                        <!-- {{k.ruleType === 'SUM' ? "Rs." : "" }}{{k.firstOperand}}  {{k.referral ? 'Referrals': 'Orders'}} {{k.ruleType === 'SUM' ? " Commission earned" : "completed" }} -->
+                                    </span>
                                     <!-- <span>on every {{k.firstOperand}}  {{k.ruleType === 'SUM' ? "Rs of earned on ": ""}}</span><br>
                                     <span>{{k.referral ? 'Referrals': 'Orders'}}</span> -->
                                 </div>

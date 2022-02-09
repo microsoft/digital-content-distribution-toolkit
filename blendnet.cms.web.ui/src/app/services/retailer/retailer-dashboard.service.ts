@@ -39,7 +39,7 @@ export class RetailerDashboardService {
 
   
   getMileStonesHome(partnerCode: string, retailerPartnerProvidedId: string): Observable<any>{
-    let url = this.baseUrl + 'IncentiveEvent/retailer/milestone/' + retailerPartnerProvidedId + '/' + partnerCode;
+    let url = this.baseUrl + 'IncentiveEvent/retailer/milestone/' +  partnerCode + '/' + retailerPartnerProvidedId ;
     return this.http.get(url, {params: {partnerCode: partnerCode, retailerPartnerProvidedId: retailerPartnerProvidedId, version :'1'}});
   }
 
@@ -77,12 +77,12 @@ export class RetailerDashboardService {
   }
 
   getMilestoneRatesIncentives(partnerCode: string, retailerPartnerProvidedId: string) {
-    let url = this.retailerIncentive + 'IncentiveBrowse/retailer/active/'+ retailerPartnerProvidedId + '/MILESTONE/' + partnerCode;
+    let url = this.retailerIncentive + 'Incentive/retailer/active/'+ retailerPartnerProvidedId + '/MILESTONE/' + partnerCode;
     return this.http.get(url);  
   }
 
   getRegularRatesIncentives(partnerCode: string, retailerPartnerProvidedId: string) {
-    let url = this.retailerIncentive + 'IncentiveBrowse/retailer/active/'+ retailerPartnerProvidedId + '/REGULAR/' + partnerCode;
+    let url = this.retailerIncentive + 'Incentive/retailer/active/'+ retailerPartnerProvidedId + '/REGULAR/' + partnerCode;
     return this.http.get(url);  
   }
 

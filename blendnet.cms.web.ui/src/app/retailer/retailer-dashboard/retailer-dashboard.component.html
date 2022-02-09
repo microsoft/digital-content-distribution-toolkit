@@ -46,34 +46,6 @@
         </ng-container>
 
         <owl-carousel-o [options]="customOptions">
-            <!-- dummy card
-            <ng-container>
-                <ng-template carouselSlide>
-                    <div class="landing-each-offer">
-                        <div class="each-offer-inner landing-each-offer-milestone {{ 'RETAILER_INCOME_REFERRAL_COMPLETED' === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'referral-card':'commission-card'}}">
-                            <img src="../../../{{baseHref}}/assets/images/retailer/{{ 'RETAILER_INCOME_REFERRAL_COMPLETED' === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'referral-trophy.png':'commission-trophy.png'}}">
-                            <div class="landing-each-offer-milestone-inner">
-                                <div class="each-offer-text-block">
-                                    <span class="milestone-heading-1">Earn Rs. k.secondOperand Bonus</span> <br>
-                                    <span>on every Referrals</span>
-                                </div>
-                                <div  class="milestones-achieved-block">
-                                    <div class="milestones-achieved"><b>Milestones completed:</b></div>
-                                    <div class="milestones-achieved"><b>Earnings: </b> </div>    
-                                </div>
-                                <div class="milesone-progress">
-                                    <div>Active Milestone</div>
-                                    Complete
-                                    <mat-progress-bar mode="determinate" value="10"></mat-progress-bar>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>  
-    
-            </ng-container> -->
-
-
             <ng-container *ngFor="let k of milestonesCarouselArr">
                 <ng-template carouselSlide>
                     <div class="landing-each-offer">
@@ -82,7 +54,9 @@
                             <div class="landing-each-offer-milestone-inner">
                                 <div class="each-offer-text-block">
                                     <span class="milestone-heading-1">Earn Rs. {{k.secondOperand}} Bonus</span> <br>
-                                    <span>on every {{k.firstOperand}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referrals': 'Orders'}}</span>
+                                    <span *ngIf="k.ruleType!=='SUM'">on every {{k.firstOperand}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referrals': 'Orders'}}</span>
+                                    <span *ngIf="k.ruleType==='SUM'">on every Rs.{{k.firstOperand}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referral': 'Order'}} commission earned</span>
+
                                 </div>
                                 <div *ngIf="k.value" class="milestones-achieved-block">
                                     <div class="milestones-achieved"><b>Milestones completed:</b> {{k.value/k.secondOperand}}</div>

@@ -80,12 +80,12 @@ export class RetailerDashboardComponent implements OnInit {
       if(res.eventAggregateResponses) {
         res.eventAggregateResponses.forEach(planDetail => {
           if(planDetail.eventType === 'RETAILER_INCOME_ORDER_COMPLETED') {
-            if(planDetail.aggregratedValue) {
-              commissionTotal += planDetail.aggregratedValue;
+            if(planDetail.aggregratedCalculatedValue) {
+              commissionTotal += planDetail.aggregratedCalculatedValue;
             }
           } else if(planDetail.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED') {
-            if(planDetail.aggregratedValue) {
-              referralTotal += planDetail.aggregratedValue;
+            if(planDetail.aggregratedCalculatedValue) {
+              referralTotal += planDetail.aggregratedCalculatedValue;
             }
           }
         });
@@ -120,6 +120,7 @@ export class RetailerDashboardComponent implements OnInit {
             }
             if(planDetail.formula.firstOperand && planDetail.formula.secondOperand && planDetail.result) {
               milestonesCarouselArr.push({
+                ruleType: planDetail.ruleType,
                 firstOperand: planDetail.formula.firstOperand,
                 secondOperand: planDetail.formula.secondOperand,
                 value : planDetail.result.value ? planDetail.result.value : 0,

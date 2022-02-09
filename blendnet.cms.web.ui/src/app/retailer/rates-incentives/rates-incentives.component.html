@@ -10,7 +10,7 @@
                         <div class="referrals-route-inner">
                             <div class="incentive-text-type">
                                     Referrals
-                                    <div>
+                                    <div class="incentive-validity">
                                         <span class="each-offer-valid-label">Valid till :</span>
                                         <span class="each-offer-valid-date">{{referralsValid}}</span>       
                                     </div>
@@ -22,7 +22,7 @@
                     <div class="each-offer">
                         <div class="each-offer-inner referrals-each-offer-inner">
                             <div class="each-offer-text-block">
-                                Earn Rs {{ratesIncentivesReferral.formula.firstOperand}} on every completed Referral
+                                Earn Rs.{{ratesIncentivesReferral.formula.firstOperand}} on every completed Referral
                             </div>
                             <div class="each-offer-conversion">
                                 1 Referral = Rs {{ratesIncentivesReferral.formula.firstOperand}} Earning
@@ -60,15 +60,15 @@
                         </div>
                         <div class="each-offer-inner milestones-each-offer-inner referral-milestone"  *ngIf="milestone.ruleType==='SUM'">
                             <div class="each-offer-text-block">
-                                On every Rs.{{milestone.formula.firstOperand}} earned via Referrals earn Rs.{{milestone.formula.secondOperand}} bonus
+                                On every Rs.{{milestone.formula.firstOperand}} Referrals commission earn Rs.{{milestone.formula.secondOperand}} bonus
                             </div>
                             <div class="each-offer-conversion">
-                                Rs.{{milestone.formula.firstOperand}} earned via Referral/s = Rs.{{milestone.formula.secondOperand}} Earning
+                                Rs.{{milestone.formula.firstOperand}} Referral/s commission = Rs.{{milestone.formula.secondOperand}} Earning
                             </div>
                         </div>
                     </div>
                     <div class="each-offer" *ngIf="milestone.eventType === eventType['Retailer Order Complete']">
-                        <div class="each-offer-inner milestones-each-offer-inner commission-milestone" *ngIf="milestone.formula.formulaType === 'RANGE_AND_MULTIPLY' ">
+                        <div class="each-offer-inner milestones-each-offer-inner commission-milestone" *ngIf="milestone.formula.formulaType === 'RANGE' ">
                             <div class="each-offer-text-block">
                                 {{milestone.eventTitle}}
                             </div>
@@ -78,7 +78,7 @@
                                     {{range.startRange + '-' + range.endRange}} Orders = Rs.{{range.output}} Earning
                                 </span>
                                 <span *ngIf="milestone.ruleType==='SUM'">
-                                    Rs.{{range.startRange + '-' + range.endRange}} earned via Orders = Rs.{{range.output}} Earning
+                                    Rs.{{range.startRange + '-' + range.endRange}} Orders commission= Rs.{{range.output}} Earning
                                 </span>
                             </div>
                         </div>
@@ -92,10 +92,10 @@
                         </div>
                         <div class="each-offer-inner milestones-each-offer-inner commission-milestone" *ngIf="milestone.formula.formulaType === 'DIVIDE_AND_MULTIPLY' && milestone.ruleType==='SUM'">
                             <div class="each-offer-text-block">
-                                On every Rs.{{milestone.formula.firstOperand}} earned via {{contentProviders[milestone.eventSubType]}} order earn Rs.{{milestone.formula.secondOperand}} bonus
+                                On every Rs.{{milestone.formula.firstOperand}} {{contentProviders[milestone.eventSubType]}} order commission earn Rs.{{milestone.formula.secondOperand}} bonus
                             </div>
                             <div class="each-offer-conversion">
-                                Rs.{{milestone.formula.firstOperand}} earned via Order/s = Rs {{milestone.formula.secondOperand}} Earning
+                                Rs.{{milestone.formula.firstOperand}} Order/s commission= Rs {{milestone.formula.secondOperand}} Earning
                             </div>
                         </div>
                     </div>

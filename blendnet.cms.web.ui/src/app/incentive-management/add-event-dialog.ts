@@ -137,13 +137,13 @@ import { IncentiveService } from "../services/incentive.service";
     setFormulaConfig(){
       this.regularFormulas = [
         FormulaType.PLUS, 
-        FormulaType.MINUS,
+        // FormulaType.MINUS,
         FormulaType.MULTIPLY,
         FormulaType.PERCENTAGE
       ];
       this.milestoneFormulas = [
         FormulaType.DIVIDE_AND_MULTIPLY, 
-        FormulaType.RANGE_AND_MULTIPLY
+        FormulaType.RANGE
       ];
       
     }
@@ -219,7 +219,7 @@ import { IncentiveService } from "../services/incentive.service";
     }
 
     isRangeFormulaType() {
-      return (this.eventForm.get('formula').value === FormulaType.RANGE_AND_MULTIPLY);
+      return (this.eventForm.get('formula').value === FormulaType.RANGE);
     }
 
     onEventTypeChange() {
@@ -279,7 +279,7 @@ import { IncentiveService } from "../services/incentive.service";
           CustomValidator.numeric]);
         this.eventForm.get('secondOperand').updateValueAndValidity();
         this.eventForm.updateValueAndValidity();
-      } else if(formula.value === FormulaType.RANGE_AND_MULTIPLY) {
+      } else if(formula.value === FormulaType.RANGE) {
         //this.eventForm.addControl('ranges', this.formBuilder.array([this.createRange()]));
         //this.eventForm.removeControl('milestoneTarget');
         //this.eventForm.removeControl('incentive');
@@ -315,7 +315,7 @@ import { IncentiveService } from "../services/incentive.service";
           rangeOperand : []
         }
       }
-      if(event.formula.formulaType === FormulaType.RANGE_AND_MULTIPLY) {
+      if(event.formula.formulaType === FormulaType.RANGE) {
         event.formula.rangeOperand = this.getRangeDetails();
       }else if(event.formula.formulaType === FormulaType.DIVIDE_AND_MULTIPLY){
         event.formula.firstOperand = this.eventForm.get('firstOperand').value;

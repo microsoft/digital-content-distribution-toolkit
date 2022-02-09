@@ -50,7 +50,7 @@ export enum FormulaType{
     MULTIPLY = "MULTIPLY",
     PERCENTAGE = "PERCENTAGE",
     DIVIDE_AND_MULTIPLY = "DIVIDE_AND_MULTIPLY",
-    RANGE_AND_MULTIPLY = "RANGE_AND_MULTIPLY"
+    RANGE = "RANGE"
 }
 export class RangeValue {
     constructor(
