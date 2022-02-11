@@ -114,7 +114,7 @@
 
 .referrals-route-inner {
     background-color: #D6EBFF;
-    height: 90px;
+    height: 80px;
     background-image: url('../../../assets/images/retailer-landing-page/referrals.png');
     background-repeat: no-repeat;
     background-position: calc(100% + 5px) 5px;
@@ -136,7 +136,7 @@
 
 .commission-route-inner {
     background-color: #C6E2E1;
-    height: 90px;
+    height: 80px;
     background-image: url('../../../assets/images/retailer-landing-page/commission.png');
     background-repeat: no-repeat;
     background-position: 100% -32%;
@@ -147,7 +147,7 @@
 
 .rates-route-inner {
     background-color: #FFE6D4;
-    height: 90px;
+    height: 80px;
     background-image: url('../../../assets/images/retailer-landing-page/rates-incentives.png');
     background-repeat: no-repeat;
     background-position: 100% -32%;
@@ -199,6 +199,7 @@
 .each-offer-text-block {
     color: white;
     display: inline-block;
+    max-width: 45%;
 }
 
 .milestone-heading-1 {
@@ -211,6 +212,7 @@
     width: calc(100% - 110px);
     bottom: 17px;
     color: white;
+    font-size: 12px;
 }
 
 ::ng-deep .mat-progress-bar-fill::after {
@@ -248,9 +250,21 @@
     right: 0;
     width: 200px;
 }
+.sum-milestone-info{
+    font-size: 10px;
+}
 
 @media only screen and (min-width: 767px){
     .landing-profile-block-wrapper{
         display:none;
     }
 }
+
+
+
+  /* If the screen size is 600px wide or less, set the font-size of <div> to 30px */
+  @media screen and (max-width: 600px) {
+    div.milestones-achieved-block, div.each-offer-text-block, div.milesone-progress { 
+      font-size: 10px;
+    }
+  }

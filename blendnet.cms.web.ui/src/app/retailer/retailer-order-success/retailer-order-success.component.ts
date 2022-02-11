@@ -26,11 +26,10 @@ export class RetailerOrderSuccessComponent implements OnInit {
   }
 
   getIncentiveAmount() {
-    console.log('start showing page, ', this.price);
+    // console.log('start showing page, ', this.price);
 
     this.retailerRequestService.getIncentivePlan(this.partnerCode, this.retailerPartnerProvidedId).subscribe(
       res => {
-        // console.log(res);
         this.getIncentiveError = false;
         let planDetail = res.planDetails.find(obj => {
           return obj.eventType === "RETAILER_INCOME_ORDER_COMPLETED";

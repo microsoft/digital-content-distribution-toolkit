@@ -52,7 +52,7 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngAfterViewInit() {
-    console.log('setting routed to' + true);
+    // console.log('setting routed to' + true);
     //this.userService.setRetailerRouted(true);
   }
 

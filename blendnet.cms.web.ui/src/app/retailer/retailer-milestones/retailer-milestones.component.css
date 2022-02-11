@@ -111,6 +111,7 @@
     height: 160px;
     padding-right: 20px;
     padding-left: 20px;
+    margin-bottom: 20px !important;
 }
 
 /* .landing-each-offer {
@@ -127,6 +128,7 @@
     border-radius: 8px;
     /* padding-top: 22px;
     padding-bottom: 22px; */
+    margin-bottom: 50px;
     position: relative;
     /* background-image: url('../../../assets/images/retailer/commission-trophy.png'); */
     background-repeat: no-repeat;
@@ -161,7 +163,7 @@
 
 .landing-each-offer-milestone-inner {
     padding-top: 22px;
-    padding-bottom: 22px;
+    padding-bottom: 22px ;
     padding-left: 15px;
     padding-right: 15px;
 }

@@ -49,13 +49,13 @@
             <ng-container *ngFor="let k of milestonesCarouselArr">
                 <ng-template carouselSlide>
                     <div class="landing-each-offer">
-                        <div class="each-offer-inner landing-each-offer-milestone {{ k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'referral-card':'commission-card'}}">
+                        <div class="landing-each-offer-milestone {{ k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'referral-card':'commission-card'}}">
                             <img src="../../../../{{baseHref}}/assets/images/retailer/{{ k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'referral-trophy.png':'commission-trophy.png'}}">
-                            <div class="landing-each-offer-milestone-inner">
+                            <div class="landing-each-offer-milestone-inner" *ngIf="k.type === 'DIVIDE_AND_MULTIPLY'">
                                 <div class="each-offer-text-block">
                                     <span class="milestone-heading-1">Earn Rs. {{k.secondOperand}} Bonus</span> <br>
-                                    <span *ngIf="k.ruleType!=='SUM'">on every {{k.firstOperand}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referrals': 'Orders'}}</span>
-                                    <span *ngIf="k.ruleType==='SUM'">on every Rs.{{k.firstOperand}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referral': 'Order'}} commission earned</span>
+                                    <span *ngIf="k.ruleType!=='SUM'" class="sum-milestone-info">on every {{k.firstOperand}} {{k.cpName}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referrals': 'Orders'}}</span>
+                                    <span *ngIf="k.ruleType==='SUM'" class="sum-milestone-info">on every Rs.{{k.firstOperand}} {{k.cpName}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referral': 'Order'}} commission earned</span>
 
                                 </div>
                                 <div *ngIf="k.value" class="milestones-achieved-block">
@@ -67,6 +67,19 @@
                                     {{k.residualValue}}/{{k.firstOperand}} Complete
                                     <mat-progress-bar mode="determinate" value="{{k.progress}}"></mat-progress-bar>
                                 </div>
+                            </div>
+                            <div class="landing-each-offer-milestone-inner" *ngIf="k.type === 'RANGE'">
+                                <div class="each-offer-text-block">
+                                    <span class="milestone-heading-1">Earn exiting Bonus for {{k.cpName}} {{k.eventType === 'RETAILER_INCOME_REFERRAL_COMPLETED' ? 'Referrals': 'Orders'}} </span> <br>
+                                    <span  class="sum-milestone-info">click on rates and incentives for more details</span>
+                                </div>
+                                <div *ngIf="k.value" class="milestones-achieved-block">
+                                    <!-- Milestone achieved details -->
+                                    <div class="milestones-achieved"></div> 
+                                    <!-- Earnings -->
+                                    <div class="milestones-achieved"></div>    
+                                </div>
+
                             </div>
                             <!-- <img class="offer-decor" src="../../cmsui/assets/images/retailer-commissions/trophy.png"> -->
                             <!-- <img class="each-offer-logo" src="../../cmsui/assets/images/retailer-commissions/each-offer-logo.png"> -->

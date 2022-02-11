@@ -14,6 +14,7 @@ export class ContentProviderService {
   browseContentBaseUrl = environment.baseUrl +  environment.browrseContent;
   private selectedCP = new BehaviorSubject<Contentprovider>(null);
   sharedSelectedCP$ = this.selectedCP.asObservable();
+  contentProviders: any;
   
   constructor(
     private logger: LogService,
@@ -51,9 +52,14 @@ export class ContentProviderService {
   // }
 
   changeDefaultCP(selectedCP: Contentprovider) {
-    this.selectedCP.next(selectedCP)
+    this.selectedCP.next(selectedCP);
   }
  
+  changeDefaultCPIfEdited( editedCP: Contentprovider) {
+    if(this.selectedCP.value.id === editedCP.id) {
+      this.changeDefaultCP(editedCP);
+    }
+  }
   generateSASKey(contentProviderId)  : Observable<SasToken> {
     let url = this.baseUrl + "/" + contentProviderId+ "/generateSaS";
     this.logger.log(`Fetching SAS key`);
@@ -62,5 +68,24 @@ export class ContentProviderService {
 
   getBaseHref() {
     return environment.baseHref;
+  }
+
+  
+  getAndSetContentProviders() {
+    if(sessionStorage.getItem("CONTENT_PROVIDERS")) {
+      this.contentProviders =  JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
+      this.contentProviders.forEach(contentProvider => {
+        this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+      }); 
+    } else {
+      this.browseContentProviders().subscribe(res => {
+        this.contentProviders = res;
+        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(this.contentProviders));
+        this.contentProviders.forEach(contentProvider => {
+          this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+        }); 
+      });
+    }
+    return this.contentProviders;
   }
 }

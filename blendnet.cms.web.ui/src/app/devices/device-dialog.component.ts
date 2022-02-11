@@ -33,9 +33,7 @@ export class DeviceDialogComponent implements OnInit {
     var device = this.getDeviceDetails();
     this.deviceService.createDevice(device).subscribe(
       res => {
-        console.log(res);
         this.onDeviceCreate.emit("Device created successfully!");
-       
       },
       err => this.toastr.error(err)
     );

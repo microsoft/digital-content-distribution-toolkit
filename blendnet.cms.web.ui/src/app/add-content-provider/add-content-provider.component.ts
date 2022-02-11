@@ -131,6 +131,7 @@ export class AddContentProviderComponent implements OnInit {
         this.currentContentProvider = res; 
         this.showSuccess("Update Successful");
         this.onCPUpdateOrCreate.emit("Content Provider Updated");
+        this.contentProviderService.changeDefaultCPIfEdited(newUpdatedCP);
       },
       err => {
         this.showError(err);

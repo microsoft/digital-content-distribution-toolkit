@@ -47,11 +47,11 @@ export class RetailerLandingPageComponent implements OnInit {
       400: {
         items: 1
       },
-      740: {
+      1000: {
         items: 2
       },
-      940: {
-        items: 4
+      1500: {
+        items: 3
       }
     },
     nav: true

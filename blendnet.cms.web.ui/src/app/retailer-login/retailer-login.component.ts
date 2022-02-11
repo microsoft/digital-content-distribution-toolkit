@@ -38,9 +38,8 @@ export class RetailerLoginComponent implements OnInit {
     private userService: UserService,
     private kaizalaService: KaizalaService,
     private retailerService: RetailerRequestService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {
+    private router: Router
+    ) {
     // Redirect to home if retailer already logged in
     if(this.kaizalaService.loggedInValue && this.userService.registeredUserValue) {
       this.router.navigate(['/retailer/dashboard']);
@@ -48,7 +47,6 @@ export class RetailerLoginComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    console.log('login page')
     this.countryCodes = environment.countryCodes;
     this.selectedCountryCodeValue = this.countryCodes[0].value;
     this.otpSendErrorMessage = "";

@@ -112,7 +112,7 @@ export class ExportUserDataComponent implements OnInit {
     const dialogRef = this.dialog.open(CommonDialogComponent, {
       data: {
         heading: 'Confirm',
-        message: "Do you want to complete the data export request by user " + e.phonenumber,
+        message: "Do you want to complete the data export request by user " + e.phoneNumber,
         contents: e,
         action: "PROCESS",
         buttons: this.openSelectCPModalButtons()
@@ -149,7 +149,7 @@ export class ExportUserDataComponent implements OnInit {
       class: 'discard-btn'
     },
     {
-      label: 'Continue',
+      label: 'Confirm',
       type: 'primary',
       value: 'submit',
       class: 'update-btn'

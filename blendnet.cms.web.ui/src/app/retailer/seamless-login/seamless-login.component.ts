@@ -24,7 +24,6 @@ export class SeamlessLoginComponent implements OnInit, AfterViewInit {
     // private userService: UserService,
     private router: Router
   ) {
-    console.log('Called Constructor');
     this.route.queryParams.subscribe(params => {
         this.partnerCode = params['partnerCode'];
         this.partnerProvidedId = params['partnerProvidedId'];
@@ -42,7 +41,9 @@ export class SeamlessLoginComponent implements OnInit, AfterViewInit {
           sessionStorage.setItem('retailerLogged', 'true');
           location.reload();
         }
-    });
+    },
+    err => window.alert(err)
+    );
    }
 
   ngOnInit(): void {

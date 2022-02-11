@@ -25,7 +25,7 @@
 
 .referrals-route-inner {
     background-color: #D6EBFF;
-    height: 90px;
+    height: 80px;
     background-image: url('../../../assets/images/retailer-landing-page/referrals.png');
     background-repeat: no-repeat;
     /* background-position: calc(100% + 5px) 5px; */
@@ -37,7 +37,7 @@
 
 .milestones-route-inner {
     background-color: #FFFACB;
-    height: 90px;
+    height: 80px;
     background-image: url('../../../assets/images/retailer-landing-page/milestones.png');
     background-repeat: no-repeat;
     background-position: 100% -12px;
@@ -49,7 +49,7 @@
 
 .commission-route-inner {
     background-color: #C6E2E1;
-    height: 90px;
+    height: 80px;
     background-image: url('../../../assets/images/retailer-landing-page/commission.png');
     background-repeat: no-repeat;
     background-position: 100% -12px;
@@ -62,10 +62,10 @@
 .incentive-text-type {
     color: #101010;
     padding-left: 30px;
-    /* line-height: 90px; */
+    /* line-height: 80px; */
     padding-right: 85px;
     position: relative;
-    height: 90px;
+    height: 80px;
     padding-top: 16px;
     font-size: 16px;
 }
@@ -143,7 +143,7 @@
     display: inline-block;
     /* background: white; */
     border-radius: 10px;
-    height: 90px;
+    height: 80px;
     /* float: right; */
     position: absolute;
     left: 100px;

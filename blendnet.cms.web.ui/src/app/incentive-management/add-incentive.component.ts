@@ -90,14 +90,12 @@ export class AddIncentiveComponent implements OnInit {
         this.incentiveService.getRetailerIncentivePlanByIdAndPartner(this.plan.id, this.plan.partner).subscribe(
           res => {
             this.createFilledForm(res.body);
-          }
-            ,
+          },
           err => console.log(err)
         )
       } else {
         this.incentiveService.getConsumerIncentivePlanById(this.plan.id).subscribe(
           res => {
-            console.log(res);
             this.createFilledForm(res.body);
           },
           err => console.log(err)
@@ -407,7 +405,6 @@ openSelectCPModalButtons(): Array<any> {
     this.incentiveService.createIncentivePlanRetailer(incentivePlan).subscribe(
       res => {
         this.toastr.success("Retailer Incentive plan drafted successfully");
-        console.log(res);
         var incentiveDetails = {
           planType :incentivePlan.planType,
           partner: incentivePlan.audience.subTypeName
@@ -426,7 +423,6 @@ openSelectCPModalButtons(): Array<any> {
     this.incentiveService.createIncentivePlanConsumer(incentivePlan).subscribe(
       res => {
         this.toastr.success("Consumer Incentive plan drafted successfully");
-        console.log(res);
         this.newIncentiveEventC.emit(incentivePlan.planType);
       },
       err =>  {
@@ -473,8 +469,6 @@ openSelectCPModalButtons(): Array<any> {
       this.incentiveService.changeDateRetailerIncentivePlan(this.plan.id, partner, endDate).subscribe(
         res => {
           this.toastr.success("Retailer Incentive plan end date updated successfully");
-          console.log(res);
-          // this.newIncentiveEvent.emit();
         },
         err =>  {
           console.log(err);
@@ -487,8 +481,6 @@ openSelectCPModalButtons(): Array<any> {
       this.incentiveService.changeDateConsumerIncentivePlan(this.plan.id, endDate).subscribe(
         res => {
           this.toastr.success("Consumer Incentive plan end date updated successfully");
-          console.log(res);
-          // this.newIncentiveEvent.emit();
         },
         err =>  {
           console.log(err);
@@ -503,8 +495,6 @@ openSelectCPModalButtons(): Array<any> {
       this.incentiveService.updateRetailerDraftPlan(this.plan.id,incentivePlan).subscribe(
         res => {
           this.toastr.success("Retailer Incentive draft plan updated successfully");
-          console.log(res);
-          // this.newIncentiveEvent.emit();
         },
         err =>  {
           console.log(err);
@@ -517,8 +507,6 @@ openSelectCPModalButtons(): Array<any> {
       this.incentiveService.updateConsumerDraftPlan(this.plan.id, incentivePlan).subscribe(
         res => {
           this.toastr.success("Consumer Incentive draft plan updated successfully");
-          console.log(res);
-          // this.newIncentiveEvent.emit();
         },
         err =>  {
           console.log(err);

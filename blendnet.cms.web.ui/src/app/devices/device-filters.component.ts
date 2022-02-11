@@ -48,9 +48,7 @@ export class DeviceFiltersComponent implements OnInit {
       }
     this.deviceService.filterUpdate(deviceData).subscribe(
       res => {
-        console.log(res);
         this.onDeviceFilterUpdate.emit("Device filters updated successfully!");
-       
       },
       err => this.toastr.error(err)
     );

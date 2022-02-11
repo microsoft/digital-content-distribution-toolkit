@@ -31,10 +31,8 @@ export class RetailerRequestService {
     this.logger.log('Fetching created orders');
     return this.http.post(url, payload).pipe(
       map((response: any) => {
-        console.log("response: ", response);
         return response.map(order => {
           const subs = order.orderItems[0].subscription;
-          console.log('subs: ', subs);
           const createdDate = new Date(order.orderCreatedDate);
           const now = new Date();
           const diffTime = Math.abs(now.getTime() - createdDate.getTime());

@@ -68,7 +68,7 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
   }
 
   ngAfterViewInit() {
-    console.log('setting routed to' + true);
+    // console.log('setting routed to' + true);
     //this.userService.setRetailerRouted(true);
   }
 
@@ -195,7 +195,6 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
       res => {
         res.planDetails.forEach(planDetail => {
           if(planDetail.eventType === 'RETAILER_INCOME_ORDER_COMPLETED') {
-            console.log(planDetail.formula.formulaType);
             if(planDetail.formula.formulaType === 'PERCENTAGE') {
               planDetail.earnText = 'Earn ' + planDetail.formula.firstOperand + '% for each ' + this.contentProviders[planDetail.eventSubType] + ' order';
             } else if(planDetail.formula.formulaType === 'PLUS') {

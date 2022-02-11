@@ -162,7 +162,6 @@ export class UnprocessedComponent {
         return of(`Upload failed: ${file.data.name}`);
       })).subscribe((event: any) => {
         if (typeof (event) === 'object') {
-          console.log(event.body);
           this.toastr.success(file.data.name + " Content uploaded successfully.");
           this.getUnprocessedContent();
           this.fileName ='';

@@ -38,7 +38,7 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    console.log('setting routed to' + true);
+    // console.log('setting routed to' + true);
     //this.userService.setRetailerRouted(true);
   }
 
@@ -51,7 +51,7 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   selected(period: string) {
-    console.log(period);
+    // console.log(period);
   }
 
   getReferralsMonthly(partnerCode, retailerPartnerProvidedId, dateObj) {
@@ -68,7 +68,7 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.retailerDashboardService.getReferralsCommissionsInDetail(partnerCode, retailerPartnerProvidedId, startDateUTCString, endDateUTCString, 'RETAILER_INCOME_REFERRAL_COMPLETED').subscribe(
       res => {
          res.forEach(transaction => {
-          console.log(transaction.eventOccuranceTime);
+          // console.log(transaction.eventOccuranceTime);
           const occuredDate = transaction.eventOccuranceTime.split("T")[0];
           transaction.occuredTime = transaction.eventOccuranceTime.split("T")[1].split(".")[0];
           transaction.occuredTimeReadable = this.retailerDashboardService.generateReadableTime(transaction.eventOccuranceTime);
@@ -94,9 +94,9 @@ export class ReferralsComponent implements OnInit, AfterViewInit, OnDestroy {
             nestedReferrals[index].occuredDateReadable = this.retailerDashboardService.generateReadableDate(occuredDate);
             totalEarnings+=transaction.calculatedValue;
           }
-          console.log(occuredDate);
+          // console.log(occuredDate);
         });
-        console.log(nestedReferrals);
+        // console.log(nestedReferrals);
         this.nestedReferrals = nestedReferrals;
         this.totalEarnings = totalEarnings;
       },

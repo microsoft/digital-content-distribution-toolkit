@@ -2,7 +2,7 @@
 
   <div mat-dialog-content >
     <form [formGroup]="eventForm" >
-      <mat-error *ngIf="isMileStonePlanType()" class="rule-type-sum-note">Please Note: The SUM based milestone incentives plan does the SUM on the incentives earned and hence it will work appropriately only if regular incentive plan exists for same event type and for the same period.  </mat-error>
+      <!-- <mat-error *ngIf="isMileStonePlanType()" class="rule-type-sum-note">Please Note: The SUM based milestone incentives plan does the SUM on the incentives earned and hence it will work appropriately only if regular incentive plan exists for same event type and for the same period.  </mat-error> -->
       <table>
         <tr>
           <td>
@@ -41,7 +41,7 @@
               <mat-form-field >
                   <mat-label>Rule Type</mat-label>
                   <mat-select name="ruleType"
-                  formControlName="ruleType"  >
+                  formControlName="ruleType" >
                   <mat-option *ngFor="let rule of ruleTypes" [value]="rule">{{rule}}
                   </mat-option>
                   </mat-select>
