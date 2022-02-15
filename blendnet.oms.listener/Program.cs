@@ -152,6 +152,8 @@ await host.RunAsync();
 
         services.AddTransient<ExportUserDataIntegrationEventHandler>();
 
+        services.AddTransient<UpdateUserDataIntegrationEventHandler>();
+
     }
 
     /// <summary>

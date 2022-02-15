@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace blendnet.common.dto.Events
 {
     /// <summary>
-    /// Base class for data export completion event
+    /// Updates the user data for privacy requirement. Updates the User Phone Number with User Id
     /// </summary>
-    public abstract class BaseDataExportCompletedIntegrationEvent:IntegrationEvent
+    public class UpdateUserDataIntegrationEvent: IntegrationEvent
     {
         /// <summary>
         /// User Id
@@ -26,21 +26,5 @@ namespace blendnet.common.dto.Events
         /// Command Id
         /// </summary>
         public Guid CommandId { get; set; }
-
-        /// <summary>
-        /// Service Name
-        /// </summary>
-        public abstract string ServiceName { get;}
-
-        /// <summary>
-        /// Completion Date Time
-        /// </summary>
-        public DateTime CompletionDateTime { get; set; }
-
-        /// <summary>
-        /// True in case there is no data available to export
-        /// </summary>
-        public bool NoDataToExport { get; set; }
-
     }
 }

@@ -6,7 +6,7 @@ namespace blendnet.common.dto.Events
     /// <summary>
     /// Incentive Data Export Completed Integration Event
     /// </summary>
-    public class IncentiveDataExportCompletedIntegrationEvent:BaseDataExportCompletedIntegrationEvent
+    public class IncentiveDataExportCompletedIntegrationEvent: BaseDataOperationCompletedIntegrationEvent
     {
         /// <summary>
         /// return service name

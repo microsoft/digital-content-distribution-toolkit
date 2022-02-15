@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace blendnet.user.api.Models
 {
     /// <summary>
-    /// Request for get user export command
+    /// Request for get user command
     /// </summary>
-    public class UserExportCommandRequest
+    public class UserCommandRequest
     {
         // <summary>
         /// Phone Number of user. Needed only when called by admin

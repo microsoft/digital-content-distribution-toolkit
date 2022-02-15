@@ -1,4 +1,5 @@
-﻿using blendnet.common.dto.Oms;
+﻿using blendnet.common.dto.Common;
+using blendnet.common.dto.Oms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,16 @@ namespace blendnet.oms.repository.Interfaces
         Task<List<Order>> GetOrdersByPhoneNumber(string phoneNumber, OrderStatusFilter orderFilter, bool onlyRedeemed = false);
 
         /// <summary>
+        /// Get user orders based on continuation token and phone number
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <param name="continuationToken"></param>
+        /// <param name="maxItemCount"></param>
+        /// <returns></returns>
+        Task<ResultData<Order>> GetOrdersByPhoneNumber(string phoneNumber, string continuationToken, int maxItemCount);
+
+
+        /// <summary>
         /// Gets order items with active subscriptions
         /// </summary>
         /// <param name="phoneNumber"></param>
@@ -77,5 +88,21 @@ namespace blendnet.oms.repository.Interfaces
         /// <param name="userPhoneNumber"></param>
         /// <returns></returns>
         Task<List<OrderToExport>> GetUserOrders(string userPhoneNumber);
+
+        /// <summary>
+        /// Insert Orders in Batch
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="ordersToInsert"></param>
+        /// <returns></returns>
+        Task<int> InsertOrders(string partitionKey, List<Order> ordersToInsert);
+
+        /// <summary>
+        /// Delete orders in batch
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="ordersToDelete"></param>
+        /// <returns></returns>
+        Task<int> DeleteOrders(string partitionKey, List<Guid> ordersToDelete);
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// UserDataExportCompletedIntegrationEvent
     /// </summary>
-    public class UserDataExportCompletedIntegrationEvent:BaseDataExportCompletedIntegrationEvent
+    public class UserDataExportCompletedIntegrationEvent: BaseDataOperationCompletedIntegrationEvent
     {
         /// <summary>
         /// return service name

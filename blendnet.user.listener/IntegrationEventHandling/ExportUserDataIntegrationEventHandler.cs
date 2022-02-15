@@ -162,7 +162,7 @@ namespace blendnet.user.listener.IntegrationEventHandling
                                         UserPhoneNumber = integrationEvent.UserPhoneNumber,
                                         CommandId = integrationEvent.CommandId,
                                         CompletionDateTime = DateTime.UtcNow,
-                                        NoDataToExport = noDataToExport
+                                        NoDataToOperate = noDataToExport
                                     };
 
             await _eventBus.Publish(userDataExportCompletedIntegrationEvent);

@@ -264,12 +264,18 @@ namespace blendnet.common.dto
             public const string ContentId = "ContentId";
             public const string ContentProviderId = "ContentProviderId";
             public const string UserId = "UserId";
+            public const string UserPhone = "UserPhone";
+            public const string RetailerPartnerId = "RetailerPartnerId";
+            public const string RetailerRefferalCode = "RetailerRefferalCode";
+            public const string RetailerRefferalDate = "RetailerRefferalDate";
+            public const string RetailerPartnerCode = "RetailerPartnerCode";
         }
 
         public struct Common
         {
             public const string CONSUMER = "CONSUMER";
             public static readonly DateTime LicenseEndDate = new DateTime(2022, 6, 30);
+            public const int ALLOWED_TRANSACTION_BATCH_SIZE = 100;
         }
 
         public struct HubProxyModuleCommandNames

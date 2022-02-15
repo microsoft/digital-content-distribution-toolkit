@@ -1,4 +1,5 @@
 ﻿using blendnet.common.dto;
+using blendnet.common.dto.Common;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.user.repository.Interfaces;
@@ -130,11 +131,35 @@ namespace blendnet.user.repository.CosmosRepository
                                     where c.type = @type
                                     AND c.dataExportRequestStatus <> null
                                     AND c.dataExportRequestStatus <> @status
+                                    AND (c.accountStatus = @accountStatus OR NOT IS_DEFINED(c.accountStatus))
                                     ORDER BY c.modifiedDate DESC";
 
             var queryDef = new QueryDefinition(queryString)
                                .WithParameter("@type", UserContainerType.User)
-                               .WithParameter("@status", DataExportRequestStatus.NotInitialized);
+                               .WithParameter("@status", DataExportRequestStatus.NotInitialized)
+                               .WithParameter("@accountStatus", UserAccountStatus.Active);
+
+            var users = await this._container.ExtractDataFromQueryIterator<common.dto.User.User>(queryDef);
+
+            return users;
+        }
+
+        /// <summary>
+        /// Returns the list of users who have ever raised a request for delete of data.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<common.dto.User.User>> GetUsersForDelete()
+        {
+            var queryString = @"    SELECT  *
+                                    FROM c
+                                    where c.type = @type
+                                    AND c.dataUpdateRequestStatus <> null
+                                    AND c.dataUpdateRequestStatus <> @status
+                                    ORDER BY c.modifiedDate DESC";
+
+            var queryDef = new QueryDefinition(queryString)
+                               .WithParameter("@type", UserContainerType.User)
+                               .WithParameter("@status", DataUpdateRequestStatus.NotInitialized);
 
             var users = await this._container.ExtractDataFromQueryIterator<common.dto.User.User>(queryDef);
 
@@ -220,16 +245,16 @@ namespace blendnet.user.repository.CosmosRepository
         }
 
         /// <summary>
-        /// Gets the Data Export Command for a user
+        /// Gets the Command for a user
         /// </summary>
         /// <param name="phoneNumber">phone number of the user</param>
-        /// <param name="commandId">Data Export Command ID</param>
-        /// <returns>Data Export Command</returns>
-        async Task<UserDataExportCommand> IUserRepository.GetDataExportCommand(string phoneNumber, Guid commandId)
+        /// <param name="commandId">Command ID</param>
+        /// <returns>Command</returns>
+        async Task<UserCommand> IUserRepository.GetCommand(string phoneNumber, Guid commandId)
         {
             try
             {
-                UserDataExportCommand command = await _container.ReadItemAsync<UserDataExportCommand>(commandId.ToString(), new PartitionKey(phoneNumber));
+                UserCommand command = await _container.ReadItemAsync<UserCommand>(commandId.ToString(), new PartitionKey(phoneNumber));
 
                 return command;
             }
@@ -237,25 +262,25 @@ namespace blendnet.user.repository.CosmosRepository
             {
                 return null;
             }
-           
         }
 
         /// <summary>
-        /// Creates the Data Export Command
+        /// Update User and Create Command In Batch
         /// </summary>
         /// <param name="userDataExportCommand">Command to be created</param>
         /// <param name="user">user</param>
         /// <returns>status code</returns>
-        async Task<int> IUserRepository.CreateDataExportCommandBatch(UserDataExportCommand userDataExportCommand, User user)
+        async Task<int> IUserRepository.CreateCommandBatch(UserCommand userCommand, User user)
         {
-            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(userDataExportCommand.PhoneNumber));
-            TransactionalBatchResponse batchResponse = await batch.CreateItem<UserDataExportCommand>(userDataExportCommand)
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(userCommand.PhoneNumber));
+
+            TransactionalBatchResponse batchResponse = await batch.CreateItem(userCommand)
                                                                     .ReplaceItem<User>(user.UserId.ToString(), user)
                                                                     .ExecuteAsync();
-            
+
             if (!batchResponse.IsSuccessStatusCode)
             {
-                string errorMessage = $"{nameof(IUserRepository.CreateDataExportCommandBatch)} failed for user ID {user.UserId} and export command ID {userDataExportCommand.Id}";
+                string errorMessage = $"{nameof(IUserRepository.CreateCommandBatch)} failed for user ID {user.UserId} and command ID {userCommand.Id} command type : {userCommand.UserCommandType} ";
 
                 throw batchResponse.GetTransactionalBatchException(errorMessage);
             }
@@ -268,13 +293,13 @@ namespace blendnet.user.repository.CosmosRepository
         /// </summary>
         /// <param name="userDataExportCommand">Command to be updated</param>
         /// <returns>status code</returns>
-        async Task<int> IUserRepository.UpdateDataExportCommand(UserDataExportCommand userDataExportCommand)
+        async Task<int> IUserRepository.UpdateCommand(UserCommand userCommand)
         {
             try
             {
-                var response = await this._container.ReplaceItemAsync<UserDataExportCommand>(   userDataExportCommand, 
-                                                                                                userDataExportCommand.Id.ToString(), 
-                                                                                                new PartitionKey(userDataExportCommand.PhoneNumber));
+                var response = await this._container.ReplaceItemAsync(userCommand,
+                                                                     userCommand.Id.ToString(), 
+                                                                     new PartitionKey(userCommand.PhoneNumber));
                 return (int)response.StatusCode;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -289,11 +314,11 @@ namespace blendnet.user.repository.CosmosRepository
         /// <param name="userDataExportCommand"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        async Task<int> IUserRepository.UpdateDataExportCommandBatch(   UserDataExportCommand userDataExportCommand, 
-                                                                        User user,
-                                                                        bool performETAGValidation)
+        async Task<int> IUserRepository.UpdateCommandBatch(  UserCommand userCommand, 
+                                                             User user,
+                                                                bool performETAGValidation)
         {
-            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(userDataExportCommand.PhoneNumber));
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(userCommand.PhoneNumber));
 
 
             TransactionalBatchItemRequestOptions userRequestOptions = null;
@@ -309,13 +334,13 @@ namespace blendnet.user.repository.CosmosRepository
 
                 dataExportRequestOptions = new TransactionalBatchItemRequestOptions()
                 {
-                    IfMatchEtag = userDataExportCommand.ETag
+                    IfMatchEtag = userCommand.ETag
                 };
             }
 
-            TransactionalBatchResponse batchResponse = await batch.ReplaceItem<UserDataExportCommand>(userDataExportCommand.Id.ToString(), 
-                                                                                                      userDataExportCommand,
-                                                                                                      dataExportRequestOptions)
+            TransactionalBatchResponse batchResponse = await batch.ReplaceItem(  userCommand.Id.ToString(), 
+                                                                                 userCommand,
+                                                                                 dataExportRequestOptions)
                                                                   .ReplaceItem<User>(   user.UserId.ToString(), 
                                                                                         user,
                                                                                         userRequestOptions)
@@ -323,7 +348,145 @@ namespace blendnet.user.repository.CosmosRepository
 
             if (!batchResponse.IsSuccessStatusCode)
             {
-                string errorMessage = $"{nameof(IUserRepository.UpdateDataExportCommandBatch)} failed for user ID {user.UserId} and export command ID {userDataExportCommand.Id}";
+                string errorMessage = $"{nameof(IUserRepository.UpdateCommandBatch)} failed for user ID {user.UserId} and command ID {userCommand.Id}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
+        }
+
+
+        /// <summary>
+        /// Gets all the commands for the given user phone number.
+        /// Also allows to provide the exlusion list of command ids
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <param name="excludeIds"></param>
+        /// <param name="continuationToken"></param>
+        /// <param name="maxItemCount"></param>
+        /// <returns></returns>
+        async Task<ResultData<UserCommand>> IUserRepository.GetCommands(    string userPhoneNumber,
+                                                                            List<Guid> excludeIds,
+                                                                            string continuationToken,
+                                                                            int maxItemCount)
+        {
+            string queryString = @"   SELECT * FROM c 
+                                      WHERE c.type = @type 
+                                      AND c.phoneNumber = @userPhoneNumber 
+                                      {0} ";
+
+            string exceptionCondition = string.Empty;
+
+            //exception list is provided
+            if (excludeIds != null && excludeIds.Count > 0)
+            {
+                exceptionCondition = "AND NOT ARRAY_CONTAINS(@exceptionList, c.id)";
+            }
+
+            queryString = string.Format(queryString, exceptionCondition);
+
+
+            var queryDefinition = new QueryDefinition(queryString)
+                .WithParameter("@type", UserContainerType.Command)
+                .WithParameter("@userPhoneNumber", userPhoneNumber);
+
+            if (excludeIds != null && excludeIds.Count > 0)
+            {
+                queryDefinition.WithParameter("@exceptionList", excludeIds);
+            }
+
+            continuationToken = String.IsNullOrEmpty(continuationToken) ? null : continuationToken;
+
+            var commands = await _container.ExtractDataFromQueryIteratorWithToken<UserCommand>(queryDefinition,
+                                                                                               continuationToken,
+                                                                                               maxItemCount);
+
+            return commands;
+        }
+
+
+        /// <summary>
+        /// Insert the given list of commands for the given user phone number
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="commandsToInsert"></param>
+        /// <returns></returns>
+        async Task<int> IUserRepository.InsertCommands(string partitionKey,
+                                                       List<UserCommand> commandsToInsert)
+        {
+
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
+
+            //insert the events
+            foreach (UserCommand commandToInsert in commandsToInsert)
+            {
+                batch.CreateItem<UserCommand>(commandToInsert);
+            }
+
+            TransactionalBatchResponse batchResponse = await batch.ExecuteAsync();
+
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(IUserRepository.InsertCommands)} failed to insert commands for user {partitionKey}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
+        }
+
+
+        /// <summary>
+        /// Deletes the given list of commands for the given user phone number
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="commandsToDelete"></param>
+        /// <returns></returns>
+        async Task<int> IUserRepository.DeleteBatch( string partitionKey,
+                                                     List<Guid> idsToDelete)
+        {
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
+
+            //delete the events
+            foreach (Guid idToDelete in idsToDelete)
+            {
+                batch.DeleteItem(idToDelete.ToString());
+            }
+
+            TransactionalBatchResponse batchResponse = await batch.ExecuteAsync();
+
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(IUserRepository.DeleteBatch)} failed to delete user data for partition key {partitionKey}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
+        }
+
+        /// <summary>
+        /// Inserts in Batch
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="user"></param>
+        /// <param name="userCommand"></param>
+        /// <returns></returns>
+        async Task<int> IUserRepository.InsertBatch(string partitionKey,User user, UserCommand userCommand)
+        {
+
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
+
+            batch.CreateItem<User>(user);
+
+            batch.CreateItem<UserCommand>(userCommand);
+            
+            TransactionalBatchResponse batchResponse = await batch.ExecuteAsync();
+
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(IUserRepository.InsertBatch)} failed to insert user , command for user {partitionKey}";
 
                 throw batchResponse.GetTransactionalBatchException(errorMessage);
             }

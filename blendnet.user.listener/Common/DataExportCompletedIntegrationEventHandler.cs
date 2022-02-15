@@ -74,7 +74,7 @@ namespace blendnet.user.listener.Common
         /// <param name="operationName"></param>
         /// <returns></returns>
 
-        public async Task Handle(   BaseDataExportCompletedIntegrationEvent dataExportCompletedIntegrationEvent,
+        public async Task Handle(BaseDataOperationCompletedIntegrationEvent dataExportCompletedIntegrationEvent,
                                     string operationName)
         {
             try
@@ -95,7 +95,7 @@ namespace blendnet.user.listener.Common
 
                     common.dto.User.User user = await _userRepository.GetUserByPhoneNumber(dataExportCompletedIntegrationEvent.UserPhoneNumber);
 
-                    UserDataExportCommand dataExportCommand = await  _userRepository.GetDataExportCommand(dataExportCompletedIntegrationEvent.UserPhoneNumber, dataExportCompletedIntegrationEvent.CommandId);
+                    UserCommand dataExportCommand = await  _userRepository.GetCommand(dataExportCompletedIntegrationEvent.UserPhoneNumber, dataExportCompletedIntegrationEvent.CommandId);
 
                     if (user == null || dataExportCommand == null)
                     {
@@ -134,14 +134,14 @@ namespace blendnet.user.listener.Common
         /// </summary>
         /// <param name="dataExportCompletedIntegrationEvent"></param>
         /// <returns></returns>
-        private async Task GeneratZipAndNotify(BaseDataExportCompletedIntegrationEvent dataExportCompletedIntegrationEvent)
+        private async Task GeneratZipAndNotify(BaseDataOperationCompletedIntegrationEvent dataExportCompletedIntegrationEvent)
         {
             common.dto.User.User user = await _userRepository.GetUserByPhoneNumber(dataExportCompletedIntegrationEvent.UserPhoneNumber);
 
-            UserDataExportCommand dataExportCommand = await _userRepository.GetDataExportCommand(dataExportCompletedIntegrationEvent.UserPhoneNumber,
+            UserCommand dataExportCommand = await _userRepository.GetCommand(dataExportCompletedIntegrationEvent.UserPhoneNumber,
                                                                            dataExportCompletedIntegrationEvent.CommandId);
 
-            if (dataExportCommand.Status == DataExportRequestStatus.Exported)
+            if (dataExportCommand.DataExportRequestStatus == DataExportRequestStatus.Exported)
             {
                 //zip the files
                 string generatedFilePath = await GenerateZipFile(dataExportCompletedIntegrationEvent, dataExportCommand);
@@ -182,35 +182,35 @@ namespace blendnet.user.listener.Common
         /// <param name="userPhoneNumber"></param>
         /// <param name="commandId"></param>
         /// <returns></returns>
-        private async Task UpdateStatus(BaseDataExportCompletedIntegrationEvent dataExportCompletedIntegrationEvent)
+        private async Task UpdateStatus(BaseDataOperationCompletedIntegrationEvent dataExportCompletedIntegrationEvent)
         {
             common.dto.User.User user = await _userRepository.GetUserByPhoneNumber(dataExportCompletedIntegrationEvent.UserPhoneNumber);
 
-            UserDataExportCommand dataExportCommand = await _userRepository.GetDataExportCommand(dataExportCompletedIntegrationEvent.UserPhoneNumber,
-                                                                                                 dataExportCompletedIntegrationEvent.CommandId);
+            UserCommand dataExportCommand = await _userRepository.GetCommand(dataExportCompletedIntegrationEvent.UserPhoneNumber,
+                                                                            dataExportCompletedIntegrationEvent.CommandId);
 
             //add the existing service completion
-            DataExportByEachServiceDetails dataExportByEachServiceDetail = new DataExportByEachServiceDetails()
+            StatusByEachServiceDetails dataExportByEachServiceDetail = new StatusByEachServiceDetails()
                                                                                 {
                                                                                     CompletedByService = dataExportCompletedIntegrationEvent.ServiceName, 
                                                                                     CompletionDateTime = dataExportCompletedIntegrationEvent.CompletionDateTime ,
-                                                                                    NoDataToExport = dataExportCompletedIntegrationEvent.NoDataToExport
+                                                                                    NoDataToOperate = dataExportCompletedIntegrationEvent.NoDataToOperate
                                                                                 };
 
-            dataExportCommand.DataExportByEachServiceDetails.Add(dataExportByEachServiceDetail);
+            dataExportCommand.StatusByEachServiceDetails.Add(dataExportByEachServiceDetail);
 
             DateTime currentTime = DateTime.UtcNow;
 
             //check if notification is recieved from all services
-            if (dataExportCommand.IsExportComplete())
+            if (dataExportCommand.IsCommandComplete())
             {
-                dataExportCommand.Status = DataExportRequestStatus.Exported;
+                dataExportCommand.DataExportRequestStatus = DataExportRequestStatus.Exported;
 
                 user.DataExportRequestStatus = DataExportRequestStatus.Exported;
 
-                DataExportCommandExecutionDetails executionDetails = new DataExportCommandExecutionDetails()
+                CommandExecutionDetails executionDetails = new CommandExecutionDetails()
                 {
-                    DataExportRequestStatus = DataExportRequestStatus.Exported,
+                    EventName = DataExportRequestStatus.Exported.ToString(),
                     EventDateTime = currentTime
                 };
 
@@ -221,7 +221,7 @@ namespace blendnet.user.listener.Common
 
             user.ModifiedDate = currentTime;
 
-            await _userRepository.UpdateDataExportCommandBatch(dataExportCommand, user, true);
+            await _userRepository.UpdateCommandBatch(dataExportCommand, user, true);
 
         }
 
@@ -231,8 +231,8 @@ namespace blendnet.user.listener.Common
         /// <param name="dataExportCompletedIntegrationEvent"></param>
         /// <param name="dataExportCommand"></param>
         /// <returns></returns>
-        private async Task<string> GenerateZipFile(  BaseDataExportCompletedIntegrationEvent dataExportCompletedIntegrationEvent,
-                                                     UserDataExportCommand dataExportCommand)
+        private async Task<string> GenerateZipFile(BaseDataOperationCompletedIntegrationEvent dataExportCompletedIntegrationEvent,
+                                                     UserCommand dataExportCommand)
         {
             long contentLength;
 
@@ -253,11 +253,11 @@ namespace blendnet.user.listener.Common
                 {
                     zipOutputStream.IsStreamOwner = false;
 
-                    List<DataExportByEachServiceDetails> serviceDetails = dataExportCommand.DataExportByEachServiceDetails;
+                    List<StatusByEachServiceDetails> serviceDetails = dataExportCommand.StatusByEachServiceDetails;
 
-                    foreach (DataExportByEachServiceDetails dataExportDetail in serviceDetails)
+                    foreach (StatusByEachServiceDetails dataExportDetail in serviceDetails)
                     {
-                        if (!dataExportDetail.NoDataToExport)
+                        if (!dataExportDetail.NoDataToOperate)
                         {
                             ZipEntry entry = new ZipEntry($"{dataExportDetail.CompletedByService}.json");
 
@@ -305,17 +305,17 @@ namespace blendnet.user.listener.Common
         /// <param name="dataExportCommand"></param>
         /// <returns></returns>
         private async Task UpdateStatusToComplete(  common.dto.User.User user, 
-                                                    UserDataExportCommand dataExportCommand)
+                                                    UserCommand dataExportCommand)
         {
             DateTime currentTime = DateTime.UtcNow;
 
-            dataExportCommand.Status = DataExportRequestStatus.ExportedDataNotified;
+            dataExportCommand.DataExportRequestStatus = DataExportRequestStatus.ExportedDataNotified;
 
             user.DataExportRequestStatus = DataExportRequestStatus.ExportedDataNotified;
 
-            DataExportCommandExecutionDetails executionDetails = new DataExportCommandExecutionDetails()
+            CommandExecutionDetails executionDetails = new CommandExecutionDetails()
             {
-                DataExportRequestStatus = DataExportRequestStatus.ExportedDataNotified,
+                EventName = DataExportRequestStatus.ExportedDataNotified.ToString(),
                 EventDateTime = currentTime
             };
 
@@ -325,7 +325,7 @@ namespace blendnet.user.listener.Common
 
             user.ModifiedDate = currentTime;
 
-            await _userRepository.UpdateDataExportCommandBatch(dataExportCommand, user);
+            await _userRepository.UpdateCommandBatch(dataExportCommand, user);
 
         }
 
@@ -334,7 +334,7 @@ namespace blendnet.user.listener.Common
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        private async Task<bool> SendNotification(common.dto.User.User user, UserDataExportCommand dataExportCommand)
+        private async Task<bool> SendNotification(common.dto.User.User user, UserCommand dataExportCommand)
         {
             // send notification
             NotificationRequest notificationRequest = new NotificationRequest()

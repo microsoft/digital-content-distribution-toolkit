@@ -1,4 +1,5 @@
 ﻿using blendnet.common.dto;
+using blendnet.common.dto.Common;
 using blendnet.common.dto.Oms;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.oms.repository.Interfaces;
@@ -158,6 +159,30 @@ namespace blendnet.oms.repository.CosmosRepository
             }
         }
 
+        /// <summary>
+        /// Get User Orders based on continuation Token
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <param name="continuationToken"></param>
+        /// <param name="maxItemCount"></param>
+        /// <returns></returns>
+        public async Task<ResultData<Order>> GetOrdersByPhoneNumber(string phoneNumber,string continuationToken,int maxItemCount)
+        {
+            string queryString = @" SELECT * FROM c where c.phoneNumber = @phoneNumber ";
+
+            var queryDefinition = new QueryDefinition(queryString)
+                .WithParameter("@phoneNumber", phoneNumber);
+
+            continuationToken = String.IsNullOrEmpty(continuationToken) ? null : continuationToken;
+
+            var userOrders = await _container.ExtractDataFromQueryIteratorWithToken<Order>(queryDefinition,
+                                                                                                continuationToken,
+                                                                                                maxItemCount);
+
+            return userOrders;
+        }
+
+
         public async Task<List<OrderItem>> GetActiveSubscriptionOrders(string phoneNumber)
         {
             try
@@ -234,6 +259,67 @@ namespace blendnet.oms.repository.CosmosRepository
 
             return userOrders;
         }
+
+        /// <summary>
+        /// Inserts orders in batch
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="ordersToInsert"></param>
+        /// <returns></returns>
+        public async Task<int> InsertOrders(string partitionKey,
+                                            List<Order> ordersToInsert)
+        {
+
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
+
+            //insert the events
+            foreach (Order orderToInsert in ordersToInsert)
+            {
+                batch.CreateItem<Order>(orderToInsert);
+            }
+
+            TransactionalBatchResponse batchResponse = await batch.ExecuteAsync();
+
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(InsertOrders)} failed to insert orders for user {partitionKey}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
+        }
+
+        /// <summary>
+        /// Delete Orders in Batch
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="ordersToDelete"></param>
+        /// <returns></returns>
+        public async Task<int> DeleteOrders(string partitionKey,
+                                            List<Guid> ordersToDelete)
+        {
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
+
+            //delete the events
+            foreach (Guid orderToDelete in ordersToDelete)
+            {
+                batch.DeleteItem(orderToDelete.ToString());
+            }
+
+            TransactionalBatchResponse batchResponse = await batch.ExecuteAsync();
+
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(DeleteOrders)} failed to delete user orders for partition key {partitionKey}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
+        }
+
+
 
         #region private methods
 

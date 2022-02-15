@@ -110,10 +110,21 @@ IHost host = Host.CreateDefaultBuilder(args)
                 //add user export data event handler
                 services.AddTransient<ExportUserDataIntegrationEventHandler>();
 
+                //add user update data event handler
+                services.AddTransient<UpdateUserDataIntegrationEventHandler>();
+
+                //export completed handlers
                 services.AddTransient<DataExportCompletedIntegrationEventHandler>();
                 services.AddTransient<IncentiveDataExportCompletedIntegrationEventHandler>();
                 services.AddTransient<OrderDataExportCompletedIntegrationEventHandler>();
                 services.AddTransient<UserDataExportCompletedIntegrationEventHandler>();
+
+                //update completed handlers
+                services.AddTransient<DataUpdateCompletedIntegrationEventHandler>();
+                services.AddTransient<IncentiveDataUpdateCompletedIntegrationEventHandler>();
+                services.AddTransient<OrderDataUpdateCompletedIntegrationEventHandler>();
+                services.AddTransient<UserDataUpdateCompletedIntegrationEventHandler>();
+
 
             })
             .Build();

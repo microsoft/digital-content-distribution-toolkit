@@ -195,4 +195,10 @@
   <data name="USR_ERR_022" xml:space="preserve">
     <value>USR_ERR_022-Export request should be in submitted state.</value>
   </data>
+  <data name="USR_ERR_023" xml:space="preserve">
+    <value>USR_ERR_023-Delete request should be in submitted state.</value>
+  </data>
+  <data name="USR_ERR_024" xml:space="preserve">
+    <value>USR_ERR_024-User is in Inactive state.</value>
+  </data>
 </root>

@@ -14,12 +14,9 @@ using blendnet.user.repository.Interfaces;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace blendnet.user.api.Controllers
 {
@@ -48,6 +45,9 @@ namespace blendnet.user.api.Controllers
 
         private readonly TelemetryClient _telemetryClient;
 
+        private readonly IDistributedCache _cache;
+
+
         public UserController(IUserRepository userRepository,
                               ILogger<UserController> logger,
                               RetailerProxy retailerProxy,
@@ -57,6 +57,7 @@ namespace blendnet.user.api.Controllers
                               IOptionsMonitor<UserAppSettings> optionsMonitor,
                               IStringLocalizer<SharedResource> stringLocalizer,
                               IMapper mapper,
+                              IDistributedCache cache,
                               TelemetryClient telemetryClient)
         {
             _logger = logger;
@@ -68,6 +69,7 @@ namespace blendnet.user.api.Controllers
             _appSettings = optionsMonitor.CurrentValue;
             _stringLocalizer = stringLocalizer;
             _mapper = mapper;
+            _cache = cache;
             _telemetryClient = telemetryClient;
         }
 
@@ -111,12 +113,27 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="User"></param>
         /// <returns>User Object</returns>
-        [HttpGet("dataExport/list", Name = nameof(GetUsersForExport))]
+        [HttpGet("dataexport/list", Name = nameof(GetUsersForExport))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<List<User>>> GetUsersForExport()
         {
             List<User> users = await _userRepository.GetUsersForExport();
+
+            return Ok(users);
+        }
+
+        /// <summary>
+        /// Get current user details
+        /// </summary>
+        /// <param name="User"></param>
+        /// <returns>User Object</returns>
+        [HttpGet("datadelete/list", Name = nameof(GetUsersForDelete))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult<List<User>>> GetUsersForDelete()
+        {
+            List<User> users = await _userRepository.GetUsersForDelete();
 
             return Ok(users);
         }
@@ -303,7 +320,7 @@ namespace blendnet.user.api.Controllers
         /// API to create a new data export request for user
         /// </summary>
         /// <returns></returns>
-        [HttpPost("dataExport/create", Name = nameof(CreateDataExportCommand))]
+        [HttpPost("dataexport/create", Name = nameof(CreateDataExportCommand))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<int>> CreateDataExportCommand()
         {
@@ -332,19 +349,19 @@ namespace blendnet.user.api.Controllers
             var now = DateTime.UtcNow;
 
             //create new command
-            var newDataExportCommand = new UserDataExportCommand()
+            var newDataExportCommand = new UserCommand(UserCommandType.Export)
             {
                 CreatedByUserId = userId,
                 CreatedDate = now,
                 Id = Guid.NewGuid(),
                 PhoneNumber = phoneNumber,
-                Status = DataExportRequestStatus.Submitted,
+                DataExportRequestStatus = DataExportRequestStatus.Submitted,
                 UserId = userId
             };
 
-            DataExportCommandExecutionDetails executionDetails = new DataExportCommandExecutionDetails()
+            CommandExecutionDetails executionDetails = new CommandExecutionDetails()
             {
-                DataExportRequestStatus = DataExportRequestStatus.Submitted,
+                EventName = DataExportRequestStatus.Submitted.ToString(),
                 EventDateTime = now
             };
 
@@ -355,7 +372,7 @@ namespace blendnet.user.api.Controllers
             existingUser.ModifiedByByUserId = userId;
             existingUser.ModifiedDate = now;
 
-            var response = await _userRepository.CreateDataExportCommandBatch(newDataExportCommand, existingUser);
+            var response = await _userRepository.CreateCommandBatch(newDataExportCommand, existingUser);
 
             var aiEvent = new CreateUserDataExportCommandAIEvent()
             {
@@ -372,10 +389,10 @@ namespace blendnet.user.api.Controllers
         /// Complete the data export command
         /// </summary>
         /// <returns></returns>
-        [HttpPost("dataExport/complete", Name = nameof(CompleteDataExportCommand))]
+        [HttpPost("dataexport/complete", Name = nameof(CompleteDataExportCommand))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult> CompleteDataExportCommand(CompleteDataExportCommandRequest completeDataExportCommandRequest)
+        public async Task<ActionResult> CompleteDataExportCommand(CompleteCommandRequest completeDataExportCommandRequest)
         {
             List<string> errorInfo = new List<string>();
 
@@ -390,8 +407,17 @@ namespace blendnet.user.api.Controllers
                 return NotFound();
             }
 
+            //User should be in Active State
+            if (existingUser.AccountStatus != UserAccountStatus.Active)
+            {
+                errorInfo.Add(_stringLocalizer["USR_ERR_024"]);
+
+                return BadRequest(errorInfo);
+            }
+
+
             //get existing command details
-            UserDataExportCommand existingExportCommand = await _userRepository.GetDataExportCommand(phoneNumber, existingUser.DataExportStatusUpdatedBy.Value);
+            UserCommand existingExportCommand = await _userRepository.GetCommand(phoneNumber, existingUser.DataExportStatusUpdatedBy.Value);
 
             if (existingExportCommand is null)
             {
@@ -401,7 +427,7 @@ namespace blendnet.user.api.Controllers
             //if the request is in progress do not accept another request
             //command and user status should be in submitted state
             if (existingUser.DataExportRequestStatus != DataExportRequestStatus.Submitted ||
-                existingExportCommand.Status != DataExportRequestStatus.Submitted
+                existingExportCommand.DataExportRequestStatus != DataExportRequestStatus.Submitted
                 )
             {
                 errorInfo.Add(_stringLocalizer["USR_ERR_022"]);
@@ -415,20 +441,20 @@ namespace blendnet.user.api.Controllers
             existingUser.ModifiedByByUserId = userId;
             existingUser.ModifiedDate = now;
 
-            existingExportCommand.Status = DataExportRequestStatus.ExportInProgress;
+            existingExportCommand.DataExportRequestStatus = DataExportRequestStatus.ExportInProgress;
             existingExportCommand.ModifiedByByUserId = userId;
             existingExportCommand.ModifiedDate = now;
 
-            DataExportCommandExecutionDetails executionDetails = new DataExportCommandExecutionDetails()
+            CommandExecutionDetails executionDetails = new CommandExecutionDetails()
             {
-                DataExportRequestStatus = DataExportRequestStatus.ExportInProgress,
+                EventName = DataExportRequestStatus.ExportInProgress.ToString(),
                 EventDateTime = now
             };
 
             existingExportCommand.ExecutionDetails.Add(executionDetails);
 
             //update the command and user object 
-            await _userRepository.UpdateDataExportCommandBatch(existingExportCommand, existingUser);
+            await _userRepository.UpdateCommandBatch(existingExportCommand, existingUser);
 
             //publish the event so that each individual listener can export the data and notify back
             ExportUserDataIntegrationEvent exportUserDataIntegrationEvent = new ExportUserDataIntegrationEvent()
@@ -451,30 +477,147 @@ namespace blendnet.user.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<ActionResult> DeleteUserAccount()
         {
-            string callerPhoneNumber = this.User.Identity.Name;
-            Guid callerUserId = UserClaimData.GetUserId(this.User.Claims);
+            List<string> errorInfo = new List<string>();
 
-            User user = await _userRepository.GetUserByPhoneNumber(callerPhoneNumber);
+            string phoneNumber = this.User.Identity.Name;
 
-            if (user is null)
+            Guid userId = UserClaimData.GetUserId(this.User.Claims);
+
+            User existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
+
+            if (existingUser is null)
             {
                 return NotFound();
             }
 
-            // mark user for deletion
-            user.AccountStatus = UserAccountStatus.Blocked_DeletionInProgress;
-            user.ModifiedByByUserId = callerUserId;
-            user.ModifiedDate = DateTime.UtcNow;
+            //if the request is in progress do not accept another request
+            if (existingUser.AccountStatus != UserAccountStatus.Active)
+            {
+                errorInfo.Add(_stringLocalizer["USR_ERR_021"]);
 
-            await _userRepository.UpdateUser(user);
+                return BadRequest(errorInfo);
+            }
+
+            //
+            var now = DateTime.UtcNow;
+
+            //create new command
+            var newDataUpdateCommand = new UserCommand(UserCommandType.Update)
+            {
+                Id = Guid.NewGuid(),
+                CreatedByUserId = userId,
+                CreatedDate = now,
+                PhoneNumber = phoneNumber,
+                DataUpdateRequestStatus = DataUpdateRequestStatus.Submitted,
+                UserId = userId
+            };
+
+            CommandExecutionDetails executionDetails = new CommandExecutionDetails()
+            {
+                EventName = DataUpdateRequestStatus.Submitted.ToString(),
+                EventDateTime = now
+            };
+
+            newDataUpdateCommand.ExecutionDetails.Add(executionDetails);
+
+            // mark user for deletion
+            existingUser.AccountStatus = UserAccountStatus.InActive;
+            existingUser.DataUpdateRequestStatus = DataUpdateRequestStatus.Submitted;
+            existingUser.DataUpdateStatusUpdatedBy = newDataUpdateCommand.Id;
+            existingUser.ModifiedByByUserId = userId;
+            existingUser.ModifiedDate = now;
+
+            //create command and update user in batch
+            await _userRepository.CreateCommandBatch(newDataUpdateCommand, existingUser);
+
+            //remove the user from cache. so that new state with new status gets loaded during authentication process
+            string userByPhoneNoCacheKey = $"{phoneNumber}{ApplicationConstants.DistributedCacheKeySuffix.USERBYPHONEKEY}";
+
+            await _cache.RemoveAsync(userByPhoneNoCacheKey);
 
             // record telemetry
             var aiEvent = new DeleteUserDataAIEvent()
             {
-                UserId = callerUserId,
+                UserId = userId,
+                RequestId = newDataUpdateCommand.Id
             };
 
             _telemetryClient.TrackEvent(aiEvent);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Complete the data delete command
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("datadelete/complete", Name = nameof(CompleteDataDeleteCommand))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
+        public async Task<ActionResult> CompleteDataDeleteCommand(CompleteCommandRequest completeDataDeleteCommandRequest)
+        {
+            List<string> errorInfo = new List<string>();
+
+            string phoneNumber = completeDataDeleteCommandRequest.UserPhoneNumber;
+
+            var userId = UserClaimData.GetUserId(this.User.Claims);
+
+            var existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
+
+            if (existingUser is null || !existingUser.DataUpdateStatusUpdatedBy.HasValue)
+            {
+                return NotFound();
+            }
+
+            //get existing command details
+            UserCommand existingUpdateCommand = await _userRepository.GetCommand(phoneNumber, existingUser.DataUpdateStatusUpdatedBy.Value);
+
+            if (existingUpdateCommand is null)
+            {
+                return NotFound();
+            }
+
+            //if the request is in progress do not accept another request
+            //if the user is deleted does not 
+            if (existingUser.DataUpdateRequestStatus != DataUpdateRequestStatus.Submitted ||
+                existingUpdateCommand.DataUpdateRequestStatus != DataUpdateRequestStatus.Submitted
+                )
+            {
+                errorInfo.Add(_stringLocalizer["USR_ERR_023"]);
+
+                return BadRequest(errorInfo);
+            }
+
+            DateTime now = DateTime.UtcNow;
+
+            existingUser.DataUpdateRequestStatus = DataUpdateRequestStatus.UpdateInProgress;
+            existingUser.ModifiedByByUserId = userId;
+            existingUser.ModifiedDate = now;
+
+            existingUpdateCommand.DataUpdateRequestStatus = DataUpdateRequestStatus.UpdateInProgress;
+            existingUpdateCommand.ModifiedByByUserId = userId;
+            existingUpdateCommand.ModifiedDate = now;
+
+            CommandExecutionDetails executionDetails = new CommandExecutionDetails()
+            {
+                EventName = DataUpdateRequestStatus.UpdateInProgress.ToString(),
+                EventDateTime = now
+            };
+
+            existingUpdateCommand.ExecutionDetails.Add(executionDetails);
+
+            //update the command and user object 
+            await _userRepository.UpdateCommandBatch(existingUpdateCommand, existingUser);
+
+            //publish the event so that each individual listener can update the data and notify back
+            UpdateUserDataIntegrationEvent updateUserDataIntegrationEvent = new UpdateUserDataIntegrationEvent()
+            {
+                UserId = existingUser.UserId,
+                UserPhoneNumber = existingUser.PhoneNumber,
+                CommandId = existingUpdateCommand.Id,
+            };
+
+            await _eventBus.Publish(updateUserDataIntegrationEvent);
 
             return NoContent();
         }
@@ -485,19 +628,19 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="User"></param>
         /// <returns>User Object</returns>
-        [HttpPost("dataExport/command", Name = nameof(GetCommand))]
+        [HttpPost("command", Name = nameof(GetCommand))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult<UserDataExportCommand>> GetCommand(UserExportCommandRequest request)
+        public async Task<ActionResult<UserCommand>> GetCommand(UserCommandRequest request)
         {
-            UserDataExportCommand userDataExportCommand = await _userRepository.GetDataExportCommand(request.PhoneNumber, request.CommandId);
+            UserCommand userCommand = await _userRepository.GetCommand(request.PhoneNumber, request.CommandId);
 
-            if (userDataExportCommand is null)
+            if (userCommand is null)
             {
                 return NotFound();
             }else
             {
-                return Ok(userDataExportCommand);
+                return Ok(userCommand);
             }
         }
 

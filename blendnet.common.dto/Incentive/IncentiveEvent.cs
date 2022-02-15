@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace blendnet.common.dto.Incentive
 {
+    /// <summary>
+    /// Incentive Event
+    /// </summary>
     public class IncentiveEvent : BaseDto
     {
         /// <summary>
@@ -63,6 +66,11 @@ namespace blendnet.common.dto.Incentive
         /// Target audience of event. Useful when getting overall summary based on audience
         /// </summary>
         public Audience Audience { get; set; }
+
+        /// <summary>
+        /// If the user to which incentive is attached is deleted
+        /// </summary>
+        public bool IsUserDeleted { get; set; }
 
     }
 

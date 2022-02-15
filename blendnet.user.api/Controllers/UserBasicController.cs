@@ -88,7 +88,7 @@ namespace blendnet.user.api.Controllers
                         inactiveAccountReason = string.Empty;
                         break;
                     }
-                case UserAccountStatus.Blocked_DeletionInProgress:
+                case UserAccountStatus.InActive:
                     {
                         inactiveAccountReason = _stringLocalizer["USR_ERR_020"];
                         break;

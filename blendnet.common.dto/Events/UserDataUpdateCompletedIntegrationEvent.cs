@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 namespace blendnet.common.dto.Events
 {
     /// <summary>
-    /// Order Data Export Completed Integration Event
+    /// occurs when the user commands update is completed
     /// </summary>
-    public class OrderDataExportCompletedIntegrationEvent: BaseDataOperationCompletedIntegrationEvent
+    public class UserDataUpdateCompletedIntegrationEvent: BaseDataOperationCompletedIntegrationEvent
     {
         /// <summary>
         /// return service name
         /// </summary>
-        public override string ServiceName 
-        { 
+        public override string ServiceName
+        {
             get
             {
-                return ApplicationConstants.BlendNetServices.OMSService;
+                return ApplicationConstants.BlendNetServices.UserService;
             }
         }
     }

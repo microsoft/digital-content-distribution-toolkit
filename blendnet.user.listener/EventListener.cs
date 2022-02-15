@@ -43,9 +43,17 @@ namespace blendnet.user.listener
             _logger.LogInformation("Starting Eventlistner of blendnet.user.listener");
 
             _eventBus.Subscribe<ExportUserDataIntegrationEvent, ExportUserDataIntegrationEventHandler>();
+            _eventBus.Subscribe<UpdateUserDataIntegrationEvent, UpdateUserDataIntegrationEventHandler>();
+
+            //export completed handlers
             _eventBus.Subscribe<IncentiveDataExportCompletedIntegrationEvent, IncentiveDataExportCompletedIntegrationEventHandler>();
             _eventBus.Subscribe<OrderDataExportCompletedIntegrationEvent, OrderDataExportCompletedIntegrationEventHandler>();
             _eventBus.Subscribe<UserDataExportCompletedIntegrationEvent, UserDataExportCompletedIntegrationEventHandler>();
+
+            //update completed handlers
+            _eventBus.Subscribe<IncentiveDataUpdateCompletedIntegrationEvent, IncentiveDataUpdateCompletedIntegrationEventHandler>();
+            _eventBus.Subscribe<OrderDataUpdateCompletedIntegrationEvent, OrderDataUpdateCompletedIntegrationEventHandler>();
+            _eventBus.Subscribe<UserDataUpdateCompletedIntegrationEvent, UserDataUpdateCompletedIntegrationEventHandler>();
 
             await _eventBus.StartProcessing();
 

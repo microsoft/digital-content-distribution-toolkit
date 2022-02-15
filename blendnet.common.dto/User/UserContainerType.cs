@@ -13,6 +13,6 @@ namespace blendnet.common.dto.User
     public enum UserContainerType
     {
         User = 0,
-        UserDataExportCommand = 1,
+        Command = 1
     }
 }

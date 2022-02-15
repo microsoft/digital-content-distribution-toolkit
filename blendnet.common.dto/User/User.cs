@@ -23,7 +23,7 @@ namespace blendnet.common.dto.User
     public enum UserAccountStatus
     {
         Active = 0,
-        Blocked_DeletionInProgress = 1,
+        InActive = 1,
     }
 
     /// <summary>
@@ -86,6 +86,22 @@ namespace blendnet.common.dto.User
         /// Data last Exported by command id
         /// </summary>
         public DataExportedBy DataExportedBy { get; set; }
+
+        /// <summary>
+        /// ID of Data Update Request command
+        /// </summary>
+        public Guid? DataUpdateStatusUpdatedBy { get; set; }
+
+        /// <summary>
+        /// Data Update Request Status
+        /// </summary>
+        public DataUpdateRequestStatus DataUpdateRequestStatus { get; set; } = DataUpdateRequestStatus.NotInitialized;
+
+
+        /// <summary>
+        /// If the user is deleted
+        /// </summary>
+        public bool IsUserDeleted { get; set; }
 
         public static bool IsPhoneNumberValid(string phoneNumber)
         {

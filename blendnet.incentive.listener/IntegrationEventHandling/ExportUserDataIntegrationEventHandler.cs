@@ -152,7 +152,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                                         UserPhoneNumber = integrationEvent.UserPhoneNumber,
                                         CommandId = integrationEvent.CommandId,
                                         CompletionDateTime = DateTime.UtcNow,
-                                        NoDataToExport = noDataToExport
+                                        NoDataToOperate = noDataToExport
                                     };
 
             await _eventBus.Publish(incentiveDataExportCompletedIntegrationEvent);

@@ -8,5 +8,7 @@ namespace blendnet.user.api.Models
     public class DeleteUserDataAIEvent : BaseAIEvent
     {
         public Guid UserId { get; set; }
+
+        public Guid RequestId { get; set; }
     }
 }

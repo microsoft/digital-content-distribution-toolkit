@@ -162,6 +162,7 @@ namespace blendnet.incentive.listener
             services.AddTransient<UserStreamContentIncentiveIntegrationEventHandler>();
             services.AddTransient<UserOnboardingRatingSubmittedIncentiveIntegrationEventHandler>();
             services.AddTransient<ExportUserDataIntegrationEventHandler>();
+            services.AddTransient<UpdateUserDataIntegrationEventHandler>();
 
         }
 

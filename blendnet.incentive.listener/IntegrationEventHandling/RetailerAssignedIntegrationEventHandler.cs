@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using blendnet.common.infrastructure.Extensions;
+using blendnet.common.dto;
 
 namespace blendnet.incentive.listener.IntegrationEventHandling
 {
@@ -20,13 +21,6 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
     /// </summary>
     public class RetailerAssignedIntegrationEventHandler : IIntegrationEventHandler<RetailerAssignedIntegrationEvent>
     {
-        private const string C_UserPhone = "UserPhone";
-        private const string C_RetailerPartnerId = "RetailerPartnerId";
-        private const string C_UserId = "UserId";
-        private const string C_RetailerRefferalCode = "RetailerRefferalCode";
-        private const string C_RetailerRefferalDate = "RetailerRefferalDate";
-        private const string C_RetailerPartnerCode = "RetailerPartnerCode";
-
         private readonly IEventRepository _eventRepository;
 
         private readonly IIncentiveRepository _incentiveRepository;
@@ -117,42 +111,42 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
             Property userData = new Property()
             {
-                Name = C_UserPhone,
+                Name =  ApplicationConstants.IncentiveEventAdditionalPropertyKeys.UserPhone,
                 Value = user.PhoneNumber
             };
             incentiveEvent.Properties.Add(userData);
 
             Property userIdData = new Property()
             {
-                Name = C_UserId,
+                Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.UserId,
                 Value = user.UserId.ToString()
             };
             incentiveEvent.Properties.Add(userIdData);
 
             Property retailerData = new Property()
             {
-                Name = C_RetailerPartnerId,
+                Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.RetailerPartnerId,
                 Value = user.ReferralInfo.RetailerPartnerId
             };
             incentiveEvent.Properties.Add(retailerData);
 
             Property retailerReferralCodeData = new Property()
             {
-                Name = C_RetailerRefferalCode,
+                Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.RetailerRefferalCode,
                 Value = user.ReferralInfo.RetailerReferralCode
             };
             incentiveEvent.Properties.Add(retailerReferralCodeData);
 
             Property retailerReferralDate = new Property()
             {
-                Name = C_RetailerRefferalDate,
+                Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.RetailerRefferalDate,
                 Value = user.ReferralInfo.ReferralDateTime.ToString()
             };
             incentiveEvent.Properties.Add(retailerReferralDate);
 
             Property retailerPartnerCodeData = new Property()
             {
-                Name = C_RetailerPartnerCode,
+                Name = ApplicationConstants.IncentiveEventAdditionalPropertyKeys.RetailerPartnerCode,
                 Value = user.ReferralInfo.RetailerPartnerCode
             };
             incentiveEvent.Properties.Add(retailerPartnerCodeData);

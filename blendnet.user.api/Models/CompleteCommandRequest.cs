@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.user.api.Models
 {
-    public class CompleteDataExportCommandRequest
+    public class CompleteCommandRequest
     {
         [Required]
         [StringLength(ApplicationConstants.MaxMinLength.Phone_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Phone_Min_Length)]

@@ -265,6 +265,159 @@ namespace blendnet.incentive.repository.IncentiveRepository
             return userIncentiveEvents;
         }
 
-       
+
+        /// <summary>
+        /// Get User Events 
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <param name="continuationToken"></param>
+        /// <param name="maxItemCount"></param>
+        /// <returns></returns>
+        public async Task<ResultData<IncentiveEvent>> GetUserEvents(string phoneNumber, 
+                                                                    string continuationToken, 
+                                                                    int maxItemCount)
+        {
+            string queryString = @"   SELECT *
+                                      FROM c 
+                                      WHERE c.eventCreatedFor = @eventCreatedFor
+                                      AND c.audience.audienceType = @audienceType ";
+
+
+            var queryDefinition = new QueryDefinition(queryString)
+                .WithParameter("@eventCreatedFor", phoneNumber)
+                .WithParameter("@audienceType", AudienceType.CONSUMER);
+
+            continuationToken = String.IsNullOrEmpty(continuationToken) ? null : continuationToken;
+
+            var incentiveEvents = await _container.ExtractDataFromQueryIteratorWithToken<IncentiveEvent>(   queryDefinition, 
+                                                                                                            continuationToken,
+                                                                                                            maxItemCount);
+
+            return incentiveEvents;
+        }
+
+        /// <summary>
+        /// Get retailer events which were for the given user.
+        /// Query is not based on partition key.
+        /// Use in exceptional scenarios
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <param name="continuationToken"></param>
+        /// <param name="maxItemCount"></param>
+        /// <returns></returns>
+        public async Task<ResultData<IncentiveEvent>> GetRetailerEventsForUser(string userPhoneNumber,
+                                                                        string continuationToken,
+                                                                        int maxItemCount)
+        {
+            string queryString = @"   SELECT VALUE c
+                                      FROM c
+                                      JOIN (SELECT VALUE p 
+                                            FROM p IN c.properties 
+                                            WHERE p.name = @propertyName
+                                            AND   p[""value""] = @userPhoneNumber) AS properties
+                                      WHERE c.audience.audienceType = @audienceType ";
+
+
+            var queryDefinition = new QueryDefinition(queryString)
+                .WithParameter("@propertyName", ApplicationConstants.IncentiveEventAdditionalPropertyKeys.UserPhone)
+                .WithParameter("@userPhoneNumber", userPhoneNumber)
+                .WithParameter("@audienceType", AudienceType.RETAILER);
+
+            var incentiveEvents = await _container.ExtractDataFromQueryIteratorWithToken<IncentiveEvent>(queryDefinition,
+                                                                                                         continuationToken,
+                                                                                                         maxItemCount);
+
+            return incentiveEvents;
+        }
+
+        /// <summary>
+        /// Delete incentive event in batch
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="userId"></param>
+        /// <param name="eventsToDelete"></param>
+        /// <returns></returns>
+        public async Task<int> DeleteIncentiveEvents(string partitionKey,
+                                                    List<Guid> eventsToDelete)
+        {
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
+
+            //delete the events
+            foreach(Guid eventToDelete in eventsToDelete)
+            {
+                batch.DeleteItem(eventToDelete.ToString());
+            }
+
+            TransactionalBatchResponse batchResponse = await batch.ExecuteAsync();
+
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(DeleteIncentiveEvents)} failed to delete user events for partition key {partitionKey}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
+        }
+
+        /// <summary>
+        /// Insert User Events
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="eventsToInsert"></param>
+        /// <returns></returns>
+        public async Task<int> InsertIncentiveEvents(   string partitionKey,
+                                                        List<IncentiveEvent> eventsToInsert)
+        {
+
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
+
+            //insert the events
+            foreach (IncentiveEvent eventToInsert in eventsToInsert)
+            {
+                batch.CreateItem<IncentiveEvent>(eventToInsert);
+            }
+
+            TransactionalBatchResponse batchResponse = await batch.ExecuteAsync();
+
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(InsertIncentiveEvents)} failed to insert events for user {partitionKey}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
+        }
+
+        /// <summary>
+        /// Update Incentive Events
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="eventsToUpdate"></param>
+        /// <returns></returns>
+        public async Task<int> UpdateIncentiveEvents(   string partitionKey,
+                                                        List<IncentiveEvent> eventsToUpdate)
+        {
+
+            TransactionalBatch batch = _container.CreateTransactionalBatch(new PartitionKey(partitionKey));
+
+            //insert the events
+            foreach (IncentiveEvent eventToUpdate in eventsToUpdate)
+            {
+                batch.ReplaceItem<IncentiveEvent>(eventToUpdate.EventId.ToString(), eventToUpdate);
+            }
+
+            TransactionalBatchResponse batchResponse = await batch.ExecuteAsync();
+
+            if (!batchResponse.IsSuccessStatusCode)
+            {
+                string errorMessage = $"{nameof(UpdateIncentiveEvents)} failed to update events for partition key {partitionKey}";
+
+                throw batchResponse.GetTransactionalBatchException(errorMessage);
+            }
+
+            return (int)batchResponse.StatusCode;
+        }
     }
 }

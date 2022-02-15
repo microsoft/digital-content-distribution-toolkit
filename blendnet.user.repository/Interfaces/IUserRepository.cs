@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using blendnet.common.dto.Common;
 using blendnet.common.dto.User;
 
 namespace blendnet.user.repository.Interfaces
@@ -30,10 +31,17 @@ namespace blendnet.user.repository.Interfaces
         public Task<common.dto.User.User> GetUserByPhoneNumber(string phoneNumber);
 
         /// <summary>
-        /// Returns the list of users for export
+        /// Returns the list of users who have ever requested for export
         /// </summary>
         /// <returns></returns>
         public Task<List<common.dto.User.User>> GetUsersForExport();
+
+
+        /// <summary>
+        /// Returns the list of users who have ever requested for delete
+        /// </summary>
+        /// <returns></returns>
+        Task<List<common.dto.User.User>> GetUsersForDelete();
 
 
         /// <summary>
@@ -80,37 +88,75 @@ namespace blendnet.user.repository.Interfaces
         Task<int> DeleteWhitelistedUser(string phoneNumber);
 
         /// <summary>
-        /// Gets the Data Export Command
+        /// Gets the Command
         /// </summary>
         /// <param name="phoneNumber">phone number of the user</param>
-        /// <param name="commandId">Data Export Command ID</param>
-        /// <returns>Data Export Command</returns>
-        Task<UserDataExportCommand> GetDataExportCommand(string phoneNumber, Guid commandId);
+        /// <param name="commandId">Command ID</param>
+        /// <returns>Command</returns>
+        Task<UserCommand> GetCommand(string phoneNumber, Guid commandId);
 
         /// <summary>
-        /// Creates the Data Export Command
+        /// Create Command and Update User in Batch
         /// </summary>
-        /// <param name="userDataExportCommand">Command to be created</param>
-        /// <param name="user">user</param>
-        /// <returns>status code</returns>
-        Task<int> CreateDataExportCommandBatch(UserDataExportCommand userDataExportCommand, common.dto.User.User user);
-
-        /// <summary>
-        /// Updates the data export Command
-        /// </summary>
-        /// <param name="userDataExportCommand">Command to be updated</param>
-        /// <returns>status code</returns>
-        Task<int> UpdateDataExportCommand(UserDataExportCommand userDataExportCommand);
-
-        /// <summary>
-        /// Update the user and export command in batch
-        /// </summary>
-        /// <param name="userDataExportCommand"></param>
+        /// <param name="userCommand"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        Task<int> UpdateDataExportCommandBatch(UserDataExportCommand userDataExportCommand,
-                                               common.dto.User.User user,
-                                               bool performETAGValidation = false);
+        Task<int> CreateCommandBatch(UserCommand userCommand, common.dto.User.User user);
 
+        /// <summary>
+        /// Updates Command
+        /// </summary>
+        /// <param name="userCommand"></param>
+        /// <returns></returns>
+        Task<int> UpdateCommand(UserCommand userCommand);
+
+        /// <summary>
+        /// Update User Command and User
+        /// </summary>
+        /// <param name="userCommand"></param>
+        /// <param name="user"></param>
+        /// <param name="performETAGValidation"></param>
+        /// <returns></returns>
+        Task<int> UpdateCommandBatch(UserCommand userCommand,
+                                          common.dto.User.User user,
+                                          bool performETAGValidation = false);
+        /// <summary>
+        /// Gets all the commands for the given user phone number.
+        /// Also allows to provide the exlusion list of command ids
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <param name="excludeIds"></param>
+        /// <param name="continuationToken"></param>
+        /// <param name="maxItemCount"></param>
+        /// <returns></returns>
+        Task<ResultData<UserCommand>> GetCommands(string userPhoneNumber,
+                                                  List<Guid> excludeIds,
+                                                  string continuationToken,
+                                                  int maxItemCount);
+
+        /// <summary>
+        /// Deletes the given list of commands for the given user phone number
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="commandsToDelete"></param>
+        /// <returns></returns>
+        Task<int> DeleteBatch(string partitionKey, List<Guid> idsToDelete);
+
+        /// <summary>
+        /// Insert the given list of commands for the given user phone number
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="commandsToInsert"></param>
+        /// <returns></returns>
+        Task<int> InsertCommands(string partitionKey, List<UserCommand> commandsToInsert);
+
+        /// <summary>
+        /// Inserts User and User Command in Batch
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="user"></param>
+        /// <param name="userCommand"></param>
+        /// <returns></returns>
+        Task<int> InsertBatch(string partitionKey, User user, UserCommand userCommand);
     }
 }

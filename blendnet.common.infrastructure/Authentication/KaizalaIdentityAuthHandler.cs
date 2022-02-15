@@ -53,10 +53,19 @@ namespace blendnet.common.infrastructure.Authentication
 
             User user = await _userDetails.GetUserDetails(phoneNumber);
 
+            //if no user details found in User Collection
             if (user is null)
             {
                 _authLogger.LogInformation($"Failed to get user details from user collection for {headerValue.Parameter.Mask()}");
                 
+                return additionalValidationResponse;
+            }
+
+            //if user is in Inactive state, reject
+            if (user.AccountStatus != UserAccountStatus.Active)
+            {
+                _authLogger.LogInformation($"User {headerValue.Parameter.Mask()} is not in active state. Hence rejecting.");
+
                 return additionalValidationResponse;
             }
 

@@ -110,6 +110,11 @@ namespace blendnet.common.dto.Oms
             OrderCreatedDate = DateTime.UtcNow;
             OrderItems = new List<OrderItem>();
         }
+
+        /// <summary>
+        /// If the user to which Order is attached is deleted
+        /// </summary>
+        public bool IsUserDeleted { get; set; }
     }
 
     /// <summary>
