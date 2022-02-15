@@ -1,242 +1,341 @@
-﻿using blendnet.api.proxy.Retailer;
+using AutoMapper;
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
-using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.user.api.Models;
 using blendnet.user.repository.Interfaces;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
-using System.Security.Claims;
 
 namespace blendnet.user.api.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = KaizalaIdentityAuthOptions.BasicIdentityScheme)]
+    [Authorize]
     public class UserBasicController : ControllerBase
     {
         private readonly ILogger _logger;
 
-        private IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        private UserAppSettings _appSettings;
-
-        IStringLocalizer<SharedResource> _stringLocalizer;
-
-        private TelemetryClient _telemetryClient;
-
-        private RetailerProxy _retailerProxy;
+        private readonly RetailerProxy _retailerProxy;
 
         private readonly IEventBus _eventBus;
 
-        public UserBasicController(IUserRepository userRepository,
-                              ILogger<UserController> logger,
-                              IOptionsMonitor<UserAppSettings> optionsMonitor,
-                              IStringLocalizer<SharedResource> stringLocalizer,
-                              IEventBus eventBus,
-                              RetailerProxy retailerProxy,
-                              TelemetryClient telemetryClient)
+        private readonly IStringLocalizer<SharedResource> _stringLocalizer;
+
+        private readonly IMapper _mapper;
+
+        private readonly IDistributedCache _cache;
+
+        private readonly TelemetryClient _telemetryClient;
+
+        public UserBasicController( IUserRepository userRepository,
+                                    ILogger<UserController> logger,
+                                    RetailerProxy retailerProxy,
+                                    IEventBus eventBus,
+                                    IStringLocalizer<SharedResource> stringLocalizer,
+                                    IMapper mapper,
+                                    IDistributedCache cache,
+                                    TelemetryClient telemetryClient)
         {
             _logger = logger;
             _userRepository = userRepository;
-            _appSettings = optionsMonitor.CurrentValue;
-            _stringLocalizer = stringLocalizer;
-            _telemetryClient = telemetryClient;
-            _eventBus = eventBus;
             _retailerProxy = retailerProxy;
+            _eventBus = eventBus;
+            _stringLocalizer = stringLocalizer;
+            _mapper = mapper;
+            _cache = cache;
+            _telemetryClient = telemetryClient;
         }
 
         /// <summary>
-        /// Create BlendNet User
+        /// Get current user details
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns>Status</returns>
-        [HttpPost("user", Name = nameof(CreateUserNew))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult> CreateUserNew(CreateUserRequest request)
+        /// <param name="User"></param>
+        /// <returns>User Object</returns>
+        [HttpGet("me", Name = nameof(GetUser))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<UserResponse>> GetUser()
         {
-            Guid identityId = GetIdentityUserId(User.Claims);
-            String phoneNumber = this.User.Identity.Name;
+            var callerPhoneNumber = this.User.Identity.Name;
 
-            if (_appSettings.AllowWhitelistedUsersOnly)
+            var user = await _userRepository.GetUserByPhoneNumber(callerPhoneNumber);
+
+            if (user is null)
             {
-                var whitelistedUser = await _userRepository.GetWhitelistedUser(phoneNumber);
-                if (whitelistedUser is null)
-                {
-                    // This user is not enlisted
-                    return BadRequest(new string[] {
-                        _stringLocalizer["USR_ERR_016"]
-                    });
-                }
+                return NotFound();
             }
 
-            User user = await CreateUserIfNotExistsInternal(request);
+            var mappedUser = _mapper.Map<UserResponse>(user);
 
-            // check for user's account status
-            string inactiveAccountReason = null;
-            switch (user.AccountStatus)
-            {
-                case UserAccountStatus.Active:
-                    {
-                        inactiveAccountReason = string.Empty;
-                        break;
-                    }
-                case UserAccountStatus.InActive:
-                    {
-                        inactiveAccountReason = _stringLocalizer["USR_ERR_020"];
-                        break;
-                    }
-            }
-
-            if (!string.IsNullOrEmpty(inactiveAccountReason))
-            {
-                return BadRequest(new string[] { inactiveAccountReason });
-            }
-
-            return Ok(user.UserId);
+            return Ok(mappedUser);
         }
 
         /// <summary>
-        /// API to link User identity to unlinked retailer
+        /// Update User Profile
         /// </summary>
-        /// <param name="linkRetailerRequest"></param>
+        /// <param name="User"></param>
         /// <returns></returns>
-        [HttpPost("linkRetailer", Name = nameof(LinkRetailer))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult> LinkRetailer(LinkRetailerRequest linkRetailerRequest)
+        [HttpPut("profile", Name = nameof(UpdateProfile))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult> UpdateProfile(UpdateProfileRequest request)
         {
-            Guid identityId = GetIdentityUserId(User.Claims);
+            List<string> errorInfo = new List<string>();
+            User user = await _userRepository.GetUserByPhoneNumber(this.User.Identity.Name);
+            if(user == null){
+                return NotFound();
+            }
+            user.Name = request.Name;
+            int response = await _userRepository.UpdateUser(user);
+            if (response == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Assign Retailer(Referral) data  to the Customer
+        /// </summary>
+        /// <param name="referralDto"></param>
+        /// <returns>/returns>
+        [HttpPost("assignretailer/{referralCode}", Name = nameof(AssignRetailer))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult> AssignRetailer(string referralCode)
+        {
+            List<string> errorInfo = new List<string>();
+
             String phoneNumber = this.User.Identity.Name;
-
-            User user = await CreateUserIfNotExistsInternal(new CreateUserRequest()
+            User user = await _userRepository.GetUserByPhoneNumber(phoneNumber);
+            if (user == null)
             {
-                ChannelId = Channel.CMSPortal,
-                UserName = "",
-            });
-
-            RetailerDto retailerToLink = await _retailerProxy.GetRetailerById(linkRetailerRequest.PartnerProvidedId, linkRetailerRequest.PartnerCode);
-
-            if (retailerToLink is null)
-            {
-                return BadRequest(new string[] {
-                    String.Format(_stringLocalizer["USR_ERR_014"], linkRetailerRequest.PartnerProvidedId, linkRetailerRequest.PartnerCode),
-                });
+                errorInfo.Add(String.Format(_stringLocalizer["USR_ERR_002"], phoneNumber));
+                return NotFound(errorInfo);
             }
 
-            if (retailerToLink.UserId != Guid.Empty) // retailer is alredy linked
+            if (user.ChannelId != Channel.ConsumerApp)
             {
-                if (retailerToLink.UserId == user.UserId)
-                {
-                    // trying to link to same user, so should be OK, and nothing more to do here
-                    return Ok();
-                }
-                else
-                {
-                    // trying to link when retailer is linked to another user
-                    return BadRequest(new string[] {
-                        String.Format(_stringLocalizer["USR_ERR_015"], linkRetailerRequest.PartnerProvidedId, linkRetailerRequest.PartnerCode),
-                    });
-                }
+                errorInfo.Add(_stringLocalizer["USR_ERR_003"]);
+                return BadRequest(errorInfo);
             }
 
-            LinkRetailerIntegrationEvent linkRetailerIntegrationEvent = new LinkRetailerIntegrationEvent()
+            if (user.ReferralInfo != null)
             {
-                PartnerProvidedId = linkRetailerRequest.PartnerProvidedId,
-                PartnerCode = linkRetailerRequest.PartnerCode,
-                User = user,
+                errorInfo.Add(string.Format(_stringLocalizer["USR_ERR_004"],user.ReferralInfo.RetailerReferralCode));
+                return BadRequest(errorInfo);
+            }
+
+            RetailerDto retailerDto = await _retailerProxy.GetRetailerByReferralCode(referralCode);
+            if(retailerDto == null)
+            {
+                errorInfo.Add(_stringLocalizer["USR_ERR_005"]);
+                return BadRequest(errorInfo);
+            }
+
+            var currentDate = DateTime.UtcNow;
+            user.ReferralInfo = new ReferralDto
+            {
+                RetailerUserId = retailerDto.UserId,
+                RetailerPartnerCode = retailerDto.PartnerCode,
+                RetailerPartnerId = retailerDto.PartnerId,
+                RetailerReferralCode = retailerDto.ReferralCode,
+                ReferralDate = Int32.Parse(currentDate.ToString(ApplicationConstants.DateTimeFormats.FormatYYYYMMDD)),
+                ReferralDateTime = currentDate,
             };
 
-            await _eventBus.Publish(linkRetailerIntegrationEvent);
+            user.ModifiedByByUserId = UserClaimData.GetUserId(User.Claims);
+            user.ModifiedDate = currentDate;
 
-            // AI event
-            LinkRetailerAIEvent linkRetailerAIEvent = new LinkRetailerAIEvent()
+            int statusCode = await _userRepository.UpdateUser(user);
+            if (statusCode == (int)System.Net.HttpStatusCode.OK)
             {
-                AdditionalAttributes = retailerToLink.AdditionalAttibutes,
-                City = retailerToLink.Address.City,
-                Latitude = retailerToLink.Address.MapLocation.Latitude,
-                Longitude = retailerToLink.Address.MapLocation.Longitude,
-                Name = retailerToLink.Name,
-                PartnerCode = linkRetailerRequest.PartnerCode,
-                PartnerProvidedId = linkRetailerRequest.PartnerProvidedId,
-                PinCode = retailerToLink.Address.PinCode,
-                RetailerPartnerId = retailerToLink.PartnerId,
-                State = retailerToLink.Address.State,
+                RetailerAssignedIntegrationEvent retailerAssignedIntegrationEvent = new RetailerAssignedIntegrationEvent()
+                {
+                    User = user,
+                };
+
+                await _eventBus.Publish(retailerAssignedIntegrationEvent);
+
+                // publish AI event
+                AssignRetailerAIEvent assignRetailerAIEvent = new AssignRetailerAIEvent()
+                {
+                    PartnerCode = retailerDto.PartnerCode,
+                    PartnerProvidedId = retailerDto.PartnerProvidedId,
+                    RetailerPartnerId = retailerDto.PartnerId,
+                    UserId = user.UserId,
+                    IdentityId = user.IdentityId,
+                    RetailerAdditionalAttributes = retailerDto.AdditionalAttibutes,
+                };
+
+                _telemetryClient.TrackEvent(assignRetailerAIEvent);
+
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// API to create a new data export request for user
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("dataexport/create", Name = nameof(CreateDataExportCommand))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<int>> CreateDataExportCommand()
+        {
+            List<string> errorInfo = new List<string>();
+
+            string phoneNumber = this.User.Identity.Name;
+            
+            var userId = UserClaimData.GetUserId(this.User.Claims);
+
+            var existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
+
+            if (existingUser is null)
+            {
+                return NotFound();
+            }
+
+            //if the request is in progress do not accept another request
+            if (existingUser.DataExportRequestStatus != DataExportRequestStatus.NotInitialized &&
+                existingUser.DataExportRequestStatus != DataExportRequestStatus.ExportedDataNotified )
+            {
+                errorInfo.Add(_stringLocalizer["USR_ERR_021"]);
+
+                return BadRequest(errorInfo);
+            }
+
+            var now = DateTime.UtcNow;
+
+            //create new command
+            var newDataExportCommand = new UserCommand(UserCommandType.Export)
+            {
+                CreatedByUserId = userId,
+                CreatedDate = now,
+                Id = Guid.NewGuid(),
+                PhoneNumber = phoneNumber,
+                DataExportRequestStatus = DataExportRequestStatus.Submitted,
+                UserId = userId
             };
 
-            _telemetryClient.TrackEvent(linkRetailerAIEvent);
+            CommandExecutionDetails executionDetails = new CommandExecutionDetails()
+            {
+                EventName = DataExportRequestStatus.Submitted.ToString(),
+                EventDateTime = now
+            };
 
-            return Ok();
+            newDataExportCommand.ExecutionDetails.Add(executionDetails);
+
+            existingUser.DataExportRequestStatus = DataExportRequestStatus.Submitted;
+            existingUser.DataExportStatusUpdatedBy = newDataExportCommand.Id;
+            existingUser.ModifiedByByUserId = userId;
+            existingUser.ModifiedDate = now;
+
+            var response = await _userRepository.CreateCommandBatch(newDataExportCommand, existingUser);
+
+            var aiEvent = new CreateUserDataExportCommandAIEvent()
+            {
+                RequestId = newDataExportCommand.Id,
+                UserId = userId,
+            };
+
+            _telemetryClient.TrackEvent(aiEvent);
+
+            return Ok(response);
         }
 
-        #region Private methods
-
         /// <summary>
-        /// Returns user's Identity id guid from claims list.
+        /// API to request deletion of user's account
         /// </summary>
-        /// <param name="claims"></param>
         /// <returns></returns>
-        private static Guid GetIdentityUserId(IEnumerable<Claim> claims)
+        [HttpDelete("user", Name = nameof(DeleteUserAccount))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        public async Task<ActionResult> DeleteUserAccount()
         {
-            Guid identityId = claims
-                                .Where(x => x.Type.Equals(ApplicationConstants.KaizalaIdentityClaims.IdentityUId))
-                                .Select(x => new Guid(x.Value))
-                                .First();
+            List<string> errorInfo = new List<string>();
 
-            return identityId;
-        }
+            string phoneNumber = this.User.Identity.Name;
 
-        /// <summary>
-        /// (internal) helper method for creating user
-        /// Also posts AI event
-        /// </summary>
-        /// <param name="createUserRequest"></param>
-        /// <returns></returns>
-        private async Task<User> CreateUserIfNotExistsInternal(CreateUserRequest createUserRequest)
-        {
-            String phoneNumber = this.User.Identity.Name;
-            Guid identityId = GetIdentityUserId(User.Claims);
+            Guid userId = UserClaimData.GetUserId(this.User.Claims);
 
             User existingUser = await _userRepository.GetUserByPhoneNumber(phoneNumber);
-            if (existingUser is not null)
+
+            if (existingUser is null)
             {
-                // user already exists, return it
-                return existingUser;
+                return NotFound();
             }
 
-            var generatedId = Guid.NewGuid();
-            User user = new User
+            //if the request is in progress do not accept another request
+            if (existingUser.AccountStatus != UserAccountStatus.Active)
             {
-                UserId = generatedId,
+                errorInfo.Add(_stringLocalizer["USR_ERR_021"]);
+
+                return BadRequest(errorInfo);
+            }
+
+            //
+            var now = DateTime.UtcNow;
+
+            //create new command
+            var newDataUpdateCommand = new UserCommand(UserCommandType.Update)
+            {
+                Id = Guid.NewGuid(),
+                CreatedByUserId = userId,
+                CreatedDate = now,
                 PhoneNumber = phoneNumber,
-                Name = createUserRequest.UserName,
-                ChannelId = createUserRequest.ChannelId,
-                CreatedDate = DateTime.UtcNow,
-                CreatedByUserId = generatedId,
-                IdentityId = identityId,
-                AccountStatus = UserAccountStatus.Active,
+                DataUpdateRequestStatus = DataUpdateRequestStatus.Submitted,
+                UserId = userId
             };
 
-            await _userRepository.CreateUser(user);
-
-            // Track the user created event to Application Insights
-            CreateUserAIEvent createUserAIEvent = new CreateUserAIEvent()
+            CommandExecutionDetails executionDetails = new CommandExecutionDetails()
             {
-                UserId = generatedId,
-                IdentityId = identityId,
-                ChannelId = createUserRequest.ChannelId,
+                EventName = DataUpdateRequestStatus.Submitted.ToString(),
+                EventDateTime = now
             };
 
-            _telemetryClient.TrackEvent(createUserAIEvent);
+            newDataUpdateCommand.ExecutionDetails.Add(executionDetails);
 
-            return user;
+            // mark user for deletion
+            existingUser.AccountStatus = UserAccountStatus.InActive;
+            existingUser.DataUpdateRequestStatus = DataUpdateRequestStatus.Submitted;
+            existingUser.DataUpdateStatusUpdatedBy = newDataUpdateCommand.Id;
+            existingUser.ModifiedByByUserId = userId;
+            existingUser.ModifiedDate = now;
+
+            //create command and update user in batch
+            await _userRepository.CreateCommandBatch(newDataUpdateCommand, existingUser);
+
+            //remove the user from cache. so that new state with new status gets loaded during authentication process
+            string userByPhoneNoCacheKey = $"{phoneNumber}{ApplicationConstants.DistributedCacheKeySuffix.USERBYPHONEKEY}";
+
+            await _cache.RemoveAsync(userByPhoneNoCacheKey);
+
+            // record telemetry
+            var aiEvent = new DeleteUserDataAIEvent()
+            {
+                UserId = userId,
+                RequestId = newDataUpdateCommand.Id
+            };
+
+            _telemetryClient.TrackEvent(aiEvent);
+
+            return NoContent();
         }
+
+        #region private methods
 
         #endregion
     }
