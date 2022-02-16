@@ -1,10 +1,11 @@
-using AutoMapper;
+﻿using AutoMapper;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.user.api.Models;
 using blendnet.user.repository.Interfaces;
@@ -18,7 +19,7 @@ namespace blendnet.user.api.Controllers
 {
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = KaizalaIdentityAuthOptions.DefaultScheme)]
     public class UserBasicController : ControllerBase
     {
         private readonly ILogger _logger;
