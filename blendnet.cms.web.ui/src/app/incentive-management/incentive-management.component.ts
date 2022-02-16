@@ -11,6 +11,7 @@ import { Incentive, PlanType, PublishMode } from '../models/incentive.model';
 import { ContentProviderService } from '../services/content-provider.service';
 import { IncentiveService } from '../services/incentive.service';
 import { RetailerService } from '../services/retailer.service';
+import { EditIncentiveEndDateComponent } from './edit-incentive-enddate.component';
 
 @Component({
   selector: 'app-incentive-management',
@@ -18,11 +19,11 @@ import { RetailerService } from '../services/retailer.service';
   styleUrls: ['./incentive-management.component.css']
 })
 export class IncentiveManagementComponent implements OnInit {
-  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'startDate', 'endDate', 'status' , 'edit', 'publish', 'delete'];
+  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'startDate', 'endDate', 'status' , 'view', 'modifyEndDate', 'publish', 'delete'];
   dataSourceRetailers: MatTableDataSource<Incentive>;
 
   dataSourceConsumers: MatTableDataSource<Incentive>;
-  displayedColumnsConsumers: string[] = ['name', 'type', 'startDate', 'endDate', 'status' , 'edit', 'publish', 'delete'];
+  displayedColumnsConsumers: string[] = ['name', 'type', 'startDate', 'endDate', 'status' , 'view', 'modifyEndDate', 'publish', 'delete'];
 
 
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
@@ -52,6 +53,7 @@ export class IncentiveManagementComponent implements OnInit {
   filterValueC;
   filterValueR;
   cpInfoList: ContentProviderLtdInfo[];
+  audience;
 
   constructor( private incentiveService: IncentiveService,
     public dialog: MatDialog,
@@ -68,7 +70,8 @@ export class IncentiveManagementComponent implements OnInit {
     this.selectedPlanTypeR = this.plans[0];
     this.selectedPlanTypeC = this.plans[0];
     this.getRetailerPartners();
-    this.getContentProviders()
+    this.getContentProviders();
+    this.audience = "RETAILER";
   }
 
   getContentProviders() {
@@ -87,10 +90,12 @@ export class IncentiveManagementComponent implements OnInit {
   tabClick(event) {
     
     if(event.tab.textLabel === "RETAILER") {
+      this.audience="RETAILER";
       this.selectedPlanTypeR=this.plans[0];
       // this.getRetailerIncentivePlans();
       this.getRPlansSelectedPartnerPlanType(null);
     } else if(event.tab.textLabel === "CONSUMER"){
+      this.audience="CONSUMER";
       this.selectedPlanTypeC=this.plans[0];
       this.getConsumerIncentivePlans();
     }
@@ -114,6 +119,30 @@ export class IncentiveManagementComponent implements OnInit {
     this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanTypeR);
   }
 
+
+  changeEndDate(incentive): void {
+    const dialogRef = this.dialog.open(EditIncentiveEndDateComponent, {
+      width: '300px',
+      data: {
+        incentive: incentive,
+        audience: this.audience
+      }
+    });
+
+    dialogRef.componentInstance.onDateChange.subscribe(data => {
+      this.toastr.success(data);
+      if(this.audience === "RETAILER") {
+        this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanTypeR);
+      } else {
+        this.getConsumerIncentivePlans();
+      }
+      dialogRef.close();
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
 
   getRetailerIncentivePlansForPartner(partner, type){
     this.isErrorRetailer = false;

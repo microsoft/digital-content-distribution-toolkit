@@ -36,8 +36,13 @@ export class EditSubscriptionComponent implements OnInit {
   }
 
   changeEndDate() {
+    var selectedEndDate = this.subForm.get('newEndDate').value;
+    selectedEndDate.setHours(selectedEndDate.getHours() + 23);
+    selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
+    selectedEndDate.setSeconds(selectedEndDate.getSeconds() + 59);
+    var newEndDateUTCString  = selectedEndDate.toISOString()
     var endDate = {
-      "endDate":  this.subForm.get('newEndDate').value
+      "endDate":  newEndDateUTCString
     }
     this.subscriptionService.updateEndDate(this.data.sub.id, endDate).subscribe(
       res => this.onDateChange.emit("Subscription end date changed successfully"),

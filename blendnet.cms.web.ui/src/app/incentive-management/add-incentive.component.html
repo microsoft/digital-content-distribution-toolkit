@@ -62,7 +62,7 @@
                         <input matInput  [matDatepicker]="endpicker" disabled
                         formControlName="endDate" required  [min]="minEnd">
                         <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
-                        <mat-datepicker #endpicker [disabled]=false></mat-datepicker>
+                        <mat-datepicker #endpicker [disabled]=isPublished></mat-datepicker>
                       </mat-form-field>
                 </td>
             </tr>
@@ -180,11 +180,11 @@
         Draft Plan
     </button>
 
-    <button mat-raised-button color="primary"   class="update-btn"
+    <!-- <button mat-raised-button color="primary"   class="update-btn"
     (click)="changeDate()"
     *ngIf="isPublished">
         Change End Date
-    </button>
+    </button> -->
     <button mat-raised-button color="primary"   class="update-btn"
     (click)="updateDraftPlan()"
     *ngIf="isDraft" [disabled]="isIncentiveFormNotValid() || isEventFormNotValid()" >
