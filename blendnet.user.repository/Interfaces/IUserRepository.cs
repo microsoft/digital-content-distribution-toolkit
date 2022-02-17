@@ -90,10 +90,10 @@ namespace blendnet.user.repository.Interfaces
         /// <summary>
         /// Gets the Command
         /// </summary>
-        /// <param name="phoneNumber">phone number of the user</param>
+        /// <param name="partitionKey">phone number of the user / user id of the user in case of deleted user</param>
         /// <param name="commandId">Command ID</param>
         /// <returns>Command</returns>
-        Task<UserCommand> GetCommand(string phoneNumber, Guid commandId);
+        Task<UserCommand> GetCommand(string partitionKey, Guid commandId);
 
         /// <summary>
         /// Create Command and Update User in Batch

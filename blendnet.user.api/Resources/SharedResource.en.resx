@@ -201,4 +201,7 @@
   <data name="USR_ERR_024" xml:space="preserve">
     <value>USR_ERR_024-User is in Inactive state.</value>
   </data>
+  <data name="USR_ERR_025" xml:space="preserve">
+    <value>USR_ERR_025-User Id or Phone Number is mandatory.</value>
+  </data>
 </root>

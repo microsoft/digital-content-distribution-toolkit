@@ -1,7 +1,11 @@
-﻿using blendnet.common.dto;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace blendnet.incentive.api.Model
+namespace blendnet.common.dto.Incentive
 {
     /// <summary>
     /// Request to accept phone number

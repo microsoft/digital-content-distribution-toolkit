@@ -247,14 +247,14 @@ namespace blendnet.user.repository.CosmosRepository
         /// <summary>
         /// Gets the Command for a user
         /// </summary>
-        /// <param name="phoneNumber">phone number of the user</param>
+        /// <param name="phoneNumber">phone number of the user / user id in case of deleted user</param>
         /// <param name="commandId">Command ID</param>
         /// <returns>Command</returns>
-        async Task<UserCommand> IUserRepository.GetCommand(string phoneNumber, Guid commandId)
+        async Task<UserCommand> IUserRepository.GetCommand(string partitionKey, Guid commandId)
         {
             try
             {
-                UserCommand command = await _container.ReadItemAsync<UserCommand>(commandId.ToString(), new PartitionKey(phoneNumber));
+                UserCommand command = await _container.ReadItemAsync<UserCommand>(commandId.ToString(), new PartitionKey(partitionKey));
 
                 return command;
             }

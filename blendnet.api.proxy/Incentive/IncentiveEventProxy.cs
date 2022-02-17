@@ -37,7 +37,9 @@ namespace blendnet.api.proxy.Incentive
        /// <returns></returns>
         public async Task<EventAggregateData> GetConsumerCalculatedRegular(string userPhoneNumber)
         {
-            string url = $"IncentiveEvent/consumer/regular/{userPhoneNumber}";
+            ConsumerCalculatedRegularByPhoneNumberRequest request = new ConsumerCalculatedRegularByPhoneNumberRequest() { PhoneNumber = userPhoneNumber };
+            
+            string url = $"IncentiveEvent/consumer/regular";
 
             string accessToken = await base.GetServiceAccessToken();
 
@@ -45,7 +47,7 @@ namespace blendnet.api.proxy.Incentive
 
             try
             {
-                aggregatedData = await _incentiveEventHttpClient.Get<EventAggregateData>(url, accessToken);
+                aggregatedData = await _incentiveEventHttpClient.Post<ConsumerCalculatedRegularByPhoneNumberRequest, EventAggregateData>(url,request, accessToken: accessToken);
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             { }

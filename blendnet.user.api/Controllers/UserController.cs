@@ -349,11 +349,32 @@ namespace blendnet.user.api.Controllers
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<UserCommand>> GetCommand(UserCommandRequest request)
         {
-            UserCommand userCommand = await _userRepository.GetCommand(request.PhoneNumber, request.CommandId);
+            List<string> errorInfo = new List<string>();
+
+            string partitionKey = string.Empty;
+
+            if (!string.IsNullOrEmpty(request.PhoneNumber))
+            {
+                partitionKey = request.PhoneNumber;
+
+            }else if (request.UserId.HasValue && request.UserId.Value != Guid.Empty)
+            {
+                partitionKey = request.UserId.ToString();
+            }
+
+            if (string.IsNullOrEmpty(partitionKey))
+            {
+                errorInfo.Add(_stringLocalizer["USR_ERR_025"]);
+
+                return BadRequest(errorInfo);
+            }
+
+            UserCommand userCommand = await _userRepository.GetCommand(partitionKey, request.CommandId);
 
             if (userCommand is null)
             {
                 return NotFound();
+
             }else
             {
                 return Ok(userCommand);
