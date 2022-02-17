@@ -90,6 +90,14 @@ export let menu: NavMenu[] = [
         roles: ['SuperAdmin'],
         featureName: environment.featureName.Export
     },
+    {
+        displayName: 'Delete',
+        closedName: 'Delete',
+        iconName: 'delete',
+        routerLink: 'admin/delete',
+        roles: ['SuperAdmin'],
+        featureName: environment.featureName.Delete
+    },
     
     {
         displayName: 'Retailer Dashboard',

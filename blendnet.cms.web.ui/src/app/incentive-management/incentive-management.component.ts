@@ -88,13 +88,14 @@ export class IncentiveManagementComponent implements OnInit {
   }
 
   tabClick(event) {
-    
     if(event.tab.textLabel === "RETAILER") {
+      this.filterValueR = "";
       this.audience="RETAILER";
       this.selectedPlanTypeR=this.plans[0];
       // this.getRetailerIncentivePlans();
       this.getRPlansSelectedPartnerPlanType(null);
     } else if(event.tab.textLabel === "CONSUMER"){
+      this.filterValueC = "";
       this.audience="CONSUMER";
       this.selectedPlanTypeC=this.plans[0];
       this.getConsumerIncentivePlans();
@@ -114,7 +115,7 @@ export class IncentiveManagementComponent implements OnInit {
   }
 
   getRPlansSelectedPartnerPlanType(value) {
-    this.filterValueR = "";
+    // this.filterValueR = "";
     this.selectedPlanTypeR = value ? value : this.selectedPlanTypeR;
     this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanTypeR);
   }
@@ -133,8 +134,10 @@ export class IncentiveManagementComponent implements OnInit {
       this.toastr.success(data);
       if(this.audience === "RETAILER") {
         this.getRetailerIncentivePlansForPartner(this.selectedRetailerPartner, this.selectedPlanTypeR);
+        this.applyFilterRetailer();
       } else {
         this.getConsumerIncentivePlans();
+        this.applyFilterConsumer();
       }
       dialogRef.close();
     })
@@ -227,7 +230,7 @@ export class IncentiveManagementComponent implements OnInit {
     var missingListRegular = [];
     var missingListMilestone = [];
     if(type === PlanType.REGULAR) {
-      regularPlans =  plans.filter(plan => (plan.type === PlanType.REGULAR && plan.status === PublishMode.PUBLISHED))
+      regularPlans =  plans.filter(plan => (plan.planType === PlanType.REGULAR && plan.publishMode === PublishMode.PUBLISHED))
       .sort((p1, p2) => {
         return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
       });
@@ -245,7 +248,7 @@ export class IncentiveManagementComponent implements OnInit {
         }
       }
     } else if(type === PlanType.MILESTONE) {
-      milestonePlans= plans.filter(plan => (plan.type === PlanType.MILESTONE && plan.status === PublishMode.PUBLISHED))
+      milestonePlans= plans.filter(plan => (plan.type === PlanType.MILESTONE && plan.publishMode === PublishMode.PUBLISHED))
       .sort((p1, p2) => {
         return new Date(p1.startDate).getTime() - new Date(p2.startDate).getTime();
       });
@@ -346,8 +349,8 @@ export class IncentiveManagementComponent implements OnInit {
           this.dataSourceConsumers.paginator = this.paginator.toArray()[1];;
           this.dataSourceConsumers.sort = this.sort.toArray()[1];   
           this.selectedStatusConsumer= this.plans[0];     
-          this.applyFilterConsumer();  
-          this.getMissingPlansConsumer(this.dataSourceConsumers.data, this.selectedPlanTypeC);  
+          // this.applyFilterConsumer();  
+          this.getMissingPlansConsumer(res.body, this.selectedPlanTypeC);  
         },
       err => {
         this.missingListConsumer = {

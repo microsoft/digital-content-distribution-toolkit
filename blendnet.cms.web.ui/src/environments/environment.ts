@@ -9,11 +9,11 @@ export const environment = {
   browrseContent: "/cmsapi/api/v1/BrowseContent",
   contentApiUrl: "/cmsapi/api/v1/Content",
   userApiUrl: "/userapi/api/v1/User",
-  whitelistedUserApiUrl: "/userapi/api/v1/WhitelistedUser/create",
-  omsApiUrl: "/omsapi/api/v1",
-  createUserApiUrl: "/userapi/api/v1/UserBasic",
+  userBasicApiUrl: "/userapi/api/v1/UserBasic",
+  userOnboardingApiUrl: "/userapi/api/v1/UserOnboarding",
   incentiveApiUrl: "/incentiveapi/api/v1/Incentive",
   incentiveBrowseApiUrl: "/incentiveapi/api/v1/IncentiveBrowse",
+  omsApiUrl: "/omsapi/api/v1",
   retailerDashboardUrl: "/incentiveapi/api/v1/",
   retailerApiUrl: "/retailerapi/api/v1",
   notificationApiUrl: "/notificationapi/api/v1/Notification",
@@ -31,6 +31,7 @@ export const environment = {
   kaizalaAppNameParam : "applicationName",
   kaizalaAppName : "com.microsoft.mobile.polymer.mishtu",
   baseHref:'',
+  whitelistedUserApiUrl: "/userapi/api/v1/WhitelistedUser/create",
   widewineTokenPrefix: "&widevine=true&token=Bearer%3D",
     filters : [
     {
@@ -71,6 +72,7 @@ export const environment = {
     "Devices": "",
     "Notifications": "",
     "Export": "",
+    "Delete": "",
     "RetailerDashboard": "",
     "Dashboard": "webRetailerDashboardEnabled",
     "Order": "webOrderCompletionEnabled"

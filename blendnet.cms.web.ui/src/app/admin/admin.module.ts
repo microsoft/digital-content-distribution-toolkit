@@ -18,6 +18,7 @@ import { DeviceRetailerHistoryComponent } from '../devices/device-retailer-histo
 import { DeviceContentsComponent } from '../devices/device-contents.component';
 import { AdminRetailerDashboardComponent } from '../admin-retailer-dashboard/admin-retailer-dashboard.component';
 import { ExportUserDataComponent } from '../export-user-data/export-user-data.component';
+import { DeleteUserDataComponent } from '../delete-user-data/delete-user-data.component';
 
 const routes: Routes = [
   {
@@ -172,6 +173,16 @@ const routes: Routes = [
       expectedRole: [environment.roles.SuperAdmin]
     } 
   },
+  {
+    path: 'delete', 
+    component: DeleteUserDataComponent,
+    canActivate: [
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: [environment.roles.SuperAdmin]
+    } 
+  }
 
 ];
 

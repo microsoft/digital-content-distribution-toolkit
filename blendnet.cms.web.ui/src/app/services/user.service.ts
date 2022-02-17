@@ -11,7 +11,9 @@ import { LogService } from './log.service';
 })
 export class UserService {
   userBaseUrl = environment.baseUrl + environment.userApiUrl;
-  createUserBaseUrl = environment.baseUrl +  environment.createUserApiUrl;
+  userBasicBaseUrl = environment.baseUrl +  environment.userBasicApiUrl;
+  userOnboardingBaseUrl = environment.baseUrl +  environment.userOnboardingApiUrl;
+
   isRetailerRouted = false;
   private loggedInUser = new BehaviorSubject<any>(null);
   loggedInUser$ = this.loggedInUser.asObservable();
@@ -47,7 +49,7 @@ export class UserService {
   }
 
   createUser(user)  {
-    let url = this.createUserBaseUrl + '/user';
+    let url = this.userOnboardingBaseUrl + '/user';
     this.logger.log(`Creating new user `);
     return this.http.post(url, user).pipe(map(userId => {
       sessionStorage.setItem('registeredUser', userId.toString())
@@ -56,8 +58,13 @@ export class UserService {
     }));
   }
 
+  getUserProfile() {
+    let url = this.userBasicBaseUrl + '/me';
+    return this.http.get(url);
+  }
+
   linkRetailer(payload) {
-    let url = this.createUserBaseUrl + '/linkRetailer';
+    let url = this.userOnboardingBaseUrl + '/linkRetailer';
     this.logger.log('Linking retailer id with userid');
     return this.http.post(url, payload);
   }
@@ -68,14 +75,27 @@ export class UserService {
     return this.http.get<ExportDataReq[]>(url);
   }
 
+  
+  getDeleteUserDataRequests(): Observable<ExportDataReq[]>{
+    let url = this.userBaseUrl + '/dataDelete/list';
+    this.logger.log('Fetch all open export data list');
+    return this.http.get<ExportDataReq[]>(url);
+  }
+
   completeDataExportRequest(user){
     let url = this.userBaseUrl + '/dataExport/complete';
     this.logger.log('Complete the export data request');
     return this.http.post(url, user);
   }
+  
+  completeDataDeleteRequest(user){
+    let url = this.userBaseUrl + '/dataDelete/complete';
+    this.logger.log('Complete the delete data request');
+    return this.http.post(url, user);
+  }
 
-  getExportRequestDetails(request){
-    let url = this.userBaseUrl + '/dataExport/command';
+  getRequestDetails(request){
+    let url = this.userBaseUrl + '/command';
     this.logger.log('Getting the export user data request details');
     return this.http.post(url, request);
   }

@@ -9,7 +9,8 @@ export const environment = {
   browrseContent: "/cmsapi/api/v1/BrowseContent",
   contentApiUrl: "/cmsapi/api/v1/Content",
   userApiUrl: "/userapi/api/v1/User",
-  createUserApiUrl: "/userapi/api/v1/UserBasic",
+  userBasicApiUrl: "/userapi/api/v1/UserBasic",
+  userOnboardingApiUrl: "/userapi/api/v1/UserOnboarding",
   incentiveApiUrl: "/incentiveapi/api/v1/Incentive",
   incentiveBrowseApiUrl: "/incentiveapi/api/v1/IncentiveBrowse",
   omsApiUrl: "/omsapi/api/v1",
@@ -71,6 +72,7 @@ export const environment = {
     "Devices": "",
     "Notifications": "",
     "Export": "",
+    "Delete": "",
     "RetailerDashboard": "",
     "Dashboard": "webRetailerDashboardEnabled",
     "Order": "webOrderCompletionEnabled"

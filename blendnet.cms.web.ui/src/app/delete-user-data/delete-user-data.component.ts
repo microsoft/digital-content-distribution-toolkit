@@ -10,11 +10,11 @@ import { AdditionalHistoryDialog } from '../devices/device-additional-history.co
 import { UserService } from '../services/user.service';
 
 @Component({
-  selector: 'app-export-user-data',
-  templateUrl: './export-user-data.component.html',
-  styleUrls: ['./export-user-data.component.css']
+  selector: 'app-delete-user-data',
+  templateUrl: './delete-user-data.component.html',
+  styleUrls: ['./delete-user-data.component.css']
 })
-export class ExportUserDataComponent implements OnInit {
+export class DeleteUserDataComponent implements OnInit {
   today;
   displayedColumns: string[] = [ 'username', 'phonenumber', 'status',  'modifiedDate','metadata', 'action'];
   pipe;
@@ -32,18 +32,18 @@ export class ExportUserDataComponent implements OnInit {
       var date = new Date();
       this.today = date.toISOString();
       this.pipe = new DatePipe(locale);
-     }
+    }
 
   ngOnInit(): void {
-    this.getAllExportUserDataRequests();
+    this.getAllDeleteUserDataRequest();
   }
 
   refreshPage() {
-    this.getAllExportUserDataRequests();
+    this.getAllDeleteUserDataRequest();
   }
 
-  getAllExportUserDataRequests() {
-    this.userService.getExportUserDataRequests().subscribe(res =>
+  getAllDeleteUserDataRequest() {
+    this.userService.getDeleteUserDataRequests().subscribe(res =>
       {
         this.dataSource = this.createDataSource(res);
         this.dataSource.paginator = this.paginator;
@@ -55,7 +55,7 @@ export class ExportUserDataComponent implements OnInit {
   }
 
 
-  
+
   createDataSource(rawData: any[]) {
     var dataSource: any[] =[];
     if(rawData && rawData.length > 0) {
@@ -87,7 +87,7 @@ export class ExportUserDataComponent implements OnInit {
   getRequestDetails(e) {
     var request = {
       "phoneNumber": e.phoneNumber,
-      "commandId": e.dataExportStatusUpdatedBy
+      "commandId": e.dataUpdateStatusUpdatedBy
     }
     
     this.userService.getRequestDetails(request).subscribe(
@@ -103,8 +103,8 @@ export class ExportUserDataComponent implements OnInit {
       },
       err => this.toastr.error(err)
     );
-   
   
+
   }
 
 
@@ -112,15 +112,15 @@ export class ExportUserDataComponent implements OnInit {
     const dialogRef = this.dialog.open(CommonDialogComponent, {
       data: {
         heading: 'Confirm',
-        message: "Do you want to complete the data export request by user " + e.phoneNumber,
+        message: "Do you want to complete the data delete request by user " + e.phoneNumber,
         contents: e,
         action: "PROCESS",
         buttons: this.openSelectCPModalButtons()
       },
       maxHeight: '400px'
     });
-  
-  
+
+
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'proceed') {
         this.onConfirmComplete(e);
@@ -129,14 +129,14 @@ export class ExportUserDataComponent implements OnInit {
   }
 
   onConfirmComplete(e): void {
-   var user = {
+  var user = {
     "userPhoneNumber": e.phoneNumber
   }
-    this.userService.completeDataExportRequest(user).subscribe(
+    this.userService.completeDataDeleteRequest(user).subscribe(
       res => 
       {
-        this.toastr.success("Export data request for user " + e.phoneNumber + " send for completion");
-        this.getAllExportUserDataRequests();
+        this.toastr.success("Delete data request for user " + e.phoneNumber + " send for completion");
+        this.getAllDeleteUserDataRequest();
       },
       err => this.toastr.error(err));
   }
@@ -159,6 +159,6 @@ export class ExportUserDataComponent implements OnInit {
 
 
   isRequestSubmitted(e) {
-    return e.dataExportRequestStatus === "Submitted";
+    return e.dataUpdateRequestStatus === "Submitted";
   }
 }

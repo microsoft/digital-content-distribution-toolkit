@@ -175,7 +175,6 @@ export class RetailerDashboardComponent implements OnInit {
   getProfile() {
     this.retailerDashboardService.getProfile(this.partnerCode, this.retailerPartnerProvidedId).subscribe(
       res => {
-        console.log("partner: ", res);
         this.partner = res; 
         sessionStorage.setItem('partnerCode', this.partner.partnerCode);
         sessionStorage.setItem('partnerProvidedId', this.partner.partnerProvidedId);

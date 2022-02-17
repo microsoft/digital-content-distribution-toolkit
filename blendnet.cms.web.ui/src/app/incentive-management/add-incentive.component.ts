@@ -444,50 +444,50 @@ openSelectCPModalButtons(): Array<any> {
 
 
 
-    changeDate() {
-      var newEndDateUTCString;
-      if(typeof this.incentiveFormGroup.get('endDate').value === "string") {
-        newEndDateUTCString = this.incentiveFormGroup.get('endDate').value;
-      } else {
-        var selectedEndDate = this.incentiveFormGroup.get('endDate').value;
-        selectedEndDate.setHours(selectedEndDate.getHours() + 23);
-        selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
-        selectedEndDate.setSeconds(selectedEndDate.getSeconds() + 59);
-        newEndDateUTCString  = selectedEndDate.toISOString()
-      }
+    // changeDate() {
+    //   var newEndDateUTCString;
+    //   if(typeof this.incentiveFormGroup.get('endDate').value === "string") {
+    //     newEndDateUTCString = this.incentiveFormGroup.get('endDate').value;
+    //   } else {
+    //     var selectedEndDate = this.incentiveFormGroup.get('endDate').value;
+    //     selectedEndDate.setHours(selectedEndDate.getHours() + 23);
+    //     selectedEndDate.setMinutes(selectedEndDate.getMinutes() + 59);
+    //     selectedEndDate.setSeconds(selectedEndDate.getSeconds() + 59);
+    //     newEndDateUTCString  = selectedEndDate.toISOString()
+    //   }
       
-      if(this.audience === "RETAILER") {
-        var partner = this.incentiveFormGroup.get('partner').value;
-        this.changeRetailerPlanEndDate(partner, newEndDateUTCString);
-      } else {
-        this.changeConsumerPlanEndDate(newEndDateUTCString)
-      }
-    }
+    //   if(this.audience === "RETAILER") {
+    //     var partner = this.incentiveFormGroup.get('partner').value;
+    //     this.changeRetailerPlanEndDate(partner, newEndDateUTCString);
+    //   } else {
+    //     this.changeConsumerPlanEndDate(newEndDateUTCString)
+    //   }
+    // }
 
     
-    changeRetailerPlanEndDate(partner, endDate) {
-      this.incentiveService.changeDateRetailerIncentivePlan(this.plan.id, partner, endDate).subscribe(
-        res => {
-          this.toastr.success("Retailer Incentive plan end date updated successfully");
-        },
-        err =>  {
-          console.log(err);
-          this.toastr.error(err);
-        }
-      );
-    }
+    // changeRetailerPlanEndDate(partner, endDate) {
+    //   this.incentiveService.changeDateRetailerIncentivePlan(this.plan.id, partner, endDate).subscribe(
+    //     res => {
+    //       this.toastr.success("Retailer Incentive plan end date updated successfully");
+    //     },
+    //     err =>  {
+    //       console.log(err);
+    //       this.toastr.error(err);
+    //     }
+    //   );
+    // }
 
-    changeConsumerPlanEndDate(endDate) {
-      this.incentiveService.changeDateConsumerIncentivePlan(this.plan.id, endDate).subscribe(
-        res => {
-          this.toastr.success("Consumer Incentive plan end date updated successfully");
-        },
-        err =>  {
-          console.log(err);
-          this.toastr.error(err);
-        }
-      );
-    }
+    // changeConsumerPlanEndDate(endDate) {
+    //   this.incentiveService.changeDateConsumerIncentivePlan(this.plan.id, endDate).subscribe(
+    //     res => {
+    //       this.toastr.success("Consumer Incentive plan end date updated successfully");
+    //     },
+    //     err =>  {
+    //       console.log(err);
+    //       this.toastr.error(err);
+    //     }
+    //   );
+    // }
 
 
 

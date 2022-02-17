@@ -51,6 +51,7 @@ import {RetailerModule} from './retailer/retailer.module';
 import { EditSubscriptionComponent } from './subscription/edit-subscription.component';
 import { ExportUserDataComponent } from './export-user-data/export-user-data.component';
 import { EditIncentiveEndDateComponent } from './incentive-management/edit-incentive-enddate.component';
+import { DeleteUserDataComponent } from './delete-user-data/delete-user-data.component';
 
 
 @NgModule({
@@ -95,7 +96,8 @@ import { EditIncentiveEndDateComponent } from './incentive-management/edit-incen
     AdminRetailerDashboardComponent,
     EditSubscriptionComponent,
     ExportUserDataComponent,
-    EditIncentiveEndDateComponent
+    EditIncentiveEndDateComponent,
+    DeleteUserDataComponent
   ],
   imports: [
     HttpClientModule,
