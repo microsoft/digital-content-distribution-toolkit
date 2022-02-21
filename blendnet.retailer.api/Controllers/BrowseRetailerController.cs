@@ -46,7 +46,8 @@ namespace blendnet.retailer.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<List<RetailerWithDistanceResponse>>> GetRetailersForLocation( double lat,
                                                                                                 double lng,
-                                                                                                double distanceMeters)
+                                                                                                double distanceMeters,
+                                                                                                bool checkForDevice = false)
         {
             // normalize distance within range
             distanceMeters = distanceMeters >= DISTANCE_METERS_MIN ? distanceMeters : DISTANCE_METERS_MIN;
@@ -76,6 +77,11 @@ namespace blendnet.retailer.api.Controllers
             foreach (var nearbyRetailer in nearbyActiveRetailers)
             {
                 nearbyRetailer.Retailer.DeviceAssignments = nearbyRetailer.Retailer.DeviceAssignments.Where(assignment => assignment.IsActive).ToList();
+            }
+
+            if (checkForDevice)
+            {
+                nearbyActiveRetailers = nearbyActiveRetailers.Where(retailer => retailer.Retailer.HasActiveDevice).ToList();
             }
 
             var nearbyActiveRetailersMapped = _mapper.Map<List<RetailerWithDistanceResponse>>(nearbyActiveRetailers);
