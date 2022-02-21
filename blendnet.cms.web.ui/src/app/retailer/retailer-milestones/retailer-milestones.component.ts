@@ -63,6 +63,7 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
       if(res.planDetails) {
         res.planDetails.forEach(planDetail => {
           if(planDetail.formula && planDetail.formula.formulaType === 'DIVIDE_AND_MULTIPLY') {
+            planDetail.formulaName = planDetail.formula.formulaType;
             if(planDetail.result && planDetail.result.value) {
               const value = planDetail.result.value;
               totalMilestoneEarnings+=value;
@@ -75,6 +76,7 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
             }
             if(planDetail.formula.firstOperand && planDetail.formula.secondOperand && planDetail.result) {
               milestonesCarouselArr.push({
+                formulaType: planDetail.formulaName,
                 ruleType: planDetail.ruleType,
                 firstOperand: planDetail.formula.firstOperand,
                 secondOperand: planDetail.formula.secondOperand,
@@ -85,6 +87,27 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
                 contentProviderId: planDetail.eventSubType
               });
             } 
+          } else if(planDetail.formula && planDetail.formula.formulaType === 'RANGE') {
+            planDetail.formulaName = planDetail.formula.formulaType;
+            if(planDetail.result && planDetail.result.value) {
+              const value = planDetail.result.value;
+              totalMilestoneEarnings+=value;      
+            }
+            if(!planDetail.result) {
+              planDetail.result = {
+                residualValue: 0,
+                value: 0
+              }
+            }
+            if(planDetail.result) {
+              milestonesCarouselArr.push({
+                formulaType: planDetail.formulaName,
+                ruleType: planDetail.ruleType,
+                value : planDetail.result.value ? planDetail.result.value : 0,
+                eventType: planDetail.eventType,
+                contentProviderId: planDetail.eventSubType
+              });
+            }
           }
         });
         this.totalMilestoneEarnings = totalMilestoneEarnings;

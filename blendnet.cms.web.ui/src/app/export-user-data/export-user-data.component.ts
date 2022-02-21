@@ -85,11 +85,18 @@ export class ExportUserDataComponent implements OnInit {
 
 
   getRequestDetails(e) {
-    var request = {
-      "phoneNumber": e.phoneNumber,
-      "commandId": e.dataExportStatusUpdatedBy
+    if( e.phoneNumber.length === 10) {
+      var request: any = {
+        "phoneNumber": e.phoneNumber,
+        "commandId": e.dataExportStatusUpdatedBy
+      }
+    } else {
+      var request: any = {
+        "userId": e.userId,
+        "commandId": e.dataExportStatusUpdatedBy
+      }
     }
-    
+
     this.userService.getRequestDetails(request).subscribe(
       res => {
         const dialogRef = this.dialog.open(AdditionalHistoryDialog, {

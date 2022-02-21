@@ -26,24 +26,27 @@
                         <div class="landing-each-offer-milestone {{ k.referral ? 'referral-card':'commission-card'}}">
                             <img src="../../{{baseHref}}/assets/images/retailer/{{ k.referral ? 'referral-trophy.png':'commission-trophy.png'}}">
                             <div class="landing-each-offer-milestone-inner"> 
-                                <div class="each-offer-text-block">
+                                <div class="each-offer-text-block" >
                                     <span class="milestone-heading">{{k.referral ? "" : contentProviders[k.contentProviderId] }} {{k.referral ? 'Referrals': 'Orders'}}</span> <br>
                                     <!-- <span class="milestone-heading-1">Earn Rs. {{k.secondOperand}} Bonus</span> <br> -->
                                     <span class="milestone-heading-1">Rs. {{k.value}}</span> Earned <br> 
-                                    <span class="detailed-milestone-info">Rs.{{k.secondOperand}} on every 
+                                    <span class="detailed-milestone-info" *ngIf="k.formulaType!=='RANGE'">Rs.{{k.secondOperand}} on every 
                                         <span *ngIf="k.ruleType!=='SUM'">{{k.firstOperand}} {{k.referral  ? 'Referrals': 'Orders'}}</span>
                                         <span *ngIf="k.ruleType==='SUM'">Rs.{{k.firstOperand}} {{k.referral  ? 'Referrals': 'Orders'}} commission earned</span>
     
                                         <!-- {{k.ruleType === 'SUM' ? "Rs." : "" }}{{k.firstOperand}}  {{k.referral ? 'Referrals': 'Orders'}} {{k.ruleType === 'SUM' ? " Commission earned" : "completed" }} -->
                                     </span>
+                                    <span class="detailed-milestone-info" *ngIf="k.formulaType==='RANGE'">
+                                        Please view the rates and incenitve page for more details
+                                    </span>
                                     <!-- <span>on every {{k.firstOperand}}  {{k.ruleType === 'SUM' ? "Rs of earned on ": ""}}</span><br>
                                     <span>{{k.referral ? 'Referrals': 'Orders'}}</span> -->
                                 </div>
-                                <div *ngIf="k.value" class="milestones-achieved-block">
+                                <div *ngIf="k.value && k.formulaType!=='RANGE'" class="milestones-achieved-block">
                                     <div class="milestones-achieved"><b>{{k.value/k.secondOperand}}</b> Completed</div>
                                     <!-- <div class="milestones-achieved"><b>Earnings: </b> {{k.value/k.secondOperand}} x {{k.secondOperand }} = Rs.{{k.value}}</div>     -->
                                 </div>
-                                <div class="milesone-progress">
+                                <div class="milesone-progress" *ngIf="k.formulaType!=='RANGE'">
                                     <!-- <div>Active Milestone</div> -->
                                     {{k.residualValue}}/{{k.firstOperand}} completed for the next Rs. {{k.secondOperand}}
                                     <mat-progress-bar mode="determinate" value="{{k.progress}}"></mat-progress-bar>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service'
 import { OwlOptions } from 'ngx-owl-carousel-o';
+import { ContentProviderService } from 'src/app/services/content-provider.service';
 
 
 @Component({
@@ -12,6 +13,7 @@ import { OwlOptions } from 'ngx-owl-carousel-o';
 export class RetailerDashboardComponent implements OnInit {
   constructor(
     private toastr: ToastrService,
+    private contentProviderService: ContentProviderService,
     private retailerDashboardService: RetailerDashboardService
   ) { }
   baseHref = this.retailerDashboardService.getBaseHref();
@@ -47,21 +49,38 @@ export class RetailerDashboardComponent implements OnInit {
         items: 2
       },
       940: {
-        items: 4
+        items: 3
       }
     },
     nav: true
   }
 
   ngOnInit(): void {
+    this.getContentProviders();
     this.getProfile();
     this.getDates();
     this.getMilestoneTotal();
-    // this.getContentProviders();
     //hardcoded remove once flow form novo sends us above data
     // this.getRetailerTotals();
   }
 
+  
+  getContentProviders() {
+    if(sessionStorage.getItem("CONTENT_PROVIDERS")) {
+      this.contentProviders =  JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
+      this.contentProviders.forEach(contentProvider => {
+        this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+      }); 
+    } else {
+      this.contentProviderService.browseContentProviders().subscribe(res => {
+        this.contentProviders = res;
+        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(this.contentProviders));
+        this.contentProviders.forEach(contentProvider => {
+          this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
+        }); 
+      });
+    }
+  }
   copiedConfirm() {
     this.toastr.success("Referral code is copied!");
   }
@@ -108,9 +127,10 @@ export class RetailerDashboardComponent implements OnInit {
       if(res.planDetails) {
         res.planDetails.forEach(planDetail => {
           if(planDetail.formula && planDetail.formula.formulaType === 'DIVIDE_AND_MULTIPLY') {
+            planDetail.formulaName = planDetail.formula.formulaType;
             if(planDetail.result && planDetail.result.value) {
               const value = planDetail.result.value;
-              totalMilestoneEarnings+=value;
+              totalMilestoneEarnings+=value;    
             }
             if(!planDetail.result) {
               planDetail.result = {
@@ -120,15 +140,38 @@ export class RetailerDashboardComponent implements OnInit {
             }
             if(planDetail.formula.firstOperand && planDetail.formula.secondOperand && planDetail.result) {
               milestonesCarouselArr.push({
+                formulaType: planDetail.formulaName,
                 ruleType: planDetail.ruleType,
                 firstOperand: planDetail.formula.firstOperand,
                 secondOperand: planDetail.formula.secondOperand,
                 value : planDetail.result.value ? planDetail.result.value : 0,
                 residualValue : planDetail.result.residualValue ? planDetail.result.residualValue : 0,
                 progress: ((planDetail.result.residualValue ? planDetail.result.residualValue : 0))*100/planDetail.formula.firstOperand,
-                eventType: planDetail.eventType
+                eventType: planDetail.eventType,
+                contentProviderId: planDetail.eventSubType
               });
             } 
+          } else if(planDetail.formula && planDetail.formula.formulaType === 'RANGE') {
+            planDetail.formulaName = planDetail.formula.formulaType;
+            if(planDetail.result && planDetail.result.value) {
+              const value = planDetail.result.value;
+              totalMilestoneEarnings+=value;      
+            }
+            if(!planDetail.result) {
+              planDetail.result = {
+                residualValue: 0,
+                value: 0
+              }
+            }
+            if(planDetail.result) {
+              milestonesCarouselArr.push({
+                formulaType: planDetail.formulaName,
+                ruleType: planDetail.ruleType,
+                value : planDetail.result.value ? planDetail.result.value : 0,
+                eventType: planDetail.eventType,
+                contentProviderId: planDetail.eventSubType
+              });
+            }
           }
         });
         this.totalMilestoneEarnings = totalMilestoneEarnings;

@@ -85,10 +85,18 @@ export class DeleteUserDataComponent implements OnInit {
 
 
   getRequestDetails(e) {
-    var request = {
-      "phoneNumber": e.phoneNumber,
-      "commandId": e.dataUpdateStatusUpdatedBy
+    if( e.phoneNumber.length === 10) {
+      var request: any = {
+        "phoneNumber": e.phoneNumber,
+        "commandId": e.dataUpdateStatusUpdatedBy
+      }
+    } else {
+      var request: any = {
+        "userId": e.userId,
+        "commandId": e.dataUpdateStatusUpdatedBy
+      }
     }
+   
     
     this.userService.getRequestDetails(request).subscribe(
       res => {
