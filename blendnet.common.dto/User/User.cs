@@ -103,6 +103,11 @@ namespace blendnet.common.dto.User
         /// </summary>
         public bool IsUserDeleted { get; set; }
 
+        /// <summary>
+        /// Checksum of the phone number
+        /// </summary>
+        public string PhoneNumberChecksum { get; set; }
+
         public static bool IsPhoneNumberValid(string phoneNumber)
         {
             return phoneNumber != null

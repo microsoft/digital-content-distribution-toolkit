@@ -1,6 +1,7 @@
 ﻿using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
+using blendnet.common.dto.Extensions;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
@@ -215,6 +216,7 @@ namespace blendnet.user.api.Controllers
             {
                 UserId = generatedId,
                 PhoneNumber = phoneNumber,
+                PhoneNumberChecksum = phoneNumber.Checksum(),
                 Name = createUserRequest.UserName,
                 ChannelId = createUserRequest.ChannelId,
                 CreatedDate = DateTime.UtcNow,

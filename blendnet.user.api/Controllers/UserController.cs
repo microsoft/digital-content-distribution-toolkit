@@ -3,6 +3,7 @@ using blendnet.api.proxy.Notification;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
+using blendnet.common.dto.Extensions;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
@@ -438,6 +439,7 @@ namespace blendnet.user.api.Controllers
                     UserId = Guid.NewGuid(),
                     IdentityId = retailerRequest.UserId, 
                     PhoneNumber = retailerRequest.PhoneNumber, 
+                    PhoneNumberChecksum = retailerRequest.PhoneNumber.Checksum(),
                     Name = "",
                     ChannelId = Channel.NovoRetailerApp, // TODO: this should be from the Claim / partnerCode
                     CreatedDate = now,

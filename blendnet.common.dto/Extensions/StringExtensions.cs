@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace blendnet.common.dto.Extensions
 {
@@ -27,6 +25,23 @@ namespace blendnet.common.dto.Extensions
             }
 
             return stringToReturn;
+        }
+
+        /// <summary>
+        /// Creates Checksum of a string
+        /// Uses SHA256 checksum algorithm
+        /// </summary>
+        /// <param name="sourceString">input string</param>
+        /// <returns>checksum (SHA256) in lowercase</returns>
+        public static string Checksum(this string sourceString)
+        {
+            if (string.IsNullOrEmpty(sourceString))
+            {
+                return null;
+            }
+
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(sourceString));
+            return Convert.ToHexString(bytes).ToLower();
         }
     }
     
