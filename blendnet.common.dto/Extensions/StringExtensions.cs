@@ -35,13 +35,16 @@ namespace blendnet.common.dto.Extensions
         /// <returns>checksum (SHA256) in lowercase</returns>
         public static string Checksum(this string sourceString)
         {
-            if (string.IsNullOrEmpty(sourceString))
+            string stringToReturn = sourceString;
+            if (string.IsNullOrEmpty(stringToReturn))
             {
-                return null;
+                return stringToReturn;
             }
 
             var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(sourceString));
-            return Convert.ToHexString(bytes).ToLower();
+            stringToReturn = Convert.ToHexString(bytes).ToLower();
+
+            return stringToReturn;
         }
     }
     

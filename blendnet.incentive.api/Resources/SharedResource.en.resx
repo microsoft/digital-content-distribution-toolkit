@@ -261,4 +261,7 @@
   <data name="INC_ERR_0044" xml:space="preserve">
     <value>INC_ERR_0044-List of Partner id is mandatory.</value>
   </data>
+  <data name="INC_ERR_0045" xml:space="preserve">
+    <value>INC_ERR_0045-User details are incorrect.</value>
+  </data>
 </root>

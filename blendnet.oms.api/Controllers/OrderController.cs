@@ -33,29 +33,32 @@ namespace blendnet.oms.api.Controllers
     {
         private readonly ILogger _logger;
 
-        private IOMSRepository _omsRepository;
+        private readonly IOMSRepository _omsRepository;
 
-        private RetailerProxy _retailerProxy;
+        private readonly RetailerProxy _retailerProxy;
 
-        private RetailerProviderProxy _retailerProviderProxy;
+        private readonly RetailerProviderProxy _retailerProviderProxy;
 
         private readonly SubscriptionProxy _subscriptionProxy;
 
-        private IEventBus _eventBus;
+        private readonly UserProxy _userProxy;
 
-        private OmsAppSettings _omsAppSettings;
+        private readonly IEventBus _eventBus;
 
-        IStringLocalizer<SharedResource> _stringLocalizer;
+        private readonly OmsAppSettings _omsAppSettings;
 
-        private TelemetryClient _telemetryClient;
+        private readonly IStringLocalizer<SharedResource> _stringLocalizer;
 
-        private OrderHelper _orderHelper;
+        private readonly TelemetryClient _telemetryClient;
+
+        private readonly OrderHelper _orderHelper;
 
         public OrderController(IOMSRepository omsRepository,
                                 ILogger<OrderController> logger,
                                 RetailerProxy retailerProxy,
                                 RetailerProviderProxy retailerProviderProxy,
                                 SubscriptionProxy subscriptionProxy,
+                                UserProxy userProxy,
                                 IEventBus eventBus,
                                 IOptionsMonitor<OmsAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
@@ -71,6 +74,8 @@ namespace blendnet.oms.api.Controllers
             _retailerProviderProxy = retailerProviderProxy;
 
             _subscriptionProxy = subscriptionProxy;
+
+            _userProxy = userProxy;
 
             _eventBus = eventBus;
 
@@ -104,6 +109,14 @@ namespace blendnet.oms.api.Controllers
             if(errorInfo.Count != 0)
             {
                 return BadRequest(errorInfo);
+            }
+
+            User user = await _userProxy.GetUserByPhoneNumber(completeOrderRequest.UserPhoneNumber);
+            
+            if (user is null || user.AccountStatus != UserAccountStatus.Active)
+            {
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0022"]);
+                return BadRequest();
             }
 
             RetailerProviderDto retailerProvider = await GetRetailerProvider(completeOrderRequest);
@@ -232,6 +245,14 @@ namespace blendnet.oms.api.Controllers
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<Order>> GetOrderByOrderIdAndPhoneNumber(Guid orderId, string userPhoneNumber)
         {
+            User user = await _userProxy.GetUserByPhoneNumber(userPhoneNumber);
+
+            if (user is null || user.AccountStatus != UserAccountStatus.Active)
+            {
+                _logger.LogInformation("Requested user not found or not active");
+                return NotFound();
+            }
+
             Order order = await _omsRepository.GetOrderByOrderId(orderId, userPhoneNumber);
 
             if (order == null)
@@ -250,11 +271,19 @@ namespace blendnet.oms.api.Controllers
         /// <param name="phoneNumber"></param>
         /// <param name="orderFilter"></param>
         /// <returns></returns>
-        [HttpPost("{phoneNumber}/orderlist")]
+        [HttpPost("{phoneNumber}/orderlist", Name = nameof(GetOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<List<Order>>> GetOrder(string phoneNumber, OrderStatusFilter orderFilter)
         {
+            User user = await _userProxy.GetUserByPhoneNumber(phoneNumber);
+
+            if (user is null || user.AccountStatus != UserAccountStatus.Active)
+            {
+                _logger.LogInformation("Requested user not found or not active");
+                return NotFound();
+            }
+
             List<Order> orderlist = await _omsRepository.GetOrdersByPhoneNumber(phoneNumber, orderFilter);
 
             if (orderlist.Count() > 0)

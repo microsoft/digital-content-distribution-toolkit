@@ -165,7 +165,7 @@ namespace blendnet.user.api.Controllers
                 errorDetails.Add(string.Format(_stringLocalizer["USR_ERR_013"], callerUserId));
                 return BadRequest(errorDetails);
             }
-            
+
             string partnerId = RetailerDto.CreatePartnerId(retailerProvider.PartnerCode, retailerPartnerId);
 
             List<ReferralSummary> referralData = await _userRepository.GetReferralSummary(partnerId, startDate, endDate);
@@ -176,7 +176,7 @@ namespace blendnet.user.api.Controllers
 
             return Ok(referralData);
         }
-        
+
 
         /// <summary>
         /// Complete the data export command
@@ -262,7 +262,7 @@ namespace blendnet.user.api.Controllers
             return NoContent();
         }
 
-        
+
 
         /// <summary>
         /// Complete the data delete command
@@ -284,6 +284,13 @@ namespace blendnet.user.api.Controllers
             if (existingUser is null || !existingUser.DataUpdateStatusUpdatedBy.HasValue)
             {
                 return NotFound();
+            }
+
+            // User should not be in Active State
+            if (existingUser.AccountStatus == UserAccountStatus.Active)
+            {
+                errorInfo.Add(_stringLocalizer["USR_ERR_026"]);
+                return BadRequest(errorInfo);
             }
 
             //get existing command details
@@ -358,7 +365,8 @@ namespace blendnet.user.api.Controllers
             {
                 partitionKey = request.PhoneNumber;
 
-            }else if (request.UserId.HasValue && request.UserId.Value != Guid.Empty)
+            }
+            else if (request.UserId.HasValue && request.UserId.Value != Guid.Empty)
             {
                 partitionKey = request.UserId.ToString();
             }
@@ -376,7 +384,8 @@ namespace blendnet.user.api.Controllers
             {
                 return NotFound();
 
-            }else
+            }
+            else
             {
                 return Ok(userCommand);
             }
@@ -460,7 +469,7 @@ namespace blendnet.user.api.Controllers
                 // Retailer properties
                 PhoneNumber = retailerRequest.PhoneNumber,
                 Name = retailerRequest.Name,
-                UserId = user.UserId, 
+                UserId = user.UserId,
                 PartnerProvidedId = retailerRequest.RetailerId,
                 PartnerCode = retailerProvider.PartnerCode,
                 Address = retailerRequest.Address,

@@ -1,22 +1,22 @@
-﻿using blendnet.common.infrastructure.Authentication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using blendnet.common.dto.Incentive;
-using blendnet.incentive.repository.Interfaces;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Localization;
+﻿using blendnet.api.proxy;
 using blendnet.api.proxy.Retailer;
-using blendnet.incentive.api.Common;
-using Microsoft.Extensions.Options;
+using blendnet.common.dto.Incentive;
 using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
-using Microsoft.Extensions.Configuration;
+using blendnet.common.infrastructure.Authentication;
+using blendnet.incentive.api.Common;
 using blendnet.incentive.api.Model;
+using blendnet.incentive.repository.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using static blendnet.common.dto.ApplicationConstants;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace blendnet.incentive.api.Controllers
 {
@@ -45,6 +45,8 @@ namespace blendnet.incentive.api.Controllers
 
         private RetailerProxy _retailerProxy;
 
+        private readonly UserProxy _userProxy;
+
         private IncentiveCalculationHelper _incentiveCalculationHelper;
 
         private readonly IConfiguration _configuration;
@@ -55,6 +57,7 @@ namespace blendnet.incentive.api.Controllers
                                 IOptionsMonitor<IncentiveAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
                                 RetailerProxy retailerProxy,
+                                UserProxy userProxy,
                                 IncentiveCalculationHelper incentiveCalculationHelper)
         {
             _incentiveRepository = incentiveRepository;
@@ -68,6 +71,8 @@ namespace blendnet.incentive.api.Controllers
             _stringLocalizer = stringLocalizer;
 
             _retailerProxy = retailerProxy;
+
+            _userProxy = userProxy;
 
             _incentiveCalculationHelper = incentiveCalculationHelper;
         }
@@ -163,6 +168,14 @@ namespace blendnet.incentive.api.Controllers
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<EventAggregateData>> GetConsumerCalculatedRegularByPhoneNumber(ConsumerCalculatedRegularByPhoneNumberRequest request)
         {
+            User user = await _userProxy.GetUserByPhoneNumber(request.PhoneNumber);
+
+            if (user is null || user.AccountStatus != UserAccountStatus.Active)
+            {
+                _logger.LogInformation("User not found or is not Active.");
+                return NotFound();
+            }
+
             var response = await _incentiveCalculationHelper.CalculateRandomIncentiveForConsumer(request.PhoneNumber);
 
             if (response.EventAggregateResponses.Count == 0)
