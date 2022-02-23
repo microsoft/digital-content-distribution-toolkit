@@ -69,6 +69,14 @@ namespace blendnet.common.dto.Incentive
 
         public double ResidualValue { get; set; }
 
+        public double? Entity1Value { get; set; }
+
+        public double? Entity2Value { get; set; }
+
+        public double? Entity3Value { get; set; }
+
+        public double? Entity4Value { get; set; }
+
         public RawData RawData { get; set; }
 
         public object Clone()
@@ -98,6 +106,27 @@ namespace blendnet.common.dto.Incentive
         /// Second Operand to use during calculation of summary
         /// </summary>
         public double? SecondOperand { get; set; }
+
+        /// <summary>
+        /// Entity 1 Operand
+        /// </summary>
+        public double? Entity1Operand { get; set; }
+
+        /// <summary>
+        /// Entity 2 Operand
+        /// </summary>
+        public double? Entity2Operand { get; set; }
+
+        /// <summary>
+        /// Entity 3 Operand
+        /// </summary>
+        public double? Entity3Operand { get; set; }
+
+        /// <summary>
+        /// Entity 4 Operand
+        /// </summary>
+        public double? Entity4Operand { get; set; }
+
 
         /// <summary>
         /// List of ranges to decide the value
@@ -134,6 +163,26 @@ namespace blendnet.common.dto.Incentive
         /// Value associated with the range
         /// </summary>
         public double Output { get; set; }
+
+        /// <summary>
+        /// Entity 1 Output
+        /// </summary>
+        public double? Entity1Output { get; set; }
+
+        /// <summary>
+        /// Entity 2 Output
+        /// </summary>
+        public double? Entity2Output { get; set; }
+
+        /// <summary>
+        /// Entity 3 Output
+        /// </summary>
+        public double? Entity3Output { get; set; }
+
+        /// <summary>
+        /// Entity 4 Output
+        /// </summary>
+        public double? Entity4Output { get; set; }
 
         public object Clone()
         {
@@ -176,9 +225,29 @@ namespace blendnet.common.dto.Incentive
     public class RawData: ICloneable
     {
         /// <summary>
-        /// Aggregrate Sum of Calculated Value
+        /// Aggregrated Sum of Calculated Value
         /// </summary>
         public double AggregratedCalculatedValue { get; set; }
+
+        /// <summary>
+        /// Aggregrated Sum of Entity 1 Calculated Value
+        /// </summary>
+        public double? AggregratedE1CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Aggregrated Sum of Entity 2 Calculated Value
+        /// </summary>
+        public double? AggregratedE2CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Aggregrated Sum of Entity 3 Calculated Value
+        /// </summary>
+        public double? AggregratedE3CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Aggregrated Sum of Entity 4 Calculated Value
+        /// </summary>
+        public double? AggregratedE4CalculatedValue { get; set; }
 
         /// <summary>
         /// Aggregrated Sum of Original Value

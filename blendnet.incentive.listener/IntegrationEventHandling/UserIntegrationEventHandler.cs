@@ -61,12 +61,6 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                     
                     var newCalculatedValue = incentiveEvent.CalculatedValue;
 
-                    // skip update if calculated value is not changed
-                    if (oldCalculatedValue == newCalculatedValue)
-                    {
-                        _logger.LogInformation($"Skipping {incentiveEvent.EventType} event for user {userId} as value not changed");
-                    }
-
                     int response = await _eventRepository.UpdateIncentiveEvent(incentiveEvent);
                     
                     //report the same info to AI for analytics consumption
@@ -101,7 +95,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             }
             else
             {
-                incentiveEvent.CalculatedValue = IncentiveUtil.GetComputedValue(incentiveEvent.OriginalValue, planDetail.Formula);
+                IncentiveUtil.SetComputedValue(planDetail.Formula, incentiveEvent);
             }
         }
     }

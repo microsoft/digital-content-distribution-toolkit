@@ -203,11 +203,12 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 if (planDetail == null)
                 {
                     _logger.LogWarning($"Storing orphan event as no active plan exists for retailer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventCreatedFor} and order id {order.Id}");
+
                     incentiveEvent.CalculatedValue = 0;
                 }
                 else
                 {
-                    incentiveEvent.CalculatedValue = IncentiveUtil.GetComputedValue(incentiveEvent.OriginalValue, planDetail.Formula);
+                    IncentiveUtil.SetComputedValue(planDetail.Formula, incentiveEvent);
                 }
 
                 AddProperties(incentiveEvent, order, orderItem);
@@ -253,7 +254,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 }
                 else
                 {
-                    incentiveEvent.CalculatedValue = IncentiveUtil.GetComputedValue(incentiveEvent.OriginalValue, planDetail.Formula);
+                    IncentiveUtil.SetComputedValue(planDetail.Formula, incentiveEvent);
                 }
 
                 AddProperties(incentiveEvent, order, orderItem);

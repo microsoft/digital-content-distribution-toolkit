@@ -190,6 +190,10 @@ namespace blendnet.incentive.repository.IncentiveRepository
         {
             string queryString = @"   SELECT COUNT(c) as aggregratedCount,
                                             SUM(c.calculatedValue) as aggregratedCalculatedValue,
+                                            SUM(c.entity1CalculatedValue) as aggregratedE1CalculatedValue,
+                                            SUM(c.entity2CalculatedValue) as aggregratedE2CalculatedValue,
+                                            SUM(c.entity3CalculatedValue) as aggregratedE3CalculatedValue,
+                                            SUM(c.entity4CalculatedValue) as aggregratedE4CalculatedValue,
                                             SUM(c.originalValue) as aggregratedOriginalValue,
                                             c.eventCreatedFor,c.eventType,c.eventSubType
                                             FROM c 

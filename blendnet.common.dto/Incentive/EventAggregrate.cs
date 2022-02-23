@@ -36,6 +36,27 @@ namespace blendnet.common.dto.Incentive
         public double AggregratedCalculatedValue { get; set; }
 
         /// <summary>
+        /// Aggregrate Sum of Entity 1 Calculated Value
+        /// </summary>
+        public double? AggregratedE1CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Aggregrate Sum of Entity 2 Calculated Value
+        /// </summary>
+        public double? AggregratedE2CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Aggregrate Sum of Entity 3 Calculated Value
+        /// </summary>
+        public double? AggregratedE3CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Aggregrate Sum of Entity 4 Calculated Value
+        /// </summary>
+        public double? AggregratedE4CalculatedValue { get; set; }
+
+
+        /// <summary>
         /// Aggregrated Sum of Original Value
         /// </summary>
         public double AggregratedOriginalValue { get; set; }

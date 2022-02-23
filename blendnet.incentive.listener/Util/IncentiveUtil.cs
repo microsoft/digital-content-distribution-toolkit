@@ -21,21 +21,74 @@ namespace blendnet.incentive.listener.Util
             return planDetail;
         }
 
-        public static double GetComputedValue(double originalValue, Formula formula)
+        /// <summary>
+        /// Sets calculated value based on given formula
+        /// </summary>
+        /// <param name="originalValue"></param>
+        /// <param name="formula"></param>
+        /// <param name="incentiveEvent"></param>
+        public static void SetComputedValue(Formula formula,IncentiveEvent incentiveEvent)
         {
             switch (formula.FormulaType)
             {
                 case FormulaType.PLUS:
-                    return originalValue + formula.FirstOperand.Value;
-                case FormulaType.MINUS:
-                    return originalValue - formula.FirstOperand.Value;
-                case FormulaType.MULTIPLY:
-                    return originalValue * formula.FirstOperand.Value;
-                case FormulaType.PERCENTAGE:
-                    return originalValue * formula.FirstOperand.Value / 100.0;
-            }
+                    {
+                        incentiveEvent.CalculatedValue = incentiveEvent.OriginalValue + formula.FirstOperand.Value;
 
-            return 0;
+                        incentiveEvent.Entity1CalculatedValue = formula.Entity1Operand.HasValue ? incentiveEvent.OriginalValue + formula.Entity1Operand.Value : null;
+
+                        incentiveEvent.Entity2CalculatedValue = formula.Entity2Operand.HasValue ? incentiveEvent.OriginalValue + formula.Entity2Operand.Value : null;
+
+                        incentiveEvent.Entity3CalculatedValue = formula.Entity3Operand.HasValue ? incentiveEvent.OriginalValue + formula.Entity3Operand.Value : null;
+                        
+                        incentiveEvent.Entity4CalculatedValue = formula.Entity4Operand.HasValue ? incentiveEvent.OriginalValue + formula.Entity4Operand.Value : null;
+
+                        return;
+                    }
+                case FormulaType.MINUS:
+                    {
+                        incentiveEvent.CalculatedValue = incentiveEvent.OriginalValue - formula.FirstOperand.Value;
+
+                        incentiveEvent.Entity1CalculatedValue = formula.Entity1Operand.HasValue ? incentiveEvent.OriginalValue - formula.Entity1Operand.Value : null;
+
+                        incentiveEvent.Entity2CalculatedValue = formula.Entity2Operand.HasValue ? incentiveEvent.OriginalValue - formula.Entity2Operand.Value : null;
+
+                        incentiveEvent.Entity3CalculatedValue = formula.Entity3Operand.HasValue ? incentiveEvent.OriginalValue - formula.Entity3Operand.Value : null;
+
+                        incentiveEvent.Entity4CalculatedValue = formula.Entity4Operand.HasValue ? incentiveEvent.OriginalValue - formula.Entity4Operand.Value : null;
+
+                        return;
+                    }
+                case FormulaType.MULTIPLY:
+                    {
+                        incentiveEvent.CalculatedValue = incentiveEvent.OriginalValue * formula.FirstOperand.Value;
+
+                        incentiveEvent.Entity1CalculatedValue = formula.Entity1Operand.HasValue ? incentiveEvent.OriginalValue * formula.Entity1Operand.Value : null;
+
+                        incentiveEvent.Entity2CalculatedValue = formula.Entity2Operand.HasValue ? incentiveEvent.OriginalValue * formula.Entity2Operand.Value : null;
+
+                        incentiveEvent.Entity3CalculatedValue = formula.Entity3Operand.HasValue ? incentiveEvent.OriginalValue * formula.Entity3Operand.Value : null;
+
+                        incentiveEvent.Entity4CalculatedValue = formula.Entity4Operand.HasValue ? incentiveEvent.OriginalValue * formula.Entity4Operand.Value : null;
+                        return;
+                    }
+                case FormulaType.PERCENTAGE:
+                    {
+                        incentiveEvent.CalculatedValue = incentiveEvent.OriginalValue * formula.FirstOperand.Value / 100.0;
+
+                        incentiveEvent.Entity1CalculatedValue = formula.Entity1Operand.HasValue ? incentiveEvent.OriginalValue * formula.Entity1Operand.Value / 100.0 : null;
+
+                        incentiveEvent.Entity2CalculatedValue = formula.Entity2Operand.HasValue ? incentiveEvent.OriginalValue * formula.Entity2Operand.Value / 100.0 : null;
+
+                        incentiveEvent.Entity3CalculatedValue = formula.Entity3Operand.HasValue ? incentiveEvent.OriginalValue * formula.Entity3Operand.Value / 100.0 : null;
+
+                        incentiveEvent.Entity4CalculatedValue = formula.Entity4Operand.HasValue ? incentiveEvent.OriginalValue * formula.Entity4Operand.Value / 100.0 : null;
+
+                        return;
+                    }
+            };
+
+            incentiveEvent.CalculatedValue = 0;
         }
 
         /// <summary>

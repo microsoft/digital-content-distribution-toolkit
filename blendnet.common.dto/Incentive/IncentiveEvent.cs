@@ -53,6 +53,26 @@ namespace blendnet.common.dto.Incentive
         public double CalculatedValue { get; set; }
 
         /// <summary>
+        /// Entity 1 Calculated Value
+        /// </summary>
+        public double? Entity1CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Entity 2 Calculated Value
+        /// </summary>
+        public double? Entity2CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Entity 3 Calculated Value
+        /// </summary>
+        public double? Entity3CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Entity 4 Calculated Value
+        /// </summary>
+        public double? Entity4CalculatedValue { get; set; }
+
+        /// <summary>
         /// Original Value of the event which is later used for reference
         /// </summary>
         public double OriginalValue { get; set; }

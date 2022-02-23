@@ -351,32 +351,28 @@ namespace blendnet.incentive.api.Common
                                                                                             && ea.EventCreatedFor.Equals(eventCreatedFor))).FirstOrDefault();
                     if (eventAggregrate != default(EventAggregrateResponse))
                     {
-                        //get the calculated value
-                        double calculatedValue = GetCalculatedValue(planType, planDetail.RuleType, eventAggregrate);
-
                         //Formula is applied at the time of insertion hence formula is not required to be applied here.
                         if (planType == PlanType.REGULAR)
                         {
-                            planDetail.Result = new Result() { Value = calculatedValue };
-
-                            planDetail.Result.RawData = new RawData()
-                            {
-                                AggregratedCalculatedValue = eventAggregrate.AggregratedCalculatedValue,
-                                AggregratedOriginalValue = eventAggregrate.AggregratedOriginalValue,
-                                AggregratedCount = eventAggregrate.AggregratedCount
+                            planDetail.Result = new Result() { 
+                                Value = eventAggregrate.AggregratedCalculatedValue,
+                                Entity1Value = eventAggregrate.AggregratedE1CalculatedValue,
+                                Entity2Value = eventAggregrate.AggregratedE2CalculatedValue,
+                                Entity3Value = eventAggregrate.AggregratedE3CalculatedValue,
+                                Entity4Value = eventAggregrate.AggregratedE4CalculatedValue,
                             };
+
+                            planDetail.Result.RawData = GetRawData(eventAggregrate);
 
                         }//Formula needes to be applied for Milestone types of plan
                         else if (planType == PlanType.MILESTONE)
                         {
-                            planDetail.Result = ApplyFormula(planDetail.Formula, calculatedValue);
+                            //get the calculated value
+                            double valueToOperate = GetValueToOperate(planDetail.RuleType, eventAggregrate);
 
-                            planDetail.Result.RawData = new RawData()
-                            {
-                                AggregratedCalculatedValue = eventAggregrate.AggregratedCalculatedValue,
-                                AggregratedOriginalValue = eventAggregrate.AggregratedOriginalValue,
-                                AggregratedCount = eventAggregrate.AggregratedCount
-                            };
+                            planDetail.Result = ApplyFormula(planDetail.Formula, valueToOperate);
+
+                            planDetail.Result.RawData = GetRawData(eventAggregrate);
                         }
                     }
                 }
@@ -385,34 +381,46 @@ namespace blendnet.incentive.api.Common
 
 
         /// <summary>
-        /// Get Calculated Value
+        /// Get Raw Data
         /// </summary>
-        /// <param name="planType"></param>
+        /// <param name="eventAggregrate"></param>
+        /// <returns></returns>
+        private RawData GetRawData(EventAggregrateResponse eventAggregrate )
+        {
+            RawData rawData = new RawData()
+            {
+                AggregratedCalculatedValue = eventAggregrate.AggregratedCalculatedValue,
+                AggregratedE1CalculatedValue = eventAggregrate.AggregratedE1CalculatedValue,
+                AggregratedE2CalculatedValue = eventAggregrate.AggregratedE2CalculatedValue,
+                AggregratedE3CalculatedValue = eventAggregrate.AggregratedE3CalculatedValue,
+                AggregratedE4CalculatedValue = eventAggregrate.AggregratedE4CalculatedValue,
+                AggregratedOriginalValue = eventAggregrate.AggregratedOriginalValue,
+                AggregratedCount = eventAggregrate.AggregratedCount
+            };
+
+            return rawData;
+        }
+
+        /// <summary>
+        /// GetValueToOperate
+        /// </summary>
         /// <param name="ruleType"></param>
         /// <param name="eventAggregrate"></param>
         /// <returns></returns>
-        private double GetCalculatedValue(  PlanType planType, 
-                                            RuleType ruleType, 
+        private double GetValueToOperate(  RuleType ruleType, 
                                             EventAggregrateResponse eventAggregrate)
         {
             double calculatedValue = double.MinValue;
-
-            if (ruleType == RuleType.SUM)
-            {
-                if (planType == PlanType.REGULAR)
-                {
-                    calculatedValue = eventAggregrate.AggregratedCalculatedValue;
-                }
-                else if (planType == PlanType.MILESTONE)
-                {
-                    calculatedValue = eventAggregrate.AggregratedOriginalValue;
-                }
-            }
-            else if (ruleType == RuleType.COUNT)
+            
+            if (ruleType == RuleType.COUNT)
             {
                 calculatedValue = eventAggregrate.AggregratedCount;
             }
-
+            else
+            {
+                calculatedValue = eventAggregrate.AggregratedOriginalValue;
+            }
+            
             return calculatedValue;
         }
 
@@ -432,28 +440,72 @@ namespace blendnet.incentive.api.Common
                 case FormulaType.PLUS:
                     {
                         result.Value = value + formula.FirstOperand.Value;
+
+                        result.Entity1Value = formula.Entity1Operand.HasValue ? value + formula.Entity1Operand.Value : null;
+                        
+                        result.Entity2Value = formula.Entity2Operand.HasValue ? value + formula.Entity2Operand.Value : null;
+
+                        result.Entity3Value = formula.Entity3Operand.HasValue ? value + formula.Entity3Operand.Value : null;
+                        
+                        result.Entity4Value = formula.Entity4Operand.HasValue ? value + formula.Entity4Operand.Value : null;
+
                         break;
                     }
                 case FormulaType.MINUS:
                     {
                         result.Value = value - formula.FirstOperand.Value;
+
+                        result.Entity1Value = formula.Entity1Operand.HasValue ? value - formula.Entity1Operand.Value : null;
+
+                        result.Entity2Value = formula.Entity2Operand.HasValue ? value - formula.Entity2Operand.Value : null;
+
+                        result.Entity3Value = formula.Entity3Operand.HasValue ? value - formula.Entity3Operand.Value : null;
+
+                        result.Entity4Value = formula.Entity4Operand.HasValue ? value - formula.Entity4Operand.Value : null;
+
                         break;
                     }
                 case FormulaType.MULTIPLY:
                     {
                         result.Value = value * formula.FirstOperand.Value;
+
+                        result.Entity1Value = formula.Entity1Operand.HasValue ? value * formula.Entity1Operand.Value : null;
+
+                        result.Entity2Value = formula.Entity2Operand.HasValue ? value * formula.Entity2Operand.Value : null;
+
+                        result.Entity3Value = formula.Entity3Operand.HasValue ? value * formula.Entity3Operand.Value : null;
+
+                        result.Entity4Value = formula.Entity4Operand.HasValue ? value * formula.Entity4Operand.Value : null;
+
                         break;
                     }
                 case FormulaType.PERCENTAGE:
                     {
                         result.Value = (value * formula.FirstOperand.Value) / 100;
+
+                        result.Entity1Value = formula.Entity1Operand.HasValue ? (value * formula.Entity1Operand.Value) / 100 : null;
+
+                        result.Entity2Value = formula.Entity2Operand.HasValue ? (value * formula.Entity2Operand.Value) / 100 : null;
+
+                        result.Entity3Value = formula.Entity3Operand.HasValue ? (value * formula.Entity3Operand.Value) / 100 : null;
+
+                        result.Entity4Value = formula.Entity4Operand.HasValue ? (value * formula.Entity4Operand.Value) / 100 : null;
+
                         break;
                     }
                 case FormulaType.DIVIDE_AND_MULTIPLY:
                     {
+                        result.ResidualValue = value % formula.FirstOperand.Value;
+
                         result.Value = Math.Floor(value / formula.FirstOperand.Value) * formula.SecondOperand.Value;
 
-                        result.ResidualValue = value % formula.FirstOperand.Value;
+                        result.Entity1Value = formula.Entity1Operand.HasValue ? Math.Floor(value / formula.FirstOperand.Value) * formula.Entity1Operand.Value : null;
+
+                        result.Entity2Value = formula.Entity2Operand.HasValue ? Math.Floor(value / formula.FirstOperand.Value) * formula.Entity2Operand.Value : null;
+                        
+                        result.Entity3Value = formula.Entity3Operand.HasValue ? Math.Floor(value / formula.FirstOperand.Value) * formula.Entity3Operand.Value : null ;
+                        
+                        result.Entity4Value = formula.Entity4Operand.HasValue ? Math.Floor(value / formula.FirstOperand.Value) * formula.Entity4Operand.Value : null;
 
                         break;
                     }
@@ -464,6 +516,14 @@ namespace blendnet.incentive.api.Common
                         if (rangeValue != default(RangeValue))
                         {
                             result.Value = rangeValue.Output;
+
+                            result.Entity1Value = rangeValue.Entity1Output;
+
+                            result.Entity2Value = rangeValue.Entity2Output;
+
+                            result.Entity3Value = rangeValue.Entity3Output;
+
+                            result.Entity4Value = rangeValue.Entity4Output;
                         }
 
                         break;

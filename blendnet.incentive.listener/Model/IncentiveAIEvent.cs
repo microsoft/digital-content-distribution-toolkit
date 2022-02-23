@@ -32,6 +32,14 @@ namespace blendnet.incentive.listener.Model
 
             CalculatedValue = incentiveEvent.CalculatedValue;
 
+            Entity1CalculatedValue = incentiveEvent.Entity1CalculatedValue;
+
+            Entity2CalculatedValue = incentiveEvent.Entity2CalculatedValue;
+
+            Entity3CalculatedValue = incentiveEvent.Entity3CalculatedValue;
+
+            Entity4CalculatedValue = incentiveEvent.Entity4CalculatedValue;
+
             OriginalValue = incentiveEvent.OriginalValue;
 
             EventCategoryType = incentiveEvent.EventCategoryType;
@@ -86,6 +94,27 @@ namespace blendnet.incentive.listener.Model
         /// Computed Value of the event which is later used for computation
         /// </summary>
         public double CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Entity 1 Calculated Value
+        /// </summary>
+        public double? Entity1CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Entity 2 Calculated Value
+        /// </summary>
+        public double? Entity2CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Entity 3 Calculated Value
+        /// </summary>
+        public double? Entity3CalculatedValue { get; set; }
+
+        /// <summary>
+        /// Entity 4 Calculated Value
+        /// </summary>
+        public double? Entity4CalculatedValue { get; set; }
+
 
         /// <summary>
         /// Original Value of the event which is later used for reference
