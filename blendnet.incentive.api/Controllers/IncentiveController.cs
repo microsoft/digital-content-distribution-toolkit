@@ -626,7 +626,7 @@ namespace blendnet.incentive.api.Controllers
 
             if(publishedInDateRange != null)
             {
-                errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0024"], publishedInDateRange.Id));
+                errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0024"], startDate,endDate));
             }
 
             return errorInfo;
