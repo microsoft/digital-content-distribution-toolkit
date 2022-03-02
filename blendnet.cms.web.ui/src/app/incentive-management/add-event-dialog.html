@@ -75,8 +75,40 @@
                 <mat-error >{{getErrorMessage()}}</mat-error>
             </mat-form-field>
           </td>
+          </tr>
+          <tr  *ngIf="!isMileStonePlanType()">
+            <td>
+              <mat-form-field >
+                <input matInput placeholder="Entity 1 " 
+                formControlName="entity1Operand"   >
+                <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>
+            <td >
+              <mat-form-field >
+                <input matInput placeholder="Entity 2" 
+                formControlName="entity2Operand"   >
+                <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr  *ngIf="!isMileStonePlanType()">
+            <td >
+              <mat-form-field >
+                <input matInput placeholder="Entity 3" 
+                formControlName="entity3Operand"  >
+                <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>
+            <td >
+              <mat-form-field >
+                <input matInput placeholder="Entity 4" 
+                formControlName="entity4Operand"  >
+                <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+          </td>
         </tr>
-        <tr  *ngIf="isDivideFormulaType()">
+        <tr *ngIf="isDivideFormulaType()">
             <td>
               <mat-form-field >
                   <input matInput placeholder="First Operand" 
@@ -89,6 +121,38 @@
                   <input matInput placeholder="Second Operand" 
                   formControlName="secondOperand" required  [disableControl]="isRangeFormulaType() || isViewOnly">
                   <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr *ngIf="isDivideFormulaType()">
+            <td>
+              <mat-form-field >
+                <input matInput placeholder="Entity 1" 
+                formControlName="entity1Operand"   >
+                <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>  
+            <td>
+              <mat-form-field >
+                <input matInput placeholder="Entity 2" 
+                formControlName="entity2Operand"   >
+                <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>  
+          </tr>
+          <tr *ngIf="isDivideFormulaType()">
+            <td>
+              <mat-form-field >
+                <input matInput placeholder="Entity 3" 
+                formControlName="entity3Operand"   >
+                <mat-error >{{getErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>  
+            <td>
+              <mat-form-field >
+                <input matInput placeholder="Entity 4" 
+                formControlName="entity4Operand"   >
+                <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>           
         </tr>
@@ -107,23 +171,47 @@
           <!-- <span > -->
           <span [formGroupName]="j">
             <td>
-              <mat-form-field>
+              <mat-form-field style="width:80px !important; padding-right: 20px;">
                 <input matInput placeholder="Start" 
-                formControlName="start" required  >
+                formControlName="start" required   >
               </mat-form-field>
             </td>
             <td>
-              <mat-form-field>
+              <mat-form-field style="width:80px !important; padding-right: 20px;">
                 <input matInput placeholder="End" 
                 formControlName="end" required  >
               </mat-form-field>
             </td> 
             <td>
-              <mat-form-field>
+              <mat-form-field style="width:80px !important; padding-right: 20px;">
                 <input matInput placeholder="Output" 
                 formControlName="output" required>
               </mat-form-field>
-            </td>   
+            </td> 
+            <td>
+              <mat-form-field style="width:80px !important; padding-right: 20px;">
+                <input matInput placeholder="Entity 1" 
+                formControlName="entity1Output" >
+              </mat-form-field>
+            </td>  
+            <td>
+              <mat-form-field style="width:80px !important; padding-right: 20px;">
+                <input matInput placeholder="Entity 2" 
+                formControlName="entity2Output" >
+              </mat-form-field>
+            </td>  
+            <td>
+              <mat-form-field style="width:80px !important; padding-right: 20px;">
+                <input matInput placeholder="Entity 3" 
+                formControlName="entity3Output" >
+              </mat-form-field>
+            </td>  
+            <td>
+              <mat-form-field style="width:80px !important">
+                <input matInput placeholder="Entity 4" 
+                formControlName="entity4Output" >
+              </mat-form-field>
+            </td>    
             <td>
               <button mat-icon-button color="primary" *ngIf="(j!==0 || getTotalRanges()>=2)  && !isViewOnly"
                 (click)="removeRange(j)">

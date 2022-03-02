@@ -406,32 +406,26 @@ export class IncentiveManagementComponent implements OnInit {
 
   }
   applyFilterRetailer() {
-    // var filterValue = "";
-    // if(event && event.target) {
-    //   filterValue = event.target ? (event.target as HTMLInputElement).value : this.selectedStatusRetailer;
-    // } else if(event && event.value){
-    //   filterValue = event.value ;
-    // }
-    this.dataSourceRetailers.filter = this.filterValueR.trim().toLowerCase();
+    if(this.filterValueR) {
+      this.dataSourceRetailers.filter = this.filterValueR.trim().toLowerCase();
 
-    if (this.dataSourceRetailers.paginator) {
-      this.dataSourceRetailers.paginator.firstPage();
+      if (this.dataSourceRetailers.paginator) {
+        this.dataSourceRetailers.paginator.firstPage();
+      }
     }
+   
   }
 
 
   applyFilterConsumer() {
-    // var filterValue = "";
-    // if(event && event.target) {
-    //    filterValue = event.target ? (event.target as HTMLInputElement).value : this.selectedStatusConsumer;
-    // } else if(event && event.value){
-    //   filterValue = event.value;
-    // }
-    this.dataSourceConsumers.filter = this.filterValueC.trim().toLowerCase();
+    if(this.filterValueC) {
+      this.dataSourceConsumers.filter = this.filterValueC.trim().toLowerCase();
 
-    if (this.dataSourceConsumers.paginator) {
-      this.dataSourceConsumers.paginator.firstPage();
+      if (this.dataSourceConsumers.paginator) {
+        this.dataSourceConsumers.paginator.firstPage();
+      }
     }
+    
   }
 
   

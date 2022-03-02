@@ -65,13 +65,19 @@ export class EditIncentiveEndDateComponent implements OnInit {
       selectedEndDate.setSeconds(selectedEndDate.getSeconds() + 59);
       newEndDateUTCString  = selectedEndDate.toISOString()
     }
-    
-    if(this.incentive.audience.audienceType === "RETAILER") {
-      var partner = this.incentive.audience.subTypeName;
-      this.changeRetailerPlanEndDate(partner, newEndDateUTCString);
+    var oldEndDateUTCString = this.incentiveForm.get('oldEndDate').value;
+    if(new Date(oldEndDateUTCString).getTime() === new Date(newEndDateUTCString).getTime()) {
+      this.toastr.warning("Current end date and selected end date is same.")
+      this.incentiveForm.get('newEndDate').setValue('');
     } else {
-      this.changeConsumerPlanEndDate(newEndDateUTCString)
+      if(this.incentive.audience.audienceType === "RETAILER") {
+        var partner = this.incentive.audience.subTypeName;
+        this.changeRetailerPlanEndDate(partner, newEndDateUTCString);
+      } else {
+        this.changeConsumerPlanEndDate(newEndDateUTCString)
+      }
     }
+   
   }
 
 

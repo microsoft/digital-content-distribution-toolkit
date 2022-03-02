@@ -104,14 +104,31 @@
                 <td mat-cell *matCellDef="let row"> {{row.formula?.formulaType}} </td>
             </ng-container>
                 <!-- Incentive Column -->
-                <ng-container matColumnDef="firstOperand">
+            <ng-container matColumnDef="firstOperand">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> First Operand </th>
                 <td mat-cell *matCellDef="let row"> {{row.formula?.firstOperand}} </td>
             </ng-container>
             <!-- milestoneTarget Column -->
-                <ng-container matColumnDef="secondOperand">
+            <ng-container matColumnDef="secondOperand">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Second Operand</th>
                 <td mat-cell *matCellDef="let row"> {{row.formula?.secondOperand}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="entity1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Entity 1 </th>
+                <td mat-cell *matCellDef="let row"> {{row.formula?.entity1Operand}} </td>
+            </ng-container>
+            <ng-container matColumnDef="entity2">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Entity 2 </th>
+                <td mat-cell *matCellDef="let row"> {{row.formula?.entity2Operand}} </td>
+            </ng-container>
+            <ng-container matColumnDef="entity3">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Entity 3</th>
+                <td mat-cell *matCellDef="let row"> {{row.formula?.entity3Operand}} </td>
+            </ng-container>
+            <ng-container matColumnDef="entity4">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Entity 4 </th>
+                <td mat-cell *matCellDef="let row"> {{row.formula?.entity4Operand}} </td>
             </ng-container>
 
             <!-- View Column -->

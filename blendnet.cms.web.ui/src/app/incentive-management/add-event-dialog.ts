@@ -46,6 +46,10 @@ import { IncentiveService } from "../services/incentive.service";
           formula : new FormControl({value: this.data.event.formula.formulaType, disabled: true}),
           firstOperand : new FormControl({value: this.data.event.formula.firstOperand, disabled: true}),
           secondOperand : new FormControl({value: this.data.event.formula.secondOperand, disabled: true}),
+          entity1Operand : new FormControl({value: this.data.event.formula.entity1Operand, disabled: true}),
+          entity2Operand : new FormControl({value: this.data.event.formula.entity2Operand, disabled: true}),
+          entity3Operand : new FormControl({value: this.data.event.formula.entity3Operand, disabled: true}),
+          entity4Operand : new FormControl({value: this.data.event.formula.entity4Operand, disabled: true}),
           ranges: this.formBuilder.array([this.createRange()])
           });
           //set range details config
@@ -103,6 +107,31 @@ import { IncentiveService } from "../services/incentive.service";
             this.eventForm.get('firstOperand').clearValidators();
             this.eventForm.get('firstOperand').updateValueAndValidity();
           }
+           // setting the operands
+          if(this.data.event.formula.entity1Operand) {
+            this.eventForm.get('entity1Operand').setValue(this.data.event.formula.entity1Operand);
+          } else {
+            this.eventForm.get('entity1Operand').clearValidators();
+            this.eventForm.get('entity1Operand').updateValueAndValidity();
+          }
+          if(this.data.event.formula.entity2Operand) {
+            this.eventForm.get('entity2Operand').setValue(this.data.event.formula.entity2Operand);
+          } else {
+            this.eventForm.get('entity2Operand').clearValidators();
+            this.eventForm.get('entity2Operand').updateValueAndValidity();
+          }
+          if(this.data.event.formula.entity3Operand) {
+            this.eventForm.get('entity3Operand').setValue(this.data.event.formula.entity3Operand);
+          } else {
+            this.eventForm.get('entity3Operand').clearValidators();
+            this.eventForm.get('entity3Operand').updateValueAndValidity();
+          }
+          if(this.data.event.formula.entity4Operand) {
+            this.eventForm.get('entity4Operand').setValue(this.data.event.formula.entity4Operand);
+          } else {
+            this.eventForm.get('entity4Operand').clearValidators();
+            this.eventForm.get('entity4Operand').updateValueAndValidity();
+          }
 
           // setting the operands
           if(this.data.event.formula.secondOperand) {
@@ -126,7 +155,12 @@ import { IncentiveService } from "../services/incentive.service";
         var newRange = this.formBuilder.group({
           start: range.startRange,
           end: range.endRange,
-          output: range.output
+          output: range.output,
+          entity1Output: range.entity1Output,
+          entity2Output: range.entity2Output,
+          entity3Output: range.entity3Output,
+          entity4Output: range.entity4Output
+
         })
         existingRanges.controls.push(newRange);
       })
@@ -165,6 +199,10 @@ import { IncentiveService } from "../services/incentive.service";
           CustomValidator.numeric]),
         secondOperand : new FormControl('', [Validators.required, Validators.minLength(lengthConstants.titleMinLength),
           CustomValidator.numeric]),
+        entity1Operand : new FormControl('', [CustomValidator.numeric]),
+        entity2Operand : new FormControl('', [CustomValidator.numeric]),
+        entity3Operand : new FormControl('', [CustomValidator.numeric]),
+        entity4Operand : new FormControl('', [CustomValidator.numeric]),
         ranges: this.formBuilder.array([this.createRange()])
         });
     }
@@ -176,7 +214,11 @@ import { IncentiveService } from "../services/incentive.service";
         end: new FormControl('', [Validators.minLength(lengthConstants.titleMinLength),
           CustomValidator.numeric]),
         output: new FormControl('', [Validators.minLength(lengthConstants.titleMinLength),
-          CustomValidator.numeric])
+          CustomValidator.numeric]),
+        entity1Output : new FormControl('', [CustomValidator.numeric]),
+        entity2Output : new FormControl('', [CustomValidator.numeric]),
+        entity3Output : new FormControl('', [CustomValidator.numeric]),
+        entity4Output : new FormControl('', [CustomValidator.numeric]),
       })
     }
 
@@ -184,14 +226,7 @@ import { IncentiveService } from "../services/incentive.service";
     onNoClick(): void {
       this.dialogRef.close();
     }
-  
-    
-    // public errorHandling = (control: string, error: string) => {
-    //     return this.eventForm.controls[control].hasError(error);
-    // }
-
-    
-    
+      
     addRange(): void {
       var range = this.createRange();
       var existingRanges = this.eventForm.get('ranges') as FormArray;
@@ -280,22 +315,23 @@ import { IncentiveService } from "../services/incentive.service";
         this.eventForm.get('secondOperand').updateValueAndValidity();
         this.eventForm.updateValueAndValidity();
       } else if(formula.value === FormulaType.RANGE) {
-        //this.eventForm.addControl('ranges', this.formBuilder.array([this.createRange()]));
-        //this.eventForm.removeControl('milestoneTarget');
-        //this.eventForm.removeControl('incentive');
         this.eventForm.get('firstOperand').clearValidators();
         this.eventForm.get('firstOperand').updateValueAndValidity();
         this.eventForm.get('secondOperand').clearValidators();
         this.eventForm.get('secondOperand').updateValueAndValidity();
-        // this.eventForm.updateValueAndValidity();
+        // this.eventForm.get('entity1Operand').clearValidators();
+        // this.eventForm.get('entity1Operand').updateValueAndValidity();
+        // this.eventForm.get('entity2Operand').clearValidators();
+        // this.eventForm.get('entity2Operand').updateValueAndValidity();
+        // this.eventForm.get('entity3Operand').clearValidators();
+        // this.eventForm.get('entity3Operand').updateValueAndValidity();
+        // this.eventForm.get('entity4Operand').clearValidators();
+        // this.eventForm.get('entity4Operand').updateValueAndValidity();
       } else if(!this.isMileStonePlanType()){
-        //this.eventForm.addControl('incentive', new FormControl('', [Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/),  Validators.min(1)]));
-        //this.eventForm.removeControl('milestoneTarget');
         this.eventForm.get('firstOperand').setValidators([Validators.required, Validators.minLength(lengthConstants.titleMinLength),
           CustomValidator.numeric]);
         this.eventForm.get('secondOperand').clearValidators();
         this.eventForm.get('secondOperand').updateValueAndValidity();
-        // this.eventForm.updateValueAndValidity();
       }  
     }
 
@@ -320,8 +356,16 @@ import { IncentiveService } from "../services/incentive.service";
       }else if(event.formula.formulaType === FormulaType.DIVIDE_AND_MULTIPLY){
         event.formula.firstOperand = this.eventForm.get('firstOperand').value;
         event.formula.secondOperand = this.eventForm.get('secondOperand').value;
+        event.formula.entity1Operand = this.eventForm.get('entity1Operand').value ? this.eventForm.get('entity1Operand').value : 0;
+        event.formula.entity2Operand = this.eventForm.get('entity2Operand').value ? this.eventForm.get('entity2Operand').value : 0;
+        event.formula.entity3Operand = this.eventForm.get('entity3Operand').value ? this.eventForm.get('entity3Operand').value : 0;
+        event.formula.entity4Operand = this.eventForm.get('entity4Operand').value ? this.eventForm.get('entity4Operand').value : 0;
       } else {
         event.formula.firstOperand = this.eventForm.get('firstOperand').value;
+        event.formula.entity1Operand = this.eventForm.get('entity1Operand').value ? this.eventForm.get('entity1Operand').value : 0;
+        event.formula.entity2Operand = this.eventForm.get('entity2Operand').value ? this.eventForm.get('entity2Operand').value : 0;
+        event.formula.entity3Operand = this.eventForm.get('entity3Operand').value ? this.eventForm.get('entity3Operand').value : 0;
+        event.formula.entity4Operand = this.eventForm.get('entity4Operand').value ? this.eventForm.get('entity4Operand').value : 0;
       }
       
       this.onEventCreate.emit(event);
@@ -334,7 +378,12 @@ import { IncentiveService } from "../services/incentive.service";
         var range = {
           startRange: r.get('start').value,
           endRange: r.get('end').value,
-          output: r.get('output').value
+          output: r.get('output').value,
+          entity1Output: r.get('entity1Output').value ? r.get('entity1Output').value : 0,
+          entity2Output: r.get('entity2Output').value ? r.get('entity2Output').value : 0,
+          entity3Output: r.get('entity3Output').value ? r.get('entity3Output').value : 0,
+          entity4Output: r.get('entity4Output').value ? r.get('entity4Output').value : 0
+
         }
         rangeOperand.push(range);
       });
