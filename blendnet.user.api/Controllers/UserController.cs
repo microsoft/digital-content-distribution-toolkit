@@ -135,14 +135,14 @@ namespace blendnet.user.api.Controllers
         /// <summary>
         /// Get Referral Summary
         /// </summary>
-        /// <param name="retailerPartnerId"></param>
+        /// <param name="partnerProvidedRetailerId"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        [HttpGet("summary/{retailerPartnerId}", Name = nameof(GetReferralSummary))]
+        [HttpGet("summary/{partnerProvidedRetailerId}", Name = nameof(GetReferralSummary))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.RetailerManagement)]
-        public async Task<ActionResult> GetReferralSummary(string retailerPartnerId, int startDate, int endDate)
+        public async Task<ActionResult> GetReferralSummary(string partnerProvidedRetailerId, int startDate, int endDate)
         {
             List<string> errorDetails = new List<string>();
 
@@ -166,7 +166,7 @@ namespace blendnet.user.api.Controllers
                 return BadRequest(errorDetails);
             }
 
-            string partnerId = RetailerDto.CreatePartnerId(retailerProvider.PartnerCode, retailerPartnerId);
+            string partnerId = RetailerDto.CreatePartnerId(retailerProvider.PartnerCode, partnerProvidedRetailerId);
 
             List<ReferralSummary> referralData = await _userRepository.GetReferralSummary(partnerId, startDate, endDate);
             if (referralData == null || referralData.Count == 0)

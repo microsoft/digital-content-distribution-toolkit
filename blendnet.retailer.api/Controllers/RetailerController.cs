@@ -7,8 +7,8 @@ using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.retailer.api.Models;
 using blendnet.retailer.repository.Interfaces;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
@@ -32,17 +32,20 @@ namespace blendnet.retailer.api.Controllers
         private readonly IStringLocalizer<SharedResource> _stringLocalizer;
         private readonly IRetailerProviderRepository _retailerProviderRepository;
         private readonly DeviceProxy _deviceProxy;
+        private readonly TelemetryClient _telemetryClient;
 
         public RetailerController(  ILogger<RetailerController> logger,
                                     IRetailerRepository retailerRepository,
                                     IStringLocalizer<SharedResource> stringLocalizer,
                                     IRetailerProviderRepository retailerProviderRepository,
+                                    TelemetryClient telemetryClient,
                                     DeviceProxy deviceProxy)
         {
             this._logger = logger;
             this._retailerRepository = retailerRepository;
             this._retailerProviderRepository = retailerProviderRepository;
             this._stringLocalizer = stringLocalizer;
+            this._telemetryClient = telemetryClient;
             this._deviceProxy = deviceProxy;
         }
 
@@ -317,16 +320,29 @@ namespace blendnet.retailer.api.Controllers
             }
 
             // all seems OK now, so assign the requested device
-            existingRetailer.DeviceAssignments.Add(new RetailerDeviceAssignment() {
+            var newAssignment = new RetailerDeviceAssignment()
+            {
                 DeviceId = assignRequest.DeviceId,
                 AssignmentStartDate = now,
                 AssignmentEndDate = DateTime.MaxValue,
-            });
+            };
 
+            existingRetailer.DeviceAssignments.Add(newAssignment);
             existingRetailer.ModifiedByByUserId = callerUserId;
             existingRetailer.ModifiedDate = now;
 
             await _retailerRepository.UpdateRetailer(existingRetailer);
+
+            AssignDeviceToRetailerAIEvent aiEvent = new AssignDeviceToRetailerAIEvent()
+            {
+                PartnerCode = existingRetailer.PartnerCode,
+                PartnerProvidedId = existingRetailer.PartnerProvidedId,
+                RetailerId = existingRetailer.PartnerId,
+                DeviceId = newAssignment.DeviceId,
+                AssignmentStartDate = newAssignment.AssignmentStartDate,
+            };
+
+            _telemetryClient.TrackEvent(aiEvent);
 
             return NoContent();
         }
@@ -381,7 +397,87 @@ namespace blendnet.retailer.api.Controllers
             existingRetailer.ModifiedDate = now;
 
             await _retailerRepository.UpdateRetailer(existingRetailer);
-            
+
+            UnassignDeviceToRetailerAIEvent aiEvent = new UnassignDeviceToRetailerAIEvent()
+            {
+                PartnerCode = existingRetailer.PartnerCode,
+                PartnerProvidedId = existingRetailer.PartnerProvidedId,
+                RetailerId = existingRetailer.PartnerId,
+                DeviceId = unassignRequest.DeviceId,
+                AssignmentStartDate = activeAssignment.AssignmentStartDate,
+                AssignmentEndDate = activeAssignment.AssignmentEndDate,
+            };
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// API to mark a device as deployed at Retailer's location
+        /// </summary>
+        /// <param name="deployDeviceRequest">Deploy Device Request</param>
+        /// <returns></returns>
+        [HttpPost("deployDevice", Name = nameof(DeployDevice))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
+        public async Task<ActionResult> DeployDevice(DeployDeviceRequest deployDeviceRequest)
+        {
+            var callerUserId = UserClaimData.GetUserId(this.User.Claims);
+
+            var retailerProvider = await _retailerProviderRepository.GetRetailerProviderByPartnerCode(deployDeviceRequest.PartnerCode);
+            if (retailerProvider is null)
+            {
+                _logger.LogInformation($"Unknown Partner code - {deployDeviceRequest.PartnerCode}");
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0007"], deployDeviceRequest.PartnerCode),
+                });
+            }
+
+            string partnerId = RetailerDto.CreatePartnerId(deployDeviceRequest.PartnerCode, deployDeviceRequest.PartnerProvidedRetailerId);
+            RetailerDto existingRetailer = await _retailerRepository.GetRetailerByPartnerId(partnerId);
+
+            if (existingRetailer is null)
+            {
+                _logger.LogInformation($"Unknown retailer ID - {partnerId}");
+                return BadRequest(new string[] {
+                    string.Format(_stringLocalizer["RMS_ERR_0009"], partnerId),
+                });
+            }
+
+            var activeAssignment = existingRetailer.DeviceAssignments
+                                        .Where(asg => !asg.IsDeployed)
+                                        .Where(asg => asg.IsActive)
+                                        .Where(asg => asg.DeviceId == deployDeviceRequest.DeviceId)
+                                        .FirstOrDefault();
+
+            if (activeAssignment is null)
+            {
+                _logger.LogInformation($"No assignment found for retailer {partnerId} for device {deployDeviceRequest.DeviceId}");
+                return BadRequest(new string[] {
+                    _stringLocalizer["RMS_ERR_0015"],
+                });
+            }
+
+            DateTime now = DateTime.UtcNow;
+
+            // update the data
+            activeAssignment.IsDeployed = true;
+            activeAssignment.DeploymentDate = now;
+            existingRetailer.ModifiedDate = now;
+            existingRetailer.ModifiedByByUserId = callerUserId;
+
+            await _retailerRepository.UpdateRetailer(existingRetailer);
+
+            DeployDeviceToRetailerAIEvent aiEvent = new DeployDeviceToRetailerAIEvent()
+            {
+                PartnerCode = existingRetailer.PartnerCode,
+                PartnerProvidedId = existingRetailer.PartnerProvidedId,
+                DeviceId = activeAssignment.DeviceId,
+                DeploymentDate = activeAssignment.DeploymentDate.Value,
+                RetailerId = existingRetailer.RetailerId,
+            };
+
+            _telemetryClient.TrackEvent(aiEvent);
+
             return NoContent();
         }
 
