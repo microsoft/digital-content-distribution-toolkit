@@ -887,7 +887,7 @@ namespace blendnet.incentive.api.Controllers
 
             if (plan.PublishMode != PublishMode.DRAFT)
             {
-                errorInfo.Add(_stringLocalizer["INC_ERR_0014"]);
+                errorInfo.Add(_stringLocalizer["INC_ERR_0015"]);
                 return errorInfo;
             }
 
