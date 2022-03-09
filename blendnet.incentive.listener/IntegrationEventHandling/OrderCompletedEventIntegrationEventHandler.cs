@@ -196,7 +196,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 incentiveEvent.EventCreatedFor = order.RetailerPartnerId;
                 incentiveEvent.EventType = EventType.RETAILER_INCOME_ORDER_COMPLETED;
                 incentiveEvent.EventSubType = orderItem.Subscription.ContentProviderId.ToString();
-                incentiveEvent.OriginalValue = (double)order.TotalAmountCollected;
+                incentiveEvent.OriginalValue = (double)orderItem.AmountCollected;
 
                 PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeRetailerRegularPlan, EventType.RETAILER_INCOME_ORDER_COMPLETED, incentiveEvent.EventSubType);
 
@@ -243,7 +243,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
                 incentiveEvent.EventCategoryType = EventCategoryType.INCOME;
                 incentiveEvent.EventType = EventType.CONSUMER_INCOME_ORDER_COMPLETED;
                 incentiveEvent.EventSubType = orderItem.Subscription.ContentProviderId.ToString();
-                incentiveEvent.OriginalValue = 0;
+                incentiveEvent.OriginalValue = (double)orderItem.AmountCollected;
 
                 PlanDetail planDetail = IncentiveUtil.GetPlanDetailForEvent(activeConsumerRegularPlan, EventType.CONSUMER_INCOME_ORDER_COMPLETED, incentiveEvent.EventSubType);
 
