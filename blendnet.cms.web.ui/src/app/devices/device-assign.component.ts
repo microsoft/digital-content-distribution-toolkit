@@ -13,6 +13,8 @@ import { RetailerService } from '../services/retailer.service';
 })
 export class DeviceAssignComponent implements OnInit {
 
+  deviceDeploymentStatus:boolean = false;
+
   retailerForm = new FormGroup({
     retailerID: new FormControl('',  [Validators.maxLength(lengthConstants.titleMaxLength), 
       Validators.minLength(lengthConstants.titleMinLength), 
@@ -45,6 +47,8 @@ export class DeviceAssignComponent implements OnInit {
           this.isUpdate = true;
           retailerId = retailer.partnerProvidedId;
           partnerCode = retailer.partnerCode;
+          var activeDevice = retailer.deviceAssignments.find(d=> d.isActive);
+          this.deviceDeploymentStatus = activeDevice.isDeployed;
         }
       } else if(res.status === 404){
         //
@@ -92,6 +96,26 @@ export class DeviceAssignComponent implements OnInit {
       );
     }
     
+  }
+  deployDevice() {
+    var request:any = {
+      "partnerCode": this.retailerForm.get('partnerCode').value,
+      "partnerProvidedRetailerId": this.retailerForm.get('retailerID').value,
+      "deviceId": this.data.deviceId
+    }
+    this.retailerService.deployDeviceToRetailer(request).subscribe(res =>{
+      if(res.status === 204) {
+        this.toastr.success("Device deployed sucessfully");
+        this.closeDialog();
+      } else {
+        this.toastr.error("Device deployed failed!");
+      }
+    }, err => {
+      this.toastr.error(err);
+    }
+
+    )
+
   }
 
   closeDialog(): void {

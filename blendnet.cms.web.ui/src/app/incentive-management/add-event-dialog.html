@@ -79,14 +79,14 @@
           <tr  *ngIf="!isMileStonePlanType()">
             <td>
               <mat-form-field >
-                <input matInput placeholder="Entity 1 " 
+                <input matInput placeholder="Retailer Partner" 
                 formControlName="entity1Operand"   >
                 <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>
             <td >
               <mat-form-field >
-                <input matInput placeholder="Entity 2" 
+                <input matInput placeholder="ISV" 
                 formControlName="entity2Operand"   >
                 <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
@@ -95,14 +95,14 @@
           <tr  *ngIf="!isMileStonePlanType()">
             <td >
               <mat-form-field >
-                <input matInput placeholder="Entity 3" 
+                <input matInput placeholder="Content Provider" 
                 formControlName="entity3Operand"  >
                 <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>
             <td >
               <mat-form-field >
-                <input matInput placeholder="Entity 4" 
+                <input matInput placeholder="Other" 
                 formControlName="entity4Operand"  >
                 <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
@@ -127,14 +127,14 @@
           <tr *ngIf="isDivideFormulaType()">
             <td>
               <mat-form-field >
-                <input matInput placeholder="Entity 1" 
+                <input matInput placeholder="Retailer Partner" 
                 formControlName="entity1Operand"   >
                 <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>  
             <td>
               <mat-form-field >
-                <input matInput placeholder="Entity 2" 
+                <input matInput placeholder="ISV" 
                 formControlName="entity2Operand"   >
                 <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
@@ -143,14 +143,14 @@
           <tr *ngIf="isDivideFormulaType()">
             <td>
               <mat-form-field >
-                <input matInput placeholder="Entity 3" 
+                <input matInput placeholder="Content Provider" 
                 formControlName="entity3Operand"   >
                 <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
             </td>  
             <td>
               <mat-form-field >
-                <input matInput placeholder="Entity 4" 
+                <input matInput placeholder="Other" 
                 formControlName="entity4Operand"   >
                 <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>
@@ -190,25 +190,25 @@
             </td> 
             <td>
               <mat-form-field style="width:80px !important; padding-right: 20px;">
-                <input matInput placeholder="Entity 1" 
+                <input matInput placeholder="Retailer Partner" 
                 formControlName="entity1Output" >
               </mat-form-field>
             </td>  
             <td>
               <mat-form-field style="width:80px !important; padding-right: 20px;">
-                <input matInput placeholder="Entity 2" 
+                <input matInput placeholder="ISV" 
                 formControlName="entity2Output" >
               </mat-form-field>
             </td>  
             <td>
               <mat-form-field style="width:80px !important; padding-right: 20px;">
-                <input matInput placeholder="Entity 3" 
+                <input matInput placeholder="Content Provider" 
                 formControlName="entity3Output" >
               </mat-form-field>
             </td>  
             <td>
               <mat-form-field style="width:80px !important">
-                <input matInput placeholder="Entity 4" 
+                <input matInput placeholder="Other" 
                 formControlName="entity4Output" >
               </mat-form-field>
             </td>    

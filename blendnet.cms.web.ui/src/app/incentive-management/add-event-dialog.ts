@@ -356,16 +356,16 @@ import { IncentiveService } from "../services/incentive.service";
       }else if(event.formula.formulaType === FormulaType.DIVIDE_AND_MULTIPLY){
         event.formula.firstOperand = this.eventForm.get('firstOperand').value;
         event.formula.secondOperand = this.eventForm.get('secondOperand').value;
-        event.formula.entity1Operand = this.eventForm.get('entity1Operand').value ? this.eventForm.get('entity1Operand').value : 0;
-        event.formula.entity2Operand = this.eventForm.get('entity2Operand').value ? this.eventForm.get('entity2Operand').value : 0;
-        event.formula.entity3Operand = this.eventForm.get('entity3Operand').value ? this.eventForm.get('entity3Operand').value : 0;
-        event.formula.entity4Operand = this.eventForm.get('entity4Operand').value ? this.eventForm.get('entity4Operand').value : 0;
+        event.formula.entity1Operand = this.eventForm.get('entity1Operand').value ? this.eventForm.get('entity1Operand').value : null;
+        event.formula.entity2Operand = this.eventForm.get('entity2Operand').value ? this.eventForm.get('entity2Operand').value : null;
+        event.formula.entity3Operand = this.eventForm.get('entity3Operand').value ? this.eventForm.get('entity3Operand').value : null;
+        event.formula.entity4Operand = this.eventForm.get('entity4Operand').value ? this.eventForm.get('entity4Operand').value : null;
       } else {
         event.formula.firstOperand = this.eventForm.get('firstOperand').value;
-        event.formula.entity1Operand = this.eventForm.get('entity1Operand').value ? this.eventForm.get('entity1Operand').value : 0;
-        event.formula.entity2Operand = this.eventForm.get('entity2Operand').value ? this.eventForm.get('entity2Operand').value : 0;
-        event.formula.entity3Operand = this.eventForm.get('entity3Operand').value ? this.eventForm.get('entity3Operand').value : 0;
-        event.formula.entity4Operand = this.eventForm.get('entity4Operand').value ? this.eventForm.get('entity4Operand').value : 0;
+        event.formula.entity1Operand = this.eventForm.get('entity1Operand').value ? this.eventForm.get('entity1Operand').value : null;
+        event.formula.entity2Operand = this.eventForm.get('entity2Operand').value ? this.eventForm.get('entity2Operand').value : null;
+        event.formula.entity3Operand = this.eventForm.get('entity3Operand').value ? this.eventForm.get('entity3Operand').value : null;
+        event.formula.entity4Operand = this.eventForm.get('entity4Operand').value ? this.eventForm.get('entity4Operand').value : null;
       }
       
       this.onEventCreate.emit(event);
@@ -379,11 +379,10 @@ import { IncentiveService } from "../services/incentive.service";
           startRange: r.get('start').value,
           endRange: r.get('end').value,
           output: r.get('output').value,
-          entity1Output: r.get('entity1Output').value ? r.get('entity1Output').value : 0,
-          entity2Output: r.get('entity2Output').value ? r.get('entity2Output').value : 0,
-          entity3Output: r.get('entity3Output').value ? r.get('entity3Output').value : 0,
-          entity4Output: r.get('entity4Output').value ? r.get('entity4Output').value : 0
-
+          entity1Output: r.get('entity1Output').value ? r.get('entity1Output').value : null,
+          entity2Output: r.get('entity2Output').value ? r.get('entity2Output').value : null,
+          entity3Output: r.get('entity3Output').value ? r.get('entity3Output').value : null,
+          entity4Output: r.get('entity4Output').value ? r.get('entity4Output').value : null
         }
         rangeOperand.push(range);
       });

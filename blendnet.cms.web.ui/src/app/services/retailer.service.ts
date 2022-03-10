@@ -43,6 +43,12 @@ export class RetailerService {
         return this.http.post(url, request,{ observe: 'response'});
     }
 
+    deployDeviceToRetailer(request) {
+      let url = this.baseUrl + '/deployDevice';
+      this.logger.log(`Deploying a device to a retailer`);
+      return this.http.post(url, request,{ observe: 'response'});
+    }
+
     unassignDeviceToRetailer(request) {
         let url = this.baseUrl + '/unassignDevice';
         this.logger.log(`Unassign a device to a retailer`);

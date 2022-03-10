@@ -207,7 +207,7 @@ export class DevicesComponent {
     const dialogRef = this.dialog.open(DeviceAssignComponent, {
       width: '500px',
       data: {
-        heading : "Device Assignment/Unassignment",
+        heading : "Device Assignment/Unassignment and Deployment",
         deviceId: deviceId
     },
       

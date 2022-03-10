@@ -15,10 +15,18 @@
         </mat-form-field>
     </div>
 
+    <div *ngIf="isUpdate">
+     Device deployed ? <b>{{deviceDeploymentStatus === true ? 'Yes' : 'No'}}</b> 
+    </div>
+
+
       <div align="end">
         <button mat-raised-button type="button" class="discard-btn" (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button type="submit" color="accent" class="update-btn" 
+        [disabled]="retailerForm.invalid" (click)="deployDevice()" *ngIf="isUpdate && !deviceDeploymentStatus">Mark as Deployed</button>
         <button mat-raised-button type="submit" color="primary" class="update-btn" 
         [disabled]="retailerForm.invalid" (click)="saveOrUpdate()"> {{isUpdate ? "Unassign" : "Asssign"}}</button>
       </div>
+
 
 </form>
