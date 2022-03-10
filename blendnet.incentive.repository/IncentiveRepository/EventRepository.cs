@@ -189,12 +189,12 @@ namespace blendnet.incentive.repository.IncentiveRepository
         public async Task<List<EventAggregrateResponse>> GetEventAggregrates( EventAggregrateRequest request)
         {
             string queryString = @"   SELECT COUNT(c) as aggregratedCount,
-                                            SUM(c.calculatedValue) as aggregratedCalculatedValue,
-                                            SUM(c.entity1CalculatedValue) as aggregratedE1CalculatedValue,
-                                            SUM(c.entity2CalculatedValue) as aggregratedE2CalculatedValue,
-                                            SUM(c.entity3CalculatedValue) as aggregratedE3CalculatedValue,
-                                            SUM(c.entity4CalculatedValue) as aggregratedE4CalculatedValue,
-                                            SUM(c.originalValue) as aggregratedOriginalValue,
+                                            SUM(IS_NUMBER(c.calculatedValue) ? c.calculatedValue : 0) as aggregratedCalculatedValue,
+                                            SUM(IS_NUMBER(c.entity1CalculatedValue) ? c.entity1CalculatedValue : 0) as aggregratedE1CalculatedValue,
+                                            SUM(IS_NUMBER(c.entity2CalculatedValue) ? c.entity2CalculatedValue : 0) as aggregratedE2CalculatedValue,
+                                            SUM(IS_NUMBER(c.entity3CalculatedValue) ? c.entity3CalculatedValue : 0) as aggregratedE3CalculatedValue,
+                                            SUM(IS_NUMBER(c.entity4CalculatedValue) ? c.entity4CalculatedValue : 0) as aggregratedE4CalculatedValue,
+                                            SUM(IS_NUMBER(c.originalValue) ? c.originalValue : 0) as aggregratedOriginalValue,
                                             c.eventCreatedFor,c.eventType,c.eventSubType
                                             FROM c 
                                             WHERE ARRAY_CONTAINS(@eventCreatedFor, c.eventCreatedFor)                                            
