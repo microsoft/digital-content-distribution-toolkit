@@ -319,6 +319,99 @@ namespace blendnet.cms.api.Controllers
             }
         }
 
+
+        /// <summary>
+        /// allows to update content metadata
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <param name="updateContentRequest"></param>
+        /// <returns></returns>
+        [HttpPut("{contentId:guid}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
+        public async Task<ActionResult> UpdateContent(Guid contentId, UpdateContentRequest updateContentRequest)
+        {
+            List<string> errorInfo = new List<string>();
+
+            Content contentToUpdate = await _contentRepository.GetContentById(contentId);
+
+            if (contentToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            ActionResult actionResult = await CheckAccess(contentToUpdate.ContentProviderId);
+
+            if (!(actionResult is OkResult))
+            {
+                return actionResult;
+            }
+
+            //if upload is in progress, reject the update request
+            if ((contentToUpdate.ContentUploadStatus == ContentUploadStatus.UploadSubmitted ||
+                 contentToUpdate.ContentUploadStatus == ContentUploadStatus.UploadInProgress))
+            {
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0037"]);
+                return BadRequest(errorInfo);
+            }
+
+            //if transformation is in progress, reject the update request
+            if ((contentToUpdate.ContentTransformStatus == ContentTransformStatus.TransformSubmitted ||
+                 contentToUpdate.ContentTransformStatus == ContentTransformStatus.TransformInProgress ||
+                 contentToUpdate.ContentTransformStatus == ContentTransformStatus.TransformAMSJobInProgress ||
+                 contentToUpdate.ContentTransformStatus == ContentTransformStatus.TransformDownloadInProgress))
+            {
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0035"]);
+                return BadRequest(errorInfo);
+            }
+
+            //if broadcast or broadcast cancellation is in progress, reject the update request
+            if ((contentToUpdate.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastSubmitted ||
+                 contentToUpdate.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastInProgress ||
+                 contentToUpdate.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastTarPushed ||
+                 contentToUpdate.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderCreated ||
+                 contentToUpdate.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderActive ||
+                 contentToUpdate.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastCancelSubmitted ||
+                 contentToUpdate.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastCancelInProgress))
+            {
+                errorInfo.Add(_stringLocalizer["CMS_ERR_0036"]);
+                return BadRequest(errorInfo);
+            }
+
+            //update only the limited properties allowed to update from UI. Rest remains intact
+            contentToUpdate.AdditionalDescription1 = updateContentRequest.AdditionalDescription1;
+            contentToUpdate.AdditionalDescription2 = updateContentRequest.AdditionalDescription2;
+            contentToUpdate.AgeAppropriateness = updateContentRequest.AgeAppropriateness;
+            contentToUpdate.ContentAdvisory = updateContentRequest.ContentAdvisory;
+            contentToUpdate.DurationInMts = updateContentRequest.DurationInMts;
+            contentToUpdate.Genre = updateContentRequest.Genre;
+            contentToUpdate.Hierarchy = updateContentRequest.Hierarchy;
+            contentToUpdate.IsExclusiveContent = updateContentRequest.IsExclusiveContent;
+            contentToUpdate.IsFreeContent = updateContentRequest.IsFreeContent;
+            contentToUpdate.IsHeaderContent = updateContentRequest.IsHeaderContent;
+            contentToUpdate.Language = updateContentRequest.Language;
+            contentToUpdate.LongDescription = updateContentRequest.LongDescription;
+            contentToUpdate.People = updateContentRequest.People;
+            contentToUpdate.Rating = updateContentRequest.Rating;
+            contentToUpdate.ShortDescription = updateContentRequest.ShortDescription;
+            contentToUpdate.Title = updateContentRequest.Title;
+            contentToUpdate.YearOfRelease = updateContentRequest.YearOfRelease;
+            contentToUpdate.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims); ;
+            contentToUpdate.ModifiedDate = DateTime.UtcNow;
+
+            int statusCode = await _contentRepository.UpdateContent(contentToUpdate);
+
+            if (statusCode == (int)System.Net.HttpStatusCode.OK)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
         /// <summary>
         /// Returns the Token to view the content
         /// </summary>

@@ -219,6 +219,15 @@
   <data name="CMS_ERR_0034" xml:space="preserve">
     <value>CMS_ERR_0034-Orders exist against subscription ID {0}</value>
   </data>
+  <data name="CMS_ERR_0035" xml:space="preserve">
+    <value>CMS_ERR_0035-Content metadata update is not allowed when tranformation is in progress.</value>
+  </data>
+  <data name="CMS_ERR_0036" xml:space="preserve">
+    <value>CMS_ERR_0036-Content metadata update is not allowed when broadcast is in progress.</value>
+  </data>
+  <data name="CMS_ERR_0037" xml:space="preserve">
+    <value>CMS_ERR_0037-Content metadata update is not allowed when upload is in progress.</value>
+  </data>
   <data name="GLBL_ERR_0001" xml:space="preserve">
     <value>GLBL_ERR_0001-Only alphanumeric string allowed with no special characters.</value>
   </data>
