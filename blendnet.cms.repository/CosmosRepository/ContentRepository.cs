@@ -198,13 +198,20 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <param name="contentStatusFilter">Lists of Upload status, Transform status and broadcast status</param>
         /// <param name="continuationToken">continuation token to query</param>
         /// <returns>Content result which holds list of results and continuation token</returns>
-        public async Task<ResultData<Content>> GetContentByContentProviderId(Guid contentProviderId, ContentStatusFilter contentStatusFilter, string continuationToken, bool activeOnly)
+        public async Task<ResultData<Content>> GetContentByContentProviderId(   Guid contentProviderId, 
+                                                                                ContentStatusFilter contentStatusFilter, 
+                                                                                string continuationToken, 
+                                                                                bool activeOnly, 
+                                                                                int pageSize,
+                                                                                bool activeBroadcastOnly =false)
         {
             ResultData<Content> contentResult;
             
-            QueryDefinition queryDef = GetQueryDefinitionWithStatusFilter(contentProviderId, contentStatusFilter,activeOnly);
+            QueryDefinition queryDef = GetQueryDefinitionWithStatusFilter(contentProviderId, contentStatusFilter,activeOnly,activeBroadcastOnly);
 
-            contentResult = await this._container.ExtractDataFromQueryIteratorWithToken<Content>(queryDef, continuationToken);
+            continuationToken = String.IsNullOrEmpty(continuationToken) ? null : continuationToken;
+
+            contentResult = await this._container.ExtractDataFromQueryIteratorWithToken<Content>(queryDef, continuationToken,pageSize);
 
             return contentResult;
         }
@@ -218,7 +225,8 @@ namespace blendnet.cms.repository.CosmosRepository
         /// <returns></returns>
         private QueryDefinition GetQueryDefinitionWithStatusFilter( Guid contentProviderId, 
                                                                     ContentStatusFilter contentStatusFilter, 
-                                                                    bool activeOnly)
+                                                                    bool activeOnly,
+                                                                    bool activeBroadcastOnly = false)
         {
             string queryString = $"SELECT * FROM c WHERE c.type = @type AND c.contentProviderId = @contentProviderId ";
 
@@ -245,6 +253,11 @@ namespace blendnet.cms.repository.CosmosRepository
                 queryString = $" {queryString} AND c.isActive = true";
             }
 
+            if (activeBroadcastOnly)
+            {
+                queryString = $" {queryString} AND c.contentBroadcastStatus = @broadcastStatus AND  (@currentDate >= c.contentBroadcastedBy.broadcastRequest.startDate AND @currentDate <= c.contentBroadcastedBy.broadcastRequest.endDate) ";
+            }
+
             queryString = $" {queryString} ORDER BY c.modifiedDate desc";
 
             var queryDef = new QueryDefinition(queryString);
@@ -269,6 +282,12 @@ namespace blendnet.cms.repository.CosmosRepository
                 {
                     queryDef.WithParameter("@broadcastStatuses", contentStatusFilter.ContentBroadcastStatuses);
                 }
+            }
+
+            if (activeBroadcastOnly)
+            {
+                queryDef.WithParameter("@broadcastStatus", ContentBroadcastStatus.BroadcastOrderComplete);
+                queryDef.WithParameter("@currentDate", DateTime.UtcNow);
             }
 
             return queryDef;

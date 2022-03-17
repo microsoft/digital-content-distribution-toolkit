@@ -121,6 +121,7 @@ namespace blendnet.device.repository.Interfaces
         Task<ResultData<DeviceContent>> GetContentByDeviceId(string deviceId,
                                                               Guid contentProviderId,
                                                               string continuationToken,
+                                                              int pageSize,
                                                               bool activeOnly);
         /// <summary>
         /// Return the content on device for the given device and content provider id

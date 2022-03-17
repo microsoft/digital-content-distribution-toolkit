@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using blendnet.cms.api.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -151,5 +152,20 @@ namespace blendnet.common.dto.Cms
         /// Modified Date
         /// </summary>
         public DateTime ModifiedDate { get; set; }
+
+        /// <summary>
+        /// Content Broadcast Details
+        /// </summary>
+        public ContentBroadcastedByDto ContentBroadcastedBy { get; set; }
+
+        /// <summary>
+        /// Content Transform Status
+        /// </summary>
+        public ContentTransformStatus? ContentTransformStatus { get; set; }
+
+        /// <summary>
+        /// Content Broadcast Status
+        /// </summary>
+        public ContentBroadcastStatus? ContentBroadcastStatus { get; set; }
     }
 }

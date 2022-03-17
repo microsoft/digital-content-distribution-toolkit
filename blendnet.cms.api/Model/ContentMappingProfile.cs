@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using blendnet.cms.api.Model;
 
 namespace blendnet.common.dto.Cms
 {
@@ -15,6 +16,8 @@ namespace blendnet.common.dto.Cms
             CreateMap<ContentProviderItem, ContentProviderDto>();
             CreateMap<ContentInfo, Content>();
             CreateMap<Content, ContentInfo>();
+            CreateMap<ContentBroadcastedBy, ContentBroadcastedByDto>();
+            CreateMap<BroadcastRequest, BroadcastRequestDto>();
         }
     }
 }

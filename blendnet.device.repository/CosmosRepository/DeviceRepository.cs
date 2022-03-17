@@ -309,13 +309,16 @@ namespace blendnet.device.repository.CosmosRepository
         public async Task<ResultData<DeviceContent>> GetContentByDeviceId(string deviceId, 
                                                                             Guid contentProviderId, 
                                                                             string continuationToken,
+                                                                            int pageSize,
                                                                             bool activeOnly = true)
         {
             ResultData<DeviceContent> contentResult;
 
             QueryDefinition queryDef = GetContentByDeviceIdQueryDef(deviceId, contentProviderId, activeOnly);
 
-            contentResult = await this._container.ExtractDataFromQueryIteratorWithToken<DeviceContent>(queryDef, continuationToken);
+            continuationToken = String.IsNullOrEmpty(continuationToken) ? null : continuationToken;
+
+            contentResult = await this._container.ExtractDataFromQueryIteratorWithToken<DeviceContent>(queryDef, continuationToken, pageSize);
 
             return contentResult;
         }

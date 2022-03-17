@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using blendnet.cms.api.Model;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -55,7 +56,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/processed")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<ResultData<ContentDto>>> GetProcessedAssets(Guid contentProviderId, string continuationToken)
+        public async Task<ActionResult<ResultData<ContentDto>>> GetProcessedAssets(Guid contentProviderId, BrowseContentRequest request)
         {
             List<string> errorInfo = new List<string>();
 
@@ -63,7 +64,7 @@ namespace blendnet.cms.api.Controllers
             
             contentStatusFilter.ContentTransformStatuses = new string[] { ContentTransformStatus.TransformComplete.ToString() };
 
-            var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken,true);
+            var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, request.ContinuationToken, true,request.PageSize);
 
             ResultData<ContentDto> result = new ResultData<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult.Data), contentApiResult.ContinuationToken);
 
@@ -85,7 +86,7 @@ namespace blendnet.cms.api.Controllers
         /// <returns></returns>
         [HttpPost("{contentProviderId:guid}/broadcasted")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<ResultData<Content>>> GetBroadcastedAssets(Guid contentProviderId, string continuationToken)
+        public async Task<ActionResult<ResultData<ContentDto>>> GetBroadcastedAssets(Guid contentProviderId, BrowseContentRequest request)
         {
             List<string> errorInfo = new List<string>();
 
@@ -95,7 +96,8 @@ namespace blendnet.cms.api.Controllers
             
             contentStatusFilter.ContentBroadcastStatuses = new string[] { ContentBroadcastStatus.BroadcastOrderComplete.ToString() };
 
-            var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, continuationToken, true);
+            //get only broadcast active content.
+            var contentApiResult = await _contentRepository.GetContentByContentProviderId(contentProviderId, contentStatusFilter, request.ContinuationToken, true, request.PageSize,true);
 
             if (contentApiResult.Data == null || contentApiResult.Data.Count <= 0)
             {
@@ -104,17 +106,7 @@ namespace blendnet.cms.api.Controllers
                 return NotFound(errorInfo);
             }
 
-            //return only the active content
-            List<Content> activeBroadCastContent = contentApiResult.Data.Where(bc => bc.IsBroadCastActive).ToList();
-
-            if (activeBroadCastContent == null || activeBroadCastContent.Count <= 0)
-            {
-                errorInfo.Add(_stringLocalizer["CMS_ERR_0017"]);
-
-                return NotFound(errorInfo);
-            }
-
-            ResultData<ContentDto> result = new ResultData<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(activeBroadCastContent), contentApiResult.ContinuationToken);
+            ResultData<ContentDto> result = new ResultData<ContentDto>(_mapper.Map<List<Content>, List<ContentDto>>(contentApiResult.Data), contentApiResult.ContinuationToken);
 
             return Ok(result);
         }

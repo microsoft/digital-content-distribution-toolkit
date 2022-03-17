@@ -54,7 +54,7 @@ namespace blendnet.device.api.Controllers
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<ResultData<Guid>>> GetDeviceContent(   string deviceId, 
                                                                               Guid contentProviderId, 
-                                                                              string continuationToken)
+                                                                              GetDeviceContentRequest request)
         {
             List<string> errorInfo = new List<string>();
 
@@ -67,7 +67,7 @@ namespace blendnet.device.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            ResultData<DeviceContent> deviceApiResult = await _deviceRepository.GetContentByDeviceId(deviceId, contentProviderId, continuationToken, true);
+            ResultData<DeviceContent> deviceApiResult = await _deviceRepository.GetContentByDeviceId(deviceId, contentProviderId, request.ContinuationToken, request.PageSize, true);
 
             ResultData<Guid> result;
 
