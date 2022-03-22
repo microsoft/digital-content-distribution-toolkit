@@ -54,9 +54,7 @@ namespace blendnet.cms.api.Model
         /// Genre
         /// </summary>
         [Required]
-        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Description_Min_Length)]
-        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
-        public string Genre { get; set; }
+        public Genre Genre { get; set; }
 
         /// <summary>
         /// Age Appropriateness

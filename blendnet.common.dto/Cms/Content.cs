@@ -27,6 +27,8 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Content provider content id
         /// </summary>
+        [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Title_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string ContentProviderContentId { get; set; }
 
         /// <summary>
@@ -82,9 +84,7 @@ namespace blendnet.common.dto.Cms
         /// Genre
         /// </summary>
         [Required]
-        [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Description_Min_Length)]
-        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
-        public string Genre { get; set; }
+        public Genre Genre { get; set; }
 
         /// <summary>
         /// Age Appropriateness
@@ -105,6 +105,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Year of Release
         /// </summary>
+        [Required]
         [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length)]
         [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string YearOfRelease { get; set; }
@@ -112,6 +113,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// Language
         /// </summary>
+        [Required]
         [StringLength(ApplicationConstants.MaxMinLength.Description_Max_Length)]
         [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
         public string Language { get; set; }
@@ -192,6 +194,7 @@ namespace blendnet.common.dto.Cms
         /// <summary>
         /// List of Attachments
         /// </summary>
+        [Required]
         [ValidateCollection]
         public List<Attachment> Attachments { get; set; }
 
@@ -297,7 +300,26 @@ namespace blendnet.common.dto.Cms
     {
         Thumbnail = 0,
         Teaser = 1,
-        LargeThumbnail = 2
+        LargeThumbnail = 2,
+        LandscapeThumbnail = 3
+    }
+
+    /// <summary>
+    /// Genre
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum Genre
+    {
+        Drama = 0,
+        Family = 1,
+        Reality = 2,
+        Crime = 3,
+        Romance = 4,
+        Action = 5,
+        Thriller = 6,
+        Fantasy = 7,
+        Mythology = 8,
+        Comedy=9
     }
 
     /// <summary>
@@ -309,7 +331,8 @@ namespace blendnet.common.dto.Cms
         Director = 0,
         Actor = 1,
         Singer = 2,
-        MusicDirector = 3
+        MusicDirector = 3,
+        Other = 4
     }
 
     /// <summary>

@@ -988,7 +988,9 @@ namespace blendnet.cms.api.Controllers
                 }
                 foreach (Attachment attachment in content.Attachments)
                 {
-                    if (attachment.Type is AttachmentType.Thumbnail)
+                    if (attachment.Type is AttachmentType.Thumbnail || 
+                        attachment.Type is AttachmentType.LandscapeThumbnail ||
+                        attachment.Type is AttachmentType.LargeThumbnail)
                     {
 
                         string imagetype = FileFormat(attachment.Name);

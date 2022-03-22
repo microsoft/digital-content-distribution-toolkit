@@ -69,7 +69,7 @@ namespace blendnet.cosmos.utility.BroadCastMigration
 
                     newContent.ContentBroadcastedBy = contentBroadcastedBy;
                     newContent.ContentAdvisory = "N/A";
-                    newContent.Genre = "Comedy, Action";
+                    newContent.Genre = Genre.Action;
                     newContent.AgeAppropriateness = "13+";
 
                     await _contentRepository.UpdateContent(newContent);
