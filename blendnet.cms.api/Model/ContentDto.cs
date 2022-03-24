@@ -58,6 +58,16 @@ namespace blendnet.common.dto.Cms
         public string AdditionalDescription2 { get; set; }
 
         /// <summary>
+        /// AdditionalTitle1 
+        /// </summary>
+        public string AdditionalTitle1 { get; set; }
+
+        /// <summary>
+        /// AdditionalTitle2
+        /// </summary>
+        public string AdditionalTitle2 { get; set; }
+
+        /// <summary>
         /// Genre
         /// </summary>
         [Required]

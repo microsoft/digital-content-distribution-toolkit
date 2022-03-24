@@ -264,4 +264,7 @@
   <data name="INC_ERR_0045" xml:space="preserve">
     <value>INC_ERR_0045-User details are incorrect.</value>
   </data>
+  <data name="INC_ERR_0046" xml:space="preserve">
+    <value>INC_ERR_0046-Order completed event should have event sub type with valid content provider id</value>
+  </data>
 </root>

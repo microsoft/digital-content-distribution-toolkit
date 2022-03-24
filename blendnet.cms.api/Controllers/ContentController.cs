@@ -381,6 +381,8 @@ namespace blendnet.cms.api.Controllers
             //update only the limited properties allowed to update from UI. Rest remains intact
             contentToUpdate.AdditionalDescription1 = updateContentRequest.AdditionalDescription1;
             contentToUpdate.AdditionalDescription2 = updateContentRequest.AdditionalDescription2;
+            contentToUpdate.AdditionalTitle1 = updateContentRequest.AdditionalTitle1;
+            contentToUpdate.AdditionalTitle2 = updateContentRequest.AdditionalTitle2;
             contentToUpdate.AgeAppropriateness = updateContentRequest.AgeAppropriateness;
             contentToUpdate.ContentAdvisory = updateContentRequest.ContentAdvisory;
             contentToUpdate.DurationInMts = updateContentRequest.DurationInMts;

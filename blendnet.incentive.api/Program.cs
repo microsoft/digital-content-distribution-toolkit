@@ -217,6 +217,7 @@ void ConfigureServices(WebApplicationBuilder builder)
     services.AddTransient<RetailerProxy>();
     services.AddTransient<IncentiveCalculationHelper>();
     services.AddTransient<ContentProxy>();
+    services.AddTransient<ContentProviderProxy>();
 
     //registerations required for authhandler to work
     services.AddTransient<KaizalaIdentityProxy>();

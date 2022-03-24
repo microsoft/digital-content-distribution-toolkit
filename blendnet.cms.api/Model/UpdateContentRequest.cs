@@ -51,6 +51,21 @@ namespace blendnet.cms.api.Model
         public string AdditionalDescription2 { get; set; }
 
         /// <summary>
+        /// AdditionalTitle1
+        /// </summary>
+        [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Title_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
+        public string AdditionalTitle1 { get; set; }
+
+        /// <summary>
+        /// AdditionalTitle2
+        /// </summary>
+        [StringLength(ApplicationConstants.MaxMinLength.Title_Max_Length, MinimumLength = ApplicationConstants.MaxMinLength.Title_Min_Length)]
+        [RegularExpression(ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars, ErrorMessage = ApplicationConstants.ValidationRegularExpressions.AlphaNumericLimitedSplChars_ErrorCode)]
+        public string AdditionalTitle2 { get; set; }
+
+
+        /// <summary>
         /// Genre
         /// </summary>
         [Required]

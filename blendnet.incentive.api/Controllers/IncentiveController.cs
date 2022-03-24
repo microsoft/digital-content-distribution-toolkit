@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using blendnet.api.proxy.Cms;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
@@ -46,6 +47,8 @@ namespace blendnet.incentive.api.Controllers
 
         private RetailerProxy _retailerProxy;
 
+        private ContentProviderProxy _contentProviderProxy;
+
         public IncentiveController( IIncentiveRepository incentiveRepository,
                                     ILogger<IncentiveController> logger,
                                     IOptionsMonitor<IncentiveAppSettings> optionsMonitor,
@@ -53,6 +56,7 @@ namespace blendnet.incentive.api.Controllers
                                     RetailerProviderProxy retailerProviderProxy,
                                     IncentiveCalculationHelper incentiveCalculationHelper,
                                     RetailerProxy retailerProxy,
+                                    ContentProviderProxy contentProviderProxy,
                                     IMapper mapper)
         {
             _incentiveRepository = incentiveRepository;
@@ -70,6 +74,8 @@ namespace blendnet.incentive.api.Controllers
             _mapper = mapper;
 
             _retailerProxy = retailerProxy;
+
+            _contentProviderProxy = contentProviderProxy;
         }
 
         #region Incentive management methods
@@ -556,7 +562,7 @@ namespace blendnet.incentive.api.Controllers
             }
 
             //Validate PlanDetail
-            errorInfo = ValidatePlanDetail(incentivePlanRequest);
+            errorInfo = await ValidatePlanDetail(incentivePlanRequest);
 
             if (HasError(errorInfo))
             {
@@ -632,7 +638,7 @@ namespace blendnet.incentive.api.Controllers
             return errorInfo;
         }
 
-        private List<string> ValidatePlanDetail(IncentivePlanRequest incentivePlanRequest)
+        private async Task<List<string>> ValidatePlanDetail(IncentivePlanRequest incentivePlanRequest)
         {
             List<PlanDetail> planDetails = incentivePlanRequest.PlanDetails;
 
@@ -656,13 +662,32 @@ namespace blendnet.incentive.api.Controllers
                     return errorInfo;
                 }
 
-                if ((planDetail.EventType == EventType.RETAILER_INCOME_ORDER_COMPLETED || planDetail.EventType == EventType.CONSUMER_INCOME_ORDER_COMPLETED))
+                if ((planDetail.EventType == EventType.RETAILER_INCOME_ORDER_COMPLETED || 
+                    planDetail.EventType == EventType.CONSUMER_INCOME_ORDER_COMPLETED))
                 {
                     if (string.IsNullOrEmpty(planDetail.EventSubType))
                     {
                         errorInfo.Add(_stringLocalizer["INC_ERR_0010"]);
                         return errorInfo;
                     }
+
+                    Guid contentProviderId;
+
+                    //in case of order complete, sub type should have content provider id and it should be GUID
+                    if (!Guid.TryParse(planDetail.EventSubType, out contentProviderId))
+                    {
+                        errorInfo.Add(_stringLocalizer["INC_ERR_0046"]);
+                        return errorInfo;
+                    }
+
+                    ContentProviderDto contentProvider = await _contentProviderProxy.GetContentProviderById(contentProviderId);
+
+                    if (contentProvider == null)
+                    {
+                        errorInfo.Add(_stringLocalizer["INC_ERR_0046"]);
+                        return errorInfo;
+                    }
+
                 } 
                 else if(planDetail.EventSubType != null)
                 {
