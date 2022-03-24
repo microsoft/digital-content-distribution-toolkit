@@ -4,7 +4,7 @@ export const environment = {
   maxFileUploadSize: 1000000,
   fileAllowedType: 'application/json',
   channelName: "CMSPortal",
-  baseUrl: "https://blendnet-dev.kaiza.la",
+  baseUrl: "https://blendnet-stage.kaiza.la",
   contentProviderApiUrl: "/cmsapi/api/v1/ContentProvider",
   browrseContent: "/cmsapi/api/v1/BrowseContent",
   contentApiUrl: "/cmsapi/api/v1/Content",
@@ -22,15 +22,15 @@ export const environment = {
   retailerUrl: "/retailerapi/api/v1/Retailer",
   retailerProviderUrl: "/retailerapi/api/v1/RetailerProvider",
   dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
-  kaizalaApi0: "https://api-alpha.kaiza.la/v1/",
-  kaizalaApi1: "https://api-alpha1.kaiza.la/v1/",
-  kaizalaApi2: "https://api-alpha2.kaiza.la/v1/",
+  kaizalaApi0: "https://api-preprod.kaiza.la/v1/",
+  kaizalaApi1: "https://api-preprod.kaiza.la/v1/",
+  kaizalaApi2: "https://api-preprod.kaiza.la/v1/",
   kaizalaSignUpSignIn: "LoginWithPhoneForPartners",
   kaizalaVerifyOTP: "VerifyPhonePinForPartnerLogin",
   kaizalaGetUserRoles : "ValidatePartnerAccessToken",
   kaizalaAppNameParam : "applicationName",
   kaizalaAppName : "com.microsoft.mobile.polymer.mishtu",
-  baseHref:'',
+  baseHref:'portal',
   whitelistedUserApiUrl: "/userapi/api/v1/WhitelistedUser/create",
   widewineTokenPrefix: "&widevine=true&token=Bearer%3D",
     filters : [
@@ -47,7 +47,7 @@ export const environment = {
     {
       "filterName" : "Content Type",
       "filterValues" : [
-        "Test", "Development"]
+        "Test",  "Development"]
     },
   ],
   countryCodes: [
@@ -76,5 +76,7 @@ export const environment = {
     "RetailerDashboard": "",
     "Dashboard": "webRetailerDashboardEnabled",
     "Order": "webOrderCompletionEnabled"
-  }
+  },
+  genres :  ["Drama", "Family", "Reality", "Crime", "Romance", "Action", "Thriller", "Fantasy", "Mythology"],
+  peopleType: ["Director", "Actor","Singer", "MusicDirector", "Other"]
  };

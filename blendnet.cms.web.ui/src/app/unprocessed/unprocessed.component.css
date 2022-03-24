@@ -96,3 +96,10 @@ td.mat-footer-cell:last-of-type {
   /* overflow-y: auto; */
   height: 75%;
 }
+.content-detail-table-edit {
+  border: 1px;
+  border-color: rgb(176, 176, 241);
+  /* overflow-y: auto; */
+  height: 75%;
+  min-width: 60vw;
+}

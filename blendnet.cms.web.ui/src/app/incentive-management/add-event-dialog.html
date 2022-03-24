@@ -55,12 +55,12 @@
               formControlName="formula"  
               (ngModelChange)="onFormulaChange()">
               <span *ngIf="isMileStonePlanType()">
-                  <mat-option  *ngFor="let formula of milestoneFormulas" [value]="formula">
+                  <mat-option  *ngFor="let formula of milestoneFormulas" [value]="formula"  [disabled]="disableFormula(formula)">
                       {{formula}}
                   </mat-option>
               </span>
               <span *ngIf="!isMileStonePlanType()">
-                  <mat-option  *ngFor="let formula of regularFormulas" [value]="formula">
+                  <mat-option  *ngFor="let formula of regularFormulas" [value]="formula"  [disabled]="disableFormula(formula)">
                       {{formula}} 
                   </mat-option>
               </span>
@@ -79,7 +79,7 @@
           <tr  *ngIf="!isMileStonePlanType()">
             <td>
               <mat-form-field >
-                <input matInput placeholder="Retailer Partner" 
+                <input matInput placeholder="GTM" 
                 formControlName="entity1Operand"   >
                 <mat-error >{{getErrorMessage()}}</mat-error>
               </mat-form-field>

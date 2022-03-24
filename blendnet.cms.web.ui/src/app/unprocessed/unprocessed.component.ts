@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, ElementRef, Inject, LOCALE_ID, ViewChild} from '@angular/core';
+import { Component, Inject, LOCALE_ID, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -16,6 +16,10 @@ import { CommonDialogComponent } from '../common-dialog/common-dialog.component'
 import { DatePipe } from '@angular/common';
 import { ContentView } from '../models/content-view.model';
 import { unprocessedContentFilters } from '../constants/content-status-filters';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { lengthConstants } from "../constants/length-constants";
+import { CustomValidator } from "../custom-validator/custom-validator";
+import { COMMA, ENTER, P } from '@angular/cdk/keycodes';
 
 
 @Component({
@@ -24,7 +28,7 @@ import { unprocessedContentFilters } from '../constants/content-status-filters';
   templateUrl: 'unprocessed.component.html',
 })
 export class UnprocessedComponent {
-  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'view', 'isDeletable', 'isProcessable'];
+  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'view', 'edit', 'isDeletable', 'isProcessable'];
   dataSource: MatTableDataSource<ContentView>;
   fileUploadError: string ="";
   showDialog: boolean = false;
@@ -140,6 +144,23 @@ export class UnprocessedComponent {
       this.dataSource.paginator.firstPage();
     }
   }
+
+  editContent(id): void {
+    this.contentService.getContentById(id).subscribe(
+      res => {
+        const dialogRef = this.dialog.open(EditContentMetadataDialog, {
+          data: {content: res}
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      },
+      err => {
+        this.toastr.error(err);
+      });
+   }
+  
 
   uploadFile(file) {
     const formData = new FormData(); 
@@ -332,20 +353,148 @@ export class ContentDetailsDialog {
     public dialogRef: MatDialogRef<ContentDetailsDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any) {}
     content: Content;
-    cast: string = '';
+    people: string = '';
     attachments: string = '';
 
   ngOnInit(): void {
     this.content = this.data.content;
-    this.data.content.people.filter(each => 
-      this.cast += (each.role === 'Actor') ?  each.name + ' ' : ''
+    this.data.content.people.forEach(each => 
+      this.people += each.role+ " : " +each.name + " | "
     );
-    this.content.attachments.filter( each => {
+    this.data.content.attachments.filter( each => {
       this.attachments +=  each.name + ' ';
     })
   }
 
 
+}
+
+
+@Component({
+  selector: 'edit-content-metadata',
+  templateUrl: 'edit-content-metadata.html',
+  styleUrls: ['unprocessed.component.css']
+})
+export class EditContentMetadataDialog {
+
+  content: Content;
+    attachments: string = '';
+    metadataForm: FormGroup;
+    genres: Array<string> = [];
+    peopleType: Array<string> = [];
+    peopleList: Array<string> = [];
+    peoples: Array<any> = [];
+    selectable = true;
+    removable = true;
+    addOnBlur = true;
+    readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
+
+  constructor(
+    public dialogRef: MatDialogRef<EditContentMetadataDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private contentService: ContentService,
+    private toastr: ToastrService) {
+      this.genres = environment.genres;
+      this.peopleType = environment.peopleType;
+    }
+    
+
+
+  ngOnInit(): void {
+    this.content = this.data.content;
+    this.data.content.people.filter(each =>  {
+      this.peopleList.push(each.role + " | " + each.name);
+    }      
+    );
+    this.data.content.attachments.filter( each => {
+      this.attachments +=  each.name + ' ';
+    })
+    var isHeaderContent = this.data.content.isHeaderContent ? "Yes": "No";
+    var isFreeContent = this.data.content.isFreeContent ? "Yes": "No";
+  
+    this.metadataForm = new FormGroup({
+      contentId :  new FormControl({value: this.data.content.contentId, disabled: true}),
+      contentProviderContentId :  new FormControl({value:this.data.content.contentProviderContentId, disabled: true}),
+      shortDescription :  new FormControl(this.data.content.shortDescription,  [ Validators.maxLength(lengthConstants.shortDescriptionMaxLength), 
+        Validators.minLength(lengthConstants.shortDescriptionMinLength),
+        CustomValidator.alphaNumericSplChar]),
+      longDescription :  new FormControl(this.data.content.longDescription,  [ Validators.maxLength(lengthConstants.longDescriptionMaxLength), 
+        Validators.minLength(lengthConstants.longDescriptionMinLength),
+        CustomValidator.alphaNumericSplChar]),
+      additionalDescription1 : new FormControl(this.data.content.additionalDescription1,  [ Validators.maxLength(lengthConstants.additionalDescriptionMaxLength), 
+        Validators.minLength(lengthConstants.additionalDescriptionMinLength),
+        CustomValidator.alphaNumericSplChar]),
+      additionalDescription2 : new FormControl(this.data.content.additionalDescription2,  [ Validators.maxLength(lengthConstants.additionalDescriptionMaxLength), 
+        Validators.minLength(lengthConstants.additionalDescriptionMinLength),
+        CustomValidator.alphaNumericSplChar]),
+      genre :  new FormControl(this.data.content.genre),
+      yearOfRelease :  new FormControl(this.data.content.yearOfRelease),
+      language :  new FormControl(this.data.content.language),
+      durationInMts :  new FormControl(this.data.content.durationInMts),
+      rating :  new FormControl(this.data.content.rating),
+      mediaFileName :  new FormControl({value: this.data.content.mediaFileName, disabled: true}),
+      hierarchy :  new FormControl(this.data.content.hierarchy),
+      isHeaderContent :  new FormControl(isHeaderContent),
+      isFreeContent :  new FormControl(isFreeContent),
+      attachments :  new FormControl({value: this.attachments, disabled: true}),
+      ageAppropriateness :  new FormControl(this.data.content.ageAppropriateness),
+      contentAdvisory:  new FormControl(this.data.content.contentAdvisory),
+      people:new FormControl('Actor'),
+      name: new FormControl('', [ Validators.maxLength(lengthConstants.titleMaxLength), 
+        Validators.minLength(lengthConstants.titleMinLength),
+        CustomValidator.alphaNumericSplChar])
+      });
+  }
+
+
+  addPeople() {
+    if(this.metadataForm.get('name').value.trim() != "") {
+      this.peopleList.push(this.metadataForm.get('people').value + " | " +this.metadataForm.get('name').value);
+      this.metadataForm.get('name').setValue('');
+    }
+    
+  }
+
+  removePerson(person: string) {
+    const index = this.peopleList.indexOf(person);
+    if (index >= 0) {
+      this.peopleList.splice(index, 1);
+    }
+  }
+
+
+  updateMetadata() {
+    this.contentService.updateMetaData(this.data.content.contentId, this.getUpdateMetadata()).subscribe(res => {
+      this.toastr.success("Content metadata updated successfully!!")
+    },
+    err=> this.toastr.error(err)); 
+  }
+
+  getUpdateMetadata() {
+    this.peopleList.forEach(p =>  {
+      var token = p.split(" | ");
+      this.peoples.push({"role": token[0], "name": token[1]});
+    });
+
+    var contentMetadata = this.data.content;
+    contentMetadata.shortDescription = this.metadataForm.get('shortDescription').value;
+    contentMetadata.longDescription = this.metadataForm.get('longDescription').value;
+    contentMetadata.additionalDescription1 = this.metadataForm.get('additionalDescription1').value;
+    contentMetadata.additionalDescription2 = this.metadataForm.get('additionalDescription2').value;
+    contentMetadata.genre = this.metadataForm.get('genre').value;
+    contentMetadata.yearOfRelease = this.metadataForm.get('yearOfRelease').value;
+    contentMetadata.language = this.metadataForm.get('language').value;
+    contentMetadata.durationInMts = this.metadataForm.get('durationInMts').value;
+    contentMetadata.rating = this.metadataForm.get('rating').value;
+    contentMetadata.isHeaderContent = this.metadataForm.get('isHeaderContent').value === "Yes";
+    contentMetadata.isFreeContent = this.metadataForm.get('isFreeContent').value === "Yes";
+    contentMetadata.ageAppropriateness = this.metadataForm.get('ageAppropriateness').value;
+    contentMetadata.contentAdvisory = this.metadataForm.get('contentAdvisory').value;
+    contentMetadata.people = this.peoples;
+    return contentMetadata;
+
+  }
 }
 
 

@@ -76,6 +76,8 @@ export const environment = {
     "RetailerDashboard": "",
     "Dashboard": "webRetailerDashboardEnabled",
     "Order": "webOrderCompletionEnabled"
-  }
+  },
+  genres :  ["Drama", "Family", "Reality", "Crime", "Romance", "Action", "Thriller", "Fantasy", "Mythology"],
+  peopleType: ["Director", "Actor","Singer", "MusicDirector", "Other"]
  };
 

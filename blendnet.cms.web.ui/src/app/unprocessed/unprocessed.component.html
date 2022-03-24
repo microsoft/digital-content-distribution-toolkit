@@ -96,6 +96,23 @@
             </td>
         </ng-container>
 
+ <!-- Edit Action Column -->
+        <ng-container matColumnDef="edit">
+            <th mat-header-cell *matHeaderCellDef> 
+                Edit
+                <!-- <button mat-icon-button disabled>
+                    <mat-icon mat-list-icon >edit</mat-icon> 
+                </button> -->
+             </th>
+            <td mat-cell *matCellDef="let row" >
+                <button mat-icon-button  (click)="editContent(row.id)">
+                    <mat-icon mat-list-icon 
+                    matTooltip="Edit content">edit</mat-icon> 
+                </button>
+            </td>
+        </ng-container>
+
+
         <!-- Process Action Column -->
         <ng-container matColumnDef="isProcessable">
             <th mat-header-cell *matHeaderCellDef > 

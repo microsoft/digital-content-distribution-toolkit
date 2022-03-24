@@ -42,7 +42,7 @@ import { IncentiveService } from "../services/incentive.service";
           eventType :  new FormControl({value:this.data.event.eventType, disabled: true}),
           eventTitle :  new FormControl({value:this.data.event.eventTitle, disabled: true}),
           eventSubType :  new FormControl({value:this.data.event.eventSubType, disabled: true}),
-          ruleType : new FormControl({value: 'SUM', disabled: true}),
+          ruleType : new FormControl({value: this.data.event.ruleType, disabled: true}),
           formula : new FormControl({value: this.data.event.formula.formulaType, disabled: true}),
           firstOperand : new FormControl({value: this.data.event.formula.firstOperand, disabled: true}),
           secondOperand : new FormControl({value: this.data.event.formula.secondOperand, disabled: true}),
@@ -171,7 +171,7 @@ import { IncentiveService } from "../services/incentive.service";
     setFormulaConfig(){
       this.regularFormulas = [
         FormulaType.PLUS, 
-        // FormulaType.MINUS,
+        FormulaType.MINUS,
         FormulaType.MULTIPLY,
         FormulaType.PERCENTAGE
       ];
@@ -183,6 +183,7 @@ import { IncentiveService } from "../services/incentive.service";
     }
     
     createEmptyForm() {
+      var ruleTypeValue = this.data.planType === "REGULAR" ? "SUM" : "COUNT";
       this.eventForm = new FormGroup({
         eventType :  new FormControl('',  [ Validators.maxLength(lengthConstants.titleMaxLength), 
           Validators.minLength(lengthConstants.titleMinLength),
@@ -193,7 +194,7 @@ import { IncentiveService } from "../services/incentive.service";
         eventSubType :  new FormControl('',  [ Validators.maxLength(lengthConstants.titleMaxLength), 
           Validators.minLength(lengthConstants.titleMinLength),
           CustomValidator.alphaNumericSplChar]),
-        ruleType : new FormControl('SUM', [Validators.required]),
+        ruleType : new FormControl(ruleTypeValue, [Validators.required]),
         formula : new FormControl('', [Validators.required]),
         firstOperand : new FormControl('',[Validators.minLength(lengthConstants.titleMinLength),
           CustomValidator.numeric]),
@@ -289,6 +290,15 @@ import { IncentiveService } from "../services/incentive.service";
     isExpenseEvent(event) {
       return event.includes("EXPENSE");
     }
+
+    disableFormula(event) {
+      if(event.includes("MINUS")) {
+        return true;
+      } else if(this.data.audience === "CONSUMER") {
+        return event.includes("MULTIPLY") || event.includes("PERCENTAGE");
+      }
+    }
+
 
     setConfigForConsumer() {
       if(sessionStorage.getItem('CONSUMER_EVENTS')) {

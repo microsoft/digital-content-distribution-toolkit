@@ -93,7 +93,12 @@ export class ContentService {
     let url = this.baseUrl + "/" + id;
     this.logger.log(`Fetching content by content id`);
     return this.http.get(url);
+  }
 
+  updateMetaData(id, content) {
+    let url = this.baseUrl + "/" + id;
+    this.logger.log(`Updating content metadata`);
+    return this.http.put(url, content);
   }
 
 }

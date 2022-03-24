@@ -1,0 +1,198 @@
+
+<h2 mat-dialog-title>
+    {{content.title}}
+</h2>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="metadataForm" >
+        <table class="content-detail-table-edit">
+            <tr>
+            <td>
+            <mat-form-field >
+                    <mat-label>Content ID</mat-label>
+                    <input matInput formControlName="contentId" >
+                </mat-form-field>
+            </td>
+            <td >
+            <mat-form-field >
+                    <mat-label>Content ID</mat-label>
+                    <input matInput formControlName="contentProviderContentId"  >
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td colspan="2">
+            <mat-form-field >
+                    <mat-label>Short Description</mat-label>
+                    <textarea matInput formControlName="shortDescription"></textarea>
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td colspan="2">
+            <mat-form-field >
+                    <mat-label>Long Description</mat-label>
+                    <textarea matInput formControlName="longDescription"></textarea>
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td colspan="2">
+                <mat-form-field >
+                    <mat-label>Additional Description 1  </mat-label>
+                    <textarea matInput formControlName="additionalDescription1"></textarea>
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td colspan="2">
+                <mat-form-field >
+                    <mat-label>Additional Description 2 </mat-label>
+                    <textarea matInput formControlName="additionalDescription2"></textarea>
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td>
+                <mat-form-field>
+                    <mat-label>Genre</mat-label>
+                    <mat-select  name="genre"
+                    formControlName="genre"   >
+                    <mat-option *ngFor="let genre of genres" [value]="genre">
+                        {{genre}}
+                    </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field >
+                    <mat-label>Year of Release </mat-label>
+                    <input matInput formControlName="yearOfRelease">
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td>
+                <mat-form-field >
+                    <mat-label>Language</mat-label>
+                    <input matInput formControlName="language">
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field >
+                    <mat-label>Duration (in minutes)</mat-label>
+                    <input matInput formControlName="durationInMts">
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td>
+                <mat-form-field >
+                    <mat-label>Rating</mat-label>
+                    <input matInput formControlName="rating">
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field >
+                    <mat-label>Media File Name</mat-label>
+                    <input matInput formControlName="mediaFileName">
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td colspan="2">
+                <mat-form-field >
+                    <mat-label>Hierarchy</mat-label>
+                    <input matInput formControlName="hierarchy">
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td>
+                <div>
+                <label class="isHeader-label">Is Header content ? </label>&nbsp;&nbsp;&nbsp;
+                <mat-radio-group  formControlName="isHeaderContent"  aria-label="Is Header content ?"> 
+                    <mat-radio-button value="Yes">Yes</mat-radio-button> &nbsp;&nbsp;&nbsp;
+                    <mat-radio-button value="No">No</mat-radio-button>
+                </mat-radio-group>
+                </div>
+            </td>
+            <td>
+                <div>
+                <label class="isHeader-label">Is Free content ? </label>&nbsp;&nbsp;&nbsp;
+                <mat-radio-group  formControlName="isFreeContent"  aria-label="Is Free content ?"> 
+                    <mat-radio-button value="Yes">Yes</mat-radio-button>&nbsp;&nbsp;&nbsp;
+                    <mat-radio-button value="No">No</mat-radio-button>
+                </mat-radio-group>
+                </div>
+            </td>
+            </tr>
+            <tr>
+            <td>
+             <mat-form-field>
+                    <mat-select  name="people" formControlName="people">
+                    <mat-option *ngFor="let people of peopleType" [value]="people">
+                        {{people}}
+                    </mat-option>
+                    </mat-select>
+                    <mat-label><i>Select role</i></mat-label>
+                </mat-form-field>
+            </td>
+           
+            <td>
+                <mat-form-field >
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="name" >
+                    <button mat-icon-button matSuffix color="accent" (click)="addPeople()">
+                    <mat-icon matTooltip="Add Person">add</mat-icon></button>
+
+                </mat-form-field>
+            </td>
+            <td> &nbsp; &nbsp; &nbsp;
+            </td>
+            </tr>
+             <tr>
+            <td colspan="2">
+            <mat-form-field >
+                    <mat-chip-list #chipListPeople aria-label="People selection">
+                    <mat-chip *ngFor="let person of peopleList" [selectable]="selectable"
+                            [removable]="removable" (removed)="removePerson(person)">
+                        {{person}}
+                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                    </mat-chip>
+                    </mat-chip-list>
+                </mat-form-field> 
+            </td>
+            </tr>
+            
+            <tr>
+            <td>
+                <mat-form-field >
+                    <mat-label>Attachments</mat-label>
+                    <input matInput formControlName="attachments">
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field >
+                    <mat-label>Age Appropriateness</mat-label>
+                    <input matInput formControlName="ageAppropriateness">
+                </mat-form-field>
+            </td>
+            </tr>
+            <tr>
+            <td colspan="2">
+                <mat-form-field >
+                    <mat-label>Content Advisory</mat-label>
+                    <input matInput formControlName="contentAdvisory">
+                </mat-form-field>
+            </td>
+            </tr>
+        </table>
+    </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close >Close</button>
+  <button mat-raised-button mat-dialog-close color="primary" (click)="updateMetadata()">Update</button>
+</mat-dialog-actions>
+

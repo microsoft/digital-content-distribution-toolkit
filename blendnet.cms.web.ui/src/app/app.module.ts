@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ContentDetailsDialog, UnprocessedComponent } from './unprocessed/unprocessed.component';
+import { ContentDetailsDialog, UnprocessedComponent, EditContentMetadataDialog } from './unprocessed/unprocessed.component';
 import { ContentTokenDialog, ProcessConfirmDialog, ProcessedComponent } from './processed/processed.component';
 import { DevicesComponent } from './devices/devices.component';
 import { ManageContentComponent } from './manage-content/manage-content.component';
@@ -77,6 +77,7 @@ import { DeleteUserDataComponent } from './delete-user-data/delete-user-data.com
     ProfileComponent,
     PascalToStringPipe,
     ContentDetailsDialog,
+    EditContentMetadataDialog,
     IncentiveManagementComponent,
     AddIncentiveComponent,
     DisableControlDirective,
