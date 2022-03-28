@@ -19,11 +19,11 @@ import { EditIncentiveEndDateComponent } from './edit-incentive-enddate.componen
   styleUrls: ['./incentive-management.component.css']
 })
 export class IncentiveManagementComponent implements OnInit {
-  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'startDate', 'endDate', 'status' , 'view', 'modifyEndDate', 'publish', 'delete'];
+  displayedColumnsRetailers: string[] = ['name', 'type', 'partner', 'startDateString', 'endDateString', 'status' , 'view', 'modifyEndDate', 'publish', 'delete'];
   dataSourceRetailers: MatTableDataSource<Incentive>;
 
   dataSourceConsumers: MatTableDataSource<Incentive>;
-  displayedColumnsConsumers: string[] = ['name', 'type', 'startDate', 'endDate', 'status' , 'view', 'modifyEndDate', 'publish', 'delete'];
+  displayedColumnsConsumers: string[] = ['name', 'type', 'startDateString', 'endDateString', 'status' , 'view', 'modifyEndDate', 'publish', 'delete'];
 
 
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
@@ -73,6 +73,7 @@ export class IncentiveManagementComponent implements OnInit {
     this.getContentProviders();
     this.audience = "RETAILER";
   }
+
 
   getContentProviders() {
     var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
@@ -155,6 +156,20 @@ export class IncentiveManagementComponent implements OnInit {
       this.dataSourceRetailers = this.createDataSource(resArr);
       this.dataSourceRetailers.paginator = this.paginator.toArray()[0];;
       this.dataSourceRetailers.sort = this.sort.toArray()[0]; 
+      this.dataSourceRetailers.sortingDataAccessor = (
+        data: any,
+        sortHeaderId: string
+      ) => {
+        if(sortHeaderId === "startDateString" || sortHeaderId === "endDateString") {
+          return new Date(data[sortHeaderId]);
+        }
+        if (typeof data[sortHeaderId] === 'string') {
+          return data[sortHeaderId].toLocaleLowerCase();
+        }
+        
+  
+        return data[sortHeaderId];
+      };
       this.getMissingPlansPerPartner(res, type);
     }, err => {
       this.missingListPartner = {
@@ -350,6 +365,20 @@ export class IncentiveManagementComponent implements OnInit {
           this.dataSourceConsumers.sort = this.sort.toArray()[1];   
           this.selectedStatusConsumer= this.plans[0];     
           // this.applyFilterConsumer();  
+              
+          this.dataSourceConsumers.sortingDataAccessor = (
+            data: any,
+            sortHeaderId: string
+          ) => {
+            if(sortHeaderId === "startDateString" || sortHeaderId === "endDateString") {
+              return new Date(data[sortHeaderId]);
+            }
+            if (typeof data[sortHeaderId] === 'string') {
+              return data[sortHeaderId].toLocaleLowerCase();
+            }
+
+            return data[sortHeaderId];
+          };
           this.getMissingPlansConsumer(res.body, this.selectedPlanTypeC);  
         },
       err => {

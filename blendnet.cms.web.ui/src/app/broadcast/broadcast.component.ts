@@ -73,6 +73,19 @@ export class BroadcastComponent {
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
       this.selectedContents=0;
+      this.dataSource.sortingDataAccessor = (
+        data: any,
+        sortHeaderId: string
+      ) => {
+          if(sortHeaderId === "createdDate" || sortHeaderId === "modifiedDate") {
+            return new Date(data[sortHeaderId]);
+          }
+        if (typeof data[sortHeaderId] === 'string') {
+          return data[sortHeaderId].toLocaleLowerCase();
+        }
+  
+        return data[sortHeaderId];
+      };
     },
     err => {
       this.error = true;

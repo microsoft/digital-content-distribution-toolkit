@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ContentStatus } from '../models/content-status.enum';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonDialogComponent } from '../common-dialog/common-dialog.component';
-import { ContentDetailsDialog } from '../unprocessed/unprocessed.component';
+import { ContentDetailsDialog, EditContentMetadataDialog } from '../unprocessed/unprocessed.component';
 import { ThemePalette } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
 import { processedContentFilters } from '../constants/content-status-filters';
@@ -70,6 +70,19 @@ export class ProcessedComponent {
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
       this.selectedContents=0;
+      this.dataSource.sortingDataAccessor = (
+        data: any,
+        sortHeaderId: string
+      ) => {
+        if(sortHeaderId === "createdDate" || sortHeaderId === "modifiedDate") {
+          return new Date(data[sortHeaderId]);
+        }
+        if (typeof data[sortHeaderId] === 'string') {
+          return data[sortHeaderId].toLocaleLowerCase();
+        }
+  
+        return data[sortHeaderId];
+      };
     },
     err => {
        this.error = true;
@@ -188,6 +201,22 @@ export class ProcessedComponent {
     this.contentService.getContentById(id).subscribe(
       res => {
         const dialogRef = this.dialog.open(ContentDetailsDialog, {
+          data: {content: res}
+        });
+      
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      },
+      err => {
+        this.toastr.error(err);
+      });
+   }
+
+   editContent(id): void {
+    this.contentService.getContentById(id).subscribe(
+      res => {
+        const dialogRef = this.dialog.open(EditContentMetadataDialog, {
           data: {content: res}
         });
       

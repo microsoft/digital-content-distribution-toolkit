@@ -16,7 +16,7 @@ import { UserService } from '../services/user.service';
 })
 export class ExportUserDataComponent implements OnInit {
   today;
-  displayedColumns: string[] = [ 'username', 'phonenumber', 'status',  'modifiedDate','metadata', 'action'];
+  displayedColumns: string[] = [ 'name', 'phoneNumber', 'status',  'displayModifiedDate','metadata', 'action'];
   pipe;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -48,6 +48,19 @@ export class ExportUserDataComponent implements OnInit {
         this.dataSource = this.createDataSource(res);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.dataSource.sortingDataAccessor = (
+          data: any,
+          sortHeaderId: string
+          ) => {
+            if(sortHeaderId === "displayModifiedDate") {
+              return new Date(data[sortHeaderId]);
+            }
+          if (typeof data[sortHeaderId] === 'string') {
+            return data[sortHeaderId].toLocaleLowerCase();
+          }
+    
+          return data[sortHeaderId];
+        };
       },
       err =>
       console.log(err)

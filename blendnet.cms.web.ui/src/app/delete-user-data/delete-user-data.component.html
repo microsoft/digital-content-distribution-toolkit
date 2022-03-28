@@ -19,13 +19,13 @@
     <div class="cms-table-container">
         <table mat-table matSort [dataSource]="dataSource">  
 
-            <ng-container matColumnDef="username">
+            <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
                 <td mat-cell *matCellDef="let element"> {{element.name}} </td>
             </ng-container>
 
 
-            <ng-container matColumnDef="phonenumber">
+            <ng-container matColumnDef="phoneNumber">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone Number </th>
                 <td mat-cell *matCellDef="let element" > {{element.phoneNumber}} </td>
             </ng-container>
@@ -35,7 +35,7 @@
                 <td mat-cell *matCellDef="let element" > {{element.dataUpdateRequestStatus}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="modifiedDate" >
+            <ng-container matColumnDef="displayModifiedDate" >
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Modified On </th>
                 <td mat-cell *matCellDef="let element"> {{element.displayModifiedDate}} </td>
             </ng-container>
@@ -44,7 +44,7 @@
            
 
             <ng-container matColumnDef="metadata">
-                <th mat-header-cell *matHeaderCellDef  mat-sort-header> Details </th>
+                <th mat-header-cell *matHeaderCellDef > Details </th>
                 <td mat-cell *matCellDef="let element" >
                     <button mat-icon-button  (click)="getRequestDetails(element)"> 
                         <mat-icon mat-list-icon 
@@ -54,7 +54,7 @@
             </ng-container>
 
             <ng-container matColumnDef="action">
-                <th mat-header-cell *matHeaderCellDef  mat-sort-header> Complete </th>
+                <th mat-header-cell *matHeaderCellDef > Complete </th>
                 <td mat-cell *matCellDef="let element" >
                     <button mat-icon-button  (click)="completeRequest(element)" [disabled]="!isRequestSubmitted(element)">  
                         <mat-icon mat-list-icon 

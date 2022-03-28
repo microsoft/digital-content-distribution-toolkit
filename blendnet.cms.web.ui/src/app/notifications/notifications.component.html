@@ -21,7 +21,7 @@
             </ng-container>
 
 
-            <ng-container matColumnDef="body">
+            <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
                 <td mat-cell *matCellDef="let element" style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;"> {{element.description}} </td>
             </ng-container>
@@ -33,24 +33,24 @@
             </ng-container>
 
             <ng-container matColumnDef="attachmentUrl" >
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Attachment </th>
+                <th mat-header-cell *matHeaderCellDef> Attachment </th>
                 <td mat-cell *matCellDef="let element" style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px; "> {{element.attachment ? element.attachment: 'NA'}} </td>
             </ng-container>
 
     
-            <ng-container matColumnDef="createdDate" >
+            <ng-container matColumnDef="displayCreatedDate" >
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On </th>
                 <td mat-cell *matCellDef="let element"> {{element.displayCreatedDate}} </td>
             </ng-container>
 
   
             <ng-container matColumnDef="tags">
-                <th mat-header-cell *matHeaderCellDef  mat-sort-header> Tags </th>
+                <th mat-header-cell *matHeaderCellDef > Tags </th>
                 <td mat-cell *matCellDef="let element"> {{element.tags}} </td>
             </ng-container>
 
             <ng-container matColumnDef="metadata">
-                <th mat-header-cell *matHeaderCellDef  mat-sort-header> Details </th>
+                <th mat-header-cell *matHeaderCellDef > Details </th>
                 <td mat-cell *matCellDef="let element" >
                     <button mat-icon-button  (click)="getNotificationDetails(element)"> 
                         <mat-icon mat-list-icon 

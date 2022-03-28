@@ -57,6 +57,7 @@ export class SubscriptionComponent {
     this.filterValue ="";
     this.getSubscriptions();
   }
+  
   getSubscriptions() {
     this.subscriptionService.getSubscriptionsForCP().subscribe(
       res => {
@@ -64,6 +65,19 @@ export class SubscriptionComponent {
         this.dataSource = this.createDataSource(this.subscriptions);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.dataSource.sortingDataAccessor = (
+          data: any,
+          sortHeaderId: string
+        ) => {
+            if(sortHeaderId === "startDate" || sortHeaderId === "endDate") {
+              return new Date(data[sortHeaderId]);
+            }
+          if (typeof data[sortHeaderId] === 'string') {
+            return data[sortHeaderId].toLocaleLowerCase();
+          }
+    
+          return data[sortHeaderId];
+        };
 
       },
       err => {

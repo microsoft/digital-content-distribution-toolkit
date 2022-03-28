@@ -35,7 +35,7 @@ export interface DialogData {
   templateUrl: 'devices.component.html',
 })
 export class DevicesComponent {
-  displayedColumns: string[] = ['id', 'status', 'status_update_date', 'filterUpdateStatus' , 'filters', 'cancel_command', 'assignment', 'content', 'history'];
+  displayedColumns: string[] = ['id', 'deviceStatus', 'deviceStatusUpdatedOnString', 'filterUpdateStatus' , 'filters', 'cancel_command', 'assignment', 'content', 'history'];
   dataSource: MatTableDataSource<any>;
   showDialog: boolean = false;
   initialSelection = [];
@@ -84,6 +84,19 @@ export class DevicesComponent {
           this.dataSource = this.createDataSource(data);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
+          this.dataSource.sortingDataAccessor = (
+            data: any,
+            sortHeaderId: string
+          ) => {
+            if(sortHeaderId === "deviceStatusUpdatedOnString") {
+              return new Date(data[sortHeaderId]);
+            }
+            if (typeof data[sortHeaderId] === 'string') {
+              return data[sortHeaderId].toLocaleLowerCase();
+            }
+
+            return data[sortHeaderId];
+          };
           if(this.filterValue){
             this.applyFilter();
           }

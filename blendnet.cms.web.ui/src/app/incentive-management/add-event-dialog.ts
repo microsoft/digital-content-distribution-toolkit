@@ -185,10 +185,10 @@ import { IncentiveService } from "../services/incentive.service";
     createEmptyForm() {
       var ruleTypeValue = this.data.planType === "REGULAR" ? "SUM" : "COUNT";
       this.eventForm = new FormGroup({
-        eventType :  new FormControl('',  [ Validators.maxLength(lengthConstants.titleMaxLength), 
+        eventType :  new FormControl('',  [Validators.required, Validators.maxLength(lengthConstants.titleMaxLength), 
           Validators.minLength(lengthConstants.titleMinLength),
           CustomValidator.alphaNumericSplChar]),
-        eventTitle :  new FormControl('',  [ Validators.maxLength(lengthConstants.titleMaxLength), 
+        eventTitle :  new FormControl('',  [Validators.required, Validators.maxLength(lengthConstants.titleMaxLength), 
           Validators.minLength(lengthConstants.titleMinLength),
           CustomValidator.alphaNumericSplChar]),
         eventSubType :  new FormControl('',  [ Validators.maxLength(lengthConstants.titleMaxLength), 
@@ -197,7 +197,7 @@ import { IncentiveService } from "../services/incentive.service";
         ruleType : new FormControl(ruleTypeValue, [Validators.required]),
         formula : new FormControl('', [Validators.required]),
         firstOperand : new FormControl('',[Validators.minLength(lengthConstants.titleMinLength),
-          CustomValidator.numeric]),
+          CustomValidator.numeric, Validators.required]),
         secondOperand : new FormControl('', [Validators.required, Validators.minLength(lengthConstants.titleMinLength),
           CustomValidator.numeric]),
         entity1Operand : new FormControl('', [CustomValidator.numeric]),

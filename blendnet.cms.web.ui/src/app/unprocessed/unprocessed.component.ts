@@ -28,7 +28,7 @@ import { COMMA, ENTER, P } from '@angular/cdk/keycodes';
   templateUrl: 'unprocessed.component.html',
 })
 export class UnprocessedComponent {
-  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'view', 'edit', 'isDeletable', 'isProcessable'];
+  displayedColumns: string[] = ['select', 'title', 'status', 'createdDate', 'modifiedDate', 'view', 'isDeletable', 'isProcessable'];
   dataSource: MatTableDataSource<ContentView>;
   fileUploadError: string ="";
   showDialog: boolean = false;
@@ -67,6 +67,7 @@ export class UnprocessedComponent {
 
   refreshPage() {
     this.filterValue = '';
+    this.fileName ='';
     this.getUnprocessedContent();
   }
 
@@ -78,6 +79,18 @@ export class UnprocessedComponent {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.selectedContents = 0;
+        this.dataSource.sortingDataAccessor = (
+          data: any,
+          sortHeaderId: string
+          ) => {
+            if(sortHeaderId === "createdDate" || sortHeaderId === "modifiedDate") {
+              return new Date(data[sortHeaderId]);
+            }
+          if (typeof data[sortHeaderId] === 'string') {
+            return data[sortHeaderId].toLocaleLowerCase();
+          }
+          return data[sortHeaderId];
+        };
       },
       err => {
         this.error = true;
