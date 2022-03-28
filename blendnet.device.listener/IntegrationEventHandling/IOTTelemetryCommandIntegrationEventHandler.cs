@@ -15,6 +15,8 @@ using blendnet.common.dto.Cms;
 using System.Linq;
 using blendnet.api.proxy.Cms;
 using blendnet.common.dto;
+using blendnet.device.listener.Model;
+using blendnet.common.infrastructure.Extensions;
 
 namespace blendnet.device.listener.IntegrationEventHandling
 {
@@ -272,13 +274,28 @@ namespace blendnet.device.listener.IntegrationEventHandling
                     return;
                 }
 
+                DateTime currentDateTime = DateTime.UtcNow;
+
                 device.DeviceStatus = DeviceStatus.Provisioned;
-                device.DeviceStatusUpdatedOn = DateTime.UtcNow;
-                device.ModifiedDate = DateTime.UtcNow;
+
+                device.DeviceStatusUpdatedOn = currentDateTime;
+                
+                device.ModifiedDate = currentDateTime;
 
                 await _deviceRepository.UpdateDevice(device);
 
+                //push device provision AI event
+                DeviceStatusAIEvent deviceProvisionAIEvent = new DeviceStatusAIEvent()
+                {
+                    DeviceId = device.DeviceId,
+                    DeviceStatus = DeviceStatus.Provisioned,
+                    DeviceStatusUpdatedOn = currentDateTime,
+                };
+
+                _telemetryClient.TrackEvent(deviceProvisionAIEvent);
+
                 return;
+
             }
             catch (Exception ex)
             {
