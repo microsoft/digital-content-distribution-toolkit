@@ -1,24 +1,24 @@
-﻿using blendnet.oms.repository.Interfaces;
-using blendnet.api.proxy;
+﻿using blendnet.api.proxy;
 using blendnet.api.proxy.Retailer;
+using blendnet.common.dto.Events;
 using blendnet.common.dto.Oms;
+using blendnet.common.dto.Retailer;
 using blendnet.common.dto.User;
+using blendnet.common.infrastructure;
+using blendnet.common.infrastructure.Authentication;
+using blendnet.oms.api.Common;
 using blendnet.oms.api.Model;
+using blendnet.oms.repository.Interfaces;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using static blendnet.common.dto.ApplicationConstants;
-using blendnet.common.dto.Retailer;
-using blendnet.common.infrastructure.Authentication;
-using blendnet.common.dto.Events;
-using Microsoft.Extensions.Localization;
-using blendnet.common.infrastructure;
-using Microsoft.ApplicationInsights;
-using blendnet.oms.api.Common;
 
 namespace blendnet.oms.api.Controllers
 {
@@ -271,10 +271,10 @@ namespace blendnet.oms.api.Controllers
         /// <param name="phoneNumber"></param>
         /// <param name="orderFilter"></param>
         /// <returns></returns>
-        [HttpPost("{phoneNumber}/orderlist", Name = nameof(GetOrder))]
+        [HttpPost("{phoneNumber}/orderlist", Name = nameof(GetOrderForUser))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.RetailerManagement)]
-        public async Task<ActionResult<List<Order>>> GetOrder(string phoneNumber, OrderStatusFilter orderFilter)
+        public async Task<ActionResult<List<Order>>> GetOrderForUser(string phoneNumber, OrderStatusFilter orderFilter)
         {
             User user = await _userProxy.GetUserByPhoneNumber(phoneNumber);
 

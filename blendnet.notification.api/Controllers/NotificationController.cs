@@ -3,7 +3,6 @@ using blendnet.api.proxy.Kaizala;
 using blendnet.common.dto.Common;
 using blendnet.common.dto.Notification;
 using blendnet.common.dto.User;
-using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.notification.api.Model;

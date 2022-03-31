@@ -43,7 +43,7 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="contentProviderId">Content Provider ID</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet(Name = nameof(GetSubscriptions))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetSubscriptions(Guid contentProviderId)
         {
@@ -65,7 +65,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contentProviderId"></param>
         /// <param name="subscriptionId"></param>
         /// <returns></returns>
-        [HttpGet("{subscriptionId:guid}")]
+        [HttpGet("{subscriptionId:guid}", Name = nameof(GetSubscription))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<ContentProviderSubscriptionDto>> GetSubscription(Guid contentProviderId, Guid subscriptionId)
         {
@@ -85,7 +85,7 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="subscription">subscription data</param>
         /// <returns>ID of the created subscription</returns>
-        [HttpPost]
+        [HttpPost(Name = nameof(CreateSubscription))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<String>> CreateSubscription(Guid contentProviderId,
                                                                     ContentProviderSubscriptionDto subscription)
@@ -142,7 +142,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="subscriptionId">subscription ID</param>
         /// <param name="subscription">new subscription data</param>
         /// <returns></returns>
-        [HttpPut("{subscriptionId:guid}")]
+        [HttpPut("{subscriptionId:guid}", Name = nameof(UpdateSubscription))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult<String>> UpdateSubscription(Guid contentProviderId,
                                                                     Guid subscriptionId,
@@ -197,7 +197,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="subscriptionId">subscription ID</param>
         /// <param name="request">new data</param>
         /// <returns></returns>
-        [HttpPost("{subscriptionId:guid}/updateEndDate")]
+        [HttpPost("{subscriptionId:guid}/updateEndDate", Name = nameof(UpdateSubscriptionEndDate))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<String>> UpdateSubscriptionEndDate(Guid contentProviderId,
                                                                             Guid subscriptionId,
@@ -238,7 +238,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contentProviderId">contentProvider ID</param>
         /// <param name="subscriptionId">subscription ID</param>
         /// <returns></returns>
-        [HttpDelete("{subscriptionId:guid}")]
+        [HttpDelete("{subscriptionId:guid}", Name = nameof(DeleteSubscription))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         public async Task<ActionResult<String>> DeleteSubscription(Guid contentProviderId,
                                                                     Guid subscriptionId)

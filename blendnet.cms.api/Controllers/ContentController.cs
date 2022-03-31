@@ -1,31 +1,20 @@
+using AutoMapper;
+using Azure.Storage.Blobs;
+using blendnet.cms.api.Common;
+using blendnet.cms.api.Model;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.Cms;
 using blendnet.common.dto.Events;
+using blendnet.common.dto.User;
 using blendnet.common.infrastructure;
-using Microsoft.AspNetCore.Http;
+using blendnet.common.infrastructure.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Localization;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Net;
-using Azure.Storage.Blobs;
-using Microsoft.Extensions.Azure;
-using System.ComponentModel.DataAnnotations;
-using blendnet.cms.api.Common;
-using blendnet.cms.api.Model;
-using Microsoft.AspNetCore.Authorization;
-using blendnet.common.infrastructure.Authentication;
-using blendnet.common.dto.User;
-using Microsoft.Extensions.Localization;
-using blendnet.cms.api;
-using System.Reflection;
-using AutoMapper;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -171,7 +160,7 @@ namespace blendnet.cms.api.Controllers
         /// Upload Contents
         /// </summary>
         /// <returns></returns>
-        [HttpPost("{contentProviderId:guid}")]
+        [HttpPost("{contentProviderId:guid}" , Name = nameof(UploadContent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult> UploadContent(IFormFile file, Guid contentProviderId)
@@ -252,7 +241,7 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="contentId"></param>
         /// <returns></returns>
-        [HttpDelete("{contentId:guid}")]
+        [HttpDelete("{contentId:guid}", Name = nameof(DeleteContent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult> DeleteContent(Guid contentId)
@@ -326,7 +315,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contentId"></param>
         /// <param name="updateContentRequest"></param>
         /// <returns></returns>
-        [HttpPut("{contentId:guid}")]
+        [HttpPut("{contentId:guid}", Name = nameof(UpdateContent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult> UpdateContent(Guid contentId, UpdateContentRequest updateContentRequest)
@@ -448,7 +437,7 @@ namespace blendnet.cms.api.Controllers
         }
 
 
-        [HttpPost("{contentProviderId:guid}/contentlist")]
+        [HttpPost("{contentProviderId:guid}/contentlist", Name = nameof(GetContentByContentProviderId))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult<Content>> GetContentByContentProviderId(Guid contentProviderId,ContentStatusFilter statusFilter)
@@ -706,7 +695,7 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="contentId"></param>
         /// <returns></returns>
-        [HttpPost("{contentId:guid}/changeactivestatus")]
+        [HttpPost("{contentId:guid}/changeactivestatus", Name = nameof(ActivateDeactivateContent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> ActivateDeactivateContent(Guid contentId, ChangeActiveStatusRequest statusRequest)

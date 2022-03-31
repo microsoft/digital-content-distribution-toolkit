@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using blendnet.cms.repository.CosmosRepository;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.Cms;
@@ -49,7 +48,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contentProviderId">Provider id</param>
         /// <param name="continuationToken">Continuation token if available to fetch next set of pages</param>
         /// <returns></returns>
-        [HttpPost("{contentProviderId:guid}/processed")]
+        [HttpPost("{contentProviderId:guid}/processed", Name = "GetProcessedAssets")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<ResultData<ContentDto>>> GetProcessedAssets(Guid contentProviderId, BrowseContentRequest request)
         {
@@ -79,7 +78,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contentProviderId">Provider id</param>
         /// <param name="continuationToken">Continuation token if available to fetch next set of pages</param>
         /// <returns></returns>
-        [HttpPost("{contentProviderId:guid}/broadcasted")]
+        [HttpPost("{contentProviderId:guid}/broadcasted", Name = nameof(GetBroadcastedAssets))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<ResultData<ContentDto>>> GetBroadcastedAssets(Guid contentProviderId, BrowseContentRequest request)
         {
@@ -106,9 +105,9 @@ namespace blendnet.cms.api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("contentproviders")]
+        [HttpGet("contentproviders", Name = nameof(GetAllContentProviders))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<ContentProviderItem>> GetContentProviders()
+        public async Task<ActionResult<ContentProviderItem>> GetAllContentProviders()
         {
             var contentProviders = await _contentProviderRepository.GetContentProviders();
 

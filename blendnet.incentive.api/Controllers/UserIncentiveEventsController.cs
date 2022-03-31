@@ -53,7 +53,7 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="signinUserEventRequest"></param>
         /// <returns></returns>
-        [HttpPost("recordSignin")]
+        [HttpPost("recordSignin", Name = nameof(RecordSigninEvent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> RecordSigninEvent(UserEventRequest signinUserEventRequest)
         {
@@ -107,7 +107,7 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="appLaunchUserEventRequest"></param>
         /// <returns></returns>
-        [HttpPost("recordAppLaunch")]
+        [HttpPost("recordAppLaunch", Name = nameof(RecordAppLaunchEvent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> RecordAppLaunchEvent(UserEventRequest appLaunchUserEventRequest)
         {
@@ -168,7 +168,7 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="contentStreamedUserEventRequest"></param>
         /// <returns></returns>
-        [HttpPost("recordContentStreamed")]
+        [HttpPost("recordContentStreamed", Name = nameof(RecordContentStreamedEvent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> RecordContentStreamedEvent(UserEventRequest contentStreamedUserEventRequest)
         {
@@ -271,7 +271,7 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="onboardingRatingSubmittedUserEventRequest"></param>
         /// <returns></returns>
-        [HttpPost("recordOnboardingRatingSubmitted")]
+        [HttpPost("recordOnboardingRatingSubmitted", Name = nameof(RecordOnboardingRatingSubmittedEvent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<ActionResult> RecordOnboardingRatingSubmittedEvent(UserEventRequest onboardingRatingSubmittedUserEventRequest)
         {

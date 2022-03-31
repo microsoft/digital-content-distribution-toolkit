@@ -6,7 +6,6 @@ using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.device.api.Model;
 using blendnet.device.repository.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -62,7 +61,7 @@ namespace blendnet.device.api.Controllers
         /// List all devices
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet(Name = nameof(GetDevices))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult<List<Device>>> GetDevices()
@@ -100,7 +99,7 @@ namespace blendnet.device.api.Controllers
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost(Name = nameof(CreateDevice))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<string>> CreateDevice(Device device)
@@ -310,7 +309,7 @@ namespace blendnet.device.api.Controllers
         /// </summary>
         /// <param name="deviceId"></param>
         /// <returns></returns>
-        [HttpPut("provision/{deviceId}")]
+        [HttpPut("provision/{deviceId}", Name = nameof(ProvisionDevice))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> ProvisionDevice(string deviceId)

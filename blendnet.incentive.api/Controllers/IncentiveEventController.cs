@@ -12,11 +12,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using static blendnet.common.dto.ApplicationConstants;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using static blendnet.common.dto.ApplicationConstants;
 
 namespace blendnet.incentive.api.Controllers
 {

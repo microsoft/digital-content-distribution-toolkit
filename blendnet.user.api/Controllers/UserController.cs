@@ -72,7 +72,7 @@ namespace blendnet.user.api.Controllers
         /// </summary>
         /// <param name="retailerRequest">Request containg retailer details</param>
         /// <returns>Retailer ID of the created retailer</returns>
-        [HttpPost("retailer")]
+        [HttpPost("retailer", Name = nameof(CreateRetailer))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.RetailerManagement)]
         public async Task<ActionResult<string>> CreateRetailer(CreateRetailerRequest retailerRequest)

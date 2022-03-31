@@ -151,7 +151,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="updatePlanRequest"></param>
         /// <returns></returns>
-        [HttpPut("retailer/{planId:guid}")]
+        [HttpPut("retailer/{planId:guid}", Name = nameof(UpdateRetailerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateRetailerIncentivePlan(Guid planId, IncentivePlanRequest updatePlanRequest)
@@ -166,7 +166,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="updatePlanRequest"></param>
         /// <returns></returns>
-        [HttpPut("consumer/{planId:guid}")]
+        [HttpPut("consumer/{planId:guid}", Name = nameof(UpdateConsumerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateConsumerIncentivePlan(Guid planId, IncentivePlanRequest updatePlanRequest)
@@ -181,7 +181,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="subtypeName"></param>
         /// <returns></returns>
-        [HttpDelete("retailer/{planId:guid}/{subtypeName}")]
+        [HttpDelete("retailer/{planId:guid}/{subtypeName}", Name = nameof(DeleteRetailerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> DeleteRetailerIncentivePlan(Guid planId, string subtypeName)
@@ -197,7 +197,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="subtypeName"></param>
         /// <returns></returns>
-        [HttpDelete("consumer/{planId:guid}")]
+        [HttpDelete("consumer/{planId:guid}", Name = nameof(DeleteConsumerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> DeleteConsumerIncentivePlan(Guid planId)
@@ -212,7 +212,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        [HttpPut("consumer/changeenddate/{planId:guid}/{endDate}")]
+        [HttpPut("consumer/changeenddate/{planId:guid}/{endDate}", Name = nameof(ChangeConsumerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> ChangeConsumerIncentivePlan(Guid planId, DateTime endDate)
@@ -253,7 +253,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        [HttpPut("retailer/changeenddate/{planId:guid}/{subTypeName}/{endDate}")]
+        [HttpPut("retailer/changeenddate/{planId:guid}/{subTypeName}/{endDate}", Name = nameof(ChangeRetailerIncentivePlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> ChangeRetailerIncentivePlan(Guid planId, string subTypeName, DateTime endDate)
@@ -294,7 +294,7 @@ namespace blendnet.incentive.api.Controllers
         /// <param name="planId"></param>
         /// <param name="subtypeName"></param>
         /// <returns></returns>
-        [HttpPut("retailer/publish/{planId:guid}/{subtypeName}")]
+        [HttpPut("retailer/publish/{planId:guid}/{subtypeName}", Name = nameof(PublishRetailerPlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> PublishRetailerPlan(Guid planId, string subtypeName)
@@ -311,7 +311,7 @@ namespace blendnet.incentive.api.Controllers
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
-        [HttpPut("consumer/publish/{planId:guid}")]
+        [HttpPut("consumer/publish/{planId:guid}", Name = nameof(PublishConsumerPlan))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> PublishConsumerPlan(Guid planId)

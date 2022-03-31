@@ -9,11 +9,6 @@ using blendnet.common.infrastructure.Extensions;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -58,7 +53,7 @@ namespace blendnet.cms.api.Controllers
         /// List all content providers
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet(Name = nameof(GetContentProviders))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult<List<ContentProviderDto>>> GetContentProviders()
@@ -120,7 +115,7 @@ namespace blendnet.cms.api.Controllers
         /// Create Content Provider
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost(Name = nameof(CreateContentProvider))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<string>> CreateContentProvider(ContentProviderDto contentProvider)
@@ -182,7 +177,7 @@ namespace blendnet.cms.api.Controllers
         /// <param name="contentProviderId"></param>
         /// <param name="contentProvider"></param>
         /// <returns></returns>
-        [HttpPost("{contentProviderId:guid}")]
+        [HttpPost("{contentProviderId:guid}", Name = nameof(UpdateContentProvider))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> UpdateContentProvider(Guid contentProviderId, ContentProviderDto contentProvider)
@@ -245,7 +240,7 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        [HttpDelete("{contentProviderId:guid}")]
+        [HttpDelete("{contentProviderId:guid}", Name = nameof(DeleteContentProvider))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> DeleteContentProvider(Guid contentProviderId)
@@ -275,7 +270,7 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        [HttpPost("{contentProviderId:guid}/activate")]
+        [HttpPost("{contentProviderId:guid}/activate", Name = nameof(ActivateContentProvider))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> ActivateContentProvider(Guid contentProviderId)
@@ -289,7 +284,7 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        [HttpPost("{contentProviderId:guid}/deactivate")]
+        [HttpPost("{contentProviderId:guid}/deactivate", Name = nameof(DeactivateContentProvider))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult> DeactivateContentProvider(Guid contentProviderId)
@@ -302,7 +297,7 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        [HttpGet("{contentProviderId:guid}/generateSaS")]
+        [HttpGet("{contentProviderId:guid}/generateSaS", Name = nameof(GenerateToken))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.ContentAdmin)]
         public async Task<ActionResult<SasTokenDto>> GenerateToken(Guid contentProviderId)

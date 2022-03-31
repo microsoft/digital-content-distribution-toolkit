@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,7 +41,7 @@ namespace blendnet.retailer.api.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("nearby")]
+        [HttpGet("nearby", Name = nameof(GetRetailersForLocation))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<List<RetailerWithDistanceResponse>>> GetRetailersForLocation( double lat,
                                                                                                 double lng,

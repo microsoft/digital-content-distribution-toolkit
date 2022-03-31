@@ -16,7 +16,6 @@ using blendnet.oms.api.Model;
 using blendnet.oms.repository.Interfaces;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -368,7 +367,7 @@ namespace blendnet.oms.api.Controllers
         /// <param name="phoneNumber"></param>
         /// <param name="orderFilter"></param>
         /// <returns></returns>
-        [HttpPost("orderlist")]
+        [HttpPost("orderlist", Name = nameof(GetOrder))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<List<OrderResponse>>> GetOrder(OrderStatusFilter orderFilter)
         {
@@ -393,7 +392,7 @@ namespace blendnet.oms.api.Controllers
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        [HttpGet("active")]
+        [HttpGet("active", Name = nameof(GetActiveSubscriptionOrders))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<common.dto.Oms.OrderItem>> GetActiveSubscriptionOrders()
         {

@@ -51,7 +51,7 @@ namespace blendnet.retailer.api.Controllers
 
         #region API methods
 
-        [HttpGet("byPartnerId/{retailerPartnerId}")]
+        [HttpGet("byPartnerId/{retailerPartnerId}", Name = nameof(GetRetailerByPartnerId))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<RetailerDto>> GetRetailerByPartnerId(string retailerPartnerId /* composed */)
@@ -61,7 +61,7 @@ namespace blendnet.retailer.api.Controllers
             return retailer != null ? Ok(retailer) : NotFound();
         }
 
-        [HttpGet("byReferralCode/{referralCode}")]
+        [HttpGet("byReferralCode/{referralCode}", Name = nameof(GetRetailerByReferralCode))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<RetailerDto>> GetRetailerByReferralCode(string referralCode)
@@ -70,7 +70,7 @@ namespace blendnet.retailer.api.Controllers
             return retailer != null ? Ok(retailer) : NotFound();
         }
 
-        [HttpPut("{retailerPartnerId}")]
+        [HttpPut("{retailerPartnerId}", Name = nameof(UpdateRetailer))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<string>> UpdateRetailer(string retailerPartnerId /* composed */,
@@ -121,7 +121,7 @@ namespace blendnet.retailer.api.Controllers
         /// <param name="partnerCode">Partner Code</param>
         /// <param name="partnerProvidedRetailerId">Retailer ID as assigned by the partner</param>
         /// <returns></returns>
-        [HttpGet("{partnerCode}/{partnerProvidedRetailerId}/me")]
+        [HttpGet("{partnerCode}/{partnerProvidedRetailerId}/me", Name = nameof(GetSelfRetailer))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.Retailer)]
         public async Task<ActionResult<RetailerDto>> GetSelfRetailer(string partnerCode, string partnerProvidedRetailerId)

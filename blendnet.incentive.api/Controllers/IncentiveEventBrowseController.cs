@@ -1,18 +1,17 @@
-﻿using blendnet.common.infrastructure.Authentication;
+﻿using AutoMapper;
+using blendnet.common.dto.Incentive;
+using blendnet.incentive.api.Common;
+using blendnet.incentive.api.Model;
+using blendnet.incentive.repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using blendnet.common.dto.Incentive;
-using Microsoft.AspNetCore.Authorization;
-using blendnet.incentive.repository.Interfaces;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Localization;
-using blendnet.incentive.api.Common;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Configuration;
-using AutoMapper;
-using blendnet.incentive.api.Model;
 
 namespace blendnet.incentive.api.Controllers
 {

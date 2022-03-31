@@ -50,7 +50,7 @@ namespace blendnet.device.api.Controllers
         /// <param name="contentProviderId"></param>
         /// <param name="continuationToken"></param>
         /// <returns></returns>
-        [HttpPost("{deviceId}/{contentProviderId:guid}")]
+        [HttpPost("{deviceId}/{contentProviderId:guid}", Name = nameof(GetDeviceContent))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<ResultData<Guid>>> GetDeviceContent(   string deviceId, 
                                                                               Guid contentProviderId, 

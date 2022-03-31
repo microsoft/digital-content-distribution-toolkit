@@ -2,11 +2,6 @@
 using blendnet.common.dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -14,7 +9,7 @@ namespace blendnet.cms.api.Controllers
     /// Controller for browsing active subscriptions
     /// to be used by clients
     /// </summary>
-    [Route("api/v{version:apiVersion}/[controller]/{contentProviderId:guid}")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     [Authorize]
@@ -36,7 +31,8 @@ namespace blendnet.cms.api.Controllers
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("{contentProviderId:guid}", Name = nameof(GetActiveSubscriptions))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<List<ContentProviderSubscriptionDto>>> GetActiveSubscriptions(Guid contentProviderId)
         {
             var allSubscriptions = await this._contentProviderRepository.GetSubscriptions(contentProviderId);

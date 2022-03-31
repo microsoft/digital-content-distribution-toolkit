@@ -5,10 +5,10 @@ using blendnet.retailer.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using static blendnet.common.dto.ApplicationConstants;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static blendnet.common.dto.ApplicationConstants;
 
 namespace blendnet.retailer.api.Controllers
 {
@@ -41,7 +41,7 @@ namespace blendnet.retailer.api.Controllers
         /// </summary>
         /// <param name="retailerProvider"></param>
         /// <returns>Service Account ID of the retaielr provider</returns>
-        [HttpPost("create")]
+        [HttpPost("create", Name = nameof(CreateRetailerProvider))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<Guid>> CreateRetailerProvider(RetailerProviderDto retailerProvider)
@@ -89,7 +89,7 @@ namespace blendnet.retailer.api.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpGet("byUserId/{userId:guid}")]
+        [HttpGet("byUserId/{userId:guid}", Name = nameof(GetRetailerProviderByServiceAccountId))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<RetailerProviderDto>> GetRetailerProviderByServiceAccountId(Guid userId)
@@ -103,7 +103,7 @@ namespace blendnet.retailer.api.Controllers
         /// </summary>
         /// <param name="partnerCode"></param>
         /// <returns></returns>
-        [HttpGet("byPartnerCode/{partnerCode}")]
+        [HttpGet("byPartnerCode/{partnerCode}", Name = nameof(GetRetailerProviderByPartnerCode))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer)]
         public async Task<ActionResult<RetailerProviderDto>> GetRetailerProviderByPartnerCode(string partnerCode)
@@ -116,7 +116,7 @@ namespace blendnet.retailer.api.Controllers
         /// Gets list of all Retailer Providers
         /// </summary>
         /// <returns></returns>
-        [HttpGet("all")]
+        [HttpGet("all", Name = nameof(GetAllRetailerProviders))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin)]
         public async Task<ActionResult<List<RetailerProviderDto>>> GetAllRetailerProviders()

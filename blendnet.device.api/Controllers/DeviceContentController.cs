@@ -86,7 +86,7 @@ namespace blendnet.device.api.Controllers
         /// <param name="deviceId"></param>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
-        [HttpPost("{deviceId}/{contentProviderId:guid}")]
+        [HttpPost("{deviceId}/{contentProviderId:guid}", Name = nameof(GetDeviceContentValidity))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
         public async Task<ActionResult<DeviceContentValidity>> GetDeviceContentValidity(string deviceId,Guid contentProviderId)

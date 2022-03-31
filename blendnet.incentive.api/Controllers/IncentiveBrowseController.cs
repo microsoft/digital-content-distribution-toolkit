@@ -1,23 +1,13 @@
 ﻿using AutoMapper;
-using blendnet.api.proxy.Retailer;
-using blendnet.common.dto;
 using blendnet.common.dto.Incentive;
-using blendnet.common.dto.Retailer;
-using blendnet.common.dto.User;
-using blendnet.common.infrastructure.Authentication;
 using blendnet.incentive.api.Model;
 using blendnet.incentive.repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using static blendnet.common.dto.ApplicationConstants;
 
 namespace blendnet.incentive.api.Controllers
 {
