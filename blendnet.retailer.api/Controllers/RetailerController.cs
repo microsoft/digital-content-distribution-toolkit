@@ -408,6 +408,8 @@ namespace blendnet.retailer.api.Controllers
                 AssignmentEndDate = activeAssignment.AssignmentEndDate,
             };
 
+            _telemetryClient.TrackEvent(aiEvent);
+
             return NoContent();
         }
 
