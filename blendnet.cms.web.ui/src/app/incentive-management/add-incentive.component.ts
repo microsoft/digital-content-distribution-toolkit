@@ -28,6 +28,7 @@ export class AddIncentiveComponent implements OnInit {
   @Output() newIncentiveEventR = new EventEmitter<any>();
   @Output() newIncentiveEventC = new EventEmitter<any>();
 
+  displayedColumnsConsumer: string[] = ['eventType','eventTitle','contentProvider', 'ruleType', 'formula',  'firstOperand', 'secondOperand', 'view', 'edit', 'delete'];
 
   displayedColumns: string[] = ['eventType','eventTitle','contentProvider', 'ruleType', 'formula',  'firstOperand', 'secondOperand', 'entity1',  'entity2',  'entity3',  'entity4', 'view', 'edit', 'delete'];
   dataSource: MatTableDataSource<any>;

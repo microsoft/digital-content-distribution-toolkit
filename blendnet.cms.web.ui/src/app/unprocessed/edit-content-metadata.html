@@ -21,6 +21,29 @@
             </td>
             </tr>
             <tr>
+                <td colspan="2">
+                <mat-form-field >
+                        <mat-label>Title</mat-label>
+                        <input matInput formControlName="title" >
+                    </mat-form-field>
+                </td>
+                
+            </tr>
+            <tr>
+                <td>
+                <mat-form-field >
+                        <mat-label>Additional Title 1</mat-label>
+                        <input matInput formControlName="additionalTitle1" >
+                    </mat-form-field>
+                </td>
+                <td >
+                <mat-form-field >
+                    <mat-label>Additional Title 2</mat-label>
+                    <input matInput formControlName="additionalTitle2" >
+                    </mat-form-field>
+                </td>
+                </tr>
+            <tr>
             <td colspan="2">
             <mat-form-field >
                     <mat-label>Short Description</mat-label>
@@ -192,7 +215,9 @@
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-raised-button mat-dialog-close >Close</button>
-  <button mat-raised-button mat-dialog-close color="primary" (click)="updateMetadata()">Update</button>
+    <button mat-raised-button mat-dialog-close color="primary" (click)="updateMetadata()"
+    [disabled]="!metadataForm.dirty || metadataForm.invalid">Update</button>
+    <button mat-raised-button mat-dialog-close color="primary">Close</button>
+  
 </mat-dialog-actions>
 

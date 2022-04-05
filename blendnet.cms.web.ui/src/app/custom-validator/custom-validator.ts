@@ -2,6 +2,21 @@ import { regex } from "../constants/regex";
 
 export class CustomValidator {
 
+    static alpha(data): any {
+        if(data.pristine) {
+            return null;
+        }
+        data.markAsTouched();
+
+        if(regex.alpha.test(data.value)) {
+            return null;
+        }
+
+        return {
+            invalid: true
+        };
+    }
+
     static alphaNumeric(data): any {
         if(data.pristine) {
             return null;
@@ -39,6 +54,21 @@ export class CustomValidator {
         data.markAsTouched();
 
         if(regex.numeric.test(data.value)) {
+            return null;
+        }
+
+        return {
+            invalid: true
+        };
+    }
+
+    static float(data): any {
+        if(data.pristine) {
+            return null;
+        }
+        data.markAsTouched();
+
+        if(regex.float.test(data.value)) {
             return null;
         }
 

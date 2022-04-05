@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Inject, LOCALE_ID, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Inject, LOCALE_ID, Output, ViewChild} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -50,6 +50,7 @@ export class UnprocessedComponent {
   fileName = '';
   pipe;
   contentList: ContentView[] = [];
+
 
   constructor(public dialog: MatDialog,
     public contentService: ContentService,
@@ -165,6 +166,11 @@ export class UnprocessedComponent {
           data: {content: res}
         });
       
+        dialogRef.componentInstance.onEditMetaData.subscribe(res=> {
+          this.toastr.success("Content Metadata updated successfully");
+          this.getUnprocessedContent();
+          dialogRef.close();
+        })
         dialogRef.afterClosed().subscribe(result => {
           console.log('The dialog was closed');
         });
@@ -389,8 +395,8 @@ export class ContentDetailsDialog {
   styleUrls: ['unprocessed.component.css']
 })
 export class EditContentMetadataDialog {
-
-  content: Content;
+    @Output() onEditMetaData = new EventEmitter<any>();
+    content: Content;
     attachments: string = '';
     metadataForm: FormGroup;
     genres: Array<string> = [];
@@ -441,11 +447,19 @@ export class EditContentMetadataDialog {
       additionalDescription2 : new FormControl(this.data.content.additionalDescription2,  [ Validators.maxLength(lengthConstants.additionalDescriptionMaxLength), 
         Validators.minLength(lengthConstants.additionalDescriptionMinLength),
         CustomValidator.alphaNumericSplChar]),
-      genre :  new FormControl(this.data.content.genre),
-      yearOfRelease :  new FormControl(this.data.content.yearOfRelease),
-      language :  new FormControl(this.data.content.language),
-      durationInMts :  new FormControl(this.data.content.durationInMts),
-      rating :  new FormControl(this.data.content.rating),
+      genre :  new FormControl(this.data.content.genre, [ Validators.maxLength(lengthConstants.maxDefault), 
+        Validators.minLength(lengthConstants.minDefault),CustomValidator.alpha]),
+      yearOfRelease :  new FormControl(this.data.content.yearOfRelease,  [ Validators.maxLength(lengthConstants.maxYearOfRelease), 
+        Validators.minLength(lengthConstants.minYearOfRelease),
+        CustomValidator.numeric]),
+      language :  new FormControl(this.data.content.language, [Validators.maxLength(lengthConstants.maxDefault), 
+        Validators.minLength(lengthConstants.minDefault),CustomValidator.alpha]),
+      durationInMts :  new FormControl(this.data.content.durationInMts, [ Validators.maxLength(lengthConstants.maxDurationinMts), 
+        Validators.minLength(lengthConstants.minDurationinMts),
+        CustomValidator.float]),
+      rating :  new FormControl(this.data.content.rating, [ Validators.maxLength(lengthConstants.maxRating), 
+        Validators.minLength(lengthConstants.minRating),
+        CustomValidator.numeric]),
       mediaFileName :  new FormControl({value: this.data.content.mediaFileName, disabled: true}),
       hierarchy :  new FormControl(this.data.content.hierarchy),
       isHeaderContent :  new FormControl(isHeaderContent),
@@ -454,9 +468,15 @@ export class EditContentMetadataDialog {
       ageAppropriateness :  new FormControl(this.data.content.ageAppropriateness),
       contentAdvisory:  new FormControl(this.data.content.contentAdvisory),
       people:new FormControl('Actor'),
-      name: new FormControl('', [ Validators.maxLength(lengthConstants.titleMaxLength), 
+      title: new FormControl(this.data.content.title, [ Validators.maxLength(lengthConstants.titleMaxLength), 
         Validators.minLength(lengthConstants.titleMinLength),
-        CustomValidator.alphaNumericSplChar])
+        CustomValidator.alphaNumericSplChar]),
+      additionalTitle1 :new FormControl(this.data.content.additionalTitle1, [ Validators.maxLength(lengthConstants.titleMaxLength), 
+        Validators.minLength(lengthConstants.titleMinLength),
+        CustomValidator.alphaNumericSplChar]),
+      additionalTitle2 :new FormControl(this.data.content.additionalTitle2, [ Validators.maxLength(lengthConstants.titleMaxLength), 
+        Validators.minLength(lengthConstants.titleMinLength),
+        CustomValidator.alphaNumericSplChar]),
       });
   }
 
@@ -479,7 +499,7 @@ export class EditContentMetadataDialog {
 
   updateMetadata() {
     this.contentService.updateMetaData(this.data.content.contentId, this.getUpdateMetadata()).subscribe(res => {
-      this.toastr.success("Content metadata updated successfully!!")
+      this.onEditMetaData.emit(res);
     },
     err=> this.toastr.error(err)); 
   }
@@ -491,6 +511,9 @@ export class EditContentMetadataDialog {
     });
 
     var contentMetadata = this.data.content;
+    contentMetadata.title = this.metadataForm.get('title').value;
+    contentMetadata.additionalTitle1 = this.metadataForm.get('additionalTitle1').value;
+    contentMetadata.additionalTitle2 = this.metadataForm.get('additionalTitle2').value;
     contentMetadata.shortDescription = this.metadataForm.get('shortDescription').value;
     contentMetadata.longDescription = this.metadataForm.get('longDescription').value;
     contentMetadata.additionalDescription1 = this.metadataForm.get('additionalDescription1').value;

@@ -16,5 +16,14 @@ export let lengthConstants = {
     otpMinLength: 4,
     otpMaxLength: 6,
     urlMinLength: 1,
-    urlMaxLength: 1000
+    urlMaxLength: 1000,
+    maxYearOfRelease:4,
+    minYearOfRelease:4,
+    maxRating:1,
+    minRating:1,
+    maxDurationinMts:6,
+    minDurationinMts:1,
+    minDefault:3,
+    maxDefault:15
+
 }
