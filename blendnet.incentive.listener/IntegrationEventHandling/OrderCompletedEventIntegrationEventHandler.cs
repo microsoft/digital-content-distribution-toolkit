@@ -25,7 +25,6 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
     /// </summary>
     public class OrderCompletedEventIntegrationEventHandler : IIntegrationEventHandler<OrderCompletedIntegrationEvent>
     {
-        private const string C_OrderId = "OrderId";
         private const string C_UserPhone = "UserPhone";
         private const string C_RetailerId = "RetailerId";
         private const string C_OrderItem = "OrderItem";
@@ -324,7 +323,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
             Property orderData = new Property()
             {
-                Name = C_OrderId,
+                Name = ApplicationConstants.OrderEventAdditionalPropertyKeys.OrderId,
                 Value = order.Id.ToString()
             };
 

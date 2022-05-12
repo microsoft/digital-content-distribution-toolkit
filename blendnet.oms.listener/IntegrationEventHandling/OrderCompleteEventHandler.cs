@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using blendnet.common.dto;
 
 namespace blendnet.oms.listener.IntegrationEventHandling
 {
@@ -48,7 +49,7 @@ namespace blendnet.oms.listener.IntegrationEventHandling
                 {
                     _logger.LogInformation($"Raising order complete notification for orderid {integrationEvent.Order.Id}");
                     await SendOrderCompleteNotification(integrationEvent.Order);
-                  
+
                     _logger.LogInformation($"Done sending notification for order complete with order id: {integrationEvent.Order.Id}");
                 }
             }
@@ -68,14 +69,18 @@ namespace blendnet.oms.listener.IntegrationEventHandling
                 Title = "Order Completed",
                 Body = "Your order has been completed",
                 Type = PushNotificationType.OrderComplete,
-                UserData = userdata
+                UserData = userdata,
+                AdditionalProps = new Dictionary<string, string>()
+                {
+                    { ApplicationConstants.OrderEventAdditionalPropertyKeys.OrderId, order.Id.Value.ToString() },
+                },
             };
 
             try
             {
                 await _notificationProxy.SendNotification(notificationRequest);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"Failed to send notification for order id {order.Id} and user id {order.UserId}");
             }

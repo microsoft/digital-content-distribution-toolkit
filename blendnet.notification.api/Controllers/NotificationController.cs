@@ -234,6 +234,7 @@ namespace blendnet.notification.api
             data.body = notificationData.Body;
             data.title = notificationData.Title;
             data.image_url = notificationData.AttachmentUrl;
+            data.additional_props = notificationData.AdditionalProps;
 
             data.message.appname = _appSettings.KaizalaIdentityAppName;
 

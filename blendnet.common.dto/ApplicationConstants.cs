@@ -271,6 +271,11 @@ namespace blendnet.common.dto
             public const string RetailerPartnerCode = "RetailerPartnerCode";
         }
 
+        public struct OrderEventAdditionalPropertyKeys
+        {
+            public const string OrderId = "OrderId";
+        }
+
         public struct Common
         {
             public const string CONSUMER = "CONSUMER";

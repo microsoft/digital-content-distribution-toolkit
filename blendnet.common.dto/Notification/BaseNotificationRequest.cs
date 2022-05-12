@@ -19,5 +19,7 @@ namespace blendnet.common.dto.Notification
 
         [Required]
         public PushNotificationType Type { get; set; }
+
+        public Dictionary<string, string> AdditionalProps { get; set; } = new Dictionary<string, string>();
     }
 }
