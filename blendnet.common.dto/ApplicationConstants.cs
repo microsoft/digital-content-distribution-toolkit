@@ -342,6 +342,7 @@ namespace blendnet.common.dto
         public struct ApplicationInsightsDefaultEventProperty
         {
             public const string BlendNetCustomEvent = "BlendNetCustomEvent";
+            public const string BlendNetCustomEventId = "BlendNetCustomEventId";
         }
 
 

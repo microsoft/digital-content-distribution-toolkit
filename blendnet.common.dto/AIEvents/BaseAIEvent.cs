@@ -35,6 +35,10 @@ namespace blendnet.common.dto.AIEvents
             ret.Add(ApplicationConstants.ApplicationInsightsDefaultEventProperty.BlendNetCustomEvent, 
                     ApplicationConstants.ApplicationInsightsDefaultEventProperty.BlendNetCustomEvent);
 
+            //add a unique event id to every event
+            ret.Add(ApplicationConstants.ApplicationInsightsDefaultEventProperty.BlendNetCustomEventId,
+                    Guid.NewGuid().ToString());
+
             foreach (PropertyInfo prop in this.GetType().GetProperties())
             {
                 string propName = prop.Name;
