@@ -279,7 +279,7 @@ namespace blendnet.common.dto
         public struct Common
         {
             public const string CONSUMER = "CONSUMER";
-            public static readonly DateTime LicenseEndDate = new DateTime(2022, 6, 30);
+            public static readonly DateTime LicenseEndDate = new DateTime(2022, 12, 20);
             public const int ALLOWED_TRANSACTION_BATCH_SIZE = 100;
         }
 
