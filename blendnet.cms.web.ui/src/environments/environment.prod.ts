@@ -4,7 +4,7 @@ export const environment = {
   maxFileUploadSize: 1000000,
   fileAllowedType: 'application/json',
   channelName: "CMSPortal",
-  baseUrl: "https://blendnet-stage.kaiza.la",
+  baseUrl: "https://meramishtu.com",
   contentProviderApiUrl: "/cmsapi/api/v1/ContentProvider",
   browrseContent: "/cmsapi/api/v1/BrowseContent",
   contentApiUrl: "/cmsapi/api/v1/Content",
@@ -22,9 +22,9 @@ export const environment = {
   deviceContentUrl: "/deviceapi/api/v1/DeviceContent",
   retailerUrl: "/retailerapi/api/v1/Retailer",
   dashUrlPrefix: "https://ampdemo.azureedge.net/?url=",
-  kaizalaApi0: "https://api-preprod.kaiza.la/v1/",
-  kaizalaApi1: "https://api-preprod.kaiza.la/v1/",
-  kaizalaApi2: "https://api-preprod.kaiza.la/v1/",
+  kaizalaApi0: "https://api.kaiza.la/v1/",
+  kaizalaApi1: "https://api.kaiza.la/v1/",
+  kaizalaApi2: "https://api.kaiza.la/v1/",
   kaizalaSignUpSignIn: "LoginWithPhoneForPartners",
   kaizalaVerifyOTP: "VerifyPhonePinForPartnerLogin",
   kaizalaGetUserRoles : "ValidatePartnerAccessToken",
@@ -37,17 +37,27 @@ export const environment = {
     {
       "filterName" : "Language",
       "filterValues" : [
-        "English", "Hindi", "Marathi", "Gujarati", "Kannada", "Tamil", "Malayalam", "Telugu"]
+        "English", "Hindi", "Bhojpuri", "Bengali", "OtherLanguage"]
     },
     {
-      "filterName" : "Region",
+      "filterName" : "ContentType",
       "filterValues" : [
-        "Central_India", "West_India", "North_India", "South_India"]
+        "Movie", "WebSeries", "Education"]
     },
     {
-      "filterName" : "Content Type",
+      "filterName" : "Location",
       "filterValues" : [
-        "Test", "Development"]
+        "Bihar", "Jharkhand", "UP", "WestBengal", "OtherLocation"]
+    },
+    {
+      "filterName" : "Area",
+      "filterValues" : [
+        "Hotspot", "School"]
+    },
+    {
+      "filterName" : "Environment",
+      "filterValues" : [
+        "Development",  "Stage", "Production"]
     }
   ],
   countryCodes: [
