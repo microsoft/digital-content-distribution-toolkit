@@ -1,0 +1,32 @@
+[
+    {
+        "id": "TSTP",
+        "name": "TSTP",
+        "partnerCode": "TSTP",
+        "userId": "5fec8180-7192-4e08-a508-dbbf35aac072",
+        "startDate": "2022-06-07T08:04:16.345078Z",
+        "endDate": "9999-12-31T23:59:59.9999999",
+        "type": "RetailerProvider",
+        "supportedFeatures": {
+            "webRetailerDashboardEnabled": true,
+            "webOrderCompletionEnabled": true
+        },
+        "createdByUserId": "cbcd0c42-44b3-44d2-9326-73d3b511049b",
+        "createdDate": "2022-06-07T08:04:16.345078Z"
+    },
+    {
+        "id": "NOVO",
+        "name": "Novopay",
+        "partnerCode": "NOVO",
+        "userId": "135a767f-fd9c-4002-bbc4-48d698ea3e21",
+        "startDate": "2022-06-07T08:04:16.345078Z",
+        "endDate": "9999-12-31T23:59:59.9999999",
+        "type": "RetailerProvider",
+        "supportedFeatures": {
+            "webRetailerDashboardEnabled": true,
+            "webOrderCompletionEnabled": false
+        },
+        "createdByUserId": "cbcd0c42-44b3-44d2-9326-73d3b511049b",
+        "createdDate": "2022-06-07T08:04:16.345078Z"
+    }
+]

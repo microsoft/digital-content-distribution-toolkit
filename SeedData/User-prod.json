@@ -1,0 +1,48 @@
+[
+    {
+        "id": "cbcd0c42-44b3-44d2-9326-73d3b511049b",
+        "identityId": "abf9efcd-5b20-4f8d-95d2-7c514d699d7a",
+        "phoneNumber": "1111111110",
+        "name": "SUPER ADMIN",
+        "channelId": "System",
+        "referralInfo": null,
+        "type": "User",
+        "createdByUserId": "cbcd0c42-44b3-44d2-9326-73d3b511049b",
+        "createdDate": "2022-06-07T05:59:48.157342Z"
+    },
+    {
+        "id": "5fec8180-7192-4e08-a508-dbbf35aac072",
+        "identityId": "4df955e0-3396-49c0-a84a-5d36054adf61",
+        "phoneNumber": "1111111160",
+        "name": "RetailerManagement Test Account",
+        "channelId": "System",
+        "referralInfo": null,
+        "type": "User",
+        "createdByUserId": "cbcd0c42-44b3-44d2-9326-73d3b511049b",
+        "createdDate": "2022-06-07T05:59:48.157342Z"
+    },
+    {
+        "id": "135a767f-fd9c-4002-bbc4-48d698ea3e21",
+        "identityId": "3fffe729-a5d5-4141-ae5d-6574c7c0ef55",
+        "phoneNumber": "1111111140",
+        "name": "Novopay",
+        "channelId": "System",
+        "referralInfo": null,
+        "type": "User",
+        "createdByUserId": "cbcd0c42-44b3-44d2-9326-73d3b511049b",
+        "createdDate": "2022-06-07T05:59:48.157342Z"
+    },
+    {
+        "id": "d2e3bcff-525f-485a-b0f9-dd56312bfe6c",
+        "identityId": "0aa42029-ca19-4290-a519-e8e4088e8d55",
+        "phoneNumber": "1111111150",
+        "name": "ANALYTICS REPORTER",
+        "channelId": "System",
+        "referralInfo": null,
+        "type": "User",
+        "createdByUserId": "cbcd0c42-44b3-44d2-9326-73d3b511049b",
+        "modifiedByByUserId": null,
+        "createdDate": "2022-06-07T16:25:48.157342Z",
+        "modifiedDate": null
+    }
+]
