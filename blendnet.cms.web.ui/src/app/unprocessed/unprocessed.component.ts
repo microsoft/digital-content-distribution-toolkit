@@ -377,10 +377,10 @@ export class ContentDetailsDialog {
 
   ngOnInit(): void {
     this.content = this.data.content;
-    this.data.content.people.forEach(each => 
+    this.data.content.people?.forEach(each => 
       this.people += each.role+ " : " +each.name + " | "
     );
-    this.data.content.attachments.filter( each => {
+    this.data.content.attachments?.filter( each => {
       this.attachments +=  each.name + ' ';
     })
   }
@@ -422,11 +422,11 @@ export class EditContentMetadataDialog {
 
   ngOnInit(): void {
     this.content = this.data.content;
-    this.data.content.people.filter(each =>  {
+    this.data.content.people?.filter(each =>  {
       this.peopleList.push(each.role + " | " + each.name);
     }      
     );
-    this.data.content.attachments.filter( each => {
+    this.data.content.attachments?.filter( each => {
       this.attachments +=  each.name + ' ';
     })
     var isHeaderContent = this.data.content.isHeaderContent ? "Yes": "No";

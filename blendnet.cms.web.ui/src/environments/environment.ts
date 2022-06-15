@@ -30,7 +30,12 @@ export const environment = {
   kaizalaGetUserRoles : "ValidatePartnerAccessToken",
   kaizalaAppNameParam : "applicationName",
   kaizalaAppName : "com.microsoft.mobile.polymer.mishtu",
-  baseHref:'portal',
+  baseHref:'',
+  cdnBaseUrl: "https://stcontentcdnstage.blob.core.windows.net/",
+  cpLogoPictorialImg: "-cdn/logos/pictorialmark_square.png",
+  cpLogoWaterMarkImg: "-cdn/logos/water_mark.png",
+  defaultCplogoImg: "/assets/images/cp-default-logo/cp-default-logo.png",
+  noOrdersImg: "/assets/images/retailer/retailer-empty-order.png",
   whitelistedUserApiUrl: "/userapi/api/v1/WhitelistedUser/create",
   widewineTokenPrefix: "&widevine=true&token=Bearer%3D",
     filters : [

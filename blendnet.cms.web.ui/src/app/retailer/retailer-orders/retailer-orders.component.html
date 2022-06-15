@@ -26,7 +26,7 @@
     <span class="retailer-orders-text">Open Requests for {{userContact}}</span>
     <div *ngIf="emptyRequest">
         <div class="retailer-empty-request">
-            <img src="../../{{baseHref}}/assets/images/retailer/retailer-empty-order.png">
+            <img src="{{noOrderImgUrl}}">
         </div>
         <div class="retailer-empty-text">
             <span>No packs purchased yet</span>
@@ -35,8 +35,8 @@
     <div *ngIf="!emptyRequest" class="retailer-orders-detail">
         <div *ngFor="let order of createdOrders">
             <div  class="retailer-request-orders">
-                <div class="retailer-order-logo">
-                    <img src="../../{{baseHref}}/assets/images/retailer/eros-logo.png">
+                <div >
+                    <img class="retailer-order-logo" src={{order.orderImgUrl}}>
                 </div>
                 <div class="order-title">
                     <span>{{order.title}}</span>

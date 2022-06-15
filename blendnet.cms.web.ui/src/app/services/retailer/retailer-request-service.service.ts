@@ -37,7 +37,7 @@ export class RetailerRequestService {
           const now = new Date();
           const diffTime = Math.abs(now.getTime() - createdDate.getTime());
           const diffDays = Math.ceil(diffTime / (1000*60*60*24));
-          return new CreatedOrder(order.id, subs.title, subs.price, diffDays);
+          return new CreatedOrder(order.id, subs.title, subs.price, diffDays, subs.contentProviderId);
         })
       })
     )

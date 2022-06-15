@@ -56,16 +56,27 @@ export class ContentProviderComponent implements OnInit {
     )
   }
 
+  
   createCPList(cps) {
     var cpList = [];
     cps.forEach(cp => {
        if (cp.logoUrl !== "") {
-        cpList.push(cp);
        } else {
-         cp.logoUrl = "../../" + this.baseHref + "/assets/images/cp-default-logo/cp-default-logo.png"
-         cpList.push(cp);
+        //  cp.logoUrl = this.cdnBaseUrl + cp.id + "-cdn/logos/pictorialmark_square.png";
+         const img = new Image();
+         img.src = environment.cdnBaseUrl + cp.id + environment.cpLogoPictorialImg;
+          if (img.complete) {
+            cp.logoUrl  = img.src;
+            } else {
+            img.onload = () => {
+              cp.logoUrl  = img.src;
+            };
+            img.onerror = () => {
+              cp.logoUrl  = "../../" + this.baseHref + environment.defaultCplogoImg;
+            };
+          }
        }
-      
+       cpList.push(cp);
     });
 
     if(sessionStorage.getItem("roles")?.includes(environment.roles.SuperAdmin)) {

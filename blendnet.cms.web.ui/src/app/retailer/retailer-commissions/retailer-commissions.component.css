@@ -167,7 +167,8 @@
     position: absolute;
     bottom: 7px;
     right: 7px;
-    width: auto !important;;
+    width: 70px !important;
+    height: 25px;
 }
 
 ::ng-deep .carousel-slide-content {

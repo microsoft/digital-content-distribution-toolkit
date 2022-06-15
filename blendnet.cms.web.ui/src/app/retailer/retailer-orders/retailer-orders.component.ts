@@ -2,7 +2,6 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RetailerRequestService } from 'src/app/services/retailer/retailer-request-service.service';
 import { OrderStatus } from 'src/app/models/order-status.enum';
-import { CreatedOrder } from 'src/app/models/created-order.model';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service';
 import { environment } from 'src/environments/environment';
 
@@ -18,9 +17,11 @@ export class RetailerOrdersComponent implements OnInit {
   requestPage: boolean = true;
   emptyRequest:boolean = false;
   orderCompleteRequestSuccess: boolean = false;
-  createdOrders: CreatedOrder[] = [];
+  createdOrders: any[] = [];
   partner: any = {};
   baseHref = environment.baseHref;
+  orderImgUrl: string;
+  noOrderImgUrl: string;
 
   partnerCode = sessionStorage.getItem('partnerCode');
   retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
@@ -59,11 +60,27 @@ export class RetailerOrdersComponent implements OnInit {
     this.retailerRequestService.getOrders(this.userContact, orderStatus).subscribe(
       data => {
         this.createdOrders = data;
-        console.log(this.createdOrders);
         this.emptyRequest = false;
+        this.createdOrders?.forEach(o => {
+          // o.orderImgUrl =  this.cdnBaseUrl + o.cpId + "-cdn/logos/pictorialmark_square.png";
+          const img = new Image();
+          var imgUrl = environment.cdnBaseUrl + o.cpId + environment.cpLogoPictorialImg;
+      
+          if (img.complete) {
+           o.orderImgUrl = imgUrl;
+          } else {
+           img.onload = () => {
+            o.orderImgUrl = imgUrl;
+          };        
+          img.onerror = () => {
+             o.orderImgUrl  = "../../" + this.baseHref + environment.defaultCplogoImg;
+           };
+         }
+        });
       },
       err => {
         this.emptyRequest = true;
+        this.noOrderImgUrl = "../../"+ this.baseHref + environment.noOrdersImg;
       }
     );
   }

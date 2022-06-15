@@ -8,6 +8,7 @@ import { RetailerDashboardService } from 'src/app/services/retailer/retailer-das
 import { ContentProviderService } from 'src/app/services/content-provider.service';
 import { Location } from '@angular/common';
 import { ContentProviderLtdInfo } from 'src/app/models/contentprovider.model';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -203,6 +204,8 @@ export class RetailerCommissionsComponent implements OnInit, AfterViewInit, OnDe
             }
             
             planDetail.validTillText = this.retailerDashboardService.formatDateOnlyDay(res.endDate);
+            planDetail.logoUrl = environment.cdnBaseUrl + planDetail.eventSubType + environment.cpLogoWaterMarkImg;
+
             commissionsCarouselArr.push(planDetail);
           }
         });
