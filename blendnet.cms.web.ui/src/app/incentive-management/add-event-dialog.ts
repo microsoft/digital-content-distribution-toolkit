@@ -197,13 +197,13 @@ import { IncentiveService } from "../services/incentive.service";
         ruleType : new FormControl(ruleTypeValue, [Validators.required]),
         formula : new FormControl('', [Validators.required]),
         firstOperand : new FormControl('',[Validators.minLength(lengthConstants.titleMinLength),
-          CustomValidator.numeric, Validators.required]),
+          CustomValidator.float, Validators.required]),
         secondOperand : new FormControl('', [Validators.required, Validators.minLength(lengthConstants.titleMinLength),
-          CustomValidator.numeric]),
-        entity1Operand : new FormControl('', [CustomValidator.numeric]),
-        entity2Operand : new FormControl('', [CustomValidator.numeric]),
-        entity3Operand : new FormControl('', [CustomValidator.numeric]),
-        entity4Operand : new FormControl('', [CustomValidator.numeric]),
+          CustomValidator.float]),
+        entity1Operand : new FormControl('', [CustomValidator.float]),
+        entity2Operand : new FormControl('', [CustomValidator.float]),
+        entity3Operand : new FormControl('', [CustomValidator.float]),
+        entity4Operand : new FormControl('', [CustomValidator.float]),
         ranges: this.formBuilder.array([this.createRange()])
         });
     }
@@ -215,11 +215,11 @@ import { IncentiveService } from "../services/incentive.service";
         end: new FormControl('', [Validators.minLength(lengthConstants.titleMinLength),
           CustomValidator.numeric]),
         output: new FormControl('', [Validators.minLength(lengthConstants.titleMinLength),
-          CustomValidator.numeric]),
-        entity1Output : new FormControl('', [CustomValidator.numeric]),
-        entity2Output : new FormControl('', [CustomValidator.numeric]),
-        entity3Output : new FormControl('', [CustomValidator.numeric]),
-        entity4Output : new FormControl('', [CustomValidator.numeric]),
+          CustomValidator.float]),
+        entity1Output : new FormControl('', [CustomValidator.float]),
+        entity2Output : new FormControl('', [CustomValidator.float]),
+        entity3Output : new FormControl('', [CustomValidator.float]),
+        entity4Output : new FormControl('', [CustomValidator.float]),
       })
     }
 
@@ -318,10 +318,10 @@ import { IncentiveService } from "../services/incentive.service";
       var formula = this.eventForm.get('formula');
       if(formula.value === FormulaType.DIVIDE_AND_MULTIPLY) {
         this.eventForm.get('firstOperand').setValidators([Validators.required, Validators.minLength(lengthConstants.titleMinLength),
-          CustomValidator.numeric]);
+          CustomValidator.float]);
         this.eventForm.get('firstOperand').updateValueAndValidity();
         this.eventForm.get('secondOperand').setValidators([Validators.required, Validators.minLength(lengthConstants.titleMinLength),
-          CustomValidator.numeric]);
+          CustomValidator.float]);
         this.eventForm.get('secondOperand').updateValueAndValidity();
         this.eventForm.updateValueAndValidity();
       } else if(formula.value === FormulaType.RANGE) {
@@ -329,17 +329,9 @@ import { IncentiveService } from "../services/incentive.service";
         this.eventForm.get('firstOperand').updateValueAndValidity();
         this.eventForm.get('secondOperand').clearValidators();
         this.eventForm.get('secondOperand').updateValueAndValidity();
-        // this.eventForm.get('entity1Operand').clearValidators();
-        // this.eventForm.get('entity1Operand').updateValueAndValidity();
-        // this.eventForm.get('entity2Operand').clearValidators();
-        // this.eventForm.get('entity2Operand').updateValueAndValidity();
-        // this.eventForm.get('entity3Operand').clearValidators();
-        // this.eventForm.get('entity3Operand').updateValueAndValidity();
-        // this.eventForm.get('entity4Operand').clearValidators();
-        // this.eventForm.get('entity4Operand').updateValueAndValidity();
       } else if(!this.isMileStonePlanType()){
         this.eventForm.get('firstOperand').setValidators([Validators.required, Validators.minLength(lengthConstants.titleMinLength),
-          CustomValidator.numeric]);
+          CustomValidator.float]);
         this.eventForm.get('secondOperand').clearValidators();
         this.eventForm.get('secondOperand').updateValueAndValidity();
       }  
