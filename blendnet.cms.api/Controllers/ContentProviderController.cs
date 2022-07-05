@@ -266,33 +266,6 @@ namespace blendnet.cms.api.Controllers
         }
 
         /// <summary>
-        /// Activate Content Provider
-        /// </summary>
-        /// <param name="contentProviderId"></param>
-        /// <returns></returns>
-        [HttpPost("{contentProviderId:guid}/activate", Name = nameof(ActivateContentProvider))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult> ActivateContentProvider(Guid contentProviderId)
-        {
-            return await ActivateDeactivateContentProvider(contentProviderId, true);
-        }
-
-
-        /// <summary>
-        /// Deactivate content provider
-        /// </summary>
-        /// <param name="contentProviderId"></param>
-        /// <returns></returns>
-        [HttpPost("{contentProviderId:guid}/deactivate", Name = nameof(DeactivateContentProvider))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin)]
-        public async Task<ActionResult> DeactivateContentProvider(Guid contentProviderId)
-        {
-            return await ActivateDeactivateContentProvider(contentProviderId, false);
-        }
-
-        /// <summary>
         /// Generates SAS token for the content provider
         /// </summary>
         /// <param name="contentProviderId"></param>
@@ -323,43 +296,6 @@ namespace blendnet.cms.api.Controllers
         #endregion
 
         #region Private Methods
-        /// <summary>
-        /// Private method to support activate and deactivate content provider
-        /// </summary>
-        /// <param name="contentProviderId"></param>
-        /// <param name="activate"></param>
-        /// <returns></returns>
-        private async Task<ActionResult> ActivateDeactivateContentProvider(Guid contentProviderId, bool activate)
-        {
-            var contentProvider = await _contentProviderRepository.GetContentProviderById(contentProviderId);
-
-            DateTime currentDateTime = DateTime.UtcNow;
-
-            if (contentProvider != null)
-            {
-                if (activate)
-                {
-                    contentProvider.ActivationDate = currentDateTime;
-                }
-                else
-                {
-                    contentProvider.DeactivationDate = currentDateTime;
-                }
-
-                contentProvider.ModifiedByByUserId = UserClaimData.GetUserId(this.User.Claims);
-
-                contentProvider.ModifiedDate = currentDateTime;
-
-                await _contentProviderRepository.UpdateContentProvider(contentProvider);
-
-                return NoContent();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
         /// <summary>
         /// Check if duplicate phone number exists
         /// </summary>

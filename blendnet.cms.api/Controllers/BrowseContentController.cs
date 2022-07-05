@@ -111,7 +111,15 @@ namespace blendnet.cms.api.Controllers
         {
             var contentProviders = await _contentProviderRepository.GetContentProviders();
 
-            var contentProviderItems = _mapper.Map<List<ContentProviderDto>, List<ContentProviderItem>>(contentProviders);
+            var filteredContentProviders = contentProviders;
+
+            //return only published content providers
+            if (contentProviders != null && contentProviders.Count > 0)
+            {
+                filteredContentProviders = contentProviders.Where(cp => cp.IsPublished).ToList();
+            }
+            
+            var contentProviderItems = _mapper.Map<List<ContentProviderDto>, List<ContentProviderItem>>(filteredContentProviders);
 
             return Ok(contentProviderItems);
         }

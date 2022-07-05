@@ -34,9 +34,12 @@ namespace blendnet.common.dto
 
         public List<ContentAdministratorDto> ContentAdministrators { get; set; }
 
-        public DateTime? ActivationDate { get; set; } = null;
 
-        public DateTime? DeactivationDate { get; set; } = null;
+        /// <summary>
+        /// Whether cp is published
+        /// Keeping the default to true for backword compatibility
+        /// </summary>
+        public bool IsPublished { get; set; } = true;
 
         public string LogoUrl { get; set; }
 
