@@ -72,22 +72,16 @@ export class RetailerLandingPageComponent implements OnInit {
  
 
   getContentProviders() {
-    if(sessionStorage.getItem("CONTENT_PROVIDERS")) {
-      this.contentProviders =  JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
+    if(sessionStorage.getItem("CONTENT_PROVIDERS_PUBLISHED")) {
+      this.contentProviders =  JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS_PUBLISHED"));
       this.contentProviders.forEach(contentProvider => {
         this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
       }); 
     } else {
-      this.contentProviderService.getContentProviders().subscribe(
+      this.contentProviderService.browseContentProviders().subscribe(
         res => {
-          this.contentProviders = res.map(cp =>  {
-            var cpObj = {
-              contentProviderId : cp.id,
-              name: cp.name
-            }
-            return cpObj;
-          });
-        sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(this.contentProviders));
+        this.contentProviders = res;
+        sessionStorage.setItem("CONTENT_PROVIDERS_PUBLISHED",  JSON.stringify(this.contentProviders));
         this.contentProviders.forEach(contentProvider => {
           this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
         }); 
