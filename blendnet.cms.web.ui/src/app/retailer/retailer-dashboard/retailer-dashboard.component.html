@@ -34,7 +34,7 @@
                     <div class="milestones-route-inner">
                         <div class="milestones-value-wrapper">
                             <div class="milestones-value">
-                                Rs. {{totalMilestoneEarnings}}
+                                Rs. {{totalMilestoneEarnings  | number : '1.0-2'}}
                             </div>
                             <div class="milestones-text">
                                 Milestone <br> Earnings
@@ -96,7 +96,7 @@
             </div>
             <div class="landing-page-total-value-block">
                 <div class="total-value">
-                    Rs. {{referralTotal + commissionsTotal}}
+                    Rs. {{(referralTotal + commissionsTotal)  | number : '1.0-2'}}
                 </div>
                 <div class="total-earnings-text">
                     Total Earnings
@@ -119,7 +119,7 @@
         <div class="referrals-route-inner" [routerLink]="['/retailer/referrals']">
             <div class="referrals-value-wrapper">
                 <div class="referrals-value">
-                    Rs. {{referralTotal}}
+                    Rs. {{referralTotal  | number : '1.0-2'}}
                 </div>
                 <div class="referrals-text">
                     Referrals
@@ -133,7 +133,7 @@
         <div class="commission-route-inner" [routerLink]="['/retailer/commissions']">
             <div class="commission-value-wrapper">
                 <div class="commission-value">
-                    Rs. {{commissionsTotal}}
+                    Rs. {{commissionsTotal  | number : '1.0-2'}}
                 </div>
                 <div class="commission-text">
                     Commision

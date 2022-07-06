@@ -34,7 +34,7 @@
             </div>
             <div class="landing-page-total-value-block">
                 <div class="referral-total-value">
-                    Rs.{{totalEarnings}}
+                    Rs.{{totalEarnings  | number : '1.0-2'}}
                 </div>
                 <div class="total-earnings-text">
                     Total Earnings
@@ -61,7 +61,7 @@
                 <mat-panel-title>
                     <div class="accordion-heading">
                         <div class="accordion-left-content">{{commission.occuredDateReadable}} • {{commission.transactions.length}} Transactions</div>
-                        <div class="accordion-right-content">Rs. {{commission.amount}}</div>     
+                        <div class="accordion-right-content">Rs. {{commission.amount  | number : '1.0-2'}}</div>     
                     </div>
                 </mat-panel-title>
               </mat-expansion-panel-header>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="each-value">
-                    +Rs. {{transaction.calculatedValue}}
+                    +Rs. {{transaction.calculatedValue  | number : '1.0-2'}}
                 </div>
             </div>
             </mat-expansion-panel>
