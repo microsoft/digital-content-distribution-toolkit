@@ -18,7 +18,7 @@
           <td>
             <mat-form-field>
               <input matInput placeholder="Price"  
-              formControlName="price" required  type="number" min ="1" >
+              formControlName="price" required >
               <mat-error *ngIf="errorHandling('price', 'required') || errorHandling('price', 'min')"> 
                 Price cannot be zero
               </mat-error>

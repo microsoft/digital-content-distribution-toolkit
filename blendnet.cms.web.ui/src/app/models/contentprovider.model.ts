@@ -6,7 +6,8 @@ export class Contentprovider {
         public id: string,
         public name: string,
         public logoUrl: string,
-        public contentAdministrators: ContentproviderAdmin[]
+        public contentAdministrators: ContentproviderAdmin[],
+        public isPublished: boolean
         
     ) {}
 }

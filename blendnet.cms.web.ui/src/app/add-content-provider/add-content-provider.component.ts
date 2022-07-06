@@ -37,6 +37,7 @@ export class AddContentProviderComponent implements OnInit {
       Validators.maxLength(lengthConstants.titleMaxLength), 
       CustomValidator.alphaNumericSplChar]),
     logoUrl : new FormControl(''),
+    isPublished: new FormControl('false'),
     admins: new FormControl(''),
     contentAdministrators : new FormControl(this.contentAdministrators),
     adminUpn: new FormControl('',  [Validators.maxLength(lengthConstants.phoneMaxLength), 
@@ -67,6 +68,8 @@ export class AddContentProviderComponent implements OnInit {
     this.cp = this.data.cp;
     this.cpForm.get("cpname").setValue(this.cp.name);
     this.cpForm.get("logoUrl").setValue(this.cp.logoUrl);
+    var isPublishedVal = this.cp.isPublished ? 'true' : 'false';
+    this.cpForm.get("isPublished").setValue(isPublishedVal);
     this.contentAdministrators = this.cp.contentAdministrators ? this.cp.contentAdministrators :[];
     this.cpForm.get("admins").setValue(this.contentAdministrators);
   }
@@ -124,6 +127,7 @@ export class AddContentProviderComponent implements OnInit {
       id: this.cp.id,
       name: this.cpForm.get("cpname").value,
       logoUrl: this.cpForm.get("logoUrl").value,
+      isPublished: this.cpForm.get("isPublished").value == 'true' ? true: false,
       contentAdministrators: this.contentAdministrators
     }
     if(newUpdatedCP.id) {

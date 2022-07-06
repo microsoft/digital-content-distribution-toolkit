@@ -14,6 +14,18 @@
           You must provide a valid name (max length {{titleMaxLength}})
         </mat-error>
       </div>
+      <div>
+        <mat-label>Is the ContentProvider Published? &nbsp; &nbsp; &nbsp;</mat-label>
+        <mat-radio-group formControlName="isPublished" >
+          <mat-radio-button color="primary" 
+          style="padding:4px 4px 0px 0px;" value="true"
+          >Yes</mat-radio-button>
+          <mat-radio-button  color="primary" 
+          style="padding:4px 0px 0px 24px;" value="false"
+          >No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+        
       <mat-form-field>
         <input matInput placeholder="Logo URL address"  
         formControlName="logoUrl" >

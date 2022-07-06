@@ -72,8 +72,15 @@ export class RetailerDashboardComponent implements OnInit {
         this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;
       }); 
     } else {
-      this.contentProviderService.browseContentProviders().subscribe(res => {
-        this.contentProviders = res;
+      this.contentProviderService.getContentProviders().subscribe(
+        res => {
+          this.contentProviders  = res.map(cp =>  {
+            var cpObj = {
+              contentProviderId : cp.id,
+              name: cp.name
+            }
+            return cpObj;
+          });
         sessionStorage.setItem("CONTENT_PROVIDERS",  JSON.stringify(this.contentProviders));
         this.contentProviders.forEach(contentProvider => {
           this.contentProviders[contentProvider.contentProviderId] = contentProvider.name;

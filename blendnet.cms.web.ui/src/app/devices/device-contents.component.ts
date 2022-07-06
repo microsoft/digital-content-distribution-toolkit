@@ -63,9 +63,15 @@ export class DeviceContentsComponent implements OnInit {
   getContentProviders() {
     this.cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
     if(! this.cpList ||  this.cpList.length < 1) {
-      this.contentProviderService.browseContentProviders().subscribe(
+      this.contentProviderService.getContentProviders().subscribe(
         res => {
-          this.cpInfoList = res;
+          this.cpInfoList = res.map(cp =>  {
+            var cpObj = {
+              contentProviderId : cp.id,
+              name: cp.name
+            }
+            return cpObj;
+          });
           sessionStorage.setItem("CONTENT_PROVIDERS", JSON.stringify(this.cpInfoList));
           this.cpList =  JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
           this.selectedCP = this.cpList[0].contentProviderId;
