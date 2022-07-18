@@ -5,6 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System;
+using blendnet.common.dto.Device;
 
 namespace blendnet.api.proxy.Device
 {
@@ -35,6 +38,29 @@ namespace blendnet.api.proxy.Device
             { }
 
             return device;
+        }
+
+        public async Task<List<DeviceContentByContentProviderIdResponse>> GetContentByDeviceId(string deviceId, List<Guid> contentProviderIds)
+        {
+            string url = $"DeviceContent/{deviceId}/contents";
+            string accessToken = await base.GetServiceAccessToken();
+
+            List<DeviceContentByContentProviderIdResponse> response = new List<DeviceContentByContentProviderIdResponse>();
+
+            var requestBody = new DeviceContentByContentProviderIdRequest()
+            {
+                ContentProviderIds = contentProviderIds,
+            };
+
+            try
+            {
+                response = await _deviceHttpClient.Post<DeviceContentByContentProviderIdRequest, List<DeviceContentByContentProviderIdResponse>>(url, requestBody, accessToken: accessToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { }
+
+            return response;
+
         }
     }
 }

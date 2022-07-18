@@ -117,5 +117,7 @@ namespace blendnet.common.dto.cms
 
         public string SESServicePwd { get; set; }
 
+        public int SubscriptionContentListMaxLimit { get; set; }
+
     }
 }

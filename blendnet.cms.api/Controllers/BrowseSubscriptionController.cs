@@ -27,7 +27,7 @@ namespace blendnet.cms.api.Controllers
         }
 
         /// <summary>
-        /// Gets all active subscriptions i.e. those where startDate <= currentTime <= endDate
+        /// Gets all active (published) subscriptions i.e. those where startDate <= currentTime <= endDate
         /// </summary>
         /// <param name="contentProviderId"></param>
         /// <returns></returns>
@@ -40,6 +40,7 @@ namespace blendnet.cms.api.Controllers
             var activeSubscriptions = (from o in allSubscriptions
                                        where o.StartDate <= now
                                        where o.EndDate >= now
+                                       where o.PublishMode == SubscriptionPublishMode.PUBLISHED
                                        orderby o.CreatedDate descending
                                        select o).ToList();
             return activeSubscriptions;

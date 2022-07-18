@@ -133,8 +133,8 @@ namespace blendnet.oms.api.Controllers
             orderStatusFilter.OrderStatuses.Add(OrderStatus.Created);
             orderStatusFilter.OrderStatuses.Add(OrderStatus.Completed);
 
-            // Check if user do not hold active order for same content provider
-            if (await ActiveOrderExists(userPhoneNumber, orderRequest.ContentProviderId, orderStatusFilter))
+            // Check if user do not hold active/created order for any SVOD subscription or for same TVOD subscription 
+            if (await ActiveOrderExists(userPhoneNumber, orderRequest.ContentProviderId, orderStatusFilter, subscription))
             {
                 errorInfo.Add(_stringLocalizer["OMS_ERR_0002"]);
                 return BadRequest(errorInfo);
@@ -202,7 +202,7 @@ namespace blendnet.oms.api.Controllers
             orderStatusFilter.OrderStatuses.Add(OrderStatus.Completed);
 
             // Check if user do not hold active order for same content provider
-            if (await ActiveOrderExists(userPhoneNumber, orderRequest.ContentProviderId, orderStatusFilter))
+            if (await ActiveOrderExists(userPhoneNumber, orderRequest.ContentProviderId, orderStatusFilter, subscription))
             {
                 errorInfo.Add(_stringLocalizer["OMS_ERR_0002"]);
                 return BadRequest(errorInfo);
@@ -342,7 +342,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("{orderId:guid}", Name = nameof(GetOrderByOrderId))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<Order>> GetOrderByOrderId(Guid orderId)
+        public async Task<ActionResult<OrderResponse>> GetOrderByOrderId(Guid orderId)
         {
             var userPhoneNumber = User.Identity.Name;
 
@@ -394,7 +394,7 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         [HttpGet("active", Name = nameof(GetActiveSubscriptionOrders))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<common.dto.Oms.OrderItem>> GetActiveSubscriptionOrders()
+        public async Task<ActionResult<OrderItemResponse>> GetActiveSubscriptionOrders()
         {
             var userPhoneNumber = User.Identity.Name;
 
@@ -440,31 +440,130 @@ namespace blendnet.oms.api.Controllers
         }
 
         /// <summary>
-        /// Checks if an order / active subscription already exists for the give content provider
+        /// Checks if an order / active SVOD subscription already exists for the give content provider
         /// </summary>
-        /// <param name="userPhoneNumber"></param>
-        /// <param name="contentProviderId"></param>
-        /// <param name="orderFilter"></param>
+        /// <param name="activeOrders"></param>
+        /// <param name="currentDateTime"></param>
         /// <returns></returns>
-        private async Task<bool> ActiveOrderExists(string userPhoneNumber, Guid contentProviderId, OrderStatusFilter orderFilter)
+        private bool ActiveSvodOrderExists(List<Order> activeOrders, DateTime currentDateTime)
         {
-            List<Order> activeOrders = await _omsRepository.GetOrderByContentProviderId(userPhoneNumber, contentProviderId, orderFilter);
 
-            if (activeOrders != null && activeOrders.Count > 0)
+            foreach (Order activeOrder in activeOrders)
             {
-                foreach (Order activeOrder in activeOrders)
+                foreach (common.dto.Oms.OrderItem orderItem in activeOrder.OrderItems)
                 {
-                    if (activeOrder.OrderStatus == OrderStatus.Completed && activeOrder.OrderItems[0].PlanEndDate > DateTime.UtcNow)
+                    if (activeOrder.OrderStatus == OrderStatus.Completed && orderItem.PlanEndDate > currentDateTime &&
+                    orderItem.Subscription.subscriptionType == SubscriptionType.SVOD)
                     {
                         return true;
                     }
 
-                    if (activeOrder.OrderStatus == OrderStatus.Created)
+                    if (activeOrder.OrderStatus == OrderStatus.Created && orderItem.Subscription.subscriptionType == SubscriptionType.SVOD)
                     {
                         return true;
                     }
                 }
             }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the content exist in an active subscription for the given content provider
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <param name="content"></param>
+        /// <param name="orderFilter"></param>
+        /// <returns></returns>
+        private async Task<bool> IsContentInOrderExists(string userPhoneNumber, Content content, OrderStatusFilter orderFilter)
+        {
+            List<Order> activeOrders = await _omsRepository.GetOrderByContentProviderId(userPhoneNumber, content.ContentProviderId, orderFilter);
+
+            DateTime currentDateTime = DateTime.UtcNow;
+
+            if(activeOrders == null || activeOrders.Count == 0)
+            {
+                return false;
+            }
+            
+            // Passign Active orders which are in completed state 
+            if(ActiveSvodOrderExists(activeOrders, currentDateTime))
+            {
+                return true;
+            }
+
+            // Check if content id exist in the list of completed orders
+            foreach (Order activeOrder in activeOrders)
+            {
+                // Check if content id exist in the list of completed orders
+                foreach(common.dto.Oms.OrderItem orderItem in activeOrder.OrderItems)
+                {
+                    if (orderItem.Subscription.subscriptionType == SubscriptionType.TVOD)
+                    {
+                        List<Guid> contentIds = orderItem.Subscription.ContentIds;
+                        if (activeOrder.OrderStatus == OrderStatus.Completed
+                            && orderItem.PlanEndDate > currentDateTime
+                            && contentIds.Contains((Guid)content.ContentId))
+                        {
+                            return true;
+                        }
+
+                    }
+                }
+            }
+            
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// Check if SVOD subcription exists in active state or created state.
+        /// Check if the given TVOD subscription exists in active state or in created state
+        /// </summary>
+        /// <param name="userPhoneNumber"></param>
+        /// <param name="contentProviderId"></param>
+        /// <param name="orderFilter"></param>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
+        private async Task<bool> ActiveOrderExists(string userPhoneNumber, Guid contentProviderId, OrderStatusFilter orderFilter, ContentProviderSubscriptionDto subscription)
+        {
+            List<Order> activeOrders = await _omsRepository.GetOrderByContentProviderId(userPhoneNumber, contentProviderId, orderFilter);
+
+            DateTime currentDateTime = DateTime.UtcNow;
+
+            if (activeOrders == null || activeOrders.Count == 0)
+            {
+                return false;
+            }
+
+            
+            if (subscription.subscriptionType == SubscriptionType.SVOD && ActiveSvodOrderExists(activeOrders, currentDateTime))
+            {
+                return true;
+            }
+
+            // Check if same order already exist for TVOD subscription order
+            else if (subscription.subscriptionType == SubscriptionType.TVOD)
+            {
+                foreach (Order activeOrder in activeOrders)
+                {
+                    foreach (common.dto.Oms.OrderItem orderItem in activeOrder.OrderItems)
+                    {
+                        if (activeOrder.OrderStatus == OrderStatus.Completed && orderItem.PlanEndDate > currentDateTime
+                        && orderItem.Subscription.Id == subscription.Id)
+                        {
+                            return true;
+                        }
+
+                        if (activeOrder.OrderStatus == OrderStatus.Created && orderItem.Subscription.Id == subscription.Id)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            
 
             return false;
         }
@@ -670,8 +769,6 @@ namespace blendnet.oms.api.Controllers
         /// <returns></returns>
         private async Task<bool> IsValidSubcriptionExists(Content content, List<string> errorDetails)
         {
-            Guid contentProviderId = content.ContentProviderId;
-
             bool validSubscriptionExists = false;
 
             if (content.IsFreeContent)
@@ -688,7 +785,7 @@ namespace blendnet.oms.api.Controllers
 
                 orderStatusFilter.OrderStatuses.Add(OrderStatus.Completed);
 
-                if (await ActiveOrderExists(this.User.Identity.Name, content.ContentProviderId, orderStatusFilter))
+                if (await IsContentInOrderExists(this.User.Identity.Name, content, orderStatusFilter))
                 {
                     validSubscriptionExists = true;
                 }

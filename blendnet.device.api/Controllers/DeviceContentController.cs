@@ -4,10 +4,12 @@ using blendnet.common.dto.Cms;
 using blendnet.common.dto.Device;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
+using blendnet.device.api.Model;
 using blendnet.device.repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,11 +137,57 @@ namespace blendnet.device.api.Controllers
                 return NotFound(errorInfo);
             }
 
+            List<Guid> contentProviderIds = new List<Guid> { contentProviderId };
+
             //Get the list of available content on device for the given content provider
-            List<DeviceContent> deviceContents = await _deviceRepository.GetContentByDeviceId(deviceId, contentProviderId, true);
+            List<DeviceContent> deviceContents = await _deviceRepository.GetContentByDeviceId(deviceId, contentProviderIds, true);
 
             return GetDeviceContentAvailability(device, activeBroadCastedContents, deviceContents);
 
+        }
+
+        /// <summary>
+        /// Get Content ids by device id and content provider ids
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("{deviceId}/contents", Name = nameof(GetDeviceContent))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
+        public async Task<ActionResult<List<DeviceContentByContentProviderIdResponse>>> GetDeviceContent(string deviceId, DeviceContentByContentProviderIdRequest request)
+        {
+            List<string> errorInfo = new List<string>();
+
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                errorInfo.Add(_stringLocalizer["DVC_ERR_0015"]);
+
+                return BadRequest(errorInfo);
+            }
+            
+            Device device = await _deviceRepository.GetDeviceById(deviceId);
+
+            if (device == null)
+            {
+                errorInfo.Add(string.Format(_stringLocalizer["DVC_ERR_0006"], deviceId));
+                return BadRequest(errorInfo);
+            }
+
+            List<DeviceContent> contents = await _deviceRepository.GetContentByDeviceId(deviceId, request.ContentProviderIds);
+
+            if(contents == null || contents.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var response = contents.Select(c =>
+            new DeviceContentByContentProviderIdResponse{
+                ContentId = c.ContentId,
+                ContentProviderId = c.ContentProviderId
+            }).ToList();
+
+            return Ok(response);
         }
 
         #endregion

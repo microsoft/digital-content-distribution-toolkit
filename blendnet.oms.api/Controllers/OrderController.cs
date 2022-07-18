@@ -1,5 +1,10 @@
-﻿using blendnet.api.proxy;
+﻿using AutoMapper;
+using blendnet.api.proxy;
+using blendnet.api.proxy.Cms;
+using blendnet.api.proxy.Device;
 using blendnet.api.proxy.Retailer;
+using blendnet.common.dto.Cms;
+using blendnet.common.dto.Device;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Oms;
 using blendnet.common.dto.Retailer;
@@ -53,6 +58,12 @@ namespace blendnet.oms.api.Controllers
 
         private readonly OrderHelper _orderHelper;
 
+        private readonly DeviceProxy _deviceProxy;
+
+        private readonly ContentProxy _contentProxy;
+
+        private readonly IMapper _mapper;
+
         public OrderController(IOMSRepository omsRepository,
                                 ILogger<OrderController> logger,
                                 RetailerProxy retailerProxy,
@@ -63,7 +74,10 @@ namespace blendnet.oms.api.Controllers
                                 IOptionsMonitor<OmsAppSettings> optionsMonitor,
                                 IStringLocalizer<SharedResource> stringLocalizer,
                                 TelemetryClient telemetryClient,
-                                OrderHelper orderHelper)
+                                OrderHelper orderHelper,
+                                DeviceProxy deviceProxy,
+                                IMapper mapper,
+                                ContentProxy contentProxy)
         {
             _omsRepository = omsRepository;
 
@@ -86,10 +100,16 @@ namespace blendnet.oms.api.Controllers
             _telemetryClient = telemetryClient;
 
             _orderHelper = orderHelper;
+
+            _deviceProxy = deviceProxy;
+
+            _contentProxy = contentProxy;
+
+            _mapper = mapper;
         }
 
         #region Order management methods
-      
+
 
         /// <summary>
         /// Complete order
@@ -104,7 +124,7 @@ namespace blendnet.oms.api.Controllers
         {
             List<string> errorInfo = new List<string>();
 
-            errorInfo = ValidateRequestParams(completeOrderRequest);
+            errorInfo = ValidateRequestParams(completeOrderRequest.RetailerPartnerCode);
 
             if(errorInfo.Count != 0)
             {
@@ -119,7 +139,7 @@ namespace blendnet.oms.api.Controllers
                 return BadRequest();
             }
 
-            RetailerProviderDto retailerProvider = await GetRetailerProvider(completeOrderRequest);
+            RetailerProviderDto retailerProvider = await GetRetailerProvider(completeOrderRequest.RetailerPartnerCode);
                 
             if (retailerProvider == null)
             {
@@ -266,16 +286,27 @@ namespace blendnet.oms.api.Controllers
         }
 
         /// <summary>
-        /// API to get Orders by customer phoneNumber and OrderStatus
+        /// API to get Created Orders by customer phoneNumber
         /// </summary>
         /// <param name="phoneNumber"></param>
-        /// <param name="orderFilter"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("{phoneNumber}/orderlist", Name = nameof(GetOrderForUser))]
+        [HttpPost("{phoneNumber}/orderlist", Name = nameof(GetCreatedOrderForUser))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(KaizalaIdentityRoles.SuperAdmin, KaizalaIdentityRoles.Retailer, KaizalaIdentityRoles.RetailerManagement)]
-        public async Task<ActionResult<List<Order>>> GetOrderForUser(string phoneNumber, OrderStatusFilter orderFilter)
+        public async Task<ActionResult<List<CreatedOrderResponse>>> GetCreatedOrderForUser(string phoneNumber, GetCreatedOrderRequest request)
         {
+
+            List<string> errorInfo = new List<string>();
+
+            errorInfo = ValidateRequestParams(request.RetailerPartnerCode);
+
+            if (errorInfo.Count != 0)
+            {
+                return BadRequest(errorInfo);
+            }
+
+            // Validate User exist in system
             User user = await _userProxy.GetUserByPhoneNumber(phoneNumber);
 
             if (user is null || user.AccountStatus != UserAccountStatus.Active)
@@ -284,18 +315,63 @@ namespace blendnet.oms.api.Controllers
                 return NotFound();
             }
 
+            // Get Retailer
+            RetailerProviderDto retailerProvider = await GetRetailerProvider(request.RetailerPartnerCode);
+
+            if (retailerProvider == null)
+            {
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0016"]);
+                return BadRequest(errorInfo);
+            }
+
+            RetailerDto retailer = await _retailerProxy.GetRetailerById(request.RetailerPartnerProvidedId, retailerProvider.PartnerCode);
+
+            //Validate retailer
+
+            if (!ValidateRetailer(retailer))
+            {
+                errorInfo.Add(_stringLocalizer["OMS_ERR_0004"]);
+                return BadRequest(errorInfo);
+            }
+
+            OrderStatusFilter orderFilter = new OrderStatusFilter();
+            orderFilter.OrderStatuses.Add(OrderStatus.Created);
+
             List<Order> orderlist = await _omsRepository.GetOrdersByPhoneNumber(phoneNumber, orderFilter);
 
-            if (orderlist.Count() > 0)
-            {
-                return Ok(orderlist);
-            }
-            else
+            if (orderlist.Count == 0)
             {
                 return NotFound();
             }
+            
+            List<Guid> contentProviderIds = GetContentProviderIds(orderlist);
+
+            List<DeviceContentByContentProviderIdResponse> contentInDevice = new List<DeviceContentByContentProviderIdResponse>();
+
+            RetailerDeviceAssignment device = retailer.DeviceAssignments.Where(assignment => assignment.IsActive).FirstOrDefault();
+
+            if (device != null && contentProviderIds.Count > 0)
+            {
+                contentInDevice = await _deviceProxy.GetContentByDeviceId(device.DeviceId, contentProviderIds);
+            }
+
+            List<Guid> absentContentIds = GetContentsNotPresentInDevice(contentInDevice, orderlist);
+
+            List<ContentInfo> contents = new List<ContentInfo>();
+
+            if (absentContentIds.Count > 0)
+            {
+                contents = await _contentProxy.GetContentProviderIds(absentContentIds);
+            }
+
+            List<CreatedOrderResponse> response = MapOrderAndContentNotPresent(orderlist, contents);
+
+            return Ok(response);
+            
+           
         }
-              
+
+
         /// <summary>
         /// API to get count of orders by subscription ID
         /// </summary>
@@ -417,13 +493,13 @@ namespace blendnet.oms.api.Controllers
             order.OrderStatus = OrderStatus.Completed;
         }
 
-        private List<string> ValidateRequestParams(CompleteOrderRequest completeOrderRequest)
+        private List<string> ValidateRequestParams(string retailerPartnerCode)
         {
             List<string> errorInfo = new List<string>();
 
             if(User.IsInRole(KaizalaIdentityRoles.RetailerManagement))
             {
-                if(!string.IsNullOrEmpty(completeOrderRequest.RetailerPartnerCode))
+                if(!string.IsNullOrEmpty(retailerPartnerCode))
                 {
                     errorInfo.Add(_stringLocalizer["OMS_ERR_0020"]);
                     return errorInfo;
@@ -431,7 +507,7 @@ namespace blendnet.oms.api.Controllers
             }
             else
             {
-                if (string.IsNullOrEmpty(completeOrderRequest.RetailerPartnerCode))
+                if (string.IsNullOrEmpty(retailerPartnerCode))
                 {
                     errorInfo.Add(_stringLocalizer["OMS_ERR_0021"]);
                     return errorInfo;
@@ -441,7 +517,7 @@ namespace blendnet.oms.api.Controllers
             return errorInfo;
         } 
 
-        private async Task<RetailerProviderDto> GetRetailerProvider(CompleteOrderRequest completeOrderRequest)
+        private async Task<RetailerProviderDto> GetRetailerProvider(string retailerPartnerCode)
         {
             RetailerProviderDto retailerProvider = null;
 
@@ -452,13 +528,86 @@ namespace blendnet.oms.api.Controllers
             }
             else
             {
-                retailerProvider = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(completeOrderRequest.RetailerPartnerCode);
+                retailerProvider = await _retailerProviderProxy.GetRetailerProviderByPartnerCode(retailerPartnerCode);
             }
 
             return retailerProvider;
         }
 
-      
+        // Returns the list of contents that are not present in retailer device
+        private List<Guid> GetContentsNotPresentInDevice(List<DeviceContentByContentProviderIdResponse> deviceContents, List<Order> orders)
+        {
+            List<Guid> absentContentIds = new List<Guid>();
+            List<Guid> contentIdInOrders = new List<Guid>();
+            List<Guid> deviceContentIds = deviceContents.Select(c => c.ContentId).ToList();
+
+            orders.ForEach(order =>
+            {
+                order.OrderItems.ForEach(item =>
+                {
+                    if (item.Subscription.subscriptionType == common.dto.SubscriptionType.TVOD)
+                    {
+                        contentIdInOrders.AddRange(item.Subscription.ContentIds);
+                    }
+                });
+            });
+
+            contentIdInOrders.ForEach(id =>
+            {
+                // Add contentId to the absent list if it is not present in device content list and also not added in absent content list
+                if (!deviceContentIds.Contains(id) && !absentContentIds.Contains(id))
+                {
+                    absentContentIds.Add(id);
+                }
+            });
+
+            return absentContentIds;
+        }
+
+        private List<Guid> GetContentProviderIds(List<Order> orderlist)
+        {
+            List<Guid> contentProviderIds = new List<Guid>();
+
+            orderlist.ForEach(order =>
+            {
+                order.OrderItems.ForEach(item =>
+                {
+                    if (item.Subscription.subscriptionType == common.dto.SubscriptionType.TVOD && !contentProviderIds.Contains(item.Subscription.ContentProviderId))
+                    {
+                        contentProviderIds.Add(item.Subscription.ContentProviderId);
+                    }
+                });
+
+            });
+
+            return contentProviderIds;
+        }
+
+        private List<CreatedOrderResponse> MapOrderAndContentNotPresent(List<Order> orders, List<ContentInfo> contents)
+        {
+            List<CreatedOrderResponse> response = new List<CreatedOrderResponse>();
+            orders.ForEach(order =>
+            {
+                List<ContentInfo> contentNotPresent = new List<ContentInfo>();
+                order.OrderItems.ForEach(item =>
+                {
+                    contents.ForEach(c =>
+                    {
+                        if (item.Subscription.ContentIds != null && item.Subscription.ContentIds.Contains(c.ContentId))
+                        {
+                            contentNotPresent.Add(c);
+                        }
+                    });
+                });
+                CreatedOrderResponse createdOrderResponse = new CreatedOrderResponse();
+                createdOrderResponse.Order = order;
+                createdOrderResponse.Contents = contentNotPresent;
+                response.Add(createdOrderResponse);
+            });
+
+            return response;
+        }
+
 
 
         #endregion

@@ -188,5 +188,11 @@ namespace blendnet.oms.api.Model
         {
             this.Id = Guid.NewGuid();
         }
+
+        public SubscriptionPublishMode publishMode { get; set; }
+
+        public SubscriptionType subscriptionType { get; set; }
+
+        public List<Guid> ContentIds { get; set; }
     }
 }

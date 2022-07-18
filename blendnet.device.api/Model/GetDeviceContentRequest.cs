@@ -15,4 +15,5 @@ namespace blendnet.device.api.Model
         [Range(1, 200)]
         public int PageSize { get; set; } = 100;
     }
+
 }

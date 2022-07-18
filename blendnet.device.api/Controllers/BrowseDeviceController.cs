@@ -67,7 +67,9 @@ namespace blendnet.device.api.Controllers
                 return BadRequest(errorInfo);
             }
 
-            ResultData<DeviceContent> deviceApiResult = await _deviceRepository.GetContentByDeviceId(deviceId, contentProviderId, request.ContinuationToken, request.PageSize, true);
+            List<Guid> contentProviderIds = new List<Guid> { contentProviderId };
+
+            ResultData<DeviceContent> deviceApiResult = await _deviceRepository.GetContentByDeviceId(deviceId, contentProviderIds, request.ContinuationToken, request.PageSize, true);
 
             ResultData<Guid> result;
 

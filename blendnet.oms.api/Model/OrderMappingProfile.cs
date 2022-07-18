@@ -14,7 +14,6 @@ namespace blendnet.oms.api.Model
             CreateMap<Order, OrderResponse>();
             CreateMap<blendnet.common.dto.Oms.OrderItem, OrderItemResponse>();
             CreateMap<ContentProviderSubscriptionDto, ContentProviderSubscriptionResponseDto>();
-            
         }
     }
 }

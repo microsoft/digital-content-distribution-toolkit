@@ -2,11 +2,14 @@ using blendnet.api.proxy.oms;
 using blendnet.cms.api.Model;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
+using blendnet.common.dto.cms;
+using blendnet.common.dto.Cms;
 using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.common.infrastructure.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 
 namespace blendnet.cms.api.Controllers
 {
@@ -21,19 +24,25 @@ namespace blendnet.cms.api.Controllers
     {
         private readonly ILogger _logger;
         private readonly IContentProviderRepository _contentProviderRepository;
+        private readonly IContentRepository _contentRepository;
         private readonly OrderProxy _orderProxy;
         IStringLocalizer<SharedResource> _stringLocalizer;
+        AppSettings _appSettings;
 
         public SubscriptionController(
                                         ILogger<SubscriptionController> logger, 
                                         IContentProviderRepository contentProviderRepository,
+                                        IContentRepository contentRepository,
                                         OrderProxy orderProxy,
-                                        IStringLocalizer<SharedResource> stringLocalizer)
+                                        IStringLocalizer<SharedResource> stringLocalizer,
+                                        IOptionsMonitor<AppSettings> optionsMonitor)
         {
             this._logger = logger;
             this._contentProviderRepository = contentProviderRepository;
+            this._contentRepository = contentRepository;
             this._orderProxy = orderProxy;
             _stringLocalizer = stringLocalizer;
+            _appSettings = optionsMonitor.CurrentValue;
         }
 
         #region methods
@@ -101,6 +110,10 @@ namespace blendnet.cms.api.Controllers
                     listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0018"], contentProviderId));
                 }
 
+                List<string> subscriptionDataErrors = ValidateSubscriptionData(subscription);
+
+                listOfValidationErrors.AddRange(subscriptionDataErrors);
+
                 // convert dates to IST, ignoring the time part
                 var subscriptionStartDate = subscription.StartDate.ToIndiaStandardTime().Date;
                 var startOfDayNow = now.ToIndiaStandardTime().Date;
@@ -115,8 +128,6 @@ namespace blendnet.cms.api.Controllers
                     listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0019"]);
                 }
 
-                listOfValidationErrors.AddRange(ValidateSubscriptionData(subscription));
-
                 if (listOfValidationErrors.Count > 0)
                 {
                     return BadRequest(listOfValidationErrors);
@@ -127,6 +138,7 @@ namespace blendnet.cms.api.Controllers
 
             subscription.SetIdentifiers();
             subscription.ContentProviderId = contentProviderId;
+            subscription.PublishMode = SubscriptionPublishMode.DRAFT;
             subscription.CreatedDate = now;
             subscription.CreatedByUserId = callerUserId;
             subscription.Type = ContentProviderContainerType.Subscription;
@@ -136,7 +148,64 @@ namespace blendnet.cms.api.Controllers
         }
 
         /// <summary>
-        /// Update a subscription
+        /// Publish Subscription which was in draft mode
+        /// </summary>
+        /// <param name="contentProviderId">contentProvider ID</param>
+        /// <param name="subscriptionId">subscription ID</param>
+        /// <returns></returns>
+        [HttpPut("{subscriptionId:guid}/publish", Name = nameof(PublishSubscription))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult> PublishSubscription(Guid contentProviderId, Guid subscriptionId)
+        {
+            List<string> listOfValidationErrors = new List<string>();
+
+            if (!await ValidContentProvider(contentProviderId))
+            {
+                listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0018"], contentProviderId));
+            }
+
+            var existingSubscription = await _contentProviderRepository.GetSubscription(contentProviderId, subscriptionId);
+
+            if (existingSubscription is null)
+            {
+                 listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0047"], subscriptionId));
+            }
+
+            List<string> subscriptionDataErrors = ValidateSubscriptionData(existingSubscription);
+            
+            listOfValidationErrors.AddRange(subscriptionDataErrors);
+
+            if (listOfValidationErrors.Count > 0)
+            {
+                return BadRequest(listOfValidationErrors);
+            }
+
+            // If subscription is TVOD, also validate the contents in the subscription
+            if (existingSubscription.subscriptionType == SubscriptionType.TVOD)
+            {
+                DateTime subscriptionValidDate = existingSubscription.EndDate.AddDays(existingSubscription.DurationDays);
+                List<string> errorInTvodContents = await ValidateContentsInTvodSubscription(existingSubscription, subscriptionValidDate);
+                listOfValidationErrors.AddRange(errorInTvodContents);
+            }
+
+            if (listOfValidationErrors.Count > 0)
+            {
+                return BadRequest(listOfValidationErrors);
+            }
+
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+
+            existingSubscription.PublishMode = SubscriptionPublishMode.PUBLISHED;
+            existingSubscription.ModifiedDate = DateTime.UtcNow;
+            existingSubscription.ModifiedByByUserId = callerUserId;
+
+            var response = await this._contentProviderRepository.UpdateSubscription(contentProviderId, existingSubscription);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Update a subscription which is in draft mode
         /// </summary>
         /// <param name="contentProviderId">contentProvider ID</param>
         /// <param name="subscriptionId">subscription ID</param>
@@ -154,16 +223,27 @@ namespace blendnet.cms.api.Controllers
 
                 if (!await ValidContentProvider(contentProviderId))
                 {
-                    listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0018"], contentProviderId));
+                    return BadRequest(new string[] {
+                        String.Format(_stringLocalizer["CMS_ERR_0018"], contentProviderId),
+                    });
                 }
 
-                listOfValidationErrors.AddRange(ValidateSubscriptionData(subscription));
-
-                // Update is allowed only if there are no orders against this subscription ever
-                if (await OrdersExistForSubscription(contentProviderId, subscriptionId, DateTime.MinValue))
+                var existingSubscription = await _contentProviderRepository.GetSubscription(contentProviderId, subscriptionId);
+                
+                if (existingSubscription is null)
                 {
-                    listOfValidationErrors.Add(string.Format(_stringLocalizer["CMS_ERR_0034"], subscriptionId));
+                    return NotFound();
                 }
+
+                // Only in draft mode subscription can be updated
+                if (existingSubscription.PublishMode != SubscriptionPublishMode.DRAFT)
+                {
+                    listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0038"]);
+                }
+
+                List<string> subscriptionDataErrors = ValidateSubscriptionData(subscription);
+
+                listOfValidationErrors.AddRange(subscriptionDataErrors);
 
                 if (listOfValidationErrors.Count > 0)
                 {
@@ -178,6 +258,7 @@ namespace blendnet.cms.api.Controllers
             subscription.ModifiedDate = DateTime.UtcNow;
             subscription.ModifiedByByUserId = callerUserId;
             subscription.Type = ContentProviderContainerType.Subscription;
+            subscription.PublishMode = SubscriptionPublishMode.DRAFT;
 
             int response = await this._contentProviderRepository.UpdateSubscription(contentProviderId, subscription);
             if (response == (int)System.Net.HttpStatusCode.OK)
@@ -203,10 +284,26 @@ namespace blendnet.cms.api.Controllers
                                                                             Guid subscriptionId,
                                                                             UpdateSubscriptionEndDateRequest request)
         {
+
+            if (!await ValidContentProvider(contentProviderId))
+            {
+                return BadRequest(new string[] {
+                    String.Format(_stringLocalizer["CMS_ERR_0018"], contentProviderId),
+                });
+            }
+
             var existingSubscription = await _contentProviderRepository.GetSubscription(contentProviderId, subscriptionId);
             if (existingSubscription is null)
             {
                 return NotFound();
+            }
+
+            // subscription should be published
+            if (existingSubscription.PublishMode != SubscriptionPublishMode.PUBLISHED)
+            {
+                return BadRequest(new string[] {
+                    _stringLocalizer["CMS_ERR_0039"],
+                });
             }
 
             // end date should be after start date
@@ -217,6 +314,19 @@ namespace blendnet.cms.api.Controllers
                 });
             }
 
+            // For TVOD subscription, check for content broadcast end date with request end data
+            if(existingSubscription.subscriptionType == SubscriptionType.TVOD)
+            {
+                DateTime subscriptionValidityDate = request.EndDate.AddDays(existingSubscription.DurationDays);
+                List<string> listOfValidationErrors = await ValidateContentsInTvodSubscription(existingSubscription, subscriptionValidityDate);
+                
+                if (listOfValidationErrors.Count > 0)
+                {
+                    return BadRequest(listOfValidationErrors);
+                }
+            }
+            
+
             // update is allowed only if there are no orders after the requested end date
             if (await OrdersExistForSubscription(contentProviderId, subscriptionId, request.EndDate))
             {
@@ -225,15 +335,19 @@ namespace blendnet.cms.api.Controllers
                 });
             }
 
+            Guid callerUserId = UserClaimData.GetUserId(User.Claims);
+
             // Now we are OK to update the end date
             existingSubscription.EndDate = request.EndDate;
+            existingSubscription.ModifiedDate = DateTime.UtcNow;
+            existingSubscription.ModifiedByByUserId = callerUserId;
 
             await _contentProviderRepository.UpdateSubscription(existingSubscription.ContentProviderId, existingSubscription);
             return NoContent();
         }
 
         /// <summary>
-        /// Delete a subscription
+        /// Delete a subscription if it is in draft mode
         /// </summary>
         /// <param name="contentProviderId">contentProvider ID</param>
         /// <param name="subscriptionId">subscription ID</param>
@@ -243,15 +357,30 @@ namespace blendnet.cms.api.Controllers
         public async Task<ActionResult<String>> DeleteSubscription(Guid contentProviderId,
                                                                     Guid subscriptionId)
         {
-            // Delete is allowed only if there are no orders ever against this subscription
-            if (await OrdersExistForSubscription(contentProviderId, subscriptionId, DateTime.MinValue))
+            if (!await ValidContentProvider(contentProviderId))
             {
                 return BadRequest(new string[] {
-                    string.Format(_stringLocalizer["CMS_ERR_0034"], subscriptionId)
+                    String.Format(_stringLocalizer["CMS_ERR_0018"], contentProviderId),
+                });
+            }
+
+            var existingSubscription = await _contentProviderRepository.GetSubscription(contentProviderId, subscriptionId);
+            if (existingSubscription is null)
+            {
+                return NotFound();
+            }
+
+            // Cannot delete subscription if it is published
+            if (existingSubscription.PublishMode != SubscriptionPublishMode.DRAFT)
+            {
+                return BadRequest(new string[]
+                {
+                    _stringLocalizer["CMS_ERR_0040"]
                 });
             }
 
             var response = await this._contentProviderRepository.DeleteSubscription(contentProviderId, subscriptionId);
+
             if (response == (int)System.Net.HttpStatusCode.NoContent)
             {
                 return NoContent();
@@ -288,7 +417,15 @@ namespace blendnet.cms.api.Controllers
         {
             List<string> listOfValidationErrors = new List<string>();
 
-            DateTime now = DateTime.UtcNow;
+            if (subscription.subscriptionType == SubscriptionType.TVOD)
+            {
+                listOfValidationErrors.AddRange(ValidateTvodSubscriptionType(subscription));
+            }
+
+            if (subscription.PublishMode != SubscriptionPublishMode.DRAFT)
+            {
+                listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0042"]);
+            }
 
             if (subscription.StartDate >= subscription.EndDate)
             {
@@ -316,6 +453,143 @@ namespace blendnet.cms.api.Controllers
             }
 
             return listOfValidationErrors;
+        }
+
+        /// <summary>
+        /// Validate if content list count in subscription is greater than 0 and less than max limit
+        /// </summary>
+        private List<string> ValidateTvodSubscriptionType(ContentProviderSubscriptionDto subscription)
+        {
+            List<string> listOfValidationErrors = new List<string>();
+            if (subscription.ContentIds.Count <= 0)
+            {
+                listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0043"]);
+            }
+
+            if (subscription.ContentIds.Count > _appSettings.SubscriptionContentListMaxLimit)
+            {
+                listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0044"], _appSettings.SubscriptionContentListMaxLimit));
+            }
+
+            // Check if duplicate content id is not present in the list
+            listOfValidationErrors.AddRange(DuplicateContentIdCheck(subscription.ContentIds));
+
+            return listOfValidationErrors;
+        }
+
+
+        /// <summary>
+        /// Validate Content in TVOD subscription and the subscription start date should be after every content broadcast start date
+        /// and subscription end date should be before every content broadcast end date 
+        /// </summary>
+        private async Task<List<string>> ValidateContentsInTvodSubscription(ContentProviderSubscriptionDto subscription, DateTime subscriptionValidityDate)
+        {
+            List<string> listOfValidationErrors = new List<string>();
+
+            List<Content> contentList = await _contentRepository.GetContentByIds(subscription.ContentIds);
+
+            // Validate if there is invalid content id in the list
+            ValidateContentIds(subscription.ContentIds, contentList, listOfValidationErrors);
+
+            if (contentList != null && contentList.Count > 0)
+            {
+                foreach (Content content in contentList)
+                {
+                    // Validate if contents in subscription is for the same content provider
+                    if(content.ContentProviderId.ToString() != subscription.ContentProviderId.ToString())
+                    {
+                        listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0049"], content.Title, subscription.ContentProviderId.ToString()));
+                    }
+
+                    if (content.ContentBroadcastStatus == ContentBroadcastStatus.BroadcastOrderComplete)
+                    {
+                        if (subscription.StartDate < content.ContentBroadcastedBy.BroadcastRequest.StartDate)
+                        {
+                            listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0045"]);
+                        }
+
+                        if (subscriptionValidityDate > content.ContentBroadcastedBy.BroadcastRequest.EndDate)
+                        {
+                            listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0046"]);
+                        }
+                    }
+                    else
+                    {
+                        listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0028"], ContentBroadcastStatus.BroadcastOrderComplete));
+                    }
+                }
+            }
+            else
+            {
+                listOfValidationErrors.Add(_stringLocalizer["CMS_ERR_0030"]);
+            }
+
+            return listOfValidationErrors;
+        }
+
+        /// <summary>
+        /// Validate Content Ids
+        /// </summary>
+        /// <param name="parentIds"></param>
+        /// <param name="retrievedContents"></param>
+        /// <param name="errorList"></param>
+        private void ValidateContentIds(List<Guid> parentIds, List<Content> retrievedContents, List<string> errorList)
+        {
+            List<Guid> invalidIds = GetInvalidContentIds(parentIds, retrievedContents);
+
+            if (invalidIds != null && invalidIds.Count > 0)
+            {
+                foreach (Guid invalidId in invalidIds)
+                {
+                    errorList.Add(String.Format(_stringLocalizer["CMS_ERR_0010"], invalidId));
+                }
+            }
+        }
+
+        /// <summary>
+        /// List of Invalid Content Ids
+        /// </summary>
+        /// <param name="parentList"></param>
+        /// <param name="retrievedContents"></param>
+        /// <returns></returns>
+        private List<Guid> GetInvalidContentIds(List<Guid> parentList, List<Content> retrievedContents)
+        {
+            List<Guid> invalidContentIds = new List<Guid>();
+
+            foreach (Guid contentId in parentList)
+            {
+                if (!retrievedContents.Exists(c => c.Id.Value.ToString().Equals(contentId.ToString())))
+                {
+                    invalidContentIds.Add(contentId);
+                }
+            }
+
+            return invalidContentIds;
+        }
+
+        /// <summary>
+        /// Duplicate Content Id Check
+        /// </summary>
+        /// <param name="contents"></param>
+        /// <returns></returns>
+        private List<string> DuplicateContentIdCheck(List<Guid> contents)
+        {
+            List<string> errorList = new List<string>();
+
+            HashSet<Guid> contentIds = new HashSet<Guid>();
+
+            foreach (Guid contentId in contents)
+            {
+                if (!contentIds.Add(contentId))
+                {
+                    // Duplicate ContentIds in the file
+                    string info = String.Format(_stringLocalizer["CMS_ERR_0048"], contentId);
+                    errorList.Add(info);
+                }
+
+            }
+
+            return errorList;
         }
 
         #endregion

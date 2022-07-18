@@ -119,7 +119,7 @@ namespace blendnet.device.repository.Interfaces
         /// <param name="activeOnly"></param>
         /// <returns></returns>
         Task<ResultData<DeviceContent>> GetContentByDeviceId(string deviceId,
-                                                              Guid contentProviderId,
+                                                              List<Guid> contentProviderIds,
                                                               string continuationToken,
                                                               int pageSize,
                                                               bool activeOnly);
@@ -131,7 +131,7 @@ namespace blendnet.device.repository.Interfaces
         /// <param name="activeOnly"></param>
         /// <returns></returns>
         Task<List<DeviceContent>> GetContentByDeviceId(string deviceId,
-                                                 Guid contentProviderId,
+                                                 List<Guid> contentProviderIds,
                                                  bool activeOnly = true);
 
         /// <summary>

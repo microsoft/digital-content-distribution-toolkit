@@ -307,14 +307,14 @@ namespace blendnet.device.repository.CosmosRepository
         /// <param name="continuationToken"></param>
         /// <returns></returns>
         public async Task<ResultData<DeviceContent>> GetContentByDeviceId(string deviceId, 
-                                                                            Guid contentProviderId, 
+                                                                            List<Guid> contentProviderIds, 
                                                                             string continuationToken,
                                                                             int pageSize,
                                                                             bool activeOnly = true)
         {
             ResultData<DeviceContent> contentResult;
 
-            QueryDefinition queryDef = GetContentByDeviceIdQueryDef(deviceId, contentProviderId, activeOnly);
+            QueryDefinition queryDef = GetContentByDeviceIdQueryDef(deviceId, contentProviderIds, activeOnly);
 
             continuationToken = String.IsNullOrEmpty(continuationToken) ? null : continuationToken;
 
@@ -331,12 +331,12 @@ namespace blendnet.device.repository.CosmosRepository
         /// <param name="activeOnly"></param>
         /// <returns></returns>
         public async Task<List<DeviceContent>> GetContentByDeviceId(  string deviceId,
-                                                                Guid contentProviderId,
+                                                                List<Guid> contentProviderIds,
                                                                 bool activeOnly = true)
         {
             List<DeviceContent> contentResult;
 
-            QueryDefinition queryDef = GetContentByDeviceIdQueryDef(deviceId, contentProviderId, activeOnly);
+            QueryDefinition queryDef = GetContentByDeviceIdQueryDef(deviceId, contentProviderIds, activeOnly);
 
             contentResult = await this._container.ExtractDataFromQueryIterator<DeviceContent>(queryDef);
 
@@ -352,11 +352,11 @@ namespace blendnet.device.repository.CosmosRepository
         /// <param name="activeOnly"></param>
         /// <returns></returns>
         private QueryDefinition GetContentByDeviceIdQueryDef(string deviceId, 
-                                                    Guid contentProviderId,
+                                                    List<Guid> contentProviderIds,
                                                     bool activeOnly)
         {
             string queryString = $"SELECT * FROM c where c.deviceId = @deviceId " +
-                                  " AND c.contentProviderId = @contentProviderId" +
+                                  " AND ARRAY_CONTAINS(@contentProviderIds, c.contentProviderId)" +
                                   " AND c.deviceContainerType = @deviceContainerType ";
 
             if (activeOnly)
@@ -368,7 +368,7 @@ namespace blendnet.device.repository.CosmosRepository
 
             queryDef.WithParameter("@deviceId", deviceId);
 
-            queryDef.WithParameter("@contentProviderId", contentProviderId);
+            queryDef.WithParameter("@contentProviderIds", contentProviderIds);
 
             queryDef.WithParameter("@deviceContainerType", DeviceContainerType.DeviceContent.ToString());
 

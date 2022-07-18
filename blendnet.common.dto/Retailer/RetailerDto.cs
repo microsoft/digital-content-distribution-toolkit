@@ -110,6 +110,7 @@ namespace blendnet.common.dto.Retailer
         {
             return $"{partnerCode}-{partnerProvidedId}";
         }
+
     }
 
     public class RetailerWithDistanceDto

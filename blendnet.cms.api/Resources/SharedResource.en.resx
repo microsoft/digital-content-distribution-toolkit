@@ -196,7 +196,7 @@
     <value>CMS_ERR_0026-Redemption Value should be minimum 1 for a redeemable subscription</value>
   </data>
   <data name="CMS_ERR_0027" xml:space="preserve">
-    <value>CMS_ERR_0004-The content broadcast status should be in {0} {1}</value>
+    <value>CMS_ERR_0027-The content broadcast status should be in {0} {1}</value>
   </data>
   <data name="CMS_ERR_0028" xml:space="preserve">
     <value>CMS_ERR_0028-The content transform status should be {0} OR Content broadcast status should be : {1}</value>
@@ -227,6 +227,42 @@
   </data>
   <data name="CMS_ERR_0037" xml:space="preserve">
     <value>CMS_ERR_0037-Content metadata update is not allowed when upload is in progress.</value>
+  </data>
+  <data name="CMS_ERR_0038" xml:space="preserve">
+    <value>CMS_ERR_0038-Published subscription cannot be updated.</value>
+  </data>
+  <data name="CMS_ERR_0039" xml:space="preserve">
+    <value>CMS_ERR_0039-Only published subscription end date can be updated.</value>
+  </data>
+  <data name="CMS_ERR_0040" xml:space="preserve">
+    <value>CMS_ERR_0040-Published subscription cannot be deleted.</value>
+  </data>
+  <data name="CMS_ERR_0041" xml:space="preserve">
+    <value>CMS_ERR_0041-Subscription should be either SVOD or TVOD.</value>
+  </data>
+  <data name="CMS_ERR_0042" xml:space="preserve">
+    <value>CMS_ERR_0042-Subscription should be in draft mode.</value>
+  </data>
+  <data name="CMS_ERR_0043" xml:space="preserve">
+    <value>CMS_ERR_0043-TVOD subscription should contain list of Order ids.</value>
+  </data>
+  <data name="CMS_ERR_0044" xml:space="preserve">
+    <value>CMS_ERR_0044-TVOD subscription order list should not be greater than {0}</value>
+  </data>
+  <data name="CMS_ERR_0045" xml:space="preserve">
+    <value>CMS_ERR_0045-TVOD subscription start date should be greater than all contents broadcast start date.</value>
+  </data>
+  <data name="CMS_ERR_0046" xml:space="preserve">
+    <value>CMS_ERR_0046-TVOD subscription end date should be less than all contents broadcast end date.</value>
+  </data>
+  <data name="CMS_ERR_0047" xml:space="preserve">
+    <value>CMS_ERR_0047-No subscription found for ID {0}</value>
+  </data>
+  <data name="CMS_ERR_0048" xml:space="preserve">
+    <value>CMS_ERR_0048-Duplicate content id {0} found in the subscription.</value>
+  </data>
+  <data name="CMS_ERR_0049" xml:space="preserve">
+    <value>CMS_ERR_0049-Content {0} is not from the content provider {1}.</value>
   </data>
   <data name="GLBL_ERR_0001" xml:space="preserve">
     <value>GLBL_ERR_0001-Only alphanumeric string allowed with no special characters.</value>

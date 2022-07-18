@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,6 +21,8 @@ namespace blendnet.common.dto
         /// Content Provider ID
         /// </summary>
         public Guid ContentProviderId { get; set; }
+
+
 
         public ContentProviderContainerType Type { get; set; } = ContentProviderContainerType.Subscription;
 
@@ -44,5 +47,28 @@ namespace blendnet.common.dto
         {
             this.Id = Guid.NewGuid();
         }
+
+        public SubscriptionPublishMode PublishMode { get; set; } = SubscriptionPublishMode.PUBLISHED;
+
+        public SubscriptionType subscriptionType { get; set; } = SubscriptionType.SVOD;
+
+        /// <summary>
+        /// List of contentIds for T-VOD subscription type
+        /// </summary>
+        public List<Guid> ContentIds { get; set; }
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum SubscriptionPublishMode
+    {
+        DRAFT,
+        PUBLISHED
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum SubscriptionType
+    {
+        TVOD,
+        SVOD
     }
 }
