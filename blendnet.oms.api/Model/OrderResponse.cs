@@ -191,7 +191,7 @@ namespace blendnet.oms.api.Model
 
         public SubscriptionPublishMode publishMode { get; set; }
 
-        public SubscriptionType subscriptionType { get; set; }
+        public SubscriptionType SubscriptionType { get; set; }
 
         public List<Guid> ContentIds { get; set; }
     }

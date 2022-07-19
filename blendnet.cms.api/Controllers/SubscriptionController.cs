@@ -181,7 +181,7 @@ namespace blendnet.cms.api.Controllers
             }
 
             // If subscription is TVOD, also validate the contents in the subscription
-            if (existingSubscription.subscriptionType == SubscriptionType.TVOD)
+            if (existingSubscription.SubscriptionType == SubscriptionType.TVOD)
             {
                 DateTime subscriptionValidDate = existingSubscription.EndDate.AddDays(existingSubscription.DurationDays);
                 List<string> errorInTvodContents = await ValidateContentsInTvodSubscription(existingSubscription, subscriptionValidDate);
@@ -315,7 +315,7 @@ namespace blendnet.cms.api.Controllers
             }
 
             // For TVOD subscription, check for content broadcast end date with request end data
-            if(existingSubscription.subscriptionType == SubscriptionType.TVOD)
+            if(existingSubscription.SubscriptionType == SubscriptionType.TVOD)
             {
                 DateTime subscriptionValidityDate = request.EndDate.AddDays(existingSubscription.DurationDays);
                 List<string> listOfValidationErrors = await ValidateContentsInTvodSubscription(existingSubscription, subscriptionValidityDate);
@@ -417,7 +417,7 @@ namespace blendnet.cms.api.Controllers
         {
             List<string> listOfValidationErrors = new List<string>();
 
-            if (subscription.subscriptionType == SubscriptionType.TVOD)
+            if (subscription.SubscriptionType == SubscriptionType.TVOD)
             {
                 listOfValidationErrors.AddRange(ValidateTvodSubscriptionType(subscription));
             }

@@ -453,12 +453,12 @@ namespace blendnet.oms.api.Controllers
                 foreach (common.dto.Oms.OrderItem orderItem in activeOrder.OrderItems)
                 {
                     if (activeOrder.OrderStatus == OrderStatus.Completed && orderItem.PlanEndDate > currentDateTime &&
-                    orderItem.Subscription.subscriptionType == SubscriptionType.SVOD)
+                    orderItem.Subscription.SubscriptionType == SubscriptionType.SVOD)
                     {
                         return true;
                     }
 
-                    if (activeOrder.OrderStatus == OrderStatus.Created && orderItem.Subscription.subscriptionType == SubscriptionType.SVOD)
+                    if (activeOrder.OrderStatus == OrderStatus.Created && orderItem.Subscription.SubscriptionType == SubscriptionType.SVOD)
                     {
                         return true;
                     }
@@ -498,7 +498,7 @@ namespace blendnet.oms.api.Controllers
                 // Check if content id exist in the list of completed orders
                 foreach(common.dto.Oms.OrderItem orderItem in activeOrder.OrderItems)
                 {
-                    if (orderItem.Subscription.subscriptionType == SubscriptionType.TVOD)
+                    if (orderItem.Subscription.SubscriptionType == SubscriptionType.TVOD)
                     {
                         List<Guid> contentIds = orderItem.Subscription.ContentIds;
                         if (activeOrder.OrderStatus == OrderStatus.Completed
@@ -538,13 +538,13 @@ namespace blendnet.oms.api.Controllers
             }
 
             
-            if (subscription.subscriptionType == SubscriptionType.SVOD && ActiveSvodOrderExists(activeOrders, currentDateTime))
+            if (subscription.SubscriptionType == SubscriptionType.SVOD && ActiveSvodOrderExists(activeOrders, currentDateTime))
             {
                 return true;
             }
 
             // Check if same order already exist for TVOD subscription order
-            else if (subscription.subscriptionType == SubscriptionType.TVOD)
+            else if (subscription.SubscriptionType == SubscriptionType.TVOD)
             {
                 foreach (Order activeOrder in activeOrders)
                 {

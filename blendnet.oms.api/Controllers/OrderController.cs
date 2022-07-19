@@ -545,7 +545,7 @@ namespace blendnet.oms.api.Controllers
             {
                 order.OrderItems.ForEach(item =>
                 {
-                    if (item.Subscription.subscriptionType == common.dto.SubscriptionType.TVOD)
+                    if (item.Subscription.SubscriptionType == common.dto.SubscriptionType.TVOD)
                     {
                         contentIdInOrders.AddRange(item.Subscription.ContentIds);
                     }
@@ -572,7 +572,7 @@ namespace blendnet.oms.api.Controllers
             {
                 order.OrderItems.ForEach(item =>
                 {
-                    if (item.Subscription.subscriptionType == common.dto.SubscriptionType.TVOD && !contentProviderIds.Contains(item.Subscription.ContentProviderId))
+                    if (item.Subscription.SubscriptionType == common.dto.SubscriptionType.TVOD && !contentProviderIds.Contains(item.Subscription.ContentProviderId))
                     {
                         contentProviderIds.Add(item.Subscription.ContentProviderId);
                     }

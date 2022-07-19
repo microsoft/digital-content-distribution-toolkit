@@ -152,10 +152,10 @@ namespace blendnet.device.api.Controllers
         /// <param name="deviceId"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("{deviceId}/contents", Name = nameof(GetDeviceContent))]
+        [HttpPost("{deviceId}/contents", Name = nameof(GetDeviceContentByContentProviderId))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         [AuthorizeRoles(ApplicationConstants.KaizalaIdentityRoles.SuperAdmin, ApplicationConstants.KaizalaIdentityRoles.HubDeviceManagement)]
-        public async Task<ActionResult<List<DeviceContentByContentProviderIdResponse>>> GetDeviceContent(string deviceId, DeviceContentByContentProviderIdRequest request)
+        public async Task<ActionResult<List<DeviceContentByContentProviderIdResponse>>> GetDeviceContentByContentProviderId(string deviceId, DeviceContentByContentProviderIdRequest request)
         {
             List<string> errorInfo = new List<string>();
 

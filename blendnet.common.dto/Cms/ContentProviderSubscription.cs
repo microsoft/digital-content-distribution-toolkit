@@ -50,7 +50,7 @@ namespace blendnet.common.dto
 
         public SubscriptionPublishMode PublishMode { get; set; } = SubscriptionPublishMode.PUBLISHED;
 
-        public SubscriptionType subscriptionType { get; set; } = SubscriptionType.SVOD;
+        public SubscriptionType SubscriptionType { get; set; } = SubscriptionType.SVOD;
 
         /// <summary>
         /// List of contentIds for T-VOD subscription type
