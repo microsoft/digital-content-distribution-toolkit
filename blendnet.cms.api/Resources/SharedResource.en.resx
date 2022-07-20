@@ -264,6 +264,9 @@
   <data name="CMS_ERR_0049" xml:space="preserve">
     <value>CMS_ERR_0049-Content {0} is not from the content provider {1}.</value>
   </data>
+  <data name="CMS_ERR_0050" xml:space="preserve">
+    <value>CMS_ERR_0050-Content {0} broadcast status should be in {1}.</value>
+  </data>
   <data name="GLBL_ERR_0001" xml:space="preserve">
     <value>GLBL_ERR_0001-Only alphanumeric string allowed with no special characters.</value>
   </data>

@@ -515,7 +515,7 @@ namespace blendnet.cms.api.Controllers
                     }
                     else
                     {
-                        listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0028"], ContentBroadcastStatus.BroadcastOrderComplete));
+                        listOfValidationErrors.Add(String.Format(_stringLocalizer["CMS_ERR_0050"], content.Title ,ContentBroadcastStatus.BroadcastOrderComplete));
                     }
                 }
             }
