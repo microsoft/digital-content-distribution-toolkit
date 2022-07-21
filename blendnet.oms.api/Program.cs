@@ -2,6 +2,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using blendnet.api.proxy;
 using blendnet.api.proxy.Cms;
+using blendnet.api.proxy.Device;
 using blendnet.api.proxy.Incentive;
 using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.api.proxy.Retailer;
@@ -220,6 +221,7 @@ void ConfigureServices(WebApplicationBuilder builder)
     services.AddTransient<IncentiveEventProxy>();
     services.AddTransient<IncentiveProxy>();
     services.AddTransient<OrderHelper>();
+    services.AddTransient<DeviceProxy>();
 
     //registerations required for authhandler to work
     services.AddTransient<KaizalaIdentityProxy>();
