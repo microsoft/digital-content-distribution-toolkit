@@ -17,6 +17,7 @@ export class SeamlessLoginComponent implements OnInit, AfterViewInit {
   isContactOnlySection: boolean = true;
   isOTPSection: boolean = false;
   otpVerifyErrorMessage: string;
+  message: string = "Logging in as retailer...please wait";
 
   constructor(
     private kaizalaService: KaizalaService,
@@ -72,6 +73,7 @@ export class SeamlessLoginComponent implements OnInit, AfterViewInit {
       },
       err => {
         this.otpVerifyErrorMessage = err;
+        this.message = "Session expired. Please login again!";
       }
     ) 
 
