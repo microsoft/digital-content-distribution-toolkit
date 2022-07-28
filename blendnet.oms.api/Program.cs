@@ -352,6 +352,14 @@ void ConfigureHttpClients(IServiceCollection services)
         c.BaseAddress = new Uri(userBaseUrl);
         c.DefaultRequestHeaders.Add("Accept", "application/json");
     });
+
+    //Configure Http client for Device Proxy
+    string deviceBaseUrl = builder.Configuration.GetValue<string>("DeviceBaseUrl");
+    services.AddHttpClient(ApplicationConstants.HttpClientKeys.DEVICE_HTTP_CLIENT, c =>
+    {
+        c.BaseAddress = new Uri(deviceBaseUrl);
+        c.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
 }
 
 /// <summary>
