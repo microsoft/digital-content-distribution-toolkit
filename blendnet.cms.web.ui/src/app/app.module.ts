@@ -52,6 +52,8 @@ import { EditSubscriptionComponent } from './subscription/edit-subscription.comp
 import { ExportUserDataComponent } from './export-user-data/export-user-data.component';
 import { EditIncentiveEndDateComponent } from './incentive-management/edit-incentive-enddate.component';
 import { DeleteUserDataComponent } from './delete-user-data/delete-user-data.component';
+import { AddSubscriptionComponent } from './subscription/add-subscription.component';
+import { AddContentListDialog } from './subscription/add-content-list-dialog';
 
 
 @NgModule({
@@ -98,7 +100,9 @@ import { DeleteUserDataComponent } from './delete-user-data/delete-user-data.com
     EditSubscriptionComponent,
     ExportUserDataComponent,
     EditIncentiveEndDateComponent,
-    DeleteUserDataComponent
+    DeleteUserDataComponent,
+    AddSubscriptionComponent,
+    AddContentListDialog
   ],
   imports: [
     HttpClientModule,

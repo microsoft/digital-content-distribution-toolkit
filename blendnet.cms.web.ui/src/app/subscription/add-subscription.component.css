@@ -1,0 +1,29 @@
+.back-to-subscription {
+    margin-right: 3%;
+}
+
+.type-label{
+    color: grey
+}
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+}
+
+table {
+    width: 100%;
+}
+
+table.add-sub td {
+    width: 40%;
+}
+
+.cms-sub-validation-errors {
+    font-size: smaller;
+    color:red;
+}
+
+.update-btn {
+    display: block;
+    margin: 5px 5px 5px auto;
+}

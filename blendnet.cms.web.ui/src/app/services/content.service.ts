@@ -28,7 +28,7 @@ export class ContentService {
     return this.http.post<Content[]>(url, unprocessedContentFilters)
       .pipe(map(contents => {
         return contents.map(content => {
-          return new ContentView(content.id, content.title, content.createdDate, content.modifiedDate, content.isActive, 
+          return new ContentView(content.id, content.contentId, content.title, content.createdDate, content.modifiedDate, content.isActive, 
             content.contentBroadcastStatus, content.contentBroadcastStatusUpdatedBy,
             content.contentTransformStatus, content.contentTransformStatusUpdatedBy,
             content.contentUploadStatus, content.contentUploadStatusUpdatedBy,

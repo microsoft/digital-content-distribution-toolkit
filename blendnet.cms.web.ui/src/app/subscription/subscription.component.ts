@@ -22,7 +22,7 @@ export class SubscriptionComponent {
   today;
   minEnd: Date;
   deleteConfirmMessage: string = "Subscription against which an order is placed will not be deleted.  Please press Continue to delete the selected subscription.";
-  displayedColumns: string[] = ['status','title', 'price', 'durationDays', 'startDate', 'endDate', 'isRedeemable', 'redemptionValue', 'extend', 'edit', 'delete'];
+  displayedColumns: string[] = ['status','title', 'price', 'durationDays', 'startDate', 'endDate', 'subStatus', 'publish', 'isRedeemable', 'redemptionValue', 'extend', 'edit', 'delete'];
   pipe;
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -31,6 +31,9 @@ export class SubscriptionComponent {
   errMessage;
   error= false;
   subscriptions: CPSubscription[];
+  createSubscription = false;
+  showSubscription = true;
+  selectedPlan = null;
 
   constructor(
     private subscriptionService: SubscriptionService,
@@ -206,6 +209,58 @@ export class SubscriptionComponent {
       class: 'update-btn'
     }
     ]
+  }
+
+  openEditSubscriptionPlan(row) {
+    this.selectedPlan = row;
+    this.openAddSubscriptionPage();
+  }
+
+  openNewSubscriptionPage() {
+    this.selectedPlan = null;
+    this.openAddSubscriptionPage();
+  }
+
+  openAddSubscriptionPage() {
+    this.showSubscription = false;
+    this.createSubscription = true;
+  }
+
+  addNewSubscription($event) {
+    this.createSubscription = false;
+    this.showSubscription = true;
+  }
+
+  openPublishDialog(row) {
+    const dialogRef = this.dialog.open(CommonDialogComponent, {
+      data: {
+        heading: 'Confirm',
+        message: "Please click confirm to publish the subscription plan.",
+        partner: row.partner,
+        planId: row.id,
+        action: "PROCESS",
+        buttons: this.openSelectCPModalButtons()
+      },
+      maxHeight: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'proceed') {
+        this.publishPlan(row);
+      }
+    });
+  }
+
+  publishPlan(row) {
+    this.subscriptionService.publishSubscription(row.id).subscribe(
+      res => {
+        this.toastr.success("Subscription plan published successfully");
+        this.getSubscriptions();
+      },
+      err => {
+        this.toastr.error(err);
+      }
+    );
   }
 
 }

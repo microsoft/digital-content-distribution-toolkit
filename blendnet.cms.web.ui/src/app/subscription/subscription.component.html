@@ -1,141 +1,170 @@
 <app-content-provider-header></app-content-provider-header>
+
 <div class="cms-container">
+
+    <span *ngIf="createSubscription" >
+        <app-add-subscription-page (newSubscriptionEvent)="addNewSubscription($event)" [subscriptionPlan]="selectedPlan"></app-add-subscription-page>
+    </span>
    
-    <h1 class="page-title">Subscriptions</h1>    
+    <span *ngIf="showSubscription">
+        <h1 class="page-title">Subscriptions</h1>    
 
-<button mat-raised-button color="primary" class="create-btn"
-(click)="openDialog(null)" > New Subscription </button>
-
-<mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter()" [disabled]="error"  placeholder="Ex. Premium" [(ngModel)]="filterValue" >
-</mat-form-field>
-
-    <div class="mat-elevation-z8">
-        <div class="cms-table-container">
-            <table mat-table [dataSource]="dataSource" matSort>     
-                
-                
-            <!-- status Column -->
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef> 
+        <button mat-raised-button color="primary" class="create-btn"
+        (click)="openNewSubscriptionPage()" > New Subscription </button>
+    
+        <mat-form-field>
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter()" [disabled]="error"  placeholder="Ex. Premium" [(ngModel)]="filterValue" >
+        </mat-form-field>
+    
+        <div class="mat-elevation-z8">
+            <div class="cms-table-container">
+                <table mat-table [dataSource]="dataSource" matSort>     
                     
-                 </th>
-                <td mat-cell *matCellDef="let row" >
-                    <mat-icon [ngClass]="row.status ? 'active-icon': 'inactive-icon'">circle</mat-icon>
-                </td>
-            </ng-container>
                     
-            <!-- Name Column -->
-            <ng-container matColumnDef="title">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-                <td mat-cell *matCellDef="let row"> {{row.title}} </td>
-            </ng-container>
-    
-            <!-- Price Column -->
-            <ng-container matColumnDef="price">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
-                <td mat-cell *matCellDef="let row"> {{row.price}} </td>
-            </ng-container>
-    
-             <!-- durationDays Column -->
-             <ng-container matColumnDef="durationDays">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Duration</th>
-                <td mat-cell *matCellDef="let row"> {{row.durationDays}} </td>
-            </ng-container>
-    
-             <!-- startDate Column -->
-             <ng-container matColumnDef="startDate">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </th>
-                <td mat-cell *matCellDef="let row"> {{row.startDateString }} </td>
-            </ng-container>
-    
-        
-            <!-- endDate Column -->
-            <ng-container matColumnDef="endDate">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-                    End Date
-                 </th>
-                <td mat-cell *matCellDef="let row" >
-                    {{row.endDateString}} 
-                </td>
-            </ng-container>
-    
-            <!-- isRedeemable Column -->
-            <ng-container matColumnDef="isRedeemable">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-                    Redeemable
+                <!-- status Column -->
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> 
+                        
                      </th>
                     <td mat-cell *matCellDef="let row" >
-                        {{row.isRedeemable}}
+                        <mat-icon [ngClass]="row.status ? 'active-icon': 'inactive-icon'">circle</mat-icon>
                     </td>
-            </ng-container>
+                </ng-container>
+                        
+                <!-- Name Column -->
+                <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                    <td mat-cell *matCellDef="let row"> {{row.title}} </td>
+                </ng-container>
+        
+                <!-- Price Column -->
+                <ng-container matColumnDef="price">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
+                    <td mat-cell *matCellDef="let row"> {{row.price}} </td>
+                </ng-container>
+        
+                 <!-- durationDays Column -->
+                 <ng-container matColumnDef="durationDays">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Duration</th>
+                    <td mat-cell *matCellDef="let row"> {{row.durationDays}} </td>
+                </ng-container>
+        
+                 <!-- startDate Column -->
+                 <ng-container matColumnDef="startDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </th>
+                    <td mat-cell *matCellDef="let row"> {{row.startDateString }} </td>
+                </ng-container>
+        
+            
+                <!-- endDate Column -->
+                <ng-container matColumnDef="endDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+                        End Date
+                     </th>
+                    <td mat-cell *matCellDef="let row" >
+                        {{row.endDateString}} 
+                    </td>
+                </ng-container>
+
+                <!-- endDate Column -->
+                <ng-container matColumnDef="subStatus">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+                        Status
+                     </th>
+                    <td mat-cell *matCellDef="let row" >
+                        {{row.publishMode}} 
+                    </td>
+                </ng-container>
+
+                <!-- publish subscription -->
+                <ng-container matColumnDef="publish">
+                    <th mat-header-cell *matHeaderCellDef > Publish </th>
+                    <td mat-cell *matCellDef="let row"> 
+                        <button mat-icon-button  (click)="openPublishDialog(row)" [disabled]="row.publishMode === 'PUBLISHED'">
+                            <mat-icon mat-icon 
+                            matTooltip="Publish">publish</mat-icon> 
+                        </button>
+                    </td>
+                </ng-container>
+        
+                <!-- isRedeemable Column -->
+                <ng-container matColumnDef="isRedeemable">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+                        Redeemable
+                         </th>
+                        <td mat-cell *matCellDef="let row" >
+                            {{row.isRedeemable}}
+                        </td>
+                </ng-container>
+        
+                <!-- redemptionValue Column -->
+                <ng-container matColumnDef="redemptionValue">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+                        Value
+                     </th>
+                    <td mat-cell *matCellDef="let row" >
+                        {{row.redemptionValue}}
+                    </td>
+                </ng-container>
     
-            <!-- redemptionValue Column -->
-            <ng-container matColumnDef="redemptionValue">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-                    Value
-                 </th>
-                <td mat-cell *matCellDef="let row" >
-                    {{row.redemptionValue}}
-                </td>
-            </ng-container>
-
-
-             <!-- extend Column -->
-             <ng-container matColumnDef="extend">
-                <th mat-header-cell *matHeaderCellDef> 
-                    End Date
-                 </th>
-                <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button (click)="changeEndDate(row)">
+    
+                 <!-- extend Column -->
+                 <ng-container matColumnDef="extend">
+                    <th mat-header-cell *matHeaderCellDef> 
+                        End Date
+                     </th>
+                    <td mat-cell *matCellDef="let row" >
+                        <button mat-icon-button (click)="changeEndDate(row)">
+                            <!-- [disabled]="!row.status"> -->
+                                <mat-icon mat-icon 
+                                matTooltip="Change end date">today</mat-icon> 
+                            </button>
+                    </td>
+                </ng-container>
+    
+                 <!-- edit Column -->
+                 <ng-container matColumnDef="edit">
+                    <th mat-header-cell *matHeaderCellDef> 
+                        Edit
+                     </th>
+                    <td mat-cell *matCellDef="let row" >
+                        <button mat-icon-button (click)="openEditSubscriptionPlan(row)">
                         <!-- [disabled]="!row.status"> -->
                             <mat-icon mat-icon 
-                            matTooltip="Change end date">today</mat-icon> 
+                            matTooltip="Edit">edit</mat-icon> 
                         </button>
-                </td>
-            </ng-container>
-
-             <!-- edit Column -->
-             <ng-container matColumnDef="edit">
-                <th mat-header-cell *matHeaderCellDef> 
-                    Edit
-                 </th>
-                <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button (click)="openDialog(row)">
-                    <!-- [disabled]="!row.status"> -->
-                        <mat-icon mat-icon 
-                        matTooltip="Edit">edit</mat-icon> 
-                    </button>
-                </td>
-            </ng-container>
-
-             <!-- delete Column -->
-             <ng-container matColumnDef="delete">
-                <th mat-header-cell *matHeaderCellDef> 
-                    Delete
-                 </th>
-                <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button (click)="openDeleteConfirmModal(row)">
-                    <!-- [disabled]="!row.status"> -->
-                        <mat-icon mat-icon 
-                        matTooltip="Delete">delete</mat-icon> 
-                    </button>
-                </td>
-            </ng-container>
-        
-            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        
-            <!-- Row shown when there is no matching data. -->
-            <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell" colspan="4" *ngIf="!errMessage && filterValue?.length>0">No data matching the filter "{{filterValue}}"</td>
-                <td class="mat-cell" colspan="4" *ngIf="errMessage"><h4>{{errMessage}}</h4></td>
-
-            </tr> 
-            </table>
+                    </td>
+                </ng-container>
+    
+                 <!-- delete Column -->
+                 <ng-container matColumnDef="delete">
+                    <th mat-header-cell *matHeaderCellDef> 
+                        Delete
+                     </th>
+                    <td mat-cell *matCellDef="let row" >
+                        <button mat-icon-button (click)="openDeleteConfirmModal(row)">
+                        <!-- [disabled]="!row.status"> -->
+                            <mat-icon mat-icon 
+                            matTooltip="Delete">delete</mat-icon> 
+                        </button>
+                    </td>
+                </ng-container>
+            
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            
+                <!-- Row shown when there is no matching data. -->
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4" *ngIf="!errMessage && filterValue?.length>0">No data matching the filter "{{filterValue}}"</td>
+                    <td class="mat-cell" colspan="4" *ngIf="errMessage"><h4>{{errMessage}}</h4></td>
+    
+                </tr> 
+                </table>
+            </div>
+          
+            <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
         </div>
-      
-        <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
-    </div>
+    </span>
+    
 </div>

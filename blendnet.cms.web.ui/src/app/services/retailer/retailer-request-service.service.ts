@@ -22,12 +22,8 @@ export class RetailerRequestService {
 
   
 
-  getOrders(phoneNumber: string, orderStatus:string[]): Observable<any> {
+  getOrders(phoneNumber: string, payload): Observable<any> {
     let url = `${this.baseUrl}/Order/${phoneNumber}/orderlist`;
-    let payload = {
-      orderStatuses: orderStatus
-    }
-
     this.logger.log('Fetching created orders');
     return this.http.post(url, payload).pipe(
       map((response: any) => {

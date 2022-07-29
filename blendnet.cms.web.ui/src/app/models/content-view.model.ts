@@ -3,6 +3,7 @@ import { ContentBroadcastDetails } from "./content.model";
 export class ContentView {
     constructor(
         public id: string,
+        public contentId: string,
         public title: string,
         public createdDate: Date,
         public modifiedDate: Date,

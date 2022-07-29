@@ -54,10 +54,13 @@ export class RetailerOrdersComponent implements OnInit {
   }
 
   getOrders(): void {
-    const orderStatus = [OrderStatus.CREATED];
+    const body = {
+      "retailerPartnerProvidedId": this.retailerPartnerProvidedId,
+      "retailerPartnerCode": this.partnerCode
+    }
     this.createdOrders = [];
     this.requestPage = false;
-    this.retailerRequestService.getOrders(this.userContact, orderStatus).subscribe(
+    this.retailerRequestService.getOrders(this.userContact, body).subscribe(
       data => {
         this.createdOrders = data;
         this.emptyRequest = false;

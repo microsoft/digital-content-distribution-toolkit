@@ -65,3 +65,15 @@ export let  broadcastContentFilters = {
       ContentStatus.BROADCAST_CANCEL_COMPLETE
     ]
   };
+
+export let  broadcastCompleteContentFilters = {
+  "contentUploadStatuses": [
+    ContentStatus.UPLOAD_COMPLETE
+  ],
+  "contentTransformStatuses": [
+    ContentStatus.TRANSFORM_COMPLETE
+  ],
+  "contentBroadcastStatuses": [
+    ContentStatus.BROADCAST_ORDER_COMPLETE,
+  ]
+};

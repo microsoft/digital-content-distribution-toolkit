@@ -49,5 +49,15 @@ export class SubscriptionService {
     return this.http.post(url, date);
   }
 
+  getSubscriptionForSubscriptionId(subscriptionId) {
+    let url = this.baseUrl+ "/" + sessionStorage.getItem("contentProviderId") + "/Subscription/" + subscriptionId;
+    this.logger.log("getting subscription for given subscription id");
+    return this.http.get(url);
+  }
+
+  publishSubscription(subscriptionId) {
+    let url = this.baseUrl + "/" + sessionStorage.getItem("contentProviderId")+ "/Subscription/" + subscriptionId + "/publish";
+    return this.http.put(url, {});
+  }
 
 }

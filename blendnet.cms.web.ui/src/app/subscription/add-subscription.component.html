@@ -1,0 +1,157 @@
+<div>
+    <h2>Create Subscription
+    <button mat-raised-button color="primary" (click)="displaySubscription()" style="float: right;"
+    class="back-to-subscription">BACK</button> 
+    </h2>
+
+    <mat-card>
+        <form [formGroup]="subscriptionFormGroup">
+            <div>
+                <label class="type-label">Subscription Type: </label>&nbsp;&nbsp;&nbsp;
+                <mat-radio-group formControlName="type" aria-label="Select subscription type"
+                    [disableControl]="disableTypeChange()" (change)="onSubscriptionTypeChange($event)">
+                    <mat-radio-button value="SVOD">
+                        SVOD
+                    </mat-radio-button>
+                    <mat-radio-button value="TVOD">
+                        TVOD
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+
+            <table class="add-sub">
+                <tr>
+                  <td colspan="2">
+                    <mat-form-field>
+                      <input matInput placeholder="Name" 
+                      formControlName="name" required >
+                      <mat-error *ngIf="f.name.invalid" > 
+                        Please enter the valid name of the subscription
+                      </mat-error>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <input matInput placeholder="Price"  
+                      formControlName="price" required >
+                      <mat-error *ngIf="errorHandling('price', 'required') || errorHandling('price', 'min')"> 
+                        Price cannot be zero
+                      </mat-error>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field>
+                      <input matInput type="number" placeholder="Duration (in days)"  
+                      formControlName="durationDays" required min="1" max="365" >
+                      <mat-error *ngIf="errorHandling('durationDays', 'required') || errorHandling('durationDays', 'min') || errorHandling('durationDays', 'max')"> 
+                        Duration should be between 1 and 365, inclusive
+                      </mat-error>    
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field>
+                      <mat-label>Start date</mat-label>
+                      <input matInput  [matDatepicker]="startpicker"
+                      formControlName="startDate" required disabled [min]="minStart">
+                      <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+                      <mat-datepicker #startpicker disabled="false"></mat-datepicker>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field >
+                      <mat-label>End date</mat-label>
+                      <input matInput  [matDatepicker]="endpicker"
+                      formControlName="endDate" required disabled [min]="minEnd">
+                      <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+                      <mat-datepicker #endpicker disabled="false"></mat-datepicker>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <label class="cms-sub" id="cms-sub">
+                        Is redeemable ? </label>&nbsp;&nbsp;&nbsp;
+                      <mat-radio-group aria-labelledby="cms-sub-radio-group-label"
+                              class="cms-sub-radio-group" formControlName="isRedeemable" >
+                                  <mat-radio-button value="No" class="cms-sub">No</mat-radio-button>&nbsp; &nbsp;
+                                  <mat-radio-button value="Yes" class="cms-incentive-plan-type">Yes</mat-radio-button>
+                      </mat-radio-group>
+                  </td>
+                  <td>
+                    <mat-form-field>
+                      <input matInput placeholder="Redemption Value"  
+                      formControlName="redemptionValue" required  type="number" min ="1" [disableControl]="isNotRedeemable()">
+                      <mat-error *ngIf="errorHandling('redemptionValue', 'required') || errorHandling('redemptionValue', 'min')"> 
+                      Redemption value cannot be zero
+                      </mat-error>
+                    </mat-form-field>
+                  </td>
+                </tr>
+              </table>
+        </form>
+
+        <div *ngIf="isTvodSubscription()">
+            <button mat-stroked-button color="primary" type="button" (click)="openContentList()">
+                <mat-icon>add</mat-icon> Add Content
+            </button>
+
+            <div class="cms-table-container">
+              <table mat-table [dataSource]="dataSource" matSort>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="title">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Content Name </th>
+                  <td mat-cell *matCellDef="let row">{{row.title}} </td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                  <td mat-cell *matCellDef="let row">{{row.contentBroadcastStatus}} </td>
+                </ng-container>
+
+                <!-- Broadcast Start date Column -->
+                <ng-container matColumnDef="broadcastStartDate">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Broadcast Start Date </th>
+                  <td mat-cell *matCellDef="let row"> {{row.displayCreatedDate}} </td>
+                </ng-container>
+
+                <!-- Broadcast end date Column -->
+                <ng-container matColumnDef="broadcastEndDate">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Broadcast End Date </th>
+                  <td mat-cell *matCellDef="let row"> {{row.displayCreatedDate}} </td>
+                </ng-container>
+
+                 <!-- View Action Column -->
+                <ng-container matColumnDef="view">
+                  <th mat-header-cell *matHeaderCellDef> 
+                      Meta-data
+                  </th>
+                  <td mat-cell *matCellDef="let row" >
+                      <button mat-icon-button  (click)="viewContent(row.id)">
+                          <mat-icon mat-list-icon 
+                          matTooltip="View content">visibility</mat-icon> 
+                      </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+              <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+            </div>
+        </div>
+
+        <button mat-raised-button color="primary" class="update-btn"
+          (click)="createSubscription()"
+          *ngIf="!isDraft &&  !isPublished" [disabled]="isSubscriptionFormNotValid() || isEventFormNotValid()">
+          Draft Plan
+        </button>
+    </mat-card>
+    
+</div>
