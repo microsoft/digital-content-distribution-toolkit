@@ -27,13 +27,13 @@ export class RetailerRequestService {
     this.logger.log('Fetching created orders');
     return this.http.post(url, payload).pipe(
       map((response: any) => {
-        return response.map(order => {
-          const subs = order.orderItems[0].subscription;
-          const createdDate = new Date(order.orderCreatedDate);
+        return response.map(item => {
+          const subs = item.order.orderItems[0].subscription;
+          const createdDate = new Date(item.order.orderCreatedDate);
           const now = new Date();
           const diffTime = Math.abs(now.getTime() - createdDate.getTime());
           const diffDays = Math.ceil(diffTime / (1000*60*60*24));
-          return new CreatedOrder(order.id, subs.title, subs.price, diffDays, subs.contentProviderId);
+          return new CreatedOrder(item.order.id, subs.title, subs.price, diffDays, subs.contentProviderId);
         })
       })
     )
