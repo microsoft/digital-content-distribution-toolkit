@@ -95,7 +95,7 @@
         </form>
 
         <div *ngIf="isTvodSubscription()">
-            <button mat-stroked-button color="primary" type="button" (click)="openContentList()">
+            <button mat-stroked-button *ngIf="!isPublished" color="primary" type="button" (click)="openContentList()">
                 <mat-icon>add</mat-icon> Add Content
             </button>
 
@@ -139,6 +139,17 @@
                   </td>
                 </ng-container>
 
+                <!-- delete Column -->
+                <ng-container matColumnDef="delete">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Delete </th>
+                  <td mat-cell *matCellDef="let row" >
+                    <button mat-icon-button (click)="deleteItem(row)">
+                      <mat-icon mat-icon 
+                      matTooltip="Delete">delete</mat-icon> 
+                    </button>
+                  </td>
+                </ng-container>
+
                 <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
@@ -149,7 +160,7 @@
 
         <button mat-raised-button color="primary" class="update-btn"
           (click)="createSubscription()"
-          *ngIf="!isDraft &&  !isPublished" [disabled]="isSubscriptionFormNotValid() || isEventFormNotValid()">
+          *ngIf="!isPublished" [disabled]="isSubscriptionFormNotValid() || isEventFormNotValid()">
           Draft Plan
         </button>
     </mat-card>

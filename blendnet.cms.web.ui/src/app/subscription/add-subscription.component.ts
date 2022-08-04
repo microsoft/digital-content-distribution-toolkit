@@ -33,7 +33,7 @@ export class AddSubscriptionComponent implements OnInit {
     @ViewChild(MatSort) sort: MatSort;
     minStart: Date;
     minEnd: Date;
-    displayedColumns: string[] = ['title', 'status', 'broadcastStartDate', 'broadcastEndDate', 'view'];
+    displayedColumns: string[] = ['title', 'status', 'broadcastStartDate', 'broadcastEndDate', 'view', 'delete'];
     errMessage;
     error = false;
     pipe;
@@ -68,7 +68,7 @@ export class AddSubscriptionComponent implements OnInit {
             durationDays : new FormControl('', [Validators.required, Validators.max(365), Validators.min(1)]),
             startDate : new FormControl(null, [Validators.required]),
             endDate : new FormControl(null, [Validators.required]),
-            isRedeemable : new FormControl('No', [Validators.required]),
+            isRedeemable : new FormControl("Yes", [Validators.required]),
             redemptionValue: new FormControl('')
         });
         this.dataSource = this.createDataSource([]);
@@ -84,7 +84,18 @@ export class AddSubscriptionComponent implements OnInit {
             this.subscriptionFormGroup.get('endDate').setValue(this.subscriptionPlan.endDate);
             this.subscriptionFormGroup.get('isRedeemable').setValue(this.subscriptionPlan.isRedeemable? "Yes" : "No");
             this.subscriptionFormGroup.get('redemptionValue').setValue(this.subscriptionPlan.redemptionValue);
-            this.setContentData();
+
+            if(this.subscriptionPlan.subscriptionType === "TVOD") {
+                this.setContentData();
+            }
+            
+            if (this.subscriptionPlan.publishMode === "DRAFT") {
+                this.isDraft = true;
+            }
+            else {
+                this.isPublished = true;
+                this.subscriptionFormGroup.disable();
+            }
         }
     }
 
@@ -188,12 +199,14 @@ export class AddSubscriptionComponent implements OnInit {
     openContentListDialog() {
         const dialogRef = this.dialog.open(AddContentListDialog, {
             width: '60%',
+            height: '90%',
             data: {  
                 selectedItem: this.dataSource.data
             }
         });
 
         dialogRef.componentInstance.onEventCreate.subscribe(event => {
+            
             event.forEach(e => {
                 this.dataSource.data.push(e);
             })
@@ -221,14 +234,35 @@ export class AddSubscriptionComponent implements OnInit {
     }
 
     isNotRedeemable() {
-        return this.subscriptionFormGroup.get('isRedeemable').value !== 'Yes';
+        return (this.isPublished || this.subscriptionFormGroup.get('isRedeemable').value !== "Yes");
     }
 
     createSubscription() {
+        if (this.subscriptionPlan) {
+            this.updateSubscription();
+        }
+        else {
+            this.createNewSubscription();
+        }
+    }
+
+    createNewSubscription() {
         let newPlan = this.getFormDetails();
         this.subscriptionService.createSubscription(newPlan).subscribe(
             res => {
                 this.toastr.success("New Subscription drafted successfully");
+                this.newSubscriptionEvent.emit(newPlan);
+            },
+            err => this.toastr.error(err)
+        );
+    }
+
+    updateSubscription() {
+        let newPlan = this.getFormDetails();
+        newPlan.id = this.subscriptionPlan.id;
+        this.subscriptionService.editSubscription(newPlan).subscribe(
+            res => {
+                this.toastr.success("Subscription updated successfully");
                 this.newSubscriptionEvent.emit(newPlan);
             },
             err => this.toastr.error(err)
@@ -292,6 +326,10 @@ export class AddSubscriptionComponent implements OnInit {
                 this.toastr.error(err);
             }
         );
+    }
+
+    deleteItem(row) {
+        this.dataSource.data = this.dataSource.data.filter(e => e.id !=  row.id);
     }
 
 }

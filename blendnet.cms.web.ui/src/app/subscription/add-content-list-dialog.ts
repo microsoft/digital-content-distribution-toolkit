@@ -28,7 +28,7 @@ export class AddContentListDialog implements OnInit {
     selectedContentList = [];
     selection = new SelectionModel<Content>(this.allowMultiSelect, []);
     pipe;
-    displayedColumns: string[] = ['select', 'title', 'status', 'createdDate'];
+    displayedColumns: string[] = ['select', 'title', 'status', 'broadcastEndDate'];
 
     constructor(
         public toastr: ToastrService,

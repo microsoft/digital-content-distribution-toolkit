@@ -229,6 +229,7 @@ export class SubscriptionComponent {
   addNewSubscription($event) {
     this.createSubscription = false;
     this.showSubscription = true;
+    this.getSubscriptions();
   }
 
   openPublishDialog(row) {

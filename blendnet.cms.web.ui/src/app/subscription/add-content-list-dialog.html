@@ -26,9 +26,9 @@
         </ng-container>
 
         <!-- CreatedDate Column -->
-        <ng-container matColumnDef="createdDate">
-            <th mat-header-cell *matHeaderCellDef> Created Date </th>
-            <td mat-cell *matCellDef="let row"> {{row.displayCreatedDate}} </td>
+        <ng-container matColumnDef="broadcastEndDate">
+            <th mat-header-cell *matHeaderCellDef> Broadcast End Date </th>
+            <td mat-cell *matCellDef="let row"> {{row.contentBroadcastedBy? row.contentBroadcastedBy.broadcastRequest.endDate : null}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>

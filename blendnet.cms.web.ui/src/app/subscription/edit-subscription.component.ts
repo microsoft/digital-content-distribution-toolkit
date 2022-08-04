@@ -55,4 +55,8 @@ export class EditSubscriptionComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  isEmptyEndDate() {
+    return this.subForm.get('newEndDate').value==='';
+  }
+
 }
