@@ -12,6 +12,7 @@
 
 table {
     width: 100%;
+    height: fit-content;
 }
 
 table.add-sub td {
@@ -27,3 +28,8 @@ table.add-sub td {
     display: block;
     margin: 5px 5px 5px auto;
 }
+
+.cms-table-container {
+    max-width: 100%;
+    overflow: auto;
+  }

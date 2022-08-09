@@ -199,7 +199,6 @@ export class AddSubscriptionComponent implements OnInit {
     openContentListDialog() {
         const dialogRef = this.dialog.open(AddContentListDialog, {
             width: '60%',
-            height: '90%',
             data: {  
                 selectedItem: this.dataSource.data
             }

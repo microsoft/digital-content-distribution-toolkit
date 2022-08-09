@@ -143,7 +143,7 @@
                 <ng-container matColumnDef="delete">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> Delete </th>
                   <td mat-cell *matCellDef="let row" >
-                    <button mat-icon-button (click)="deleteItem(row)">
+                    <button mat-icon-button (click)="deleteItem(row)" [disabled]="isPublished">
                       <mat-icon mat-icon 
                       matTooltip="Delete">delete</mat-icon> 
                     </button>
