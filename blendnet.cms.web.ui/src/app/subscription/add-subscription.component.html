@@ -117,13 +117,13 @@
                 <!-- Broadcast Start date Column -->
                 <ng-container matColumnDef="broadcastStartDate">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> Broadcast Start Date </th>
-                  <td mat-cell *matCellDef="let row"> {{row.displayCreatedDate}} </td>
+                  <td mat-cell *matCellDef="let row"> {{row.contentBroadcastedBy.broadcastRequest.startDate}} </td>
                 </ng-container>
 
                 <!-- Broadcast end date Column -->
                 <ng-container matColumnDef="broadcastEndDate">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> Broadcast End Date </th>
-                  <td mat-cell *matCellDef="let row"> {{row.displayCreatedDate}} </td>
+                  <td mat-cell *matCellDef="let row"> {{row.contentBroadcastedBy.broadcastRequest.endDate}} </td>
                 </ng-container>
 
                  <!-- View Action Column -->

@@ -107,8 +107,8 @@ export class AddSubscriptionComponent implements OnInit {
                     return this.subscriptionPlan.contentIds.includes(item.contentId);
                 });
                 data.forEach(item => {
-                    item.displayCreatedDate =  this.pipe.transform(item.createdDate, 'short');
-                    item.displayModifiedDate =  this.pipe.transform(item.modifiedDate, 'short');
+                    item.contentBroadcastedBy.broadcastRequest.startDate =  item.contentBroadcastedBy ? this.pipe.transform(item.contentBroadcastedBy.broadcastRequest.startDate, 'short') : null;
+                    item.contentBroadcastedBy.broadcastRequest.endDate =  item.contentBroadcastedBy ? this.pipe.transform(item.contentBroadcastedBy.broadcastRequest.endDate, 'short') : null;
                 })
                 this.dataSource = this.createDataSource(data);
                 this.dataSource.paginator = this.paginator;
