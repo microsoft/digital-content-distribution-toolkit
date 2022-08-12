@@ -319,39 +319,26 @@ namespace blendnet.cms.listener.IntegrationEventHandling
         /// <param name="mpdInfo"></param>
         /// <param name="workingDirectory"></param>
         /// <returns></returns>
-        private async Task GenerateTarAndIngestXml(  BlobContainerClient mezzContainer,
-                                                    Content content,
-                                                    ContentCommand transformCommand,
-                                                    MpdInfo mpdInfo,
-                                                    string workingDirectory)
+        private async Task GenerateTarAndIngestXml(     BlobContainerClient mezzContainer,
+                                                        Content content,
+                                                        ContentCommand transformCommand,
+                                                        MpdInfo mpdInfo,
+                                                        string workingDirectory)
         {
-            string tarFileName;
-
-            string tarPath;
-
-            string tarSourceDirectory;
 
             BlockBlobClient sourceBlob;
 
             Tuple<long, string> infodata;
 
-            foreach (AdaptiveSetInfo adaptiveSet in mpdInfo.AdaptiveSets)
-            {
-                tarFileName = $"{adaptiveSet.DirectoryName}.tar";
+            AdaptiveSetInfo audioAdaptiveSet = mpdInfo.AdaptiveSets.Where(adaptiveSet => (adaptiveSet.Type == ApplicationConstants.AdaptiveSetTypes.Audio)).First();
 
-                tarPath = $"{workingDirectory}/{tarFileName}";
+            AdaptiveSetInfo videoAdaptiveSet = mpdInfo.AdaptiveSets.Where(adaptiveSet => (adaptiveSet.Type == ApplicationConstants.AdaptiveSetTypes.Video)).First();
 
-                //appending slash at the end so that list blobs returns all the child values only
-                tarSourceDirectory = $"{workingDirectory}/{adaptiveSet.DirectoryName}/";
+            //generate audio tar
+            await GenerateIntermediateTar(audioAdaptiveSet, content, transformCommand, workingDirectory, mezzContainer);
 
-                infodata = await _tarGenerator.CreateTar(mezzContainer, tarPath,tarFileName,tarSourceDirectory,true);
-
-                adaptiveSet.Length = infodata.Item1;
-
-                adaptiveSet.Checksum = infodata.Item2;
-
-                _logger.LogInformation($"TAR file generated at {tarPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
-            }
+            //genrate video tar
+            await GenerateIntermediateTar(videoAdaptiveSet, content, transformCommand, workingDirectory, mezzContainer);
 
             string mpdPath = $"{workingDirectory}/{mpdInfo.MpdName}";
 
@@ -373,6 +360,46 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                         
             _logger.LogInformation($"Updated XML Template from {ApplicationConstants.IngestTemplateFileName} to {xmlFilePath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
 
+        }
+
+        /// <summary>
+        /// Generates the TAR for Audio Adaptive Set and Video Adaptive set based on input
+        /// </summary>
+        /// <param name="adaptiveSet"></param>
+        /// <param name="content"></param>
+        /// <param name="transformCommand"></param>
+        /// <param name="workingDirectory"></param>
+        /// <param name="mezzContainer"></param>
+        /// <returns></returns>
+        private async Task GenerateIntermediateTar( AdaptiveSetInfo adaptiveSet,
+                                                    Content content,
+                                                    ContentCommand transformCommand,
+                                                    string workingDirectory, 
+                                                    BlobContainerClient mezzContainer)
+        {
+            string tarFileName;
+
+            string tarPath;
+
+            string tarSourceDirectory;
+
+            Tuple<long, string> infodata;
+
+            tarFileName = $"{adaptiveSet.DirectoryName}.tar";
+
+            tarPath = $"{workingDirectory}/{tarFileName}";
+
+            //appending slash at the end so that list blobs returns all the child values only
+            tarSourceDirectory = $"{workingDirectory}/{adaptiveSet.DirectoryName}/";
+
+            infodata = await _tarGenerator.CreateTar(mezzContainer, tarPath, tarFileName, tarSourceDirectory, true);
+
+            adaptiveSet.Length = infodata.Item1;
+
+            adaptiveSet.Checksum = infodata.Item2;
+
+            _logger.LogInformation($"TAR file generated at {tarPath} for content id: {content.Id.Value} command id {transformCommand.Id.Value}");
+            
         }
 
         /// <summary>
@@ -398,6 +425,7 @@ namespace blendnet.cms.listener.IntegrationEventHandling
             return new Tuple<long, string>(blobProperties.ContentLength, checksum);
 
          }
+
 
         /// <summary>
         /// Replaces the values in XML Template
