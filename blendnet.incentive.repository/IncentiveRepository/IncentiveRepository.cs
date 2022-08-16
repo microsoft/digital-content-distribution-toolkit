@@ -242,16 +242,26 @@ namespace blendnet.incentive.repository.IncentiveRepository
         /// <param name="audience"></param>
         /// <param name="planType"></param>
         /// <returns></returns>
-        public Task<List<IncentivePlan>> GetIncentivePlans(Audience audience, PlanType planType)
+        public Task<List<IncentivePlan>> GetIncentivePlans(Audience audience, PlanType planType, bool publishedOnly = false)
         {
-            const string queryString = @"select * from c where c.planType = @planType 
+            string queryString = @"select * from c where c.planType = @planType 
                 and c.audience.audienceType = @audienceType 
                 and c.audience.subTypeName = @audienceSubTypeName";
+
+            if(publishedOnly)
+            {
+                queryString = $"{queryString} and c.publishMode = @publishMode";
+            }
 
             var queryDef = new QueryDefinition(queryString)
                 .WithParameter("@planType", planType)
                 .WithParameter("@audienceType", audience.AudienceType)
                 .WithParameter("@audienceSubTypeName", audience.SubTypeName);
+
+            if (publishedOnly)
+            {
+                queryDef.WithParameter("@publishMode", PublishMode.PUBLISHED);
+            }
 
             return GetPlansFromQueryDef(queryDef);
         }

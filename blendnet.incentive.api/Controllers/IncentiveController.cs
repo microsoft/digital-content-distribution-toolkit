@@ -522,7 +522,7 @@ namespace blendnet.incentive.api.Controllers
                 SubTypeName = subtypeName
             };
 
-            List<IncentivePlan> incentivePlans = await _incentiveRepository.GetIncentivePlans(audience, planType);
+            List<IncentivePlan> incentivePlans = await _incentiveRepository.GetIncentivePlans(audience, planType, true);
 
             if (incentivePlans == null || incentivePlans.Count == 0)
             {

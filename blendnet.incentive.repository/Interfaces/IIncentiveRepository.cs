@@ -140,7 +140,7 @@ namespace blendnet.incentive.repository.Interfaces
         /// <param name="audience"></param>
         /// <param name="planType"></param>
         /// <returns></returns>
-        public Task<List<IncentivePlan>> GetIncentivePlans(Audience audience, PlanType planType);
+        public Task<List<IncentivePlan>> GetIncentivePlans(Audience audience, PlanType planType, bool publishedOnly = false);
 
 
 
