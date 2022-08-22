@@ -25,7 +25,9 @@ export class RetailerDashboardComponent implements OnInit {
   totalMilestoneEarnings = 0
   monthsDropDown: Array<any> = [];
   milestonesCarouselArr: Array<any> = [];
+  milestonesDuration: Array<any>=[];
   monthSelect: any;
+  milestoneSelect: any;
   partnerCode = sessionStorage.getItem('partnerCode');;
   retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
   carouselInit = false;
@@ -59,7 +61,7 @@ export class RetailerDashboardComponent implements OnInit {
     this.getContentProviders();
     this.getProfile();
     this.getDates();
-    this.getMilestoneTotal();
+    this.getMilestoneDetails();
     //hardcoded remove once flow form novo sends us above data
     // this.getRetailerTotals();
   }
@@ -120,11 +122,67 @@ export class RetailerDashboardComponent implements OnInit {
   })
   }
 
-  getMilestoneTotal() {
+  getMilestoneDetails(){
+    let allMilestones: Array<any>=[];
+    this.retailerDashboardService.getAllPublishedIncentivePlansByPlanType(this.retailerPartnerProvidedId, "milestone", this.partnerCode).subscribe( res => {
+      res.forEach(milestone => {
+        if(milestone.audience.audienceType=="RETAILER") {
+            const firstDateString = new Date(milestone.startDate);
+            const lastDateString = new Date(milestone.endDate); 
+            allMilestones.push({
+              id: milestone.id,
+              name: milestone.planName,
+              startDate: firstDateString,
+              endDate: lastDateString,
+              dateString: firstDateString.toDateString() + " - " + lastDateString.toDateString()});
+        };
+      });
+      allMilestones.sort(function(a,b){return a.endDate - b.endDate});
+      allMilestones.reverse();
+      const currentDate = new Date();
+      var currentActivePlan = false;
+      //to check if there are any current active plans
+      for(var i=0;i<allMilestones.length;i++){
+        if((allMilestones[i].startDate.toDateString()<currentDate && allMilestones[i].endDate.toDateString()>currentDate) || allMilestones[i].startDate==currentDate || allMilestones[i].endDate==currentDate){
+          currentActivePlan=true;
+          for(var c=i;c<i+5 && c<allMilestones.length;c++){
+            this.milestonesDuration.push({
+              id: allMilestones[c].id,
+              name: allMilestones[c].name,
+              dateString: allMilestones[c].dateString});
+            }
+            break;
+        }
+      }
+      if(!currentActivePlan){
+        for(var c=0;c<5 && c<allMilestones.length;c++){
+          this.milestonesDuration.push({
+            id: allMilestones[c].id,
+            name: allMilestones[c].name,
+            dateString: allMilestones[c].dateString});
+          }
+      }
+      let milestoneSelected = this.milestonesDuration[0];
+        if(milestoneSelected!=null) {
+          this.getMilestoneTotal(milestoneSelected);
+          this.milestoneSelect = this.milestonesDuration[0];
+        }
+      this.carouselInit =true;
+    } ,err => {
+      console.log('error in milestone duration fetch');
+      this.totalMilestoneEarnings = 0;
+      this.carouselInit =true;
+    });
+  }
+  
+  milestoneSelected(event) {
+    this.getMilestoneTotal(event.value);
+  }
+
+  getMilestoneTotal(milestone) {
     let totalMilestoneEarnings = 0;
-    let milestonesCarouselArr = []
-    this.retailerDashboardService.getMileStonesHome(this.partnerCode, this.retailerPartnerProvidedId).subscribe( res => {
-      
+    let milestonesCarouselArr = [];
+    this.retailerDashboardService.getMileStonesPlanDetails(this.partnerCode,this.retailerPartnerProvidedId, milestone.id).subscribe( res => {  
       if(res.planDetails) {
         res.planDetails.forEach(planDetail => {
           if(planDetail.formula && planDetail.formula.formulaType === 'DIVIDE_AND_MULTIPLY') {

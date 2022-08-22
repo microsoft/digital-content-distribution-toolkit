@@ -113,7 +113,6 @@ export class RetailerMilestonesComponent implements OnInit, AfterViewInit, OnDes
         });
         this.totalMilestoneEarnings = totalMilestoneEarnings;
         this.milestonesCarouselArr = milestonesCarouselArr;
-        // console.log(this.milestonesCarouselArr);
       }
     } ,err => {
       console.log('error in milestone fetch');

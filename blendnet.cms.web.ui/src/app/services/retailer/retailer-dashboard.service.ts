@@ -43,6 +43,16 @@ export class RetailerDashboardService {
     return this.http.get(url, {params: {partnerCode: partnerCode, retailerPartnerProvidedId: retailerPartnerProvidedId, version :'1'}});
   }
 
+  getAllPublishedIncentivePlansByPlanType(retailerPartnerProvidedId: string, planType: string, subtypeName: string): Observable<any>{
+    let url = this.baseUrl + 'Incentive/retailer/all/' +  retailerPartnerProvidedId + '/' + planType + '/' + subtypeName ;
+    return this.http.get(url, {params: {retailerPartnerProvidedId: retailerPartnerProvidedId, planType: planType, subtypeName: subtypeName, version :'1'}});
+  }
+
+  getMileStonesPlanDetails(partnerCode: string, retailerPartnerProvidedId: string, planId: string): Observable<any>{
+    let url = this.baseUrl + 'IncentiveEvent/retailer/milestone/' +  partnerCode + '/' + retailerPartnerProvidedId;
+    return this.http.get(url, {params: {partnerCode: partnerCode, retailerPartnerProvidedId: retailerPartnerProvidedId, version :'1', planId: planId}});
+  }
+
   getReferralsCommissionsInDetail(partnerCode: string, retailerPartnerProvidedId: string, startDate, endDate, eventType: string): Observable<any>{
     let url = this.baseUrl + 'IncentiveEvent/retailer/events';
     return this.http.get(url, {params: {partnerCode: partnerCode, retailerPartnerProvidedId: retailerPartnerProvidedId, version :'1', eventType: eventType, startDate: startDate, endDate: endDate}});
