@@ -376,9 +376,30 @@ namespace blendnet.cms.listener.IntegrationEventHandling
                                                         string outPutAssetName,
                                                         string jobName)
         {
+            var trackList = new List<TrackDescriptor>
+                {
+                       new SelectAudioTrackByAttribute()
+                       {
+                           Attribute = TrackAttribute.Bitrate,
+                           Filter = AttributeFilter.Top
+                        },
+                        new SelectVideoTrackByAttribute()
+                        {
+                            Attribute = TrackAttribute.Bitrate,
+                            Filter = AttributeFilter.Top
+                        }
+                };
 
-            
-            JobInputHttp jobInput = new JobInputHttp(files: new[] { inputAssetUrl });
+            var inputDefinitions = new List<InputDefinition>()
+                {
+                    new FromAllInputFile()
+                    {
+                        IncludedTracks = trackList
+                    }
+                };
+
+
+            JobInputHttp jobInput = new JobInputHttp(files: new[] { inputAssetUrl }, inputDefinitions: inputDefinitions);
 
             JobOutput[] jobOutputs =
             {
