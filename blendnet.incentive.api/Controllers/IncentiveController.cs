@@ -656,6 +656,7 @@ namespace blendnet.incentive.api.Controllers
 
             foreach (PlanDetail planDetail in planDetails)
             {
+                //checking for duplicate based on Event and Event Subtype
                 if (processed.Contains(planDetail))
                 {
                     errorInfo.Add(string.Format(_stringLocalizer["INC_ERR_0005"], planDetail.EventType));
@@ -665,29 +666,26 @@ namespace blendnet.incentive.api.Controllers
                 if ((planDetail.EventType == EventType.RETAILER_INCOME_ORDER_COMPLETED || 
                     planDetail.EventType == EventType.CONSUMER_INCOME_ORDER_COMPLETED))
                 {
-                    if (string.IsNullOrEmpty(planDetail.EventSubType))
+                    //now order completed event can be added without selecting the content provider
+                    if (!string.IsNullOrEmpty(planDetail.EventSubType))
                     {
-                        errorInfo.Add(_stringLocalizer["INC_ERR_0010"]);
-                        return errorInfo;
+                        Guid contentProviderId;
+
+                        //in case of order complete, sub type should have content provider id and it should be GUID
+                        if (!Guid.TryParse(planDetail.EventSubType, out contentProviderId))
+                        {
+                            errorInfo.Add(_stringLocalizer["INC_ERR_0046"]);
+                            return errorInfo;
+                        }
+
+                        ContentProviderDto contentProvider = await _contentProviderProxy.GetContentProviderById(contentProviderId);
+
+                        if (contentProvider == null)
+                        {
+                            errorInfo.Add(_stringLocalizer["INC_ERR_0046"]);
+                            return errorInfo;
+                        }
                     }
-
-                    Guid contentProviderId;
-
-                    //in case of order complete, sub type should have content provider id and it should be GUID
-                    if (!Guid.TryParse(planDetail.EventSubType, out contentProviderId))
-                    {
-                        errorInfo.Add(_stringLocalizer["INC_ERR_0046"]);
-                        return errorInfo;
-                    }
-
-                    ContentProviderDto contentProvider = await _contentProviderProxy.GetContentProviderById(contentProviderId);
-
-                    if (contentProvider == null)
-                    {
-                        errorInfo.Add(_stringLocalizer["INC_ERR_0046"]);
-                        return errorInfo;
-                    }
-
                 } 
                 else if(planDetail.EventSubType != null)
                 {

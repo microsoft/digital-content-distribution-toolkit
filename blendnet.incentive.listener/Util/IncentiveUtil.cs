@@ -95,9 +95,8 @@ namespace blendnet.incentive.listener.Util
         /// Creates basic incentive event 
         /// </summary>
         /// <returns></returns>
-        public static IncentiveEvent CreateIncentiveEvent(EventCategoryType eventCategoryType = EventCategoryType.INCOME)
+        public static IncentiveEvent CreateIncentiveEvent(DateTime curDate, EventCategoryType eventCategoryType = EventCategoryType.INCOME)
         {
-            var curDate = DateTime.UtcNow;
             IncentiveEvent incentiveEvent = new IncentiveEvent();
             incentiveEvent.EventId = Guid.NewGuid();
             incentiveEvent.EventOccuranceTime = curDate;

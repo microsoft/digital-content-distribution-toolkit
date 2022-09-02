@@ -75,7 +75,7 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
 
         private IncentiveEvent GetIncentiveEventForReferral(User user, IncentivePlan activeRetailerRegularPlan)
         {
-            IncentiveEvent incentiveEvent = IncentiveUtil.CreateIncentiveEvent();
+            IncentiveEvent incentiveEvent = IncentiveUtil.CreateIncentiveEvent(DateTime.UtcNow);
 
             incentiveEvent.Audience = new Audience()
             {
