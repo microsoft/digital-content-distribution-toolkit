@@ -183,7 +183,14 @@ namespace blendnet.cms.api.Controllers
             // If subscription is TVOD, also validate the contents in the subscription
             if (existingSubscription.SubscriptionType == SubscriptionType.TVOD)
             {
-                DateTime subscriptionValidDate = existingSubscription.EndDate.AddDays(existingSubscription.DurationDays);
+                int days = existingSubscription.DurationDays;
+
+                if (_appSettings.MinDaysContentExistInSubscription > 0)
+                {
+                    days = Math.Min(days, _appSettings.MinDaysContentExistInSubscription);
+                }
+
+                DateTime subscriptionValidDate = existingSubscription.EndDate.AddDays(days);
                 List<string> errorInTvodContents = await ValidateContentsInTvodSubscription(existingSubscription, subscriptionValidDate);
                 listOfValidationErrors.AddRange(errorInTvodContents);
             }
@@ -317,8 +324,15 @@ namespace blendnet.cms.api.Controllers
             // For TVOD subscription, check for content broadcast end date with request end data
             if(existingSubscription.SubscriptionType == SubscriptionType.TVOD)
             {
-                DateTime subscriptionValidityDate = request.EndDate.AddDays(existingSubscription.DurationDays);
-                List<string> listOfValidationErrors = await ValidateContentsInTvodSubscription(existingSubscription, subscriptionValidityDate);
+                int days = existingSubscription.DurationDays;
+
+                if(_appSettings.MinDaysContentExistInSubscription > 0)
+                {
+                    days = Math.Min(days, _appSettings.MinDaysContentExistInSubscription);
+                }
+
+                DateTime subscriptionValidityDate = request.EndDate.AddDays(days);
+                List<string> listOfValidationErrors = await ValidateContentsInTvodSubscription (existingSubscription, subscriptionValidityDate);
                 
                 if (listOfValidationErrors.Count > 0)
                 {

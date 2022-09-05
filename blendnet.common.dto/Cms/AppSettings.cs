@@ -119,5 +119,7 @@ namespace blendnet.common.dto.cms
 
         public int SubscriptionContentListMaxLimit { get; set; }
 
+        public int MinDaysContentExistInSubscription { get; set; }
+
     }
 }
