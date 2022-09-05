@@ -2,6 +2,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using blendnet.api.proxy;
 using blendnet.api.proxy.Cms;
+using blendnet.api.proxy.Device;
 using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
@@ -218,6 +219,7 @@ void ConfigureServices(WebApplicationBuilder builder)
     services.AddTransient<IncentiveCalculationHelper>();
     services.AddTransient<ContentProxy>();
     services.AddTransient<ContentProviderProxy>();
+    services.AddTransient<DeviceProxy>();
 
     //registerations required for authhandler to work
     services.AddTransient<KaizalaIdentityProxy>();
@@ -332,6 +334,14 @@ void ConfigureHttpClients(IServiceCollection services)
     services.AddHttpClient(ApplicationConstants.HttpClientKeys.USER_HTTP_CLIENT, c =>
     {
         c.BaseAddress = new Uri(userBaseUrl);
+        c.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
+
+    //Configure Http Client for Device Proxy
+    string deviceBaseUrl = builder.Configuration.GetValue<string>("DeviceBaseUrl");
+    services.AddHttpClient(ApplicationConstants.HttpClientKeys.DEVICE_HTTP_CLIENT, c =>
+    {
+        c.BaseAddress = new Uri(deviceBaseUrl);
         c.DefaultRequestHeaders.Add("Accept", "application/json");
     });
 }

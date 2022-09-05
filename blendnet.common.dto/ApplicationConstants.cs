@@ -263,6 +263,7 @@ namespace blendnet.common.dto
         {
             public const string ContentId = "ContentId";
             public const string ContentProviderId = "ContentProviderId";
+            public const string DeviceId = "DeviceId";
             public const string UserId = "UserId";
             public const string UserPhone = "UserPhone";
             public const string RetailerPartnerId = "RetailerPartnerId";

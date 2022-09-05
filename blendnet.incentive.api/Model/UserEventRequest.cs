@@ -15,5 +15,10 @@ namespace blendnet.incentive.api.Model
         /// Content ID. Required only in cases of events dealing with content consumption
         /// </summary>
         public Guid? ContentId {get; set; }
+
+        /// <summary>
+        /// Device ID. Required only in cases of events dealing with device/downloads
+        /// </summary>
+        public string DeviceId { get; set; }
     }
 }

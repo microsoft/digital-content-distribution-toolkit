@@ -51,18 +51,18 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             {
                 using (_telemetryClient.StartOperation<RequestTelemetry>(operationName))
                 {
-                    _logger.LogInformation($"Updating {incentiveEvent.EventType} event for user {userId}");
+                    _logger.LogInformation($"Updating {incentiveEvent.EventType} event for user {userId}  event ID {incentiveEvent.EventId}");
 
-                    var activePlan = await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
+                    var activePlan = await GetActiveRegularPlanForAudience(incentiveEvent.Audience);
 
                     var oldCalculatedValue = incentiveEvent.CalculatedValue;
-                    
+
                     CalculateValue(incentiveEvent, activePlan);
-                    
+
                     var newCalculatedValue = incentiveEvent.CalculatedValue;
 
                     int response = await _eventRepository.UpdateIncentiveEvent(incentiveEvent);
-                    
+
                     //report the same info to AI for analytics consumption
                     _telemetryClient.TrackEvent(new IncentiveAIEvent(incentiveEvent));
 
@@ -90,13 +90,27 @@ namespace blendnet.incentive.listener.IntegrationEventHandling
             if (planDetail == null)
             {
                 _logger.LogWarning($"Storing orphan event as no active plan exists for consumer regular plan with event id {incentiveEvent.EventId}, Event generator id {incentiveEvent.EventCreatedFor} and event type {incentiveEvent.EventType}");
-                
+
                 incentiveEvent.CalculatedValue = 0;
             }
             else
             {
                 IncentiveUtil.SetComputedValue(planDetail.Formula, incentiveEvent);
             }
+        }
+
+        private async Task<IncentivePlan> GetActiveRegularPlanForAudience(Audience audience)
+        {
+            switch (audience.AudienceType)
+            {
+                case AudienceType.CONSUMER:
+                    return await _incentiveRepository.GetCurrentConsumerActivePlan(PlanType.REGULAR);
+
+                case AudienceType.RETAILER:
+                    return await _incentiveRepository.GetCurrentRetailerActivePlan(PlanType.REGULAR, audience.SubTypeName);
+            }
+
+            return null;
         }
     }
 }

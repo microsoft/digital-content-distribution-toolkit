@@ -58,6 +58,8 @@ namespace blendnet.incentive.listener
 
             _eventBus.Subscribe<UpdateUserDataIntegrationEvent, UpdateUserDataIntegrationEventHandler>();
 
+            _eventBus.Subscribe<UserMediaDnldCmpltdIncentiveIntegrationEvent, UserMediaDownloadCompletedIncentiveIntegrationEventHandler>();
+
             await _eventBus.StartProcessing();
 
             _logger.LogInformation("Subscribe complete by blendnet.incentive.listener");

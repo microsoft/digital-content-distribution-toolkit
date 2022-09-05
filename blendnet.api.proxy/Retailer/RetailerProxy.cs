@@ -5,6 +5,8 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -61,6 +63,33 @@ namespace blendnet.api.proxy.Retailer
             try
             {
                 retailer = await _rmsHttpClient.Get<RetailerDto>(url, accessToken);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { }
+
+            return retailer;
+        }
+
+        /// <summary>
+        /// Gets the retailer to whom the given device is currently assigned
+        /// </summary>
+        /// <param name="deviceId">Device ID</param>
+        /// <returns></returns>
+        public async Task<RetailerDto> GetCurrentRetailerByDeviceId(string deviceId)
+        {
+            string url = $"Retailer/byDeviceId/{deviceId}";
+            string accessToken = await base.GetServiceAccessToken();
+
+            List<RetailerDto> retailers = null;
+            RetailerDto retailer = null;
+            try
+            {
+                retailers = await _rmsHttpClient.Get<List<RetailerDto>>(url, accessToken);
+
+                // this gets all retailer where device was ever assigned, so need to filter for active assignment
+                retailer = retailers
+                            .Where(r => r.DeviceAssignments.Where(asg => asg.DeviceId == deviceId && asg.IsActive).Any())
+                            .FirstOrDefault();
             }
             catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             { }

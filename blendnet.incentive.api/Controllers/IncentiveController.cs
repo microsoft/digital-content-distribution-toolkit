@@ -429,6 +429,7 @@ namespace blendnet.incentive.api.Controllers
             {
                 eventTypes.Add(EventType.RETAILER_INCOME_ORDER_COMPLETED.ToString());
                 eventTypes.Add(EventType.RETAILER_INCOME_REFERRAL_COMPLETED.ToString());
+                eventTypes.Add(EventType.RETAILER_INCOME_DOWNLOAD_MEDIA_COMPLETED.ToString());
             }
             else
             {
@@ -437,6 +438,7 @@ namespace blendnet.incentive.api.Controllers
                 eventTypes.Add(EventType.CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED.ToString());
                 eventTypes.Add(EventType.CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER.ToString());
                 eventTypes.Add(EventType.CONSUMER_INCOME_ORDER_COMPLETED.ToString());
+                eventTypes.Add(EventType.CONSUMER_INCOME_DOWNLOAD_MEDIA_COMPLETED.ToString());
                 eventTypes.Add(EventType.CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM.ToString());
             }
 
