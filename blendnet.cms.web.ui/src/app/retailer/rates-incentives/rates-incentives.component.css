@@ -59,6 +59,20 @@
     border-top-right-radius: 8px;
 }
 
+.downloads-route-inner {
+    background-color: #E0FFFF;
+    height: 80px;
+    background-image: url('../../../assets/images/retailer-landing-page/downloads.png');
+    background-repeat: no-repeat;
+    background-position: 100% -12px;
+    box-shadow: 0px 4px 8px #E0FFFF;
+    /* border-radius: 8px; */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+
+
 .incentive-text-type {
     color: #101010;
     padding-left: 30px;

@@ -22,6 +22,7 @@ export class RetailerDashboardComponent implements OnInit {
   };
   referralTotal = 0;
   commissionsTotal = 0;
+  downloadsTotal = 0;
   totalMilestoneEarnings = 0
   monthsDropDown: Array<any> = [];
   milestonesCarouselArr: Array<any> = [];
@@ -91,6 +92,7 @@ export class RetailerDashboardComponent implements OnInit {
   getRetailerTotals(partnerCode, retailerPartnerProvidedId, dateObj) {
     let referralTotal = 0;
     let commissionTotal = 0;
+    let downloadTotal = 0;
     let startDate = new Date(dateObj.firstDateString);
     let endDate = new Date(dateObj.lastDateString);
     endDate.setHours(23);
@@ -110,15 +112,22 @@ export class RetailerDashboardComponent implements OnInit {
               referralTotal += planDetail.aggregratedCalculatedValue;
             }
           }
+          else if(planDetail.eventType === 'RETAILER_INCOME_DOWNLOAD_MEDIA_COMPLETED') {
+            if(planDetail.aggregratedCalculatedValue) {
+              downloadTotal += planDetail.aggregratedCalculatedValue;
+            }
+          }
         });
       }
       this.referralTotal = referralTotal;
       this.commissionsTotal = commissionTotal;
+      this.downloadsTotal = downloadTotal;
     },
   err => {
     //  this.toastr.error(err);
     this.referralTotal = referralTotal;
     this.commissionsTotal = commissionTotal;
+    this.downloadsTotal = downloadTotal;
   })
   }
 

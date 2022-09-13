@@ -18,6 +18,7 @@ import { RetailerOrderSuccessComponent } from './retailer-order-success/retailer
 import { RoleGuardService } from '../services/role-guard.service';
 import { ActivateNumberComponent } from './activate-number/activate-number.component';
 import { RetailerHomeComponent } from './retailer-home/retailer-home.component';
+import { RetailerDownloadComponent } from './retailer-download/retailer-download.component';
 
 
 const routes: Routes = [
@@ -53,6 +54,13 @@ const routes: Routes = [
   {
     path: 'commissions', 
     component: RetailerCommissionsComponent,
+    data: {
+      expectedRole: [environment.roles.Retailer]
+    }
+  },
+  {
+    path: 'downloads', 
+    component: RetailerDownloadComponent,
     data: {
       expectedRole: [environment.roles.Retailer]
     }
@@ -101,7 +109,8 @@ const routes: Routes = [
     RetailerOrdersComponent,
     RetailerOrderSuccessComponent,
     ActivateNumberComponent,
-    RetailerHomeComponent
+    RetailerHomeComponent,
+    RetailerDownloadComponent
     ],
   imports: [
     CommonModule,

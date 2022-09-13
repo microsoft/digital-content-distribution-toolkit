@@ -156,6 +156,19 @@
         </div>
     </div>
 
+    <div class="downloads-route-wrapper">
+        <div class="downloads-route-inner" [routerLink]="['/retailer/downloads']">
+            <div class="downloads-value-wrapper">
+                <div class="downloads-value">
+                    Rs. {{downloadsTotal  | number : '1.0-2'}}
+                </div>
+                <div class="downloads-text">
+                    Downloads
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="rates-route-wrapper">
         <div class="rates-route-inner" [routerLink]="['/retailer/rates-incentives']">
             <div class="rates-value-wrapper">

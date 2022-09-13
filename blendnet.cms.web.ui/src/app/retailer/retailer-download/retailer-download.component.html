@@ -1,0 +1,87 @@
+<div class="referrals-main-block">
+    <div class="referrals-heading">
+        <img class="back-nav" (click)="navigateToDashboard()" src="../../{{baseHref}}/assets/images/retailer-referrals/back-nav.jpg">
+        <div class="referrals-heading-text">Downloads</div>
+        <div class="commissions-slider" *ngIf="carouselInit">
+            <owl-carousel-o [options]="customOptions">
+                <ng-container *ngFor="let download of downloadsCarouselArr">
+                    <ng-template carouselSlide>
+                        <div class="each-offer">
+                            <div class="each-offer-inner">
+                                <!-- <img class="offer-decor" src="../../assets/images/retailer-commissions/trophy.png"> -->
+                                <img class="each-offer-logo" src={{download.logoUrl}}>
+                                <div class="each-offer-text-block">
+                                    {{download.earnText}}
+                                </div>
+                                <div class="each-offer-text-block-date">
+                                    <span class="each-offer-valid-label">Valid till :</span>
+                                    <span class="each-offer-valid-date">{{download.validTillText}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>  
+    
+                </ng-container>
+              </owl-carousel-o>
+        
+        </div>
+    </div>
+    <div class="landing-page-total-block-wrapper">
+        
+        <div class="landing-page-total-inner-wrapper">
+            <div class="landing-page-currency-image-block">
+                <img src="../../{{baseHref}}/assets/images/retailer-landing-page/rupee.jpg">
+            </div>
+            <div class="landing-page-total-value-block">
+                <div class="referral-total-value">
+                    Rs.{{totalEarnings  | number : '1.0-2'}}
+                </div>
+                <div class="total-earnings-text">
+                    Total Earnings
+                </div>
+            </div>
+            <div class="landing-page-total-image-block">
+                <!-- <img src="../../assets/images/retailer-landing-page/total.jpg"> -->
+                <mat-form-field appearance="fill" class="landing-page-total-image-block-field">
+                    <!-- <mat-label>Month</mat-label> -->
+                    <mat-select (selectionChange)="monthSelected($event)" [(ngModel)]="monthSelect">
+                        <mat-option *ngFor="let month of monthsDropDown" [value]="month">
+                            {{month.monthName}}
+                        </mat-option>
+                    </mat-select>
+                    </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <app-no-transactions *ngIf="!totalEarnings"></app-no-transactions>
+    <div *ngIf="totalEarnings" class="accordion-block">
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let download of nestedDownloads; first as isFirst" [expanded]="isFirst">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div class="accordion-heading">
+                        <div class="accordion-left-content">{{download.occuredDateReadable}} • {{download.transactions.length}} Transactions</div>
+                        <div class="accordion-right-content">Rs. {{download.amount  | number : '1.0-2'}}</div>     
+                    </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div *ngFor="let transaction of download.transactions" class="accordion-total-inner-wrapper">
+                <div class="accordion-currency-image-block">
+                    <img class="accordion-currency" src="../../{{baseHref}}/assets/images/retailer-landing-page/rupee.jpg">
+                </div>
+                <div class="accordion-value-block">
+                    <div class="accordion-value">
+                        {{transaction.name}}
+                    </div>
+                    <div class="accordion-text">
+                        {{transaction.occuredTimeReadable}}
+                    </div>
+                </div>
+                <div class="each-value">
+                    +Rs. {{transaction.calculatedValue  | number : '1.0-2'}}
+                </div>
+            </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+    </div>
+</div>

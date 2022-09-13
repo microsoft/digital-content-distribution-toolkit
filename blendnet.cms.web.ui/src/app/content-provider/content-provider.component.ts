@@ -59,8 +59,9 @@ export class ContentProviderComponent implements OnInit {
   
   createCPList(cps) {
     var cpList = [];
+    var defaultLogoUrl = "../../" + this.baseHref + environment.defaultCplogoImg;
     cps.forEach(cp => {
-       if (cp.logoUrl !== "") {
+       if (cp.logoUrl !== "" && cp.logoUrl !== defaultLogoUrl) {
        } else {
         //  cp.logoUrl = this.cdnBaseUrl + cp.id + "-cdn/logos/pictorialmark_square.png";
          const img = new Image();
@@ -72,7 +73,7 @@ export class ContentProviderComponent implements OnInit {
               cp.logoUrl  = img.src;
             };
             img.onerror = () => {
-              cp.logoUrl  = "../../" + this.baseHref + environment.defaultCplogoImg;
+              cp.logoUrl  = defaultLogoUrl;
             };
           }
        }

@@ -17,6 +17,7 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
   ratesIncentivesReferrals = [];
   ratesIncentivesMilestones = [];
   ratesIncentivesCommissions = [];
+  ratesIncentivesDownloads = [];
   partnerCode;
   retailerPartnerProvidedId;
   eventType = EventType;
@@ -24,6 +25,7 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
   referralsValid;
   milestonesValid;
   incentivesValid;
+  downloadsValid;
   baseHref = this.retailerDashboardService.getBaseHref();
   constructor(
     public userService: UserService,
@@ -88,12 +90,14 @@ export class RatesIncentivesComponent implements OnInit, AfterViewInit, OnDestro
             if(res["planDetails"] && res["planDetails"].length) {
               this.referralsValid = this.retailerDashboardService.formatDateOnlyDay(res['endDate']);
               this.incentivesValid = this.retailerDashboardService.formatDateOnlyDay(res['endDate']);
+              this.downloadsValid = this.retailerDashboardService.formatDateOnlyDay(res['endDate']);
               res["planDetails"].forEach(eachEvent => {
                 if(eachEvent.eventType ===  EventType["Retailer Referral"]) {
                   this.ratesIncentivesReferrals.push(eachEvent);
                 } else if(eachEvent.eventType ===  EventType["Retailer Order Complete"]) {
                   this.ratesIncentivesCommissions.push(eachEvent);
-                }
+                } else if(eachEvent.eventType ===  EventType["Retailer Download Complete"]) {
+                  this.ratesIncentivesDownloads.push(eachEvent);}
               });
             }
           },

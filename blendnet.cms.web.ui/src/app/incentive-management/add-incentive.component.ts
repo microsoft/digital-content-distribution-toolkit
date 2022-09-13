@@ -205,7 +205,12 @@ export class AddIncentiveComponent implements OnInit {
             rawData.eventSubTypeName = "Loading...";
           }
         } else {
-          rawData.eventSubTypeName = "NA";
+          if(rawData.eventType.includes("ORDER")){
+            rawData.eventSubTypeName = "All";
+          }
+          else{
+            rawData.eventSubTypeName = "NA";
+          }
         }
         rawData.index = index++;
         dataSource.push(rawData);
@@ -545,7 +550,12 @@ openSelectCPModalButtons(): Array<any> {
             event.eventSubTypeName = "Loading...";
           }
         } else {
-          event.eventSubTypeName = "NA";
+          if(event.eventType.includes("ORDER")){
+            event.eventSubTypeName = "All";
+          }
+          else{
+            event.eventSubTypeName = "NA";
+          }
         }
         if(event.index !== undefined && event.index !== null) {
           this.dataSource.data.splice(event.index, 1, event);

@@ -41,7 +41,7 @@ import { IncentiveService } from "../services/incentive.service";
         this.eventForm = new FormGroup({
           eventType :  new FormControl({value:this.data.event.eventType, disabled: true}),
           eventTitle :  new FormControl({value:this.data.event.eventTitle, disabled: true}),
-          eventSubType :  new FormControl({value:this.data.event.eventSubType, disabled: true}),
+          eventSubType :  new FormControl({value:this.data.event.eventSubType==undefined? 'all' : this.data.event.eventSubType, disabled: true}),
           ruleType : new FormControl({value: this.data.event.ruleType, disabled: true}),
           formula : new FormControl({value: this.data.event.formula.formulaType, disabled: true}),
           firstOperand : new FormControl({value: this.data.event.formula.firstOperand, disabled: true}),
@@ -66,6 +66,10 @@ import { IncentiveService } from "../services/incentive.service";
        var cpList = JSON.parse(sessionStorage.getItem("CONTENT_PROVIDERS"));
        if(cpList && cpList.length > 0) {
          this.contentProviders = cpList;
+         this.contentProviders.push({
+          contentProviderId: "all",
+          name: "All"
+         });
        }
 
        //set formula config
@@ -96,7 +100,10 @@ import { IncentiveService } from "../services/incentive.service";
             this.eventForm.get('eventSubType').setValue(this.data.event.eventSubType);
             this.showCP = true;
           }
-
+          if(!this.data.event.eventSubType && this.data.event.eventType.includes("ORDER")){
+            this.eventForm.get('eventSubType').setValue("all");
+            this.showCP = true;
+          }
           this.eventForm.get('ruleType').setValue(this.data.event.ruleType);
           this.eventForm.get('formula').setValue(this.data.event.formula.formulaType);
   
@@ -263,11 +270,12 @@ import { IncentiveService } from "../services/incentive.service";
         this.eventForm.get('eventSubType').setValue(null);
         this.eventForm.get('eventSubType').clearValidators();
         this.showCP = false;
-        this.eventForm.get('eventSubType').updateValueAndValidity();
+        this.eventForm.get('eventSubType').updateValueAndValidity();     
       } else {
         this.eventForm.get('eventSubType').setValidators([Validators.required]);
         this.showCP = true;
         this.eventForm.get('eventSubType').updateValueAndValidity();
+        this.eventForm.get('eventSubType').setValue("all");
       }
     }
   
@@ -346,7 +354,7 @@ import { IncentiveService } from "../services/incentive.service";
         index : this.data.rowIndex,
         eventType : this.eventForm.get('eventType').value,
         eventTitle : this.eventForm.get('eventTitle').value,
-        eventSubType : this.eventForm.get('eventSubType').value,
+        eventSubType : (this.eventForm.get('eventSubType').value && this.eventForm.get('eventSubType').value.includes("all"))? null : this.eventForm.get('eventSubType').value,
         ruleType: this.eventForm.get('ruleType').value,
         formula :  {
           formulaType : this.eventForm.get('formula').value,

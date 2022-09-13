@@ -85,27 +85,27 @@
     color: #5D6973;
 }
 
-.referrals-route-wrapper, .milestones-route-wrapper, .commission-route-wrapper, .rates-route-wrapper {
+.referrals-route-wrapper, .milestones-route-wrapper, .commission-route-wrapper, .rates-route-wrapper, .downloads-route-wrapper {
     padding-left: 20px;
     padding-right: 20px;
 }
 
 
 
-.referrals-value, .milestones-value, .commission-value, .rates-value {
+.referrals-value, .milestones-value, .commission-value, .rates-value, .downloads-value {
     /* display: inline-block; */
     font-weight: 900;
     font-size: 18px;
     line-height: 24px
 }
 
-.referrals-value-wrapper, .milestones-value-wrapper, .commission-value-wrapper, .rates-value-wrapper {
+.referrals-value-wrapper, .milestones-value-wrapper, .commission-value-wrapper, .rates-value-wrapper, .downloads-value-wrapper {
     padding-top: 22px;
     padding-left: 20px;
     padding-right: 20px;
 }
 
-.referrals-text, .milestones-text, .commission-text, .rates-text {
+.referrals-text, .milestones-text, .commission-text, .rates-text, .downloads-text {
     /* display: inline-block; */
     font-size: 14px;
     line-height: 18px;
@@ -156,8 +156,18 @@
     cursor: pointer;
 }
 
+.downloads-route-inner {
+    background-color: #FFE2B7;
+    height: 80px;
+    background-image: url('../../../assets/images/retailer-landing-page/downloads.png');
+    background-repeat: no-repeat;
+    background-position: 100% -32%;
+    box-shadow: 0px 4px 8px rgba(72, 83, 85, 0.06);
+    border-radius: 8px;
+    cursor: pointer;
+}
 
-.commission-route-wrapper, .rates-route-wrapper {
+.commission-route-wrapper, .rates-route-wrapper, .downloads-route-wrapper {
     margin-top: 20px;
 }
 
