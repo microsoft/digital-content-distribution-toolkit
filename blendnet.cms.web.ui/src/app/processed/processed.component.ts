@@ -125,16 +125,13 @@ export class ProcessedComponent {
           data.displayCreatedDate =  this.pipe.transform(data.createdDate, 'short');
           data.displayModifiedDate =  this.pipe.transform(data.modifiedDate, 'short');
           dataSource.push(data);
-        } else {
-          var today = new Date();
-          if(data.contentBroadcastedBy.broadcastRequest.endDate < today) {
+        } else if(data.isBroadCastActive == false ) {
             data.displayStatus = data.contentTransformStatus;
             data.isSelected = false;
             data.displayCreatedDate =  this.pipe.transform(data.createdDate, 'short');
             data.displayModifiedDate =  this.pipe.transform(data.modifiedDate, 'short');
             dataSource.push(data);
           }
-        }
       });
     } else {
       this.errMessage = "No data found";
