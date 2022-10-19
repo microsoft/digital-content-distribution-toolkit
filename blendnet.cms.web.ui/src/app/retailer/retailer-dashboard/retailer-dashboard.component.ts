@@ -171,11 +171,11 @@ export class RetailerDashboardComponent implements OnInit {
             dateString: allMilestones[c].dateString});
           }
       }
-      let milestoneSelected = this.milestonesDuration[0];
-        if(milestoneSelected!=null) {
-          this.getMilestoneTotal(milestoneSelected);
-          this.milestoneSelect = this.milestonesDuration[0];
-        }
+      let milestoneSelected = this.retailerDashboardService.getMilestoneSelected()? this.retailerDashboardService.getMilestoneSelected() : this.milestonesDuration[0];
+      if(milestoneSelected!=null) {
+        this.getMilestoneTotal(milestoneSelected);
+        this.milestoneSelect = milestoneSelected;
+      }
       this.carouselInit =true;
     } ,err => {
       console.log('error in milestone duration fetch');
@@ -185,6 +185,7 @@ export class RetailerDashboardComponent implements OnInit {
   }
   
   milestoneSelected(event) {
+    this.retailerDashboardService.setMilestoneSelected(event.value);
     this.getMilestoneTotal(event.value);
   }
 
@@ -296,4 +297,8 @@ export class RetailerDashboardComponent implements OnInit {
       }
     )
   } 
+
+  compareById(milestone1: any, milestone2: any): boolean {
+    return milestone1 && milestone2 && milestone1.id === milestone2.id;
+  }
 }

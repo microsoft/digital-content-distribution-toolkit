@@ -1,4 +1,10 @@
 <div class="cms-table-container">
+
+    <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search columns" #input>
+    </mat-form-field>
+
     <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="select">
             <th mat-header-cell *matHeaderCellDef>
@@ -11,7 +17,7 @@
                 </mat-checkbox>
             </td>
         </ng-container>
-
+        
         <!-- Name Column -->
         <ng-container matColumnDef="title">
             <th mat-header-cell *matHeaderCellDef> Content Name </th>

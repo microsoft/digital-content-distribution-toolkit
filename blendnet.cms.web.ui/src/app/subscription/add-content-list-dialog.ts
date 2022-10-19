@@ -106,4 +106,9 @@ export class AddContentListDialog implements OnInit {
         return (this.selectedContentList.some(c => c.contentId===row.contentId));
     }
 
+    applyFilter(event: Event) {
+      const filterValue = (event.target as HTMLInputElement).value;
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
+
 }

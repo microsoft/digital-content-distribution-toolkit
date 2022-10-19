@@ -17,6 +17,7 @@ export class RetailerDashboardService {
   partnerCode = sessionStorage.getItem('partnerCode');
   retailerPartnerProvidedId = sessionStorage.getItem('partnerProvidedId');
   monthSelected:any;
+  milestoneSelected:any;
   private referralCode = new BehaviorSubject<String>("");
   sharedReferralCode = this.referralCode.asObservable();
 
@@ -69,6 +70,14 @@ export class RetailerDashboardService {
 
   getMonthSelected() {
     return this.monthSelected;
+  }
+
+  setMilestoneSelected(milestone) {
+    this.milestoneSelected = milestone;
+  }
+
+  getMilestoneSelected() {
+    return this.milestoneSelected;
   }
 
   getProfile(partnerCode: string, retailerPartnerProvidedId: string) {

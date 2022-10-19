@@ -214,3 +214,11 @@
     float: right;
     color: white;
 }
+
+.milestone-name-div{
+    height:20px;
+}
+
+.milestone-datestring-div{
+    font-size:10px;
+}

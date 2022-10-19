@@ -230,6 +230,8 @@ export class SubscriptionComponent {
     this.createSubscription = false;
     this.showSubscription = true;
     this.getSubscriptions();
+    //To remove the filter value when we navigate back to subscription page from add subscription
+    this.filterValue =""; 
   }
 
   openPublishDialog(row) {

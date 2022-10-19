@@ -32,9 +32,9 @@
             <!-- <img src="../../assets/images/retailer-landing-page/total.jpg"> -->
             <mat-form-field appearance="fill" class="landing-page-total-image-block-field">
                 <!-- <mat-label>Month</mat-label> -->
-                <mat-select (selectionChange)="milestoneSelected($event)" [(ngModel)]="milestoneSelect">
+                <mat-select (selectionChange)="milestoneSelected($event)" [(value)]="milestoneSelect" [compareWith]="compareById">
                     <mat-option *ngFor="let milestone of milestonesDuration" [value]="milestone">
-                        <div class="milestone-name-div">{{milestone.name}}</div>
+                        <div class="milestone-name-div">{{milestone.name}} </div>
                         <div class="milestone-datestring-div">{{milestone.dateString}}</div>
                     </mat-option>
                 </mat-select>
