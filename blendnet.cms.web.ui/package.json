@@ -30,7 +30,7 @@
     "@azure/msal-browser": "^2.11.2",
     "@material/drawer": "^10.0.0",
     "jwt-decode": "^3.1.2",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "ngx-owl-carousel-o": "^6.0.0",
     "ngx-toastr": "^13.2.1",
     "rxjs": "~6.6.6",
