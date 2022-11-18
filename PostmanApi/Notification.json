@@ -1,0 +1,636 @@
+{
+	"info": {
+		"_postman_id": "28db9cab-bee3-4d90-b351-2c67c812621a",
+		"name": "NotificationAPI_New",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "14460718"
+	},
+	"item": [
+		{
+			"name": "SuperAdmin_OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP1\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000004\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "SuperAdmin_Token Generation Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"SuperAdmin\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000004\", \r\n\r\n    \"pin\":{{OTP1}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "1. User A Creation_OTP Generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var digits = Math.floor(Math.random() * 1000000000) + 1000000000\r",
+							"var UserPhoneNumber=\"+91\"+digits;\r",
+							"pm.environment.set(\"PhoneNumber\", UserPhoneNumber);\r",
+							"pm.environment.set(\"User_PhoneNumber\", digits);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+							"// pm.test(\"prerequisite 1_SMS generation success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"{{PhoneNumber}}\", \r\n    \"UseVoice\" : false \r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/v1/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "2. User A Creation_Auth Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.environment.set(\"usertoken\", response.authenticationToken);\r",
+							"// pm.test(\"prerequisite 2_Auth Token generation Success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"{{PhoneNumber}}\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/v1/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "3. User  A Creation_User Registration",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function generateRandomString(length) {\r",
+							"\r",
+							"  var text = \"\";\r",
+							"\r",
+							"  var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\";\r",
+							"   for (var i = 0; i < length; i++)\r",
+							"   text += possible.charAt(Math.floor(Math.random() * possible.length));\r",
+							"   return text;\r",
+							"\r",
+							"}\r",
+							"var name=generateRandomString(6);\r",
+							"console.log(name);\r",
+							"pm.collectionVariables.set(\"UserName\", name);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// pm.test(\"prerequisite 3_New User Registration Success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });\r",
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"UserId\", response);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"{{UserName}}\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "4. TEST CASE 3474_/Notification/sendbroadcast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 3474 Passed\", function () \r",
+							"{ \r",
+							"    pm.response.to.have.status(200); \r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"\r",
+							"var send_broadcast_id = pm.response.json();\r",
+							"pm.collectionVariables.set(\"variable_key\",send_broadcast_id );\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\":\"example NewArrival NewArrival\",\r\n  \"body\": \"Welcome\",\r\n  \"attachmentUrl\": \"string\",\r\n  \"type\": \"NewArrival\",\r\n  \"topic\": \"mishtu_entertainment\",\r\n  \"tags\": \"Hello\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/notificationapi/api/v1/Notification/sendbroadcast"
+			},
+			"response": []
+		},
+		{
+			"name": "5. TEST CASE 3475_/Notification/sendbroadcast(400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"jsonData = pm.response.json();\r",
+							"pm.test(\"TEST CASE 3475 Passed\", function () { \r",
+							"    pm.response.to.have.status(400); \r",
+							"    pm.expect(jsonData[0]).to.equal('NMS_ERR_001-Notification length too long')\r",
+							"    \r",
+							"    });\r",
+							" \r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\":\"example NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrival\",\r\n  \"body\": \"example NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrival\",\r\n  \"attachmentUrl\": \"string\",\r\n  \"type\": \"NewArrival\",\r\n  \"topic\": \"mishtu_entertainment\",\r\n  \"tags\": \"Hello\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/notificationapi/api/v1/Notification/sendbroadcast"
+			},
+			"response": []
+		},
+		{
+			"name": "6. TEST CASE 3476_/Notification/send",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 3476 Passed\", function () { \r",
+							"    pm.response.to.have.status(200); \r",
+							"     pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"    });\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Notification2\",\r\n  \"body\": \"string\",\r\n  \"attachmentUrl\": \"string\",\r\n  \"type\": \"NewArrival\",\r\n  \"userData\": [\r\n    {\r\n      \"phoneNumber\": \"{{User_PhoneNumber}}\",\r\n      \"userId\": \"{{UserId}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/notificationapi/api/v1/Notification/send"
+			},
+			"response": []
+		},
+		{
+			"name": "7. TEST CASE 3477_/Notification/send",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" jsonData = pm.response.json();\r",
+							"pm.test(\"TEST CASE 3477 Passed\", function () { \r",
+							"    \r",
+							"    pm.response.to.have.status(400); \r",
+							"     pm.expect(jsonData[0]).to.equal('NMS_ERR_001-Notification length too long')\r",
+							"    });\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\":\"example NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrival\",\r\n  \"body\": \"example NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrivalexample NewArrival NewArrival\",\r\n  \"attachmentUrl\": \"string\",\r\n  \"type\": \"NewArrival\",\r\n  \"userData\": [\r\n    {\r\n      \"phoneNumber\": \"{{User_PhoneNumber}}\",\r\n      \"userId\": \"{{UserId}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/notificationapi/api/v1/Notification/send"
+			},
+			"response": []
+		},
+		{
+			"name": "8. TEST CASE 3478_/Notification/notifications",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.test(\"TEST CASE 3478 Passed\", function () { \r",
+							"    pm.response.to.have.status(200); \r",
+							"     pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.expect(jsonData.data).to.be.an(\"array\");\r",
+							"        pm.expect(jsonData.data[0]).to.have.keys('id','notificationId','title','body','attachmentUrl','type','additionalProps','topic','tags','eTag','createdByUserId','createdDate');\r",
+							"        pm.expect(jsonData.data[0].id).to.contain(pm.collectionVariables.get(\"variable_key\"));\r",
+							"\r",
+							"    });\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/notificationapi/api/v1/Notification/notifications"
+			},
+			"response": []
+		},
+		{
+			"name": "9. TEST CASE 3479_/Notification/notifications",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 3479 Passed\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Invalid_token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/notificationapi/api/v1/Notification/notifications"
+			},
+			"response": []
+		},
+		{
+			"name": "10. TEST CASE 4101_Security Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4101 Passed\", function () { \r",
+							"    pm.response.to.have.status(200); \r",
+							"    pm.expect(pm.response.headers.get('X-Content-Type-Options')).to.eql('nosniff');\r",
+							"    pm.expect(pm.response.headers.get('X-XSS-Protection')).to.eql('1; mode=block');\r",
+							"      pm.response.to.not.have.header(\"Server\");\r",
+							"    });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/notificationapi/api/v1/Notification/notifications"
+			},
+			"response": []
+		},
+		{
+			"name": "11. User A Delete_Request for Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/user"
+			},
+			"response": []
+		},
+		{
+			"name": "12. User A Delete_complete Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/datadelete/complete"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cm46bWljcm9zb2Z0OmNyZWRlbnRpYWxzIjoie1wicGhvbmVOdW1iZXJcIjpcIis5MTExMTExMTExMTBcIixcImNJZFwiOlwiNmU4YTJmOGEtN2IzNC00NTUwLTlhZjQtNDFiOGVkM2U1YWJmXCIsXCJ0ZXN0U2VuZGVyXCI6XCJ0cnVlXCIsXCJhcHBOYW1lXCI6XCJjb20ubWljcm9zb2Z0Lm1vYmlsZS5wb2x5bWVyLm1pc2h0dVwiLFwicGVybWlzc2lvbnNcIjpcIjguNjo1LjY6MjguNlwiLFwiYXBwbGljYXRpb25UeXBlXCI6MyxcImRhdGFcIjpcIntcXFwidXNlclJvbGVcXFwiOlxcXCJSZXRhaWxlcixTdXBlckFkbWluXFxcIn1cIn0iLCJ1aWQiOiJNb2JpbGVBcHBzU2VydmljZTowNTgzZDIxYS0xMjQ1LTQxNTgtOGI2Mi02MjliMjRhMDg3OTciLCJ2ZXIiOiIyIiwibmJmIjoxNjQ1NTUyNDczLCJleHAiOjE2NDU2Mzg4NzMsImlhdCI6MTY0NTU1MjQ3MywiaXNzIjoidXJuOm1pY3Jvc29mdDp3aW5kb3dzLWF6dXJlOnp1bW8iLCJhdWQiOiJ1cm46bWljcm9zb2Z0OndpbmRvd3MtYXp1cmU6enVtbyJ9.LO3wtJxipcD41QEHMuOSVy11xT-CdAYT0-D_QOA93Sw"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Invalid_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cm46bWljcm9zb2Z0OmNyZWRlbnRpYWxzIjoie1wicGhvbmVOdW1iZXJcIjpcIis5MTc1NTkwNjM1MjJcIixcImNJZFwiOlwiMjcwMzE5MmEtZDUxMC00YWZhLTlkY2QtMWUxYjdjY2Y5NmMyXCIsXCJ0ZXN0U2VuZGVyXCI6XCJmYWxzZVwiLFwiYXBwTmFtZVwiOlwiY29tLm1pY3Jvc29mdC5tb2JpbGUucG9seW1lci5taXNodHVcIixcInBlcm1pc3Npb25zXCI6XCIxLjFcIixcImFwcGxpY2F0aW9uVHlwZVwiOjMsXCJ0b2tlblZhbGlkRnJvbVwiOjE2Mzg4Nzc5NDkzMTJ9IiwidWlkIjoiTW9iaWxlQXBwc1NlcnZpY2U6YmE0OTJjMTAtMzI5Yy00MDQ3LTk4MDQtMGFmM2U3M2JkNzAyIiwidmVyIjoiMiIsIm5iZiI6MTYzODg3Nzk0OSwiZXhwIjoxNjQxNDY5OTQ5LCJpYXQiOjE2Mzg4Nzc5NDksImlzcyI6InVybjptaWNyb3NvZnQ6d2luZG93cy1henVyZTp6dW1vIiwiYXVkIjoidXJuOm1pY3Jvc29mdDp3aW5kb3dzLWF6dXJlOnp1bW8ifQ.triQjmWaa1udIqaL6zYKE0DSIL_4qamjXYpBNjjBkUQ"
+		},
+		{
+			"value": ""
+		},
+		{
+			"key": "OTP",
+			"value": ""
+		},
+		{
+			"key": "UserName",
+			"value": ""
+		},
+		{
+			"key": "UserId",
+			"value": ""
+		},
+		{
+			"key": "variable_key",
+			"value": ""
+		},
+		{
+			"key": "OTP1",
+			"value": ""
+		},
+		{
+			"key": "SuperAdmin",
+			"value": ""
+		}
+	]
+}

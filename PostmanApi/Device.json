@@ -1,0 +1,2544 @@
+{
+	"info": {
+		"_postman_id": "4b5bdeb5-6a73-4eb0-aca5-7540ad80b8e4",
+		"name": "Device API_New",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "14460718"
+	},
+	"item": [
+		{
+			"name": "1.SuperAdmin_OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000004\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "2.SuperAdmin_Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"SuperAdmin04\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000004\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "3.Hub Managment_OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000010\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "4.Hub Managment_Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"Hub\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000010\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "5.TEST CASE 4152_Security review",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4152 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceStatus\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"filterUpdateStatus\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceContainerType\");\r",
+							"    pm.expect(pm.response.headers.get('X-Content-Type-Options')).to.eql('nosniff');\r",
+							"    pm.expect(pm.response.headers.get('X-XSS-Protection')).to.eql('1; mode=block'); \r",
+							"    pm.response.to.not.have.header(\"Server\");\r",
+							"   \r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device"
+			},
+			"response": []
+		},
+		{
+			"name": "6.TEST CASE 4226_/Device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4226 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceStatus\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"filterUpdateStatus\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceContainerType\");\r",
+							"   \r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device"
+			},
+			"response": []
+		},
+		{
+			"name": "7.[Hub]TEST CASE 4226_/Device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4226 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceStatus\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"filterUpdateStatus\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceContainerType\");\r",
+							"   \r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device"
+			},
+			"response": []
+		},
+		{
+			"name": "8.TEST CASE 4178_v1/Device (409)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4178 passed\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"   \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"createdByUserId\": \"f05b1a16-cf3c-40bd-8ba5-afdc933692b4\",\r\n  \"modifiedByByUserId\": \"f05b1a16-cf3c-40bd-8ba5-afdc933692b4\",\r\n  \"createdDate\": \"2022-03-25T07:43:26.123Z\",\r\n  \"modifiedDate\": \"2022-03-25T07:43:26.123Z\",\r\n  \"id\": \"{{Device}}\",\r\n  \"deviceStatus\": \"Registered\",\r\n  \"deviceStatusUpdatedOn\": \"2022-01-10T07:43:26.123Z\",\r\n  \"deviceContainerType\": \"Device\",\r\n  \"filterUpdateStatus\": \"DeviceCommandNotInitialized\",\r\n  \"filterUpdateStatusUpdatedBy\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"filterUpdatedBy\": {\r\n    \"commandId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n    \"filterUpdateRequest\": {\r\n      \"filters\": [\r\n        \"test\"\r\n      ]\r\n    }\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device"
+			},
+			"response": []
+		},
+		{
+			"name": "9.TEST CASE 4181_/Device/{{DeviceName}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4181 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceStatus\");\r",
+							"    pm.expect(jsonData).to.have.property(\"filterUpdateStatus\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceContainerType\");\r",
+							"    pm.expect(jsonData.id).eqls(pm.collectionVariables.get(\"Device\"));\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}"
+			},
+			"response": []
+		},
+		{
+			"name": "10.[Hub]TEST CASE 4181_/Device/{{DeviceName}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4181 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceStatus\");\r",
+							"    pm.expect(jsonData).to.have.property(\"filterUpdateStatus\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceContainerType\");\r",
+							"    pm.expect(jsonData.id).eqls(pm.collectionVariables.get(\"Device\"));\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}"
+			},
+			"response": []
+		},
+		{
+			"name": "11.TEST CASE 4182_/Device/{{DeviceName}} (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"TEST CASE 4182 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{InvalidDevice}}"
+			},
+			"response": []
+		},
+		{
+			"name": "12.[Hub]TEST CASE 4182_/Device/{{DeviceName}} (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"TEST CASE 4182 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{InvalidDevice}}"
+			},
+			"response": []
+		},
+		{
+			"name": "13.TEST CASE 4251_/Device/provision/{{DeviceName}} (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"var invalid=pm.collectionVariables.get(\"InvalidDevice\");\r",
+							"pm.test(\"TEST CASE 4251 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('DVC_ERR_0006-Given Device '+invalid+' is invalid.')\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/provision/{{InvalidDevice}}"
+			},
+			"response": []
+		},
+		{
+			"name": "14.TEST CASE 4186_/Device/{{DeviceName}}/commands",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4186 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceCommandType\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"filterUpdateRequest\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceContainerType\");\r",
+							"   \r",
+							"});\r",
+							"var id=jsonData[0].id\r",
+							"pm.collectionVariables.set(\"CommandID\",id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/commands"
+			},
+			"response": []
+		},
+		{
+			"name": "15.[Hub] TEST CASE 4186_/Device/{{DeviceName}}/commands",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4186 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceCommandType\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"filterUpdateRequest\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceContainerType\");\r",
+							"   \r",
+							"});\r",
+							"var id=jsonData[0].id\r",
+							"pm.collectionVariables.set(\"CommandID\",id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/commands"
+			},
+			"response": []
+		},
+		{
+			"name": "16.TEST CASE 4187_/Device/{{DeviceName}}/commands (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"TEST CASE 4182 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{InvalidDevice}}/commands"
+			},
+			"response": []
+		},
+		{
+			"name": "17.[Hub] TEST CASE 4187_/Device/{{DeviceName}}/commands (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"TEST CASE 4182 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{InvalidDevice}}/commands"
+			},
+			"response": []
+		},
+		{
+			"name": "18.TEST CASE 4183_/Device/{{DeviceName}}/command/{{CommandID}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4183 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceCommandType\");\r",
+							"    pm.expect(jsonData).to.have.property(\"filterUpdateRequest\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceContainerType\");\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/command/{{CommandID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "19.[Hub]TEST CASE 4183_/Device/{{DeviceName}}/command/{{CommandID}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4183 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceCommandType\");\r",
+							"    pm.expect(jsonData).to.have.property(\"filterUpdateRequest\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceContainerType\");\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/command/{{CommandID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "20.TEST CASE 4184_/Device/{{DeviceName}}/command/{{CommandID}} (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4184 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{InvalidDevice}}/command/{{CommandID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "21.[Hub] TEST CASE 4184_/Device/{{DeviceName}}/command/{{CommandID}} (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4184 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{InvalidDevice}}/command/{{CommandID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "22.TEST CASE 4185_/Device/{{DeviceName}}/command/{{CommandID}} (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4185 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/command/{{invalidCommandID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "23.[Hub] TEST CASE 4185_/Device/{{DeviceName}}/command/{{CommandID}} (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4185 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/command/{{invalidCommandID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "24.TEST CASE 4162_/BrowseDevice/{{Device}}/{{contentproviderID}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4162 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"count\");\r",
+							"    pm.expect(jsonData).to.have.property(\"data\");\r",
+							"\r",
+							"   \r",
+							"});\r",
+							"pm.collectionVariables.set(\"contentid\", jsonData.data[0]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":\"\",\r\n  \"pageSize\": 200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/{{Device}}/{{contentproviderID1}}"
+			},
+			"response": []
+		},
+		{
+			"name": "25.[Hub]TEST CASE 4162_/BrowseDevice/{{Device}}/{{contentproviderID}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4162 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"count\");\r",
+							"    pm.expect(jsonData).to.have.property(\"data\");\r",
+							"\r",
+							"   \r",
+							"});\r",
+							"pm.collectionVariables.set(\"contentid\", jsonData.data[0]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":\"\",\r\n  \"pageSize\": 200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/{{Device}}/{{contentproviderID1}}"
+			},
+			"response": []
+		},
+		{
+			"name": "26.TEST CASE 4163_/BrowseDevice/{{Device}}/{{contentproviderID}} (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4163 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":\"\",\r\n  \"pageSize\": 200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/{{Device}}/{{InvalidContentProviderId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "27.[Hub] TEST CASE 4163_/BrowseDevice/{{Device}}/{{contentproviderID}} (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4163 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":\"\",\r\n  \"pageSize\": 200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/{{Device}}/{{InvalidContentProviderId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "28.TEST CASE 4170_/BrowseDevice/{{Device}}/{{contentproviderID}} (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"var invalid=pm.collectionVariables.get(\"InvalidDevice\");\r",
+							"pm.test(\"TEST CASE 4170 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('DVC_ERR_0006-Given Device '+invalid+' is invalid.')\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":\"\",\r\n  \"pageSize\": 200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/{{InvalidDevice}}/{{contentproviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "29.[Hub] TEST CASE 4170_/BrowseDevice/{{Device}}/{{contentproviderID}} (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"var invalid=pm.collectionVariables.get(\"InvalidDevice\");\r",
+							"pm.test(\"TEST CASE 4170 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('DVC_ERR_0006-Given Device '+invalid+' is invalid.')\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":\"\",\r\n  \"pageSize\": 200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/{{InvalidDevice}}/{{contentproviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "30.TEST CASE 4173_/BrowseDevice/contentavailabilitycount",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4173 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"activeContentCount\");\r",
+							"\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceIds\": [\r\n    \"{{Device}}\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailabilitycount"
+			},
+			"response": []
+		},
+		{
+			"name": "31.[Hub] TEST CASE 4173_/BrowseDevice/contentavailabilitycount",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4173 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"activeContentCount\");\r",
+							"\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceIds\": [\r\n    \"{{Device}}\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailabilitycount"
+			},
+			"response": []
+		},
+		{
+			"name": "32.TEST CASE 4180_/BrowseDevice/contentavailabilitycount (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4180 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceIds\": [\r\n    \"{{InvalidDevice}}\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailabilitycount"
+			},
+			"response": []
+		},
+		{
+			"name": "33.[Hub] TEST CASE 4180_/BrowseDevice/contentavailabilitycount (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4180 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceIds\": [\r\n    \"{{InvalidDevice}}\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailabilitycount"
+			},
+			"response": []
+		},
+		{
+			"name": "34.TEST CASE 4220_/BrowseDevice/contentavailability",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4220 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"activeContentCount\");\r",
+							"\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentId\": \"{{contentid}}\",\r\n  \"deviceIds\": [\r\n    \"{{Device}}\"\r\n  ],\r\n  \"includeActiveContentCount\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailability"
+			},
+			"response": []
+		},
+		{
+			"name": "35.[Hub] TEST CASE 4220_/BrowseDevice/contentavailability",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4220 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"activeContentCount\");\r",
+							"\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentId\": \"{{contentid}}\",\r\n  \"deviceIds\": [\r\n    \"{{Device}}\"\r\n  ],\r\n  \"includeActiveContentCount\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailability"
+			},
+			"response": []
+		},
+		{
+			"name": "36.TEST CASE 4221_/BrowseDevice/contentavailability (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4221 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentId\": \"{{contentid}}\",\r\n  \"deviceIds\": [\r\n    \"{{DeviceName}}\"\r\n  ],\r\n  \"includeActiveContentCount\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailability"
+			},
+			"response": []
+		},
+		{
+			"name": "37.[Hub] TEST CASE 4221_/BrowseDevice/contentavailability (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4221 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentId\": \"{{contentid}}\",\r\n  \"deviceIds\": [\r\n    \"{{DeviceName}}\"\r\n  ],\r\n  \"includeActiveContentCount\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailability"
+			},
+			"response": []
+		},
+		{
+			"name": "38.TEST CASE 4222_/BrowseDevice/contentavailability (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4222 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentId\": \"{{invalidContent}}\",\r\n  \"deviceIds\": [\r\n    \"{{Device}}\"\r\n  ],\r\n  \"includeActiveContentCount\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailability"
+			},
+			"response": []
+		},
+		{
+			"name": "39.[Hub] TEST CASE 4222_/BrowseDevice/contentavailability (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4222 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentId\": \"{{invalidContent}}\",\r\n  \"deviceIds\": [\r\n    \"{{Device}}\"\r\n  ],\r\n  \"includeActiveContentCount\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailability"
+			},
+			"response": []
+		},
+		{
+			"name": "40.TEST CASE 4223_/BrowseDevice/contentavailability (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4223 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentId\": \"529d18bc-00fd-4f3a-ab6b-b92b1402d156\",\r\n  \"deviceIds\": [\r\n    \"{{InvalidDevice}}\"\r\n  ],\r\n  \"includeActiveContentCount\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailability"
+			},
+			"response": []
+		},
+		{
+			"name": "41.[Hub] TEST CASE 4223_/BrowseDevice/contentavailability (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4223 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentId\": \"529d18bc-00fd-4f3a-ab6b-b92b1402d156\",\r\n  \"deviceIds\": [\r\n    \"{{InvalidDevice}}\"\r\n  ],\r\n  \"includeActiveContentCount\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/BrowseDevice/contentavailability"
+			},
+			"response": []
+		},
+		{
+			"name": "42.TEST CASE 4235_/DeviceContent/deleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4235 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"date\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceId\": \"{{Device}}\",\r\n  \"contents\": [\r\n    {\r\n      \"contentId\": \"{{contentid}}\",\r\n      \"operationTime\": \"{{date}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/deleted"
+			},
+			"response": []
+		},
+		{
+			"name": "43.TEST CASE 4236_/DeviceContent/deleted (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"var invalid=pm.collectionVariables.get(\"InvalidDevice\");\r",
+							"pm.test(\"TEST CASE 4236 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('DVC_ERR_0006-Given Device '+invalid+' is invalid.')\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"date\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceId\": \"{{InvalidDevice}}\",\r\n  \"contents\": [\r\n    {\r\n      \"contentId\": \"{{contentid}}\",\r\n      \"operationTime\": \"{{date}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/deleted"
+			},
+			"response": []
+		},
+		{
+			"name": "44.TEST CASE 4238_/DeviceContent/deleted (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"var invalid=pm.collectionVariables.get(\"invalidContent\");;\r",
+							"pm.test(\"TEST CASE 4238 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"date\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceId\": \"{{Device}}\",\r\n  \"contents\": [\r\n    {\r\n      \"contentId\": \"{{invalidContent}}\",\r\n      \"operationTime\": \"{{date}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/deleted"
+			},
+			"response": []
+		},
+		{
+			"name": "45.TEST CASE 4228_/DeviceContent/downloaded",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"date\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4228 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceId\": \"{{Device}}\",\r\n  \"contents\": [\r\n    {\r\n      \"contentId\": \"{{contentid}}\",\r\n      \"operationTime\": \"{{date}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/downloaded"
+			},
+			"response": []
+		},
+		{
+			"name": "46.TEST CASE 4233_/DeviceContent/downloaded (400)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"date\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"var invalid=pm.collectionVariables.get(\"InvalidDevice\");\r",
+							"pm.test(\"TEST CASE 4233 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('DVC_ERR_0006-Given Device '+invalid+' is invalid.')\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceId\": \"{{InvalidDevice}}\",\r\n  \"contents\": [\r\n    {\r\n      \"contentId\": \"{{contentid}}\",\r\n      \"operationTime\": \"{{date}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/downloaded"
+			},
+			"response": []
+		},
+		{
+			"name": "47.TEST CASE 4234_/DeviceContent/downloaded (400)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"date\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"var invalid=pm.collectionVariables.get(\"invalidContent\");\r",
+							"pm.test(\"TEST CASE 4234 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceId\": \"{{Device}}\",\r\n  \"contents\": [\r\n    {\r\n      \"contentId\": \"{{invalidContent}}\",\r\n      \"operationTime\": \"{{date}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/downloaded"
+			},
+			"response": []
+		},
+		{
+			"name": "48.TEST CASE 4239_/DeviceContent/{{Device}}/{{contentproviderID}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4239 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"totalActiveBroacastedContent\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceFiltersUsed\");\r",
+							"    pm.expect(jsonData).to.have.property(\"totalValidActiveBroacastedContent\");\r",
+							"    pm.expect(jsonData).to.have.property(\"totalValidActiveAvailableContent\");\r",
+							"\r",
+							"\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/{{Device}}/{{contentproviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "49.[Hub] TEST CASE 4239_/DeviceContent/{{Device}}/{{contentproviderID}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4239 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"totalActiveBroacastedContent\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceId\");\r",
+							"    pm.expect(jsonData).to.have.property(\"deviceFiltersUsed\");\r",
+							"    pm.expect(jsonData).to.have.property(\"totalValidActiveBroacastedContent\");\r",
+							"    pm.expect(jsonData).to.have.property(\"totalValidActiveAvailableContent\");\r",
+							"\r",
+							"\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/{{Device}}/{{contentproviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "50.TEST CASE 4241_/DeviceContent/{{Device}}/{{contentproviderID}} (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"var invalid=pm.collectionVariables.get(\"InvalidDevice\");\r",
+							"pm.test(\"TEST CASE 4241 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('DVC_ERR_0006-Given Device '+invalid+' is invalid.')\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/{{InvalidDevice}}/{{contentproviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "51.[Hub] TEST CASE 4241_/DeviceContent/{{Device}}/{{contentproviderID}} (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"var invalid=pm.collectionVariables.get(\"InvalidDevice\");\r",
+							"pm.test(\"TEST CASE 4241 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('DVC_ERR_0006-Given Device '+invalid+' is invalid.')\r",
+							"   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/{{InvalidDevice}}/{{contentproviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "52.TEST CASE 4242_/DeviceContent/{{Device}}/{{contentproviderID}} (400) Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" jsonData = pm.response.json();\r",
+							"pm.test(\"TEST CASE 4242 Passed\", function () { \r",
+							"    \r",
+							"    pm.response.to.have.status(404); \r",
+							"     pm.expect(jsonData[0]).to.equal('DVC_ERR_0011-No broadcasted content found for given content provider.')\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/{{Device}}/{{InvalidContentProviderId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "53. [Hub] TEST CASE 4242_/DeviceContent/{{Device}}/{{contentproviderID}} (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" jsonData = pm.response.json();\r",
+							"pm.test(\"TEST CASE 4242 Passed\", function () { \r",
+							"    \r",
+							"    pm.response.to.have.status(404); \r",
+							"     pm.expect(jsonData[0]).to.equal('DVC_ERR_0011-No broadcasted content found for given content provider.')\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/DeviceContent/{{Device}}/{{InvalidContentProviderId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "54.TEST CASE 4244_/Device/filterupdate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4244 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    \r",
+							"    \r",
+							"   \r",
+							"});\r",
+							"setTimeout(function(){}, 30000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceIds\": [\r\n    \"{{Device}}\"\r\n  ],\r\n  \"filters\": [\r\n    \"English\", \"Hindi\", \"Marathi\", \"Gujarati\", \"Kannada\", \"Tamil\", \"Telugu\", \"Malayalam\", \"Central_India\",\"West_India\",\"North_India\",\"South_India\",\"{{filter}}\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/filterupdate"
+			},
+			"response": []
+		},
+		{
+			"name": "55.Get Command ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"for(var i=0;i<=20;i++)\r",
+							"{\r",
+							"//var deviceCommandStatus = pm.response.json()\r",
+							"    if(jsonData[i].deviceCommandStatus ==\"DeviceCommandPushedToDevice\")\r",
+							"    {\r",
+							"        var CommandID=jsonData[i].id;\r",
+							"    }\r",
+							"    else\r",
+							"    {\r",
+							"        var CommandID1=jsonData[i].id;\r",
+							"    }\r",
+							"}\r",
+							"pm.collectionVariables.set(\"CommandID\",CommandID);\r",
+							"pm.collectionVariables.set(\"CommandID1\",CommandID1);\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/commands"
+			},
+			"response": []
+		},
+		{
+			"name": "57.TEST CASE 4249_/Device/{{Device}}/cancelcommand/{{CommandID}} Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" jsonData = pm.response.json();\r",
+							"pm.test(\"TEST CASE 4249 Passed\", function () { \r",
+							"    \r",
+							"    pm.response.to.have.status(400); \r",
+							"     //pm.expect(jsonData[0]).to.equal('DVC_ERR_0007-DeviceCommandStatus should be DeviceCommandPushedToDevice')\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/cancelcommand/{{CommandID1}}"
+			},
+			"response": []
+		},
+		{
+			"name": "58.Filter Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"setTimeout(function(){}, 30000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceIds\": [\r\n    \"{{Device}}\"\r\n  ],\r\n  \"filters\": [\r\n    \"English\", \"Hindi\", \"Marathi\", \"Gujarati\", \"Kannada\", \"Tamil\", \"Telugu\", \"Malayalam\", \"Central_India\",\"West_India\",\"North_India\",\"South_India\",\"{{filter}}\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/filterupdate"
+			},
+			"response": []
+		},
+		{
+			"name": "59.Get Command ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"for(var i=0;i<=20;i++)\r",
+							"{\r",
+							"    if(jsonData[i].deviceCommandStatus==\"DeviceCommandPushedToDevice\")\r",
+							"    {\r",
+							"        var CommandID=jsonData[i].id;\r",
+							"        break;\r",
+							"    }\r",
+							"}\r",
+							"for(var i=0;i<=20;i++)\r",
+							"{\r",
+							"    if(jsonData[i].deviceCommandStatus!=\"DeviceCommandPushedToDevice\")\r",
+							"    {\r",
+							"        var CommandID1=jsonData[i].id;\r",
+							"        break;\r",
+							"    }\r",
+							"}\r",
+							"pm.collectionVariables.set(\"CommandID\",CommandID);\r",
+							"pm.collectionVariables.set(\"CommandID1\",CommandID1);\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/commands"
+			},
+			"response": []
+		},
+		{
+			"name": "61.TEST CASE 4247_/Device/completecommand (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" jsonData = pm.response.json();\r",
+							"pm.test(\"TEST CASE 4247 Passed\", function () { \r",
+							"    \r",
+							"    pm.response.to.have.status(400); \r",
+							"     //pm.expect(jsonData[0]).to.equal('DVC_ERR_0007-DeviceCommandStatus should be DeviceCommandPushedToDevice')\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceId\": \"{{Device}}\",\r\n  \"commandId\": \"{{CommandID1}}\",\r\n  \"isFailed\": true,\r\n  \"failureReason\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/completecommand"
+			},
+			"response": []
+		},
+		{
+			"name": "62.[Hub]  TEST CASE 4244_/Device/filterupdate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 4244 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    \r",
+							"    \r",
+							"   \r",
+							"});\r",
+							"setTimeout(function(){}, 30000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"deviceIds\": [\r\n    \"{{Device}}\"\r\n  ],\r\n  \"filters\": [\r\n    \"English\", \"Hindi\", \"Marathi\", \"Gujarati\", \"Kannada\", \"Tamil\", \"Telugu\", \"Malayalam\", \"Central_India\",\"West_India\",\"North_India\",\"South_India\",\"{{filter}}\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/filterupdate"
+			},
+			"response": []
+		},
+		{
+			"name": "63.[Hub] Get Command ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"for(var i=0;i<=20;i++)\r",
+							"{\r",
+							"    if(jsonData[i].deviceCommandStatus==\"DeviceCommandPushedToDevice\")\r",
+							"    {\r",
+							"        var CommandID=jsonData[i].id;\r",
+							"        break;\r",
+							"    }\r",
+							"}\r",
+							"for(var i=0;i<=20;i++)\r",
+							"{\r",
+							"    if(jsonData[i].deviceCommandStatus!=\"DeviceCommandPushedToDevice\")\r",
+							"    {\r",
+							"        var CommandID1=jsonData[i].id;\r",
+							"        break;\r",
+							"    }\r",
+							"}\r",
+							"pm.collectionVariables.set(\"CommandID\",CommandID);\r",
+							"pm.collectionVariables.set(\"CommandID1\",CommandID1);\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/commands"
+			},
+			"response": []
+		},
+		{
+			"name": "65.[Hub] TEST CASE 4249_/Device/{{Device}}/cancelcommand/{{CommandID}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" jsonData = pm.response.json();\r",
+							"pm.test(\"TEST CASE 4249 Passed\", function () { \r",
+							"    \r",
+							"    pm.response.to.have.status(400); \r",
+							"    \r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Hub}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/Deviceapi/api/v1/Device/{{Device}}/cancelcommand/{{CommandID1}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Device",
+			"value": "EKDSD4825MP00031"
+		},
+		{
+			"key": "InvalidDevice",
+			"value": "TESTTESTTEST"
+		},
+		{
+			"key": "invalidCommandID",
+			"value": "67c43e58-0338-44b6-b180-862b0f2bb821"
+		},
+		{
+			"key": "InvalidContentProviderId",
+			"value": "67c43e58-0338-44b6-b180-862b0f2bb821"
+		},
+		{
+			"key": "invalidContent",
+			"value": "67c43e58-0338-44b6-b180-862b0f2bb821"
+		},
+		{
+			"key": "OTP",
+			"value": ""
+		},
+		{
+			"key": "SuperAdmin04",
+			"value": ""
+		},
+		{
+			"key": "Hub",
+			"value": ""
+		},
+		{
+			"key": "CommandID",
+			"value": ""
+		},
+		{
+			"key": "contentid",
+			"value": ""
+		},
+		{
+			"key": "date",
+			"value": ""
+		},
+		{
+			"key": "CommandID1",
+			"value": ""
+		}
+	]
+}

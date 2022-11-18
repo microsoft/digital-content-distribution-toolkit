@@ -1,0 +1,2706 @@
+{
+	"info": {
+		"_postman_id": "dad2ef61-348b-4912-adfe-ba62cb66dd43",
+		"name": "User API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "14460718"
+	},
+	"item": [
+		{
+			"name": "AUTO-1.SuperAdmin_OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000004\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "AUTO-2. SuperAdmin_Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"SuperAdmin\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000004\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "AUTO-RetailerManagement_OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911111111130\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "AUTO-RetailerManagement ,Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"RetailerManagementToken\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911111111130\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "AUTO-User,Token OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000012\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "AUTO-USER,Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"BT user\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000012\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "2455 User Onboarding",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 and User id is created and user is onboarded\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"})\r",
+							"\r",
+							"pm.environment.set(\"newuserid\",pm.response.json());\r",
+							"console.log(pm.response.json());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"Jay\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "2456 User Onboarding",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 & Repsonse body expected\", function () {\r",
+							"       pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"Jay\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "4489 User iv Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 400 Bad Request & Validation errors found,check console for detailed info\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(pm.response.text()).to.include(\"errors\");\r",
+							"});\r",
+							"\r",
+							"var jsonArray = pm.response.json().errors.UserName;\r",
+							" for (var i = 0; i < jsonArray.length; i++) \r",
+							" {\r",
+							"    \r",
+							"       console.log(jsonArray[i]);\r",
+							" }  "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"{{invalidname}}\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "2457 User Onboarding ivbody",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request & Body contains errors\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(pm.response.text()).to.include(\"errors\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"userName\": \"{{invalidname}}\",\r\n  \"channelId\": \"Consumer App\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "2458  User Onboarding BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"Jay\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "2463 User/user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 and User Data is retrieved\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"\r",
+							"//Validation to check UserId\r",
+							"\r",
+							"});\r",
+							"var Data=pm.response.json();\r",
+							"//pm.expect(Data.userId).to.eql(pm.collectionVariables.get(\"newuserid\"));\r",
+							"\r",
+							"console.log(pm.environment.get(\"newuserid\"));\r",
+							"console.log(Data.userId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"{{bynum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/user"
+			},
+			"response": []
+		},
+		{
+			"name": "2464 User/user iv num",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 & Number not found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"    pm.expect(pm.response.text()).to.include(\"Not Found\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"{{invalidnum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/user"
+			},
+			"response": []
+		},
+		{
+			"name": "2465 (A)User/user iv role",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403 forbidden\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"{{bynum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/user"
+			},
+			"response": []
+		},
+		{
+			"name": "2465(B) User/user iv role Retailer token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403 forbidden\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"{{bynum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/user"
+			},
+			"response": []
+		},
+		{
+			"name": "2466 User/user BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"{{bynum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/user"
+			},
+			"response": []
+		},
+		{
+			"name": "2467 UserBasic/me",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 and Userbody/Repsonse Body is present\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       var Data=pm.response.json();\r",
+							"       setTimeout(function(){},500);\r",
+							"pm.expect(Data.userId).to.eql(pm.environment.get(\"newuserid\"));\r",
+							"console.log(pm.environment.get(\"newuserid\"));\r",
+							"    \r",
+							"    });\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/me"
+			},
+			"response": []
+		},
+		{
+			"name": "2468 UserBasic/me  BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/me"
+			},
+			"response": []
+		},
+		{
+			"name": "4102 Security Review",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 and doesnt have server\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.have.header(\"X-Content-Type-Options\");\r",
+							"    pm.response.to.be.header(\"X-Content-Type-Options\",\"nosniff\");\r",
+							"    pm.response.to.have.header(\"X-XSS-Protection\");\r",
+							"    pm.response.to.be.header(\"X-XSS-Protection\",\"1; mode=block\");\r",
+							"    pm.response.to.not.have.header(\"Server\");\r",
+							"    });\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/me"
+			},
+			"response": []
+		},
+		{
+			"name": "3456 User/ Edit Profile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204)\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Jay\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/profile"
+			},
+			"response": []
+		},
+		{
+			"name": "2467 UserBasic/me profile name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 and Userbody/Repsonse Body is present\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/me"
+			},
+			"response": []
+		},
+		{
+			"name": "4490 User Edit Profile ivname",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request & Validation errors found,check console for detailed info\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(pm.response.text()).to.include(\"errors\");\r",
+							"\r",
+							"var jsonArray = pm.response.json().errors.Name;\r",
+							" for (var i = 0; i < jsonArray.length; i++) \r",
+							" {\r",
+							"    \r",
+							"       console.log(jsonArray[i]);\r",
+							" }  \r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{invalidname}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/profile"
+			},
+			"response": []
+		},
+		{
+			"name": "3633 DataExport/create BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/dataexport/create"
+			},
+			"response": []
+		},
+		{
+			"name": "3634 DataExport/create",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(function(){},500);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/dataexport/create"
+			},
+			"response": []
+		},
+		{
+			"name": "3639 DataExport/create same user error",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400:BadRequest,Request already exists \", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(pm.response.text()).to.include(\"USR_ERR_021-In-Process Request already exists\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/dataexport/create"
+			},
+			"response": []
+		},
+		{
+			"name": "3637 Dataexport/List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 & Data export List is present\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"  \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/dataexport/list"
+			},
+			"response": []
+		},
+		{
+			"name": "3643 Dataexport/List BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-stage.kaiza.la/userapi/api/v1/User/dataexport/list"
+			},
+			"response": []
+		},
+		{
+			"name": "3636 Dataexport/complete",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"setTimeout(function(){},500); \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"{{bynum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-stage.kaiza.la/userapi/api/v1/User/dataexport/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "3635 Dataexport/complete error",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request and Body matches string for already export request completed user\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(pm.response.text()).to.include(\r",
+							"        \"USR_ERR_022-Export request should be in submitted state.\");\r",
+							"});\r",
+							"setTimeout(function(){},500); \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"{{bynum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-stage.kaiza.la/userapi/api/v1/User/dataexport/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "2467 UserBasic/me for command id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(function(){},800); \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 & Userbody/Repsonse Body is present\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"pm.collectionVariables.set(\"user_id\",pm.response.json().userId);\r",
+							"console.log(pm.response.json().userId)\r",
+							"pm.collectionVariables.set(\"command_id\",pm.response.json().dataExportedBy.commandId);\r",
+							"console.log(pm.response.json().dataExportedBy.commandId)\r",
+							"setTimeout(function(){},200); \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/me"
+			},
+			"response": []
+		},
+		{
+			"name": "3635(B) Dataexport/complete error -no req",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request & Body matches string for no export request present for  user as it is completed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"99663973777\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/dataexport/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "3642 Dataexport/complete BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}45"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"7981372970\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/dataexport/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "3638 Command for data export",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"     pm.response.to.not.be.error;\r",
+							"\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"{{bynum}}\",\r\n   \"userId\": \"{{user_id}}\",\r\n  \"commandId\": \"{{command_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/command"
+			},
+			"response": []
+		},
+		{
+			"name": "4485iv body Validations create Retailer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 \", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.Name);\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.RetailerId);\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.PhoneNumber);\r",
+							"       \r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function generateRandomString(length) {\r",
+							"var text = \"\";\r",
+							"var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\";\r",
+							"\r",
+							"   for (var i = 0; i < length; i++)\r",
+							"\r",
+							"   text += possible.charAt(Math.floor(Math.random() * possible.length));\r",
+							"\r",
+							"   return text;\r",
+							"}\r",
+							"\r",
+							"var name=generateRandomString(5);\r",
+							"pm.environment.set(\"newretailer\", name);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"retailerId\":\"******\",\r\n  \"userId\": \"f147f7f1-25d9-4165-bef9-51e9048d44c7\",\r\n  \"phoneNumber\": \"1310000&&5\",\r\n  \"name\": \"&*^&*^&\",\r\n  \"address\": {\r\n    \"address1\": \"string\",\r\n    \"address2\": \"string\",\r\n    \"address3\": \"string\",\r\n    \"city\": \"string\",\r\n    \"state\": \"string\",\r\n    \"pinCode\": 999999,\r\n    \"mapLocation\": {\r\n      \"latitude\": 0,\r\n      \"longitude\": 0\r\n    }\r\n  },\r\n  \"additionalAttributes\": {\r\n    \"additionalProp1\": \"string\",\r\n    \"additionalProp2\": \"string\",\r\n    \"additionalProp3\": \"string\"\r\n  }\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/retailer"
+			},
+			"response": []
+		},
+		{
+			"name": "2460 create Retailer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//var retailname = pm.response.text();\r",
+							"//pm.environment.set(\"newretailers\", retailname);\r",
+							"//console.log(retailname);\r",
+							"\r",
+							"pm.test(\"Status code is 200 & Retailer is created\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							" });\r",
+							" setTimeout(function(){},1500); \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function generateRandomString(length) {\r",
+							"var text = \"\";\r",
+							"var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\";\r",
+							"\r",
+							"   for (var i = 0; i < length; i++)\r",
+							"\r",
+							"   text += possible.charAt(Math.floor(Math.random() * possible.length));\r",
+							"\r",
+							"   return text;\r",
+							"}\r",
+							"var name=generateRandomString(5);\r",
+							"pm.collectionVariables.set(\"retailer\", name);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"retailerId\": \"{{retailer}}\",\r\n  \"userId\":\"{{newuserid}}\",\r\n  \"phoneNumber\": \"1310000012\",\r\n  \"name\": \"{{retailer}}\",\r\n  \"address\": {\r\n    \"address1\": \"string\",\r\n    \"address2\": \"string\",\r\n    \"address3\": \"string\",\r\n    \"city\": \"string\",\r\n    \"state\": \"string\",\r\n    \"pinCode\": 999999,\r\n    \"mapLocation\": {\r\n      \"latitude\": 0,\r\n      \"longitude\": 0\r\n    }\r\n  },\r\n  \"additionalAttributes\": {\r\n    \"additionalProp1\": \"string\",\r\n    \"additionalProp2\": \"string\",\r\n    \"additionalProp3\": \"string\"\r\n  }\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/retailer"
+			},
+			"response": []
+		},
+		{
+			"name": "Get referral code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"referral\",pm.response.json().referralCode);\r",
+							"\r",
+							"console.log(pm.response.json().referralCode);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    //setTimeout(function(){},500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(function(){},1500);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerId/AUTO-Auto_Retailer_Auto"
+			},
+			"response": []
+		},
+		{
+			"name": "2469 Assign Retailer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"    setTimeout(function(){},500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(function(){},2500);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/assignretailer/{{referral}}"
+			},
+			"response": []
+		},
+		{
+			"name": "2461 (A)create Retailer iv reqbody(name)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"    pm.response.to.have.status(400)\r",
+							"    pm.response.to.be.error;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"retailerId\":\"{{invalidname}}\",\r\n  \"userId\": \"f147f7f1-25d9-4165-bef9-51e9048d44c7\",\r\n  \"phoneNumber\": \"1310000099\",\r\n  \"name\": \"boat\",\r\n  \"address\": {\r\n    \"address1\": \"strin g\",\r\n    \"address2\": \"string\",\r\n    \"address3\": \"string\",\r\n    \"city\": \"string\",\r\n    \"state\": \"string\",\r\n    \"pinCode\": 999999,\r\n    \"mapLocation\": {\r\n      \"latitude\": 0,\r\n      \"longitude\": 0\r\n    }\r\n  },\r\n  \"additionalAttributes\": {\r\n    \"additionalProp1\": \"string\",\r\n    \"additionalProp2\": \"string\",\r\n    \"additionalProp3\": \"string\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/retailer"
+			},
+			"response": []
+		},
+		{
+			"name": "2461(B) create Retailer iv reqbody(num) Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"    pm.response.to.have.status(400)\r",
+							"    pm.response.to.be.error;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"retailerId\":\"wholesale\",\r\n  \"userId\": \"f147f7f1-25d9-4165-bef9-51e9048d44c7\",\r\n  \"phoneNumber\": \"{{invalidnum}}\",\r\n  \"name\": \"wholesale\",\r\n  \"address\": {\r\n    \"address1\": \"strin g\",\r\n    \"address2\": \"string\",\r\n    \"address3\": \"string\",\r\n    \"city\": \"string\",\r\n    \"state\": \"string\",\r\n    \"pinCode\": 999999,\r\n    \"mapLocation\": {\r\n      \"latitude\": 0,\r\n      \"longitude\": 0\r\n    }\r\n  },\r\n  \"additionalAttributes\": {\r\n    \"additionalProp1\": \"string\",\r\n    \"additionalProp2\": \"string\",\r\n    \"additionalProp3\": \"string\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/retailer"
+			},
+			"response": []
+		},
+		{
+			"name": "2462 create Retailer ivBT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}jj"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"retailerId\":\"boat\",\r\n  \"userId\": \"f147f7f1-25d9-4165-bef9-51e9048d44c7\",\r\n  \"phoneNumber\": \"7981372970\",\r\n  \"name\": \"boat\",\r\n  \"address\": {\r\n    \"address1\": \"string\",\r\n    \"address2\": \"string\",\r\n    \"address3\": \"string\",\r\n    \"city\": \"string\",\r\n    \"state\": \"string\",\r\n    \"pinCode\": 999999,\r\n    \"mapLocation\": {\r\n      \"latitude\": 0,\r\n      \"longitude\": 0\r\n    }\r\n  },\r\n  \"additionalAttributes\": {\r\n    \"additionalProp1\": \"string\",\r\n    \"additionalProp2\": \"string\",\r\n    \"additionalProp3\": \"string\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/retailer"
+			},
+			"response": []
+		},
+		{
+			"name": "2459 create Retailer again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request.Response body matches required string \", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"  //  pm.expect(pm.response.text()).to.include(\"Retailer Already Exists\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"retailerId\": \"{{retailer}}\",\r\n  \"userId\": \"{{userid-retailer}}\",\r\n  \"phoneNumber\": \"1310000012\",\r\n  \"name\": \"{{retailer}}\",\r\n  \"address\": {\r\n    \"address1\": \"string\",\r\n    \"address2\": \"string\",\r\n    \"address3\": \"string\",\r\n    \"city\": \"string\",\r\n    \"state\": \"string\",\r\n    \"pinCode\": 999999,\r\n    \"mapLocation\": {\r\n      \"latitude\": 0,\r\n      \"longitude\": 0\r\n    }\r\n  },\r\n  \"additionalAttributes\": {\r\n    \"additionalProp1\": \"string\",\r\n    \"additionalProp2\": \"string\",\r\n    \"additionalProp3\": \"string\"\r\n  }\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/retailer"
+			},
+			"response": []
+		},
+		{
+			"name": "2470 iv referral codeAssign Retailer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-stage.kaiza.la/userapi/api/v1/UserBasic/assignretailer/{{ivreferral_key}}"
+			},
+			"response": []
+		},
+		{
+			"name": "2471 Multiple times Assign Retailer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/assignretailer/{{referral}}"
+			},
+			"response": []
+		},
+		{
+			"name": "2472  Assign Retailer BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/assignretailer/{{referrals}}"
+			},
+			"response": []
+		},
+		{
+			"name": "2473 Summary Retailer BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/summary/retailer1?startDate=20210701&endDate=20220224",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"userapi",
+						"api",
+						"v1",
+						"User",
+						"summary",
+						"retailer1"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "20210701"
+						},
+						{
+							"key": "endDate",
+							"value": "20220224"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2475 Summary wrong Dates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404,Not found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/summary/retailer1?startDate=20224545&endDate=20224550",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"userapi",
+						"api",
+						"v1",
+						"User",
+						"summary",
+						"retailer1"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "20224545"
+						},
+						{
+							"key": "endDate",
+							"value": "20224550"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2476 Summary Iv retailer id need to check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/summary/***?startDate=20210701&endDate=2022022",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"userapi",
+						"api",
+						"v1",
+						"User",
+						"summary",
+						"***"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "20210701"
+						},
+						{
+							"key": "endDate",
+							"value": "2022022"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2477 User Summary Retailer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/summary/retaailer1?startDate=20210701&endDate=20220710",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"userapi",
+						"api",
+						"v1",
+						"User",
+						"summary",
+						"retaailer1"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "20210701"
+						},
+						{
+							"key": "endDate",
+							"value": "20220710"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2478  Summary Retailer ivDate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    //pm.expect(pm.response.text()).to.include(\"One or more validation errors occurred\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/summary/retailer1?startDate=20220504&endDate=20220404",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"userapi",
+						"api",
+						"v1",
+						"User",
+						"summary",
+						"retailer1"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "20220504"
+						},
+						{
+							"key": "endDate",
+							"value": "20220404"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4426 Command BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"1310000099\",\r\n   \"userId\": \"{{user_id}}\",\r\n  \"commandId\": \"{{command_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/command"
+			},
+			"response": []
+		},
+		{
+			"name": "4425 Command wrng command id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.have.jsonBody(\"errors\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"9966397377\",\r\n   \"userId\": \"{{user_id}}\",\r\n  \"commandId\": \"9a4052b8-f0db-4147-bfa7-f7b714115e13\"\r\n}\r\n\r\n//wrong id ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/command"
+			},
+			"response": []
+		},
+		{
+			"name": "4425 Command with ph no id.",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"9247674758\",\r\n   \"userId\": \"{{user_id}}\",\r\n  \"commandId\": \"{{command_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/command"
+			},
+			"response": []
+		},
+		{
+			"name": "4499 (A)Delete user/complete No Req",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Delete Req doesnt exist for this number\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"9247674758\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/datadelete/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "4499(B) Dataexport/complete iv details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"7981372971\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/dataexport/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "4493 Create Delete user Req",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"  });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/user"
+			},
+			"response": []
+		},
+		{
+			"name": "4501 User Onboarding ,while user deletion req is active",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request & Repsonse body expected\", function () {\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"      pm.response.to.be.an(\"Object\");\r",
+							"    pm.expect(pm.response.text()).to.include(\"Account deletion in progress\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT user}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"Jay\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "4495  Delete user BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/user"
+			},
+			"response": []
+		},
+		{
+			"name": "4496 DataDelete/List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/datadelete/list"
+			},
+			"response": []
+		},
+		{
+			"name": "4497 DataDelete/List BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-stage.kaiza.la/userapi/api/v1/User/datadelete/list"
+			},
+			"response": []
+		},
+		{
+			"name": "4498 Delete user/complete",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"{{bynum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/datadelete/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "4498 Delete user/complete Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401,Invalid Bearer token \", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{BT invalid token }}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"{{bynum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/datadelete/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "4500 Command for Data Delete req",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad request\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"phoneNumber\": \"{{bynum}}\"\r\n  \"userId\": \"{{user_id}}\",\r\n  \"commandId\": \"{{command_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/command"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cm46bWljcm9zb2Z0OmNyZWRlbnRpYWxzIjoie1wicGhvbmVOdW1iZXJcIjpcIis5MTk5NjYzOTczNzdcIixcImNJZFwiOlwiNjZhNTA2YTEtMDQ0Yy00Njg5LTg5NWUtZTQxNDM2N2ZmODFkXCIsXCJ0ZXN0U2VuZGVyXCI6XCJmYWxzZVwiLFwiYXBwTmFtZVwiOlwiY29tLm1pY3Jvc29mdC5tb2JpbGUucG9seW1lci5taXNodHVcIixcInBlcm1pc3Npb25zXCI6XCIxLjFcIixcImFwcGxpY2F0aW9uVHlwZVwiOjMsXCJ0b2tlblZhbGlkRnJvbVwiOjE2NDU3NzIxOTY5Njh9IiwidWlkIjoiTW9iaWxlQXBwc1NlcnZpY2U6NjQ0N2RhNGYtYTRhOS00NWZiLWJlZjAtYzFmYTcwZWY0MTRjIiwidmVyIjoiMiIsIm5iZiI6MTY0NTc3MjE5NiwiZXhwIjoxNjQ4MzY0MTk2LCJpYXQiOjE2NDU3NzIxOTYsImlzcyI6InVybjptaWNyb3NvZnQ6d2luZG93cy1henVyZTp6dW1vIiwiYXVkIjoidXJuOm1pY3Jvc29mdDp3aW5kb3dzLWF6dXJlOnp1bW8ifQ.2CbeRPc9KuuR-Plhe8Zne74WCXioPqCKqSveP4VHUsQ"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "retailer_key",
+			"value": ""
+		},
+		{
+			"key": "referral_key",
+			"value": ""
+		},
+		{
+			"key": "user_id",
+			"value": "5ed7443f-16de-4eb5-a4e1-4d5f925b335e"
+		},
+		{
+			"key": "command_id",
+			"value": "5418afc2-4d10-447c-902f-a63fd44f9f50"
+		},
+		{
+			"key": "ans",
+			"value": ""
+		},
+		{
+			"key": "createdretailer",
+			"value": ""
+		},
+		{
+			"key": "referral",
+			"value": null
+		},
+		{
+			"key": "newuserid",
+			"value": ""
+		},
+		{
+			"key": "newretailer",
+			"value": ""
+		},
+		{
+			"key": "retailer",
+			"value": "ZnnyN"
+		},
+		{
+			"key": "OTP",
+			"value": "423714"
+		},
+		{
+			"key": "SuperAdmin",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cm46bWljcm9zb2Z0OmNyZWRlbnRpYWxzIjoie1wicGhvbmVOdW1iZXJcIjpcIis5MTEzMTAwMDAwMDRcIixcImNJZFwiOlwiZGRiMTEwYmEtNzVhMC00ODRiLWJkYzQtZWJlMGNhMjhmZTUyXCIsXCJ0ZXN0U2VuZGVyXCI6XCJ0cnVlXCIsXCJhcHBOYW1lXCI6XCJjb20ubWljcm9zb2Z0Lm1vYmlsZS5wb2x5bWVyLm1pc2h0dVwiLFwicGVybWlzc2lvbnNcIjpcIjEuMVwiLFwiYXBwbGljYXRpb25UeXBlXCI6MyxcInRva2VuVmFsaWRGcm9tXCI6MTY1NzUzOTE4OTgxOSxcInRlc3RVc2VyUHJvcGVydGllc1wiOlwie1xcXCJ0dVxcXCI6dHJ1ZX1cIn0iLCJ1aWQiOiJNb2JpbGVBcHBzU2VydmljZToyYjhiMGI5YS02ZTQwLTQxMWItODA1OS0zMmViMGI2YjMzN2YiLCJ2ZXIiOiIyIiwibmJmIjoxNjU3NTM5MTg5LCJleHAiOjE2NjAxMzExODksImlhdCI6MTY1NzUzOTE4OSwiaXNzIjoidXJuOm1pY3Jvc29mdDp3aW5kb3dzLWF6dXJlOnp1bW8iLCJhdWQiOiJ1cm46bWljcm9zb2Z0OndpbmRvd3MtYXp1cmU6enVtbyJ9.bYaSSLliV2tIC4cYkNI9a7ABOl7CI6aDaLlVqzywlgw"
+		},
+		{
+			"key": "BT user",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cm46bWljcm9zb2Z0OmNyZWRlbnRpYWxzIjoie1wicGhvbmVOdW1iZXJcIjpcIis5MTEzMTAwMDAwOTlcIixcImNJZFwiOlwiZmE4MTZiMzctNjg4NC00YThkLWJjZTEtYzA4ZDZlYWM4ZjM2XCIsXCJ0ZXN0U2VuZGVyXCI6XCJ0cnVlXCIsXCJhcHBOYW1lXCI6XCJjb20ubWljcm9zb2Z0Lm1vYmlsZS5wb2x5bWVyLm1pc2h0dVwiLFwicGVybWlzc2lvbnNcIjpcIjEuMVwiLFwiYXBwbGljYXRpb25UeXBlXCI6MyxcInRva2VuVmFsaWRGcm9tXCI6MTY1NzUzOTE5MDY5NCxcInRlc3RVc2VyUHJvcGVydGllc1wiOlwie1xcXCJ0dVxcXCI6dHJ1ZX1cIn0iLCJ1aWQiOiJNb2JpbGVBcHBzU2VydmljZTphZmVjNTUwZS1mOTgyLTQzMDUtYjJmZC01NDFkMDBlNGFiOTQiLCJ2ZXIiOiIyIiwibmJmIjoxNjU3NTM5MTkwLCJleHAiOjE2NjAxMzExOTAsImlhdCI6MTY1NzUzOTE5MCwiaXNzIjoidXJuOm1pY3Jvc29mdDp3aW5kb3dzLWF6dXJlOnp1bW8iLCJhdWQiOiJ1cm46bWljcm9zb2Z0OndpbmRvd3MtYXp1cmU6enVtbyJ9.Y3k_7RG3xZVFNWzIralVDLu7HOn0vz_WSCUmAg2mZ-o"
+		},
+		{
+			"key": "userid-retailer",
+			"value": "pm.response.json().userId"
+		},
+		{
+			"key": "variable_key",
+			"value": "variable_value"
+		},
+		{
+			"key": "useridretailer",
+			"value": "pm.response.json().userId"
+		},
+		{
+			"key": "bynum",
+			"value": "1310000012",
+			"type": "string"
+		},
+		{
+			"key": "ivreferral_key",
+			"value": "RN-1234567",
+			"type": "string"
+		},
+		{
+			"key": "invalidname",
+			"value": "Ja>>1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+			"type": "string"
+		},
+		{
+			"key": "invalidnum",
+			"value": "924767475*",
+			"type": "string"
+		},
+		{
+			"key": "BT invalid token ",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cm46bWljcm9zb2Z0OmNyZWRlbnRpYWxzIjoie1wicGhvbmVOdW1iZXJcIjpcIis5MTc5ODEzNzI5NzBcIixcImNJZFwiOlwiOWRkYWUwNjctZmUxOC00NDAxLTllYWEtM2JiNzY1NjhjNmQyXCIsXCJ0ZXN0U2VuZGVyXCI6XCJmYWxzZVwiLFwiYXBwTmFtZVwiOlwiY29tLm1pY3Jvc29mdC5tb2JpbGUucG9seW1lci5taXNodHVcIixcInBlcm1pc3Npb25zXCI6XCIxLjFcIixcImFwcGxpY2F0aW9uVHlwZVwiOjMsXCJ0b2tlblZhbGlkRnJvbVwiOjE2NDYwMzE4NTA2MjN9IiwidWlkIjoiTW9iaWxlQXBwc1NlcnZpY2U6OGEyNjFmMDMtZDI3Zi00YjQ2LWIxMDUtYzc0ZTdlYWQ0ODU1IiwidmVyIjoiMiIsIm5iZiI6MTY0NjAzMTg1MCwiZXhwIjoxNjQ4NjIzODUwLCJpYXQiOjE2NDYwMzE4NTAsImlzcyI6InVybjptaWNyb3NvZnQ6d2luZG93cy1henVyZTp6dW1vIiwiYXVkIjoidXJuOm1pY3Jvc29mdDp3aW5kb3dzLWF6dXJlOnp1bW8ifQ.JWtjJ3xkw41E-XMbsadCjQiwUI_99WyQEhZjZSogQ0",
+			"type": "string"
+		},
+		{
+			"key": "profilename",
+			"value": "Jay",
+			"type": "string"
+		},
+		{
+			"key": "RetailerManagementToken",
+			"value": ""
+		}
+	]
+}

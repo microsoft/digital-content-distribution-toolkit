@@ -1,0 +1,2173 @@
+{
+	"info": {
+		"_postman_id": "351830e7-d803-4936-90ab-412ae45dfdf5",
+		"name": "cms automation Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "14460718"
+	},
+	"item": [
+		{
+			"name": "user otp gen (2490)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.collectionVariables.set(\"otp\",pm.response.json().mode );"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": ""
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n\r\n\r\n\r\n\r\n\"phoneNumber\": \"+911310000121\",\r\n\r\n\r\n\r\n\"UseVoice\" : false,\r\n\r\n\r\n\r\n\"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-preprod.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "user verify pin (2491)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"user token\", response.authenticationToken);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n\r\n\r\n  \"phoneNumber\":\"+911310000121\",\r\n  \"pin\":{{otp}},\r\n  \"permissions\": [\"1.1\"],\r\n\r\n \"UserName\": \"User Name\",\r\n\r\n\r\n\r\n\"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\"\r\n\r\n\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-preprod.kaiza.la/v1/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "SA otp gen (2490)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.collectionVariables.set(\"otp1\",pm.response.json().mode );"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": ""
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n\r\n\r\n\r\n\r\n\"phoneNumber\": \"+911310000001 \",\r\n\r\n\r\n\r\n\"UseVoice\" : false,\r\n\r\n\r\n\r\n\"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-preprod.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "SA verify pin (2491)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"SuperAdmin\", response.authenticationToken);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n\r\n\r\n  \"phoneNumber\":\"+91 1310000001 \",\r\n  \"pin\":{{otp1}},\r\n  \"permissions\": [\"1.1\"],\r\n\r\n \"UserName\": \"User Name\",\r\n\r\n\r\n\r\n\"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\"\r\n\r\n\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-preprod.kaiza.la/v1/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "Security review (4099)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.have.header(\"X-Content-Type-Options\");\r",
+							"    pm.response.to.be.header(\"X-Content-Type-Options\",\"nosniff\");\r",
+							"    pm.response.to.have.header(\"X-XSS-Protection\");\r",
+							"    pm.response.to.be.header(\"X-XSS-Protection\",\"1; mode=block\");\r",
+							"    pm.response.to.not.have.header(\"Server\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "subscriptions in cp (2341)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid cp id (2342)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found & Validation errors found,check console for detailed info\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{invalid cp}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "creation of sub id (2343)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var Start = new Date();\r",
+							"Start.setDate(Start.getDate());  \r",
+							"\r",
+							"Start.setHours(0);    \r",
+							"\r",
+							"Start.setMinutes(0);    \r",
+							"\r",
+							"Start.setSeconds(0);    \r",
+							"\r",
+							"Start.setMilliseconds(0); \r",
+							"\r",
+							"pm.collectionVariables.set(\"current_timestamp\", Start.toISOString());   \r",
+							"\r",
+							"console.log(Start);   \r",
+							"\r",
+							"var EndDate = new Date();\r",
+							"EndDate.setDate(EndDate.getDate() + 1);  \r",
+							"pm.collectionVariables.set(\"End_Date\", EndDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"var subId = JSON.parse(responseBody).toString();\r",
+							"\r",
+							"console.log(subId)\r",
+							"pm.collectionVariables.set(\"variable_key\", subId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"type\": \"ContentProvider\",\r\n  \"title\": \"subb\",\r\n  \"durationDays\": 1,\r\n  \"price\": 10,\r\n  \"startDate\": \"{{current_timestamp}}\",\r\n  \"endDate\": \"{{End_Date}}\",\r\n  \"isRedeemable\": true,\r\n  \"redemptionValue\": 50,\r\n  \"publishMode\": \"DRAFT\",\r\n  \"subscriptionType\": \"SVOD\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid cp (2344)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found & Validation errors found,check console for detailed info\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"createdByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"modifiedByByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"createdDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"modifiedDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"contentProviderId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"type\": \"ContentProvider\",\r\n  \"title\": \"eross\",\r\n  \"durationDays\": 1,\r\n  \"price\":45,\r\n  \"startDate\": \"2022-02-23T07:56:47.918Z\",\r\n  \"endDate\": \"2022-02-25T07:56:47.918Z\",\r\n  \"isRedeemable\": true,\r\n  \"redemptionValue\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/788988888/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "changes (2350)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let body = {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"      \"contentProviderId\":\"{{contentproviderID}}\",\r",
+							"  \"type\": \"ContentProvider\",\r",
+							"  \"title\": \"sub auto\",\r",
+							"  \"durationDays\": 1,\r",
+							"  \"price\": 20,\r",
+							"  \"startDate\": \"{{current_timestamp}}\",\r",
+							"  \"endDate\": \"{{End_Date}}\",\r",
+							"  \"isRedeemable\": true,\r",
+							"  \"redemptionValue\": 50,\r",
+							"  \"publishMode\": \"DRAFT\",\r",
+							"  \"subscriptionType\": \"SVOD\"\r",
+							"  }),\r",
+							"    options: {\r",
+							"        raw: {\r",
+							"            language: 'json'\r",
+							"        }\r",
+							"    }\r",
+							"}\r",
+							"pm.request.body.update(body);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 No Content\",function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{responseBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{variable_key}}"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid cp (2351)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found & Validation errors found,check console for detailed info\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{responseBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{invalid sub id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "publish sub",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Status code is 204 No Content\",function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							" });\r",
+							"    setTimeout(function(){},500);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{variable_key}}/publish"
+			},
+			"response": []
+		},
+		{
+			"name": "Published subscription cannot be updated",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let body = {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"    \"id\": \"cb863601-35ea-4a44-a3ed-31c680a1f042\",\r",
+							"    \"contentProviderId\": \"1f6d5fd0-31f2-4195-87b3-afa48a0126d6\",\r",
+							"    \"type\": \"Subscription\",\r",
+							"    \"title\": \"eross\",\r",
+							"    \"durationDays\": 1,\r",
+							"    \"price\": 25,\r",
+							"    \"startDate\": \"2022-03-20T07:56:47.918Z\",\r",
+							"    \"endDate\": \"2022-03-28T07:56:47.918Z\",\r",
+							"    \"isRedeemable\": true,\r",
+							"    \"redemptionValue\": 150,\r",
+							"    \"eTag\": \"\\\"12005c95-0000-2300-0000-6230898b0000\\\"\",\r",
+							"    \"createdByUserId\": \"89000eb5-f18b-40e6-a5b8-756ab42ba870\",\r",
+							"    \"modifiedByByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r",
+							"    \"createdDate\": \"2022-03-15T12:41:47.508149Z\",\r",
+							"    \"modifiedDate\": \"2022-01-03T07:56:47.918Z\"\r",
+							"   }),\r",
+							"    options: {\r",
+							"        raw: {\r",
+							"            language: 'json'\r",
+							"        }\r",
+							"    }\r",
+							"}\r",
+							"pm.request.body.update(body);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\",function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       //pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.expect(pm.response.text()).to.include(\"Published subscription cannot be updated\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{responseBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{variable_key}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Published subscription cannot be del",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\",function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       //pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.expect(pm.response.text()).to.include(\"Published subscription cannot be deleted\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{variable_key}}"
+			},
+			"response": []
+		},
+		{
+			"name": "end date< start date(3962)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\",function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       //pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.expect(pm.response.text()).to.include(\"Start Date has to be before EndDate\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"endDate\": \"2022-03-02T08:51:35.743Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{variable_key}}/updateEndDate"
+			},
+			"response": []
+		},
+		{
+			"name": "sub id details (2348)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"pm.collectionVariables.set(\"responseBody\",JSON.stringify(pm.response.json()));\r",
+							" setTimeout(function(){},1500);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{variable_key}}"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid cp (2349)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found & Validation errors found,check console for detailed info\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/1f6d5fd0-31f2-4195-87b3-afa48a01/Subscription/{{variable_key}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Update end date (3953)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 No Content\",function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var EndDate = new Date();\r",
+							"EndDate.setDate(EndDate.getDate() + 2); \r",
+							"pm.collectionVariables.set(\"End_Date\", EndDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"endDate\": \"{{End_Date}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{variable_key}}/updateEndDate"
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid sub (3961)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\",function () \r",
+							"{\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"endDate\": \"2022-04-01T08:51:35.743Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{invalid sub id}}/updateEndDate"
+			},
+			"response": []
+		},
+		{
+			"name": "create sub",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var Start = new Date();\r",
+							"\r",
+							"Start.setDate(Start.getDate());  \r",
+							"\r",
+							"\r",
+							"\r",
+							"Start.setHours(0);    \r",
+							"\r",
+							"\r",
+							"\r",
+							"Start.setMinutes(0);    \r",
+							"\r",
+							"\r",
+							"\r",
+							"Start.setSeconds(0);    \r",
+							"\r",
+							"\r",
+							"\r",
+							"Start.setMilliseconds(0); \r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"current_timestamp\", Start.toISOString());   \r",
+							"\r",
+							"\r",
+							"\r",
+							"console.log(Start);   \r",
+							"\r",
+							"\r",
+							"\r",
+							"var EndDate = new Date();\r",
+							"\r",
+							"EndDate.setDate(EndDate.getDate() + 1);  \r",
+							"\r",
+							"pm.collectionVariables.set(\"End_Date\", EndDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"var subId = JSON.parse(responseBody).toString();\r",
+							"\r",
+							"console.log(subId)\r",
+							"pm.collectionVariables.set(\"variable_key1\", subId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"type\": \"ContentProvider\",\r\n  \"title\": \"sub auto\",\r\n  \"durationDays\": 1,\r\n  \"price\": 10,\r\n  \"startDate\": \"{{current_timestamp}}\",\r\n  \"endDate\": \"{{End_Date}}\",\r\n  \"isRedeemable\": true,\r\n  \"redemptionValue\": 50,\r\n  \"publishMode\": \"DRAFT\",\r\n  \"subscriptionType\": \"SVOD\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "end date < recent order date (4002)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\",function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       //pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var EndDate = new Date();\r",
+							"EndDate.setDate(EndDate.getDate() - 1);  \r",
+							"pm.collectionVariables.set(\"End_Date\", EndDate.toISOString()); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"endDate\": \"{{End_Date}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{variable_key}}/updateEndDate"
+			},
+			"response": []
+		},
+		{
+			"name": "delete subscription (2352)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 No Content\",function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{variable_key1}}"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid sub id (2353)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\",function () \r",
+							"{\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{invalid sub id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "price=0 (3448)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\",function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.expect(pm.response.text()).to.include(\"Price should be minimum 1\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"createdByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"modifiedByByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"createdDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"modifiedDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"contentProviderId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"type\": \"ContentProvider\",\r\n  \"title\": \"eross\",\r\n  \"durationDays\": 1,\r\n  \"price\":0,\r\n  \"startDate\": \"2022-04-04T07:56:47.918Z\",\r\n  \"endDate\": \"2022-06-12T07:56:47.918Z\",\r\n  \"isRedeemable\": true,\r\n  \"redemptionValue\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "duration days=0 (3449)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\",function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       //pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.expect(pm.response.text()).to.include(\"DurationDays should be minimum 1\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"createdByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"modifiedByByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"createdDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"modifiedDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"contentProviderId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"type\": \"ContentProvider\",\r\n  \"title\": \"eross\",\r\n  \"durationDays\": 0,\r\n  \"price\":26,\r\n  \"startDate\": \"2022-04-23T07:56:47.918Z\",\r\n  \"endDate\": \"2022-05-12T07:56:47.918Z\",\r\n  \"isRedeemable\": true,\r\n  \"redemptionValue\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "redemption =0 (3450)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\",function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       //pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.expect(pm.response.text()).to.include(\"Redemption Value should be minimum 1 for a redeemable subscription\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"createdByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"modifiedByByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"createdDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"modifiedDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"contentProviderId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"type\": \"ContentProvider\",\r\n  \"title\": \"eross\",\r\n  \"durationDays\": 1,\r\n  \"price\":26,\r\n  \"startDate\": \"2022-04-13T07:56:47.918Z\",\r\n  \"endDate\": \"2022-06-15T07:56:47.918Z\",\r\n  \"isRedeemable\": true,\r\n  \"redemptionValue\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "start date > end date (3451)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\",function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       //pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.expect(pm.response.text()).to.include(\"Start Date has to be before EndDate\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"createdByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"modifiedByByUserId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"createdDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"modifiedDate\": \"2022-01-03T07:56:47.918Z\",\r\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"contentProviderId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"type\": \"ContentProvider\",\r\n  \"title\": \"eross\",\r\n  \"durationDays\": 1,\r\n  \"price\":26,\r\n  \"startDate\": \"2022-05-16T07:56:47.918Z\",\r\n  \"endDate\": \"2022-05-15T07:56:47.918Z\",\r\n  \"isRedeemable\": true,\r\n  \"redemptionValue\":100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid content id (4671)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  \"{{invalid content id}}\"\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/Content/contentIds"
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid CP id content list (2314)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentUploadStatuses\": [\r\n    \"UploadComplete\"\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/Content/{{invalid cp}}/contentlist"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid cnt id (1989)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/Content/{{invalid content id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid content id (2306)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/Content/{{invalid content id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Del user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 No Content\",function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"setTimeout(function(){},1500);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{user token}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/user"
+			},
+			"response": []
+		},
+		{
+			"name": "data delete complete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 No Content\",function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"    setTimeout(function(){},1500);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"1310000121\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/datadelete/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "Onboarding user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(function(){},1500);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{user token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"Newww\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "get cp (1899)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/BrowseContent/contentproviders"
+			},
+			"response": []
+		},
+		{
+			"name": "browse content processed (1900)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"pm.collectionVariables.set(\"continuationToken\",JSON.stringify(pm.response.json().continuationToken));\r",
+							"console.log(pm.response.json().continuationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":\"\",\r\n  \"pageSize\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/BrowseContent/{{contentproviderID}}/processed"
+			},
+			"response": []
+		},
+		{
+			"name": "browse content processed with cont token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":{{continuationToken}},\r\n  \"pageSize\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/BrowseContent/{{contentproviderID}}/processed"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid cp (2305)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":{{continuationToken}},\r\n  \"pageSize\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/BrowseContent/{{invalid cp}}/processed"
+			},
+			"response": []
+		},
+		{
+			"name": "browse content broadcast (1918)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":\"\",\r\n  \"pageSize\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/BrowseContent/{{contentproviderID}}/broadcasted"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid cp (2304)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"continuationToken\":\"\",\r\n  \"pageSize\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/BrowseContent/{{invalid cp}}/broadcasted"
+			},
+			"response": []
+		},
+		{
+			"name": "Browse subscription (1920)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-stage.kaiza.la/cmsapi/api/v1/BrowseSubscription/{{contentproviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "get all cp's (2320)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider"
+			},
+			"response": []
+		},
+		{
+			"name": "Creation of CP (2321)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 Created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var CP_Id = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set(\"ContentProviderID\",CP_Id );\r",
+							"setTimeout(function(){},1500);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\": \"{{contentproviderID}}\",\r\n  \"type\": \"ContentProvider\",\r\n  \"name\": \"{{Name}}\",\r\n  \"contentAdministrators\": [\r\n    {\r\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n      \"phoneNumber\": \"{{PhoneNumber}}\",\r\n      \"userId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n    }\r\n  ],\r\n  \"activationDate\": \"2022-03-24T07:16:05.175Z\",\r\n  \"deactivationDate\": \"2022-03-24T07:16:05.175Z\",\r\n  \"logoUrl\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider"
+			},
+			"response": []
+		},
+		{
+			"name": "Get cp (2322)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"setTimeout(function(){},1500);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{ContentProviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "invalid cp (2323)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{invalid cp}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Changes in cp (2324)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 No Content\",function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"contentProviderId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"type\": \"ContentProvider\",\r\n  \"name\": \"{{Name}}\",\r\n  \"contentAdministrators\": [\r\n    {\r\n      \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n      \"phoneNumber\": \"1234567891\",\r\n      \"userId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n    }\r\n  ],\r\n  \"activationDate\": \"2022-03-24T07:51:25.548Z\",\r\n  \"deactivationDate\": \"2022-03-24T07:51:25.548Z\",\r\n  \"logoUrl\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{ContentProviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid cp (2329)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{invalid cp}}/activate"
+			},
+			"response": []
+		},
+		{
+			"name": "SAS generation (2332)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\",function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{ContentProviderID}}/generateSaS"
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid cp (2333)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{invalid cp}}/generateSaS"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete cp (2326)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 No Content\",function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{ContentProviderID}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid cp (2327)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{invalid cp}}"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": ""
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "continuationToken",
+			"value": ""
+		},
+		{
+			"key": "variable_key",
+			"value": ""
+		},
+		{
+			"key": "responseBody",
+			"value": ""
+		},
+		{
+			"key": "mode",
+			"value": ""
+		},
+		{
+			"key": "otp",
+			"value": ""
+		},
+		{
+			"key": "ContentID1",
+			"value": ""
+		},
+		{
+			"key": "content details",
+			"value": ""
+		},
+		{
+			"key": "commandId",
+			"value": ""
+		},
+		{
+			"key": "contId",
+			"value": ""
+		},
+		{
+			"key": "commId",
+			"value": ""
+		},
+		{
+			"key": "ContentID",
+			"value": ""
+		},
+		{
+			"key": "start",
+			"value": ""
+		},
+		{
+			"key": "current_timestamp",
+			"value": ""
+		},
+		{
+			"key": "End_Date",
+			"value": ""
+		},
+		{
+			"key": "currenttimestamp",
+			"value": ""
+		},
+		{
+			"key": "variable_key1",
+			"value": ""
+		},
+		{
+			"key": "variable_key2",
+			"value": ""
+		},
+		{
+			"key": "otp1",
+			"value": ""
+		},
+		{
+			"key": "user token",
+			"value": ""
+		},
+		{
+			"key": "SuperAdmin",
+			"value": ""
+		},
+		{
+			"key": "ContentProviderID",
+			"value": ""
+		}
+	]
+}

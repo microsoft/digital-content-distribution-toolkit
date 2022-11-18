@@ -1,0 +1,137 @@
+{
+	"id": "87824f28-0e79-4fec-85d0-85ea6562f875",
+	"name": "Stage Env_Incentive",
+	"values": [
+		{
+			"key": "env",
+			"value": "stage",
+			"enabled": true
+		},
+		{
+			"key": "contentproviderID",
+			"value": "8a2f2130-28ad-4943-8267-3eecaa0f5e39",
+			"enabled": true
+		},
+		{
+			"key": "env1",
+			"value": "preprod",
+			"enabled": true
+		},
+		{
+			"key": "Inactive Subscription Id for eros",
+			"value": "2c29f1c9-2f6b-4d1d-94c0-b9a4fdd9397e",
+			"enabled": true
+		},
+		{
+			"key": "Inactive OrderID",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "NotfreeContent",
+			"value": "f76a3be4-eae2-48fa-bb4f-bb49a3848806",
+			"enabled": true
+		},
+		{
+			"key": "freeContent",
+			"value": "3800c522-983d-4ed8-b909-65f5c9700aee",
+			"enabled": true
+		},
+		{
+			"key": "invalidContent",
+			"value": "2c29f1c9-2f6b-4d1d-94c0-b9a4fdd9397e",
+			"enabled": true
+		},
+		{
+			"key": "InvalidRetailer",
+			"value": "AAAAA",
+			"enabled": true
+		},
+		{
+			"key": "filter",
+			"value": "Test",
+			"enabled": true
+		},
+		{
+			"key": "IOT_Central_ConnectedDevice",
+			"value": "G2142000000210",
+			"enabled": true
+		},
+		{
+			"key": "contentproviderID1",
+			"value": "770b2617-4230-49c0-a081-054cf07d1abf",
+			"enabled": true
+		},
+		{
+			"key": "deviceid_retailer",
+			"value": "G2142000000069",
+			"enabled": true
+		},
+		{
+			"key": "newuserid",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "newretailer",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "currenttimestamp",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "PhoneNumber",
+			"value": "8148486398",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "invalid content id",
+			"value": "770b2617-4230-49c0-a081-054cf07d1abf",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "Name",
+			"value": "Testing",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "invalid cp",
+			"value": "1abcdefjoimxsa689csajksdask",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "User_PhoneNumber",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "usertoken",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "current_timestamp",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "End_Date",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2022-10-27T12:03:13.306Z",
+	"_postman_exported_using": "Postman/10.0.35"
+}

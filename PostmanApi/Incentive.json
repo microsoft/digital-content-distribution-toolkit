@@ -1,0 +1,4247 @@
+{
+	"info": {
+		"_postman_id": "0334d382-3b8a-483e-9e74-9ec80a6908b5",
+		"name": "IncentiveAPI_New Copy 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "14460718"
+	},
+	"item": [
+		{
+			"name": "Incentive",
+			"item": [
+				{
+					"name": "SuperAdmin_OTP Generation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var sms = pm.response.json();\r",
+									"pm.collectionVariables.set(\"OTP1\", sms.mode);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "AppName",
+								"value": "com.microsoft.mobile.polymer.mishtu",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"phoneNumber\": \"+911310000004\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+					},
+					"response": []
+				},
+				{
+					"name": "SuperAdmin_Token Generation Copy 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"pm.collectionVariables.set(\"SuperAdmin\", response.authenticationToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "AppName",
+								"value": "com.microsoft.mobile.polymer.mishtu",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n  \"phoneNumber\": \"+911310000004\", \r\n\r\n    \"pin\":{{OTP1}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+					},
+					"response": []
+				},
+				{
+					"name": "1. User A Creation_OTP Generation Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var digits = Math.floor(Math.random() * 1000000000) + 1000000000\r",
+									"var UserPhoneNumber=\"+91\"+digits;\r",
+									"pm.environment.set(\"PhoneNumber\", UserPhoneNumber);\r",
+									"pm.environment.set(\"User_PhoneNumber\", digits);\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var sms = pm.response.json();\r",
+									"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+									"// pm.test(\"prerequisite 1_SMS generation success\", function () {\r",
+									"//     pm.response.to.have.status(200);\r",
+									"// });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "AppName",
+								"value": "com.microsoft.mobile.polymer.mishtu",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"phoneNumber\": \"{{PhoneNumber}}\", \r\n    \"UseVoice\" : false \r\n\r\n\r\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://api-{{env1}}.kaiza.la/v1/LoginWithPhoneForPartners"
+					},
+					"response": []
+				},
+				{
+					"name": "2. User A Creation_Auth Token Generation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"pm.environment.set(\"usertoken\", response.authenticationToken);\r",
+									"// pm.test(\"prerequisite 2_Auth Token generation Success\", function () {\r",
+									"//     pm.response.to.have.status(200);\r",
+									"// });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "AppName",
+								"value": "com.microsoft.mobile.polymer.mishtu",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n  \"phoneNumber\": \"{{PhoneNumber}}\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://api-{{env1}}.kaiza.la/v1/VerifyPhonePinForPartnerLogin"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3264 - AUTO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3264 Passed\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"var ID = JSON.parse(responseBody).toString();\r",
+									"//pm.environment.set(\"consumer\", planId);\r",
+									"console.log(ID)\r",
+									"pm.collectionVariables.set(\"planId1\", ID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Start = new Date();\r",
+									"if(Start.getDay()==1){\r",
+									"    var count=3;\r",
+									"}\r",
+									"else if(Start.getDay()==2){\r",
+									"    count=2;\r",
+									"}\r",
+									"else if(Start.getDay()==3){\r",
+									"    count=1;\r",
+									"}\r",
+									"else if(Start.getDay()==4){\r",
+									"    count=4;\r",
+									"}\r",
+									"else if(Start.getDay()==5){\r",
+									"    count=3;\r",
+									"}\r",
+									"else if(Start.getDay()==6){\r",
+									"    count=2;\r",
+									"}\r",
+									"else{\r",
+									"    count=1;\r",
+									"}\r",
+									"pm.collectionVariables.set(\"count\", count);\r",
+									"Start.setDate(Start.getDate() + 1);  \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();  \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n    \"planName\": \"testy\",\r\n    \"planType\": \"REGULAR\",\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n    \"audience\": {\r\n        \"audienceType\": \"RETAILER\",\r\n        \"subTypeName\": \"AUTO\"\r\n    },\r\n    \"planDetails\": [\r\n        {\r\n            \r\n            \"eventType\": \"RETAILER_INCOME_ORDER_COMPLETED\",\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n            \"eventTitle\": \"Order Completed\",\r\n            \"ruleType\": \"SUM\",\r\n            \"formula\": {\r\n                \"formulaType\": \"PERCENTAGE\",\r\n                \"firstOperand\": 50,\r\n                \"secondOperand\": null,\r\n                \"rangeOperand\": []\r\n            },\r\n            \"result\": null\r\n        },\r\n        {\r\n            \r\n            \"eventType\": \"RETAILER_INCOME_REFERRAL_COMPLETED\",\r\n            \"eventSubType\": null,\r\n            \"eventTitle\": \"REFERRAL COMPLETED\",\r\n            \"ruleType\": \"SUM\",\r\n            \"formula\": {\r\n                \"formulaType\": \"PLUS\",\r\n                \"firstOperand\": 100,\r\n                \"secondOperand\": null,\r\n                \"rangeOperand\": []\r\n            },\r\n            \"result\": null\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3339 - {400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3339 Passed\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);  \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();  \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n    \"planName\": \"test\",\r\n    \"planType\": \"REGULAR\"\r\n      \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n    \"audience\": {\r\n        \"audienceType\": \"RETAILER\",\r\n        \"subTypeName\": \"AUTO\"\r\n    },\r\n    \"planDetails\": [\r\n        {\r\n            \r\n            \"eventType\": \"RETAILER_INCOME_ORDER_COMPLETED\",\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n            \"eventTitle\": \"Order Completed\",\r\n            \"ruleType\": \"SUM\",\r\n            \"formula\": {\r\n                \"formulaType\": \"PERCENTAGE\",\r\n                \"firstOperand\": 50,\r\n                \"secondOperand\": null,\r\n                \"rangeOperand\": []\r\n            },\r\n            \"result\": null\r\n        },\r\n        {\r\n            \r\n            \"eventType\": \"RETAILER_INCOME_REFERRAL_COMPLETED\",\r\n            \"eventSubType\": null,\r\n            \"eventTitle\": \"REFERRAL COMPLETED\",\r\n            \"ruleType\": \"SUM\",\r\n            \"formula\": {\r\n                \"formulaType\": \"PLUS\",\r\n                \"firstOperand\": 100,\r\n                \"secondOperand\": null,\r\n                \"rangeOperand\": []\r\n            },\r\n            \"result\": null\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3265 - AUTO",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);  \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();  \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3265 Passed\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"var ID = JSON.parse(responseBody).toString();\r",
+									"//pm.environment.set(\"consumer\", planId);\r",
+									"console.log(ID)\r",
+									"pm.collectionVariables.set(\"planId2\", ID);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"planName\": \"QAPLAN22\",\r\n\r\n    \"planType\": \"MILESTONE\",\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"RETAILER\",\r\n\r\n        \"subTypeName\": \"AUTO\"\r\n\r\n    },\r\n\r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"RETAILER_INCOME_REFERRAL_COMPLETED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"REFERRAL COMPLETED\",\r\n\r\n            \"ruleType\": \"COUNT\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"DIVIDE_AND_MULTIPLY\",\r\n\r\n                \"firstOperand\": 2,\r\n\r\n                \"secondOperand\": 100,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n    \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3339 - {400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3339 Passed\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);  \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();  \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"planName\": \"QAPLAN22\",\r\n\r\n    \"planType\": \"MILESTONE\"\r\n\r\n      \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"RETAILER\",\r\n\r\n        \"subTypeName\": \"AUTO\"\r\n\r\n    },\r\n\r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"RETAILER_INCOME_REFERRAL_COMPLETED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"REFERRAL COMPLETED\",\r\n\r\n            \"ruleType\": \"COUNT\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"DIVIDE_AND_MULTIPLY\",\r\n\r\n                \"firstOperand\": 2,\r\n\r\n                \"secondOperand\": 100,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n    \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3266 - TSTP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3266 Passed\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"var ID = JSON.parse(responseBody).toString();\r",
+									"//pm.environment.set(\"consumer\", planId);\r",
+									"console.log(ID)\r",
+									"pm.collectionVariables.set(\"planId3\", ID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);  \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();  \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"planName\": \"Plan\",\r\n\r\n    \"planType\": \"REGULAR\",\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"RETAILER\",\r\n\r\n        \"subTypeName\": \"TSTP\"\r\n\r\n    },\r\n\r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"RETAILER_INCOME_ORDER_COMPLETED\",\r\n\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n\r\n            \"eventTitle\": \"ORDER COMPLETED\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 100,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n       \r\n\r\n        {\r\n\r\n\r\n            \"eventType\": \"RETAILER_INCOME_REFERRAL_COMPLETED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"REFERRAL COMPLETED\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 100,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n    \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-stage.kaiza.la/incentiveapi/api/v1/Incentive/retailer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3268 - Consumer",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);  \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();  \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3268 Passed\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"var ID = JSON.parse(responseBody).toString();\r",
+									"//pm.environment.set(\"consumer\", planId);\r",
+									"console.log(ID)\r",
+									"pm.collectionVariables.set(\"planId5\", ID);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \r\n\r\n    \"planName\": \"QAPLANC1\",\r\n\r\n    \"planType\": \"REGULAR\",\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"CONSUMER\",\r\n\r\n        \"subTypeName\": \"CONSUMER\"\r\n\r\n    }, \r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_FIRST_SIGNIN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"FIRST SIGNIN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_APP_ONCE_OPEN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"APP OPEN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ORDER_COMPLETED\",\r\n\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n\r\n            \"eventTitle\": \"ORDER COMPLETED\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PERCENTAGE\",\r\n\r\n                \"firstOperand\": 20,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"STREAMED CONTENT\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 100,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }, \r\n          {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"ONBOARDING RATING\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 150,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n           \r\n\r\n            \"eventType\": \"CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"Expense\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"MINUS\",\r\n\r\n                \"firstOperand\": null,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": null\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3341 - {400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3341 Passed\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);  \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();  \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \r\n\r\n    \"planName\": \"QAPLANC1\",\r\n\r\n    \"planType\": \"REGULAR\"\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"CONSUMER\",\r\n\r\n        \"subTypeName\": \"CONSUMER\"\r\n\r\n    }, \r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_FIRST_SIGNIN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"FIRST SIGNIN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_APP_ONCE_OPEN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"APP OPEN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ORDER_COMPLETED\",\r\n\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n\r\n            \"eventTitle\": \"ORDER COMPLETED\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PERCENTAGE\",\r\n\r\n                \"firstOperand\": 20,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"STREAMED CONTENT\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 100,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }, \r\n          {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"ONBOARDING RATING\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 150,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n           \r\n\r\n            \"eventType\": \"CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"Expense\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"MINUS\",\r\n\r\n                \"firstOperand\": null,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": null\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3269 - Update NOVO Regular",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);    \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count+1);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3269 Passed\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n    \"planName\": \"Updated_One\",\r\n    \"planType\": \"REGULAR\",\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n    \"audience\": {\r\n        \"audienceType\": \"RETAILER\",\r\n        \"subTypeName\": \"AUTO\"\r\n    },\r\n    \"planDetails\": [\r\n        {\r\n            \r\n            \"eventType\": \"RETAILER_INCOME_ORDER_COMPLETED\",\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n            \"eventTitle\": \"Order Completed\",\r\n            \"ruleType\": \"SUM\",\r\n            \"formula\": {\r\n                \"formulaType\": \"PERCENTAGE\",\r\n                \"firstOperand\": 50,\r\n                \"secondOperand\": null,\r\n                \"rangeOperand\": []\r\n            },\r\n            \"result\": null\r\n        },\r\n        {\r\n            \r\n            \"eventType\": \"RETAILER_INCOME_REFERRAL_COMPLETED\",\r\n            \"eventSubType\": null,\r\n            \"eventTitle\": \"REFERRAL COMPLETED\",\r\n            \"ruleType\": \"SUM\",\r\n            \"formula\": {\r\n                \"formulaType\": \"PLUS\",\r\n                \"firstOperand\": 100,\r\n                \"secondOperand\": null,\r\n                \"rangeOperand\": []\r\n            },\r\n            \"result\": null\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/{{planId1}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3270 - Update NOVO milestone",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);    \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3270 Passed\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"planName\": \"Updated_One\",\r\n\r\n    \"planType\": \"MILESTONE\",\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"RETAILER\",\r\n\r\n        \"subTypeName\": \"AUTO\"\r\n\r\n    },\r\n\r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"RETAILER_INCOME_REFERRAL_COMPLETED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"REFERRAL COMPLETED\",\r\n\r\n            \"ruleType\": \"COUNT\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"DIVIDE_AND_MULTIPLY\",\r\n\r\n                \"firstOperand\": 2,\r\n\r\n                \"secondOperand\": 100,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n    \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/{{planId2}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3271 - Update{400}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);    \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3271 Passed\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"planName\": \"Updated_One\",\r\n\r\n    \"planType\": \"MILESTONE\"\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"RETAILER\",\r\n\r\n        \"subTypeName\": \"AUTO\"\r\n\r\n    },\r\n\r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"RETAILER_INCOME_REFERRAL_COMPLETED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"REFERRAL COMPLETED\",\r\n\r\n            \"ruleType\": \"COUNT\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"DIVIDE_AND_MULTIPLY\",\r\n\r\n                \"firstOperand\": 2,\r\n\r\n                \"secondOperand\": 100,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n    \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/{{planId1}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3272 - Update{404}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);    \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3272 Passed\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"planName\": \"Updated_One\",\r\n\r\n    \"planType\": \"MILESTONE\",\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"RETAILER\",\r\n\r\n        \"subTypeName\": \"AUTO\"\r\n\r\n    },\r\n\r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"RETAILER_INCOME_REFERRAL_COMPLETED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"REFERRAL COMPLETED\",\r\n\r\n            \"ruleType\": \"COUNT\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"DIVIDE_AND_MULTIPLY\",\r\n\r\n                \"firstOperand\": 2,\r\n\r\n                \"secondOperand\": 100,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n    \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3273 - Update Consumer Regular",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);    \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count+1);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3273 Passed\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \r\n\r\n    \"planName\": \"Updated\",\r\n\r\n    \"planType\": \"REGULAR\",\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"CONSUMER\",\r\n\r\n        \"subTypeName\": \"CONSUMER\"\r\n\r\n    }, \r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_FIRST_SIGNIN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"FIRST SIGNIN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_APP_ONCE_OPEN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"APP OPEN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ORDER_COMPLETED\",\r\n\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n\r\n            \"eventTitle\": \"ORDER COMPLETED\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PERCENTAGE\",\r\n\r\n                \"firstOperand\": 20,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"STREAMED CONTENT\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 100,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }, \r\n          {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"ONBOARDING RATING\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 150,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n           \r\n\r\n            \"eventType\": \"CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"Expense\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"MINUS\",\r\n\r\n                \"firstOperand\": null,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": null\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3275 - Update{400}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);    \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3275 Passed\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \r\n\r\n    \"planName\": \"Updated_One\",\r\n\r\n    \"planType\": \"REGULAR\"\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"CONSUMER\",\r\n\r\n        \"subTypeName\": \"CONSUMER\"\r\n\r\n    }, \r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_FIRST_SIGNIN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"FIRST SIGNIN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_APP_ONCE_OPEN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"APP OPEN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ORDER_COMPLETED\",\r\n\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n\r\n            \"eventTitle\": \"ORDER COMPLETED\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PERCENTAGE\",\r\n\r\n                \"firstOperand\": 20,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"STREAMED CONTENT\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 100,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }, \r\n          {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"ONBOARDING RATING\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 150,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n           \r\n\r\n            \"eventType\": \"CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"Expense\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"MINUS\",\r\n\r\n                \"firstOperand\": null,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": null\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3276 - Update{404}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);    \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3276 Passed\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \r\n\r\n    \"planName\": \"Updated_One\",\r\n\r\n    \"planType\": \"REGULAR\",\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"CONSUMER\",\r\n\r\n        \"subTypeName\": \"CONSUMER\"\r\n\r\n    }, \r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_FIRST_SIGNIN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"FIRST SIGNIN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_APP_ONCE_OPEN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"APP OPEN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ORDER_COMPLETED\",\r\n\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n\r\n            \"eventTitle\": \"ORDER COMPLETED\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PERCENTAGE\",\r\n\r\n                \"firstOperand\": 20,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"STREAMED CONTENT\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 100,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }, \r\n          {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"ONBOARDING RATING\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 150,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n           \r\n\r\n            \"eventType\": \"CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"Expense\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"MINUS\",\r\n\r\n                \"firstOperand\": null,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": null\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/{{planId2}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3280 - Delete Consumer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3282 - Delete Consumer{404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Consumer Plan Creation Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\");\r",
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate() + 1);  \r",
+									"Start.setHours(0);    \r",
+									"Start.setMinutes(0);    \r",
+									"Start.setSeconds(0);    \r",
+									"Start.setMilliseconds(0); \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									"var End = new Date();  \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"var ID = JSON.parse(responseBody).toString();\r",
+									"//pm.environment.set(\"consumer\", planId);\r",
+									"console.log(ID)\r",
+									"pm.collectionVariables.set(\"planId5\", ID);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \r\n\r\n    \"planName\": \"QAPLANC1\",\r\n\r\n    \"planType\": \"REGULAR\",\r\n\r\n    \"startDate\": \"{{current_timestamp}}\",\r\n\r\n    \"endDate\": \"{{End_Date}}\",\r\n\r\n    \"audience\": {\r\n\r\n        \"audienceType\": \"CONSUMER\",\r\n\r\n        \"subTypeName\": \"CONSUMER\"\r\n\r\n    }, \r\n    \"planDetails\": [\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_FIRST_SIGNIN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"FIRST SIGNIN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_APP_ONCE_OPEN\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"APP OPEN\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 50,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ORDER_COMPLETED\",\r\n\r\n            \"eventSubType\": \"{{contentproviderID}}\",\r\n\r\n            \"eventTitle\": \"ORDER COMPLETED\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PERCENTAGE\",\r\n\r\n                \"firstOperand\": 20,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"STREAMED CONTENT\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 100,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }, \r\n          {\r\n\r\n            \r\n\r\n            \"eventType\": \"CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"ONBOARDING RATING\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"PLUS\",\r\n\r\n                \"firstOperand\": 150,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": []\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        },\r\n\r\n        {\r\n\r\n           \r\n\r\n            \"eventType\": \"CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM\",\r\n\r\n            \"eventSubType\": null,\r\n\r\n            \"eventTitle\": \"Expense\",\r\n\r\n            \"ruleType\": \"SUM\",\r\n\r\n            \"formula\": {\r\n\r\n                \"formulaType\": \"MINUS\",\r\n\r\n                \"firstOperand\": null,\r\n\r\n                \"secondOperand\": null,\r\n\r\n                \"rangeOperand\": null\r\n\r\n            },\r\n\r\n            \"result\": null\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3285 - Consumer{planId}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3285\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json();\r",
+									"    //pm.expect(response.id).is.to.equal(\"{{planId5}}\"); \r",
+									"    //var plan = _.find(response, {'planType': \"REGULAR\"});\r",
+									"    pm.expect(response.audience.audienceType).is.to.equal(\"CONSUMER\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3286 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/{{planId2}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3277 - Delete Retailer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/{{planId3}}/TSTP"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3279 - Delete Retailer{404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/{{planId3}}/NOV"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3283 - Retailer{planId}{subType}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json(); \r",
+									"    //pm.expect(response.id).is.to.equal(\"{{planId1}}\"); \r",
+									"    pm.expect(response.audience.audienceType).is.to.equal(\"RETAILER\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/{{planId1}}/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3284 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/{{planId}}/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3295 - Publish Retailer Reg",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/publish/{{planId1}}/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3295 - Publish Retailer Milestone",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/publish/{{planId2}}/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3296,3338 - {400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/publish/{{planId1}}/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3297 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailerpublish/{{planId1}}/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3287 - {EndDate}{Reg_Retailer}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									" var count = pm.collectionVariables.get(\"count\");\r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/changeenddate/{{planId1}}/AUTO/{{End_Date}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3288 - {EndDate}{Mile_Retailer}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\"); \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/changeenddate/{{planId2}}/AUTO/{{End_Date}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3289 - {400}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									" \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() - 30);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/changeenddate/{{planId1}}/AUTO/{{End_Date}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3290 - {404}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									" \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() - 30);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailerchangeenddate/{{planId4}}/{{End_Date}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3278 - Delete Retailer{400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/{{planId1}}/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3298 - Publish Consumer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/publish/{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3299 - {400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/publish/{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3300 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumerpublish/{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3291 {EndDate}Consumer",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var count = pm.collectionVariables.get(\"count\"); \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() + count);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/changeenddate/{{planId5}}/{{End_Date}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3293 - {400}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									" \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() - 30);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/changeenddate/{{planId5}}/{{End_Date}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3294 - {404}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									" \r",
+									"var End = new Date();    \r",
+									"End.setDate(End.getDate() - 30);    \r",
+									"End.setHours(23);    \r",
+									"End.setMinutes(59);    \r",
+									"End.setSeconds(59);    \r",
+									"End.setMilliseconds(0);\r",
+									"postman.setEnvironmentVariable(\"End_Date\", End.toISOString());    \r",
+									"console.log(End);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumerchangeenddate/{{planId5}}/{{End_Date}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3281 - Delete Consumer{400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/{{planId5}}"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3303 {Regular}Consumer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3303 Passed\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response[0].planType).is.to.equal(\"REGULAR\"); \r",
+									"    pm.expect(response[0].audience.audienceType).is.to.equal(\"CONSUMER\");\r",
+									"   \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/regular"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3304 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentiveconsumer/regular"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3301 - {Regular}{Subtype}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3301 Passed\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response[0].planType).is.to.equal(\"REGULAR\"); \r",
+									"    pm.expect(response[0].audience.audienceType).is.to.equal(\"RETAILER\"); \r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/regular/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3301 - {Milestone}{SubType}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response[0].planType).is.to.equal(\"MILESTONE\"); \r",
+									"    pm.expect(response[0].audience.audienceType).is.to.equal(\"RETAILER\");\r",
+									"});\r",
+									" \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/milestone/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3302 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailerregular/AUTO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3305 - {Audience Type - Retailer}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TESTCASE 3305 Passed\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = pm.response.json(); \r",
+									"    pm.expect(jsonData[0]).is.to.equal(\"RETAILER_INCOME_ORDER_COMPLETED\");\r",
+									"    pm.expect(jsonData[1]).is.to.equal(\"RETAILER_INCOME_REFERRAL_COMPLETED\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/eventlist/Retailer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3306 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentiveeventlist/Retailer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3307 - {Audience Type - Consumer}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = pm.response.json(); \r",
+									"    pm.expect(jsonData[0]).is.to.equal(\"CONSUMER_INCOME_APP_ONCE_OPEN\");\r",
+									"    pm.expect(jsonData[1]).is.to.equal(\"CONSUMER_INCOME_FIRST_SIGNIN\");\r",
+									"    pm.expect(jsonData[2]).is.to.equal(\"CONSUMER_INCOME_ONBOARDING_RATING_SUBMITTED\");\r",
+									"    pm.expect(jsonData[3]).is.to.equal(\"CONSUMER_INCOME_STREAMED_CONTENT_ONCE_PER_CONTENTPROVIDER\");\r",
+									"    pm.expect(jsonData[4]).is.to.equal(\"CONSUMER_INCOME_ORDER_COMPLETED\");\r",
+									"    pm.expect(jsonData[5]).is.to.equal(\"CONSUMER_INCOME_DOWNLOAD_MEDIA_COMPLETED\");\r",
+									"    pm.expect(jsonData[6]).is.to.equal(\"CONSUMER_EXPENSE_SUBSCRIPTION_REDEEM\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/eventlist/Consumer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3308 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/eventlistConsumer"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3309 - {Active} Consumer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumer/active/regular"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3310 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/consumeractive/regular"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3313 - {Active}Retailer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response.planType).is.to.equal(\"REGULAR\"); \r",
+									"    pm.expect(response.audience.audienceType).is.to.equal(\"RETAILER\");  \r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/active/TestRetailer/regular/TSTP"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3314 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retaileractive/CORP0000037648/regular/NOVO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3315 - {All}Retailer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json(); \r",
+									"    pm.expect(response[0].planType).is.to.equal(\"REGULAR\");\r",
+									"    pm.expect(response[0].audience.audienceType).is.to.equal(\"RETAILER\"); \r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/all/CORP0000037769/regular/NOVO"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3316 - {404}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailerall/CORP0000037769/regular/NOVO"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IncentiveEvent",
+			"item": [
+				{
+					"name": "TEST CASE 3342",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json(); \r",
+									"    pm.expect(response.planType).is.to.equal(\"MILESTONE\"); \r",
+									"    pm.expect(response.audience.audienceType).is.to.equal(\"RETAILER\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-stage.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/milestone/TSTP/TestRetailer"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3317{Incorrect url}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/miles/NOVO/CORP0000037769"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3343",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response.planType).is.to.equal(\"REGULAR\"); \r",
+									"    pm.expect(response.audience.audienceType).is.to.equal(\"RETAILER\");\r",
+									"});\r",
+									" \r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/regular/TSTP/TestRetailer"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3322{Incorrect url}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/regu/NOVO/CORP0000037769"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3344{Range}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json(); \r",
+									"    pm.expect(response.eventAggregateResponses[0].eventCreatedFor).is.to.equal(\"TSTP-TestRetailer\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/regular/range/TSTP/TestRetailer?startDate=2022-06-04&endDate=2022-06-13",
+							"protocol": "https",
+							"host": [
+								"blendnet-{{env}}",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveEvent",
+								"retailer",
+								"regular",
+								"range",
+								"TSTP",
+								"TestRetailer"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2022-06-04"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-06-13"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3325{Invalid range}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/regular/range/NOVO/CORP0000037769?startDate=2021-12-01&endDate=2021-12-15",
+							"protocol": "https",
+							"host": [
+								"blendnet-{{env}}",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveEvent",
+								"retailer",
+								"regular",
+								"range",
+								"NOVO",
+								"CORP0000037769"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2021-12-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2021-12-15"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3325{Invalid url}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/reg/range/NOVO/CORP0000037769?startDate=2022-02-01&endDate=2022-02-15",
+							"protocol": "https",
+							"host": [
+								"blendnet-{{env}}",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveEvent",
+								"retailer",
+								"reg",
+								"range",
+								"NOVO",
+								"CORP0000037769"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2022-02-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-02-15"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3328",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json(); \r",
+									"    //pm.expect(response[0].eventCreatedFor).is.to.equal(\"NOVO-CORP0000037648\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/events?partnerCode=TSTP&retailerPartnerProvidedId=TestRetailer&eventType=RETAILER_INCOME_ORDER_COMPLETED&startDate=2022-06-04&endDate=2022-06-13",
+							"protocol": "https",
+							"host": [
+								"blendnet-{{env}}",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveEvent",
+								"retailer",
+								"events"
+							],
+							"query": [
+								{
+									"key": "partnerCode",
+									"value": "TSTP"
+								},
+								{
+									"key": "retailerPartnerProvidedId",
+									"value": "TestRetailer"
+								},
+								{
+									"key": "eventType",
+									"value": "RETAILER_INCOME_ORDER_COMPLETED"
+								},
+								{
+									"key": "startDate",
+									"value": "2022-06-04"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-06-13"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3329(incorrect audiencetype",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/consumer/events?partnerCode=NOVO&retailerPartnerProvidedId=CORP0000037769&eventType=RETAILER_INCOME_ORDER_COMPLETED&startDate=2022-02-01&endDate=2022-02-15",
+							"protocol": "https",
+							"host": [
+								"blendnet-{{env}}",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveEvent",
+								"consumer",
+								"events"
+							],
+							"query": [
+								{
+									"key": "partnerCode",
+									"value": "NOVO"
+								},
+								{
+									"key": "retailerPartnerProvidedId",
+									"value": "CORP0000037769"
+								},
+								{
+									"key": "eventType",
+									"value": "RETAILER_INCOME_ORDER_COMPLETED"
+								},
+								{
+									"key": "startDate",
+									"value": "2022-02-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-02-15"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3329(Incorrect url",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEventpartnerCode=NOVO&retailerPartnerProvidedId=CORP0000037769&eventType=RETAILER_INCOME_ORDER_COMPLETED&startDate=2022-02-01&endDate=2022-02-15"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3320",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json(); \r",
+									"    pm.expect(response.eventAggregateResponses[0].eventCreatedFor).is.to.equal(\"7013794512\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"phoneNumber\": \"7013794512\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/consumer/regular"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3321(Incorrect ph.no}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"phoneNumber\": \"9553202305\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/consumer/regular"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3321{Incorrect url}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"phoneNumber\": \"9553202306\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/consumer/reg"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 4454",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response.incentivePlan.planType).is.to.equal(\"REGULAR\");\r",
+									"    pm.expect(response.incentivePlan.audience.audienceType).is.to.equal(\"RETAILER\"); \r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"partnerCode\": \"AUTO\",\r\n  \"partnerIds\": [\r\n    \"Auto_Retailer_Auto\"\r\n  ],\r\n  \"reportingDate\": {\r\n    \"year\": 2022,\r\n    \"month\": 8,\r\n    \"day\": 2\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/regular/report"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 4462 - {401}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"    \r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{usertoken}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"partnerCode\": \"NOVO\",\r\n  \"partnerIds\": [\r\n    \"NOVO-CORP0000037648\"\r\n  ],\r\n  \"reportingDate\": {\r\n    \"year\": 2022,\r\n    \"month\": 3,\r\n    \"day\": 10\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/regular/report"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 4461{Incrrt date}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"partnerCode\": \"NOVO\",\r\n  \"partnerIds\": [\r\n    \"CORP0000037648\"\r\n  ],\r\n  \"reportingDate\": {\r\n    \"year\": 2022,\r\n    \"month\": 4,\r\n    \"day\": 0\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/regular/report"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 4463",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var response = pm.response.json();\r",
+									"    pm.expect(response.incentivePlan.planType).is.to.equal(\"MILESTONE\");\r",
+									"    pm.expect(response.incentivePlan.audience.audienceType).is.to.equal(\"RETAILER\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"partnerCode\": \"AUTO\",\r\n  \"partnerIds\": [\r\n    \"AUTO-Auto_Retailer_Auto\"\r\n  ],\r\n  \"reportingDate\": {\r\n    \"year\": 2022,\r\n    \"month\": 7,\r\n    \"day\": 28\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/milestone/report"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 4465 - {401}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{usertoken}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"partnerCode\": \"NOVO\",\r\n  \"partnerIds\": [\r\n    \"NOVO-CORP0000037648\"\r\n  ],\r\n  \"reportingDate\": {\r\n    \"year\": 2022,\r\n    \"month\": 3,\r\n    \"day\": 15\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/milestone/report"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 4464{Incrct date}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"partnerCode\": \"NOVO\",\r\n  \"partnerIds\": [\r\n    \"CORP0000037648\"\r\n  ],\r\n  \"reportingDate\": {\r\n    \"year\": 2022,\r\n    \"month\": 2,\r\n    \"day\": 25\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvent/retailer/milestone/report"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IncentiveBrowse",
+			"item": [
+				{
+					"name": "TEST CASE 3311",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-stage.kaiza.la/incentiveapi/api/v1/IncentiveBrowse/consumer/active/REGULAR"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3312(Incorrect url))",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/InctiveBrowse/consumer/active/REGULAR"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IncentiveEventBrowse",
+			"item": [
+				{
+					"name": "TEST CASE 3318",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEventBrowse/consumer/regular"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3319 (inc url)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEvenrowse/consumer/regular"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3323",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEventBrowse/consumer/regular/range?startDate=2022-09-17&endDate=2022-10-11",
+							"protocol": "https",
+							"host": [
+								"blendnet-{{env}}",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveEventBrowse",
+								"consumer",
+								"regular",
+								"range"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2022-09-17"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-10-11"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3324(inc url)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEventBrowse/consumer/regularrange?startDate=2022-01-01&endDate=2022-01-26",
+							"protocol": "https",
+							"host": [
+								"blendnet-{{env}}",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveEventBrowse",
+								"consumer",
+								"regularrange"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2022-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-01-26"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3326",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-stage.kaiza.la/incentiveapi/api/v1/IncentiveEventBrowse/consumer/events?eventType=CONSUMER_INCOME_APP_ONCE_OPEN&startDate=2022-10-01&endDate=2022-10-10",
+							"protocol": "https",
+							"host": [
+								"blendnet-stage",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveEventBrowse",
+								"consumer",
+								"events"
+							],
+							"query": [
+								{
+									"key": "eventType",
+									"value": "CONSUMER_INCOME_APP_ONCE_OPEN"
+								},
+								{
+									"key": "startDate",
+									"value": "2022-10-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-10-10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3327(inv audience)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveEventBrowse/retailerr/events?startDate=2022-02-01&endDate=2022-02-26",
+							"protocol": "https",
+							"host": [
+								"blendnet-{{env}}",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveEventBrowse",
+								"retailerr",
+								"events"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2022-02-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-02-26"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3327(inv url)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/IncentiveBrowse/consumer/events?startDate=2022-02-01&endDate=2022-02-26",
+							"protocol": "https",
+							"host": [
+								"blendnet-{{env}}",
+								"kaiza",
+								"la"
+							],
+							"path": [
+								"incentiveapi",
+								"api",
+								"v1",
+								"IncentiveBrowse",
+								"consumer",
+								"events"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2022-02-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-02-26"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserIncentiveEvents",
+			"item": [
+				{
+					"name": "TEST CASE 3330{Recordsignin}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate());  \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"originalTime\": \"{{current_timestamp}}\",\r\n   \"contentId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordSignin"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3331 - {400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate());  \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"originalTime\": \"{{current_timestamp}}\",\r\n   \"contentId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordSignin"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3332{RecordAppLaunch}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate());  \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"originalTime\": \"{{current_timestamp}}\",\r\n  \"contentId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-stage.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordAppLaunch"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3333 - {400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate());  \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"originalTime\": \"{{current_timestamp}}\",\r\n   \"contentId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordAppLaunch"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3334{ContentStreamed}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate());  \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"originalTime\": \"{{current_timestamp}}\",\r\n   \"contentId\": \"bca59e1d-d772-4979-acbe-be142baf8352\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordContentStreamed"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3335 - {400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate());  \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"originalTime\": \"{{current_timestamp}}\",\r\n   \"contentId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordContentStreamed"
+					},
+					"response": []
+				},
+				{
+					"name": "TEST CASE 3336{Rating}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate());  \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"originalTime\": \"{{current_timestamp}}\",\r\n  \"contentId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordOnboardingRatingSubmitted"
+					},
+					"response": []
+				},
+				{
+					"name": "TESTCASE 3337 - {400}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Start = new Date();    \r",
+									"Start.setDate(Start.getDate());  \r",
+									"postman.setEnvironmentVariable(\"current_timestamp\", Start.toISOString());   \r",
+									"console.log(Start);    \r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"originalTime\": \"{{current_timestamp}}\",\r\n   \"contentId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordOnboardingRatingSubmitted"
+					},
+					"response": []
+				},
+				{
+					"name": "Download Event",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{SuperAdmin}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"originalTime\": \"{{current_timestamp}}\",\r\n  \"contentId\": \"e42d1738-1157-44c9-98bf-9b360c0c59fe\",\r\n  \"deviceId\": \"G2142000000069\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordDownloadMediaCompleted"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TESTCASE 4100",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4101 Passed\", function () { \r",
+							"    pm.response.to.have.status(200); \r",
+							"    pm.expect(pm.response.headers.get('X-Content-Type-Options')).to.eql('nosniff');\r",
+							"    pm.expect(pm.response.headers.get('X-XSS-Protection')).to.eql('1; mode=block');\r",
+							"      pm.response.to.not.have.header(\"Server\");\r",
+							"    });\r",
+							"\r",
+							"\r",
+							"//pm.test(\"headers X-Content-Type-Options X-XSS-Protection should be present\", () => {\r",
+							"\r",
+							"  \r",
+							"\r",
+							"//});\r",
+							"\r",
+							"//pm.test(\"Server header should not be present\", () => {\r",
+							"\r",
+							"   \r",
+							"\r",
+							"//});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/Incentive/retailer/regular/AUTO"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "planId",
+			"value": ""
+		},
+		{
+			"key": "planId1",
+			"value": ""
+		},
+		{
+			"key": "planId2",
+			"value": ""
+		},
+		{
+			"key": "planId3",
+			"value": ""
+		},
+		{
+			"key": "planId4",
+			"value": ""
+		},
+		{
+			"key": "planId5",
+			"value": ""
+		},
+		{
+			"key": "count",
+			"value": ""
+		},
+		{
+			"key": "OTP1",
+			"value": ""
+		},
+		{
+			"key": "SuperAdmin",
+			"value": ""
+		},
+		{
+			"key": "OTP",
+			"value": ""
+		}
+	]
+}

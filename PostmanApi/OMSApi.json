@@ -1,0 +1,2941 @@
+{
+	"info": {
+		"_postman_id": "94044ac5-2f25-4f12-b3b3-dfe056fed94e",
+		"name": "OMS API Automation Suit Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "14460718"
+	},
+	"item": [
+		{
+			"name": "1.SuperAdmin_OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000004\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "2. SuperAdmin_Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"SuperAdmin04\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000004\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "3. RetailerManagment_OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911111111130\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "4. RetailerManagment_Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"RetailerManagementToken00\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911111111130\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "5. Retailer_OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000011\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "6. Retailer_Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"Retailertoken11\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000011\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "7. User A creation_OTP Generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var digits = Math.floor(Math.random() * 100000) +1310000011\r",
+							"var UserPhoneNumber=\"+91\"+digits;\r",
+							"pm.collectionVariables.set(\"PhoneNumber\", UserPhoneNumber);\r",
+							"pm.collectionVariables.set(\"User_PhoneNumber\", digits);\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"{{PhoneNumber}}\", \r\n    \"UseVoice\" : false ,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "8.User A creation_Auth Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"usertoken\", response.authenticationToken);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"{{PhoneNumber}}\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "9. User A Creation_User Registration",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function generateRandomString(length) {\r",
+							"\r",
+							"  var text = \"\";\r",
+							"\r",
+							"  var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\";\r",
+							"   for (var i = 0; i < length; i++)\r",
+							"   text += possible.charAt(Math.floor(Math.random() * possible.length));\r",
+							"   return text;\r",
+							"\r",
+							"}\r",
+							"var name=generateRandomString(6);\r",
+							"console.log(name);\r",
+							"pm.collectionVariables.set(\"UserName\", name);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"{{UserName}}\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "10. New Subscription Creation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var Start = new Date();\r",
+							"Start.setDate(Start.getDate());  \r",
+							"Start.setHours(0);    \r",
+							"Start.setMinutes(0);    \r",
+							"Start.setSeconds(0);    \r",
+							"Start.setMilliseconds(0); \r",
+							"pm.collectionVariables.set(\"current_timestamp\", Start.toISOString());   \r",
+							"console.log(Start);   \r",
+							"var EndDate = new Date();\r",
+							"EndDate.setDate(EndDate.getDate() + 1);  \r",
+							"pm.collectionVariables.set(\"End_Date\", EndDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",function () {\r",
+							"\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"       pm.response.to.not.be.error;\r",
+							"\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});\r",
+							"\r",
+							"var Subscriptionid = JSON.parse(responseBody).toString();\r",
+							"\r",
+							"\r",
+							"\r",
+							"console.log(Subscriptionid)\r",
+							"\r",
+							"pm.collectionVariables.set(\"Subscriptionid\", Subscriptionid);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"type\": \"ContentProvider\",\r\n  \"title\": \"subb\",\r\n  \"durationDays\": 1,\r\n  \"price\": 10,\r\n  \"startDate\": \"{{current_timestamp}}\",\r\n  \"endDate\": \"{{End_Date}}\",\r\n  \"isRedeemable\": true,\r\n  \"redemptionValue\": 1,\r\n  \"publishMode\": \"DRAFT\",\r\n  \"subscriptionType\": \"SVOD\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription"
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Status code is 204 No Content\",function () {\r",
+							"\r",
+							"    pm.response.to.have.status(204);\r",
+							"\r",
+							" });\r",
+							"\r",
+							"    setTimeout(function(){},500);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/cmsapi/api/v1/ContentProvider/{{contentproviderID}}/Subscription/{{Subscriptionid}}/publish"
+			},
+			"response": []
+		},
+		{
+			"name": "12. TEST CASE 2426_/OrderBasic/createorder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 2426 passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")  \r",
+							"});\r",
+							"\r",
+							"var OrderID= pm.response.json();\r",
+							"pm.collectionVariables.set(\"OrderId\", OrderID);\r",
+							"pm.collectionVariables.set(\"Inactive OrderID\", OrderID);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"subscriptionId\":\"{{Subscriptionid}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/createorder"
+			},
+			"response": []
+		},
+		{
+			"name": "13. TEST CASE 2427_/OrderBasic/createorder (400)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2427 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0001-Subscription not found')\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"subscriptionId\":\"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/createorder"
+			},
+			"response": []
+		},
+		{
+			"name": "14. TEST CASE 2428_/OrderBasic/createorder (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2428 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0001-Subscription not found')\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"subscriptionId\":\"{{Subscriptionid}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/createorder"
+			},
+			"response": []
+		},
+		{
+			"name": "15. TEST CASE 2429_/OrderBasic/createorder (400)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2429 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    //pm.expect(response[0]).to.equal('OMS_ERR_0013-Subscription is not active')\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"subscriptionId\":\"{{Inactive Subscription Id for eros}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/createorder"
+			},
+			"response": []
+		},
+		{
+			"name": "16. TEST CASE 2430_/OrderBasic/createorder (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2430 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal(\"OMS_ERR_0002-User already holds order for same content provider\")\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"subscriptionId\":\"{{Subscriptionid}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/createorder"
+			},
+			"response": []
+		},
+		{
+			"name": "17. TEST CASE 2439_/OrderBasic​/{orderId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 2439 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData).to.have.property(\"phoneNumber\");\r",
+							"    pm.expect(jsonData).to.have.property(\"userId\");\r",
+							"    pm.expect(jsonData).to.have.property(\"orderItems\");\r",
+							"    pm.expect(jsonData.orderItems).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/{{OrderId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "18. TEST CASE 2440_/OrderBasic​/{orderId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 2440 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"    \r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/{{InvalidOrderId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "19. TEST CASE 2441_/OrderBasic/orderlist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 2441 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"phoneNumber\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"userId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"orderItems\");\r",
+							"    pm.expect(jsonData[0].orderItems).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"orderStatuses\": [\r\n    \"Created\"\r\n   \r\n  ]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/orderlist"
+			},
+			"response": []
+		},
+		{
+			"name": "20. TEST CASE 2436_/OrderBasic/cancel/{orderId}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 2436 Passed\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/cancel/{{OrderId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "21. TEST CASE 2438_/OrderBasic/cancel/{orderId} (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2438 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0006-Order is already processed')\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/cancel/{{OrderId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "22. TEST CASE 2437_/OrderBasic/cancel/{orderId} (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2437 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0005-Order does not exist')\r",
+							"    \r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/cancel/{{InvalidOrderId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "23. TEST CASE 2448_/OrderBasic/token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"TEST CASE 2448 Passed\", function () {\r",
+							"    pm.response.to.have.status(200); \r",
+							"     pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/token/{{freeContent}}"
+			},
+			"response": []
+		},
+		{
+			"name": "25. TEST CASE 2446 _/OrderBasic/token/{{invalidContent}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var con=pm.collectionVariables.get(\"invalidContent\");\r",
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2446 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);pm.expect(response[0]).to.equal('OMS_ERR_0007-No valid details found for givent content id '+con)\r",
+							"    \r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/token/{{invalidContent}}"
+			},
+			"response": []
+		},
+		{
+			"name": "26. New Order Creation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// pm.test(\"Prerequisite 5_Order creation Success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"    \r",
+							"// });\r",
+							"\r",
+							"var OrderID= pm.response.json();\r",
+							"pm.collectionVariables.set(\"OrderId\", OrderID);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"subscriptionId\":\"{{Subscriptionid}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/createorder"
+			},
+			"response": []
+		},
+		{
+			"name": "28. TEST CASE 2443_/Order/{phoneNumber}/orderlist(404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 2443 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"    \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Retailertoken11}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"retailerPartnerProvidedId\": \"TestRetailer\",\r\n  \"retailerPartnerCode\": \"TSTP\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/955678432/orderlist"
+			},
+			"response": []
+		},
+		{
+			"name": "29. TEST CASE 2435_/Order​/completeorder (400)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"start\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2435 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    //pm.expect(response[0]).to.equal('OMS_ERR_0003-Invalid amount collected')\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken00}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"orderId\": \"{{OrderId}}\",\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\",\r\n  \"retailerPhoneNumber\": \"{{Retailer_ph}}\",\r\n  \"amountCollected\": 20,\r\n  \"partnerReferenceNumber\": \"6865458\",\r\n  \"depositDate\": \"{{start}}\",\r\n  \"retailerPartnerProvidedId\": \"{{Retailer}}\"\r\n}\r\n  ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/completeorder"
+			},
+			"response": []
+		},
+		{
+			"name": "30. TEST CASE 2431_/Order​/completeorder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 2431 Passed\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"start\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken00}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"orderId\": \"{{OrderId}}\",\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\",\r\n  \"retailerPhoneNumber\": \"{{Retailer_ph}}\",\r\n  \"amountCollected\": 10,\r\n  \"partnerReferenceNumber\": \"6865458\",\r\n  \"depositDate\": \"{{start}}\",\r\n  \"retailerPartnerProvidedId\": \"{{Retailer}}\"\r\n  \r\n}\r\n  ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/completeorder"
+			},
+			"response": []
+		},
+		{
+			"name": "44. TEST CASE 2444_/OrderBasic/active",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//var subid =pm.collectionVariables.get(\"Subscriptionid\");\r",
+							"//var contid =pm.environment.get(\"contentproviderID\");\r",
+							"var data=pm.response.json();\r",
+							"pm.test(\"TEST CASE 2444 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"  //  pm.response.to.not.be.error;\r",
+							"    //pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    //pm.response.to.be.an(\"Object\");\r",
+							"    //pm.expect(data[0].subscription.id).to.eql(subid);\r",
+							"    //pm.expect(data[0].subscription.contentProviderId).to.eql(contid);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/active"
+			},
+			"response": []
+		},
+		{
+			"name": "27. TEST CASE 2442_/Order/{phoneNumber}/orderlist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 2442 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    //pm.response.to.not.be.error;\r",
+							"    //pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    //pm.response.to.be.an(\"Object\");\r",
+							"    //pm.expect(jsonData[0]).to.have.property(\"id\");\r",
+							"    //pm.expect(jsonData[0]).to.have.property(\"phoneNumber\");\r",
+							"    //pm.expect(jsonData[0]).to.have.property(\"userId\");\r",
+							"    //pm.expect(jsonData[0]).to.have.property(\"orderItems\");\r",
+							"    //pm.expect(jsonData[0].orderItems).to.be.an(\"array\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"retailerPartnerProvidedId\": \"TestRetailer\",\r\n  \"retailerPartnerCode\": \"TSTP\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/7013794512/orderlist"
+			},
+			"response": []
+		},
+		{
+			"name": "31. TEST CASE 2434_/Order​/completeorder (invalid retailer)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2434 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0004-Invalid retailer')\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"start\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken00}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"orderId\": \"{{OrderId}}\",\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\",\r\n  \"retailerPhoneNumber\": \"{{Retailer_ph}}\",\r\n  \"amountCollected\": 20,\r\n  \"partnerReferenceNumber\": \"6865458\",\r\n  \"depositDate\": \"{{start}}\",\r\n  \"retailerPartnerProvidedId\": \"{{InvalidRetailer}}\"\r\n  \r\n}\r\n  ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/completeorder"
+			},
+			"response": []
+		},
+		{
+			"name": "32. TEST CASE 2432_/Order​/completeorder (400)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"start\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2432 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0014-Order does not exist')\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken00}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"orderId\": \"{{InvalidOrderId}}\",\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\",\r\n  \"retailerPhoneNumber\": \"{{Retailer_ph}}\",\r\n  \"amountCollected\": 20,\r\n  \"partnerReferenceNumber\": \"6865458\",\r\n  \"depositDate\": \"{{start}}\",\r\n  \"retailerPartnerProvidedId\": \"{{Retailer}}\"\r\n  \r\n}\r\n  ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/completeorder"
+			},
+			"response": []
+		},
+		{
+			"name": "33. TEST CASE 2433_/Order​/completeorder (400)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"start\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2433 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0015-Order is not active')\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken00}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"orderId\": \"{{Inactive OrderID}}\",\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\",\r\n  \"retailerPhoneNumber\": \"{{Retailer_ph}}\",\r\n  \"amountCollected\": 20,\r\n  \"partnerReferenceNumber\": \"6865458\",\r\n  \"depositDate\": \"{{start}}\",\r\n  \"retailerPartnerProvidedId\": \"{{Retailer}}\"\r\n  \r\n}\r\n  ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/completeorder"
+			},
+			"response": []
+		},
+		{
+			"name": "34. TEST CASE 2450_/Order/summary/",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var start=new Date();\r",
+							"if((start.getUTCMonth()+1)<10)\r",
+							"{\r",
+							"  var m=\"0\"+(start.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"    m=(start.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"var Start=start.getFullYear().toString()+m+start.getDate().toString();\r",
+							"\r",
+							"var EndDate =new Date();\r",
+							"EndDate.setDate(EndDate.getDate()+4);\r",
+							"if((EndDate.getUTCMonth()+1)<10)\r",
+							"{\r",
+							"  var m=\"0\"+(EndDate.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"    m=(EndDate.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"if((EndDate.getDate())<10)\r",
+							"{\r",
+							"  var d=\"0\"+(EndDate.getDate()).toString();\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"   var d=(EndDate.getDate()).toString();\r",
+							"}\r",
+							"\r",
+							"\r",
+							"var End=EndDate.getFullYear().toString()+m+d;\r",
+							"console.log(End);\r",
+							"console.log(Start);\r",
+							"pm.collectionVariables.set(\"end\",End);\r",
+							"pm.collectionVariables.set(\"start\",Start);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"  var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 2450 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"     pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"count\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"retailerPartnerId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"date\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"contentProviderId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"subscriptionId\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"title\");\r",
+							"    pm.expect(jsonData[0]).to.have.property(\"totalAmount\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken00}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/summary/{{Retailer}}?startDate={{start}}&endDate={{end}}",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"omsapi",
+						"api",
+						"v1",
+						"Order",
+						"summary",
+						"{{Retailer}}"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "{{start}}"
+						},
+						{
+							"key": "endDate",
+							"value": "{{end}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "35. TEST CASE 2451_/Order/summary/ (Invalid Retailer)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var start=new Date();\r",
+							"if((start.getUTCMonth()+1)<10)\r",
+							"{\r",
+							"  var m=\"0\"+(start.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"    m=(start.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"var Start=start.getFullYear().toString()+m+start.getDate().toString();\r",
+							"\r",
+							"var EndDate =new Date();\r",
+							"EndDate.setDate(EndDate.getDate()+4);\r",
+							"if((EndDate.getUTCMonth()+1)<10)\r",
+							"{\r",
+							"  var m=\"0\"+(EndDate.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"    m=(EndDate.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"if((EndDate.getDate())<10)\r",
+							"{\r",
+							"  var d=\"0\"+(EndDate.getDate()).toString();\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"   var d=(EndDate.getDate()).toString();\r",
+							"}\r",
+							"\r",
+							"\r",
+							"var End=EndDate.getFullYear().toString()+m+d;\r",
+							"console.log(End);\r",
+							"console.log(Start);\r",
+							"pm.collectionVariables.set(\"end\",End);\r",
+							"pm.collectionVariables.set(\"start\",Start);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2451 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0011-Retailer not found')\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken00}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/summary/{{InvalidRetailer}}?startDate={{start}}&endDate={{end}}",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"omsapi",
+						"api",
+						"v1",
+						"Order",
+						"summary",
+						"{{InvalidRetailer}}"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "{{start}}"
+						},
+						{
+							"key": "endDate",
+							"value": "{{end}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "36. TEST CASE 2452_/Order/summary/ (400)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var start=new Date();\r",
+							"if((start.getUTCMonth()+1)<10)\r",
+							"{\r",
+							"  var m=\"0\"+(start.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"    m=(start.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"var Start=start.getFullYear().toString()+m+start.getDate().toString();\r",
+							"\r",
+							"var EndDate =new Date();\r",
+							"EndDate.setDate(EndDate.getDate()+4);\r",
+							"if((EndDate.getUTCMonth()+1)<10)\r",
+							"{\r",
+							"  var m=\"0\"+(EndDate.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"    m=(EndDate.getUTCMonth()+1).toString();\r",
+							"}\r",
+							"if((EndDate.getDate())<10)\r",
+							"{\r",
+							"  var d=\"0\"+(EndDate.getDate()).toString();\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"   var d=(EndDate.getDate()).toString();\r",
+							"}\r",
+							"\r",
+							"\r",
+							"var End=EndDate.getFullYear().toString()+m+d;\r",
+							"console.log(End);\r",
+							"console.log(Start);\r",
+							"pm.collectionVariables.set(\"end\",End);\r",
+							"pm.collectionVariables.set(\"start\",Start);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2452 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0010-Invalid date range')\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken00}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/summary/{{Retailer}}?startDate={{end}}&endDate={{start}}",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"omsapi",
+						"api",
+						"v1",
+						"Order",
+						"summary",
+						"{{Retailer}}"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "{{end}}"
+						},
+						{
+							"key": "endDate",
+							"value": "{{start}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "37. TEST CASE 2445_/OrderBasic/token/{{NotfreeContent}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2445 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							" \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/token/{{NotfreeContent}}"
+			},
+			"response": []
+		},
+		{
+			"name": "38. TEST CASE 2447_/OrderId/User_PhoneNumber",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 2447 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")\r",
+							"    pm.expect(jsonData).to.have.property(\"id\");\r",
+							"    pm.expect(jsonData).to.have.property(\"phoneNumber\");\r",
+							"    pm.expect(jsonData).to.have.property(\"userId\");\r",
+							"    pm.expect(jsonData).to.have.property(\"orderItems\");\r",
+							"    pm.expect(jsonData.orderItems).to.be.an(\"array\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/{{OrderId}}/{{User_PhoneNumber}}"
+			},
+			"response": []
+		},
+		{
+			"name": "39. TEST CASE 2453_/OrderId/User_PhoneNumber(404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData=pm.response.json();\r",
+							"pm.test(\"TEST CASE 2453 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/{{InvalidOrderId}}/{{User_PhoneNumber}}"
+			},
+			"response": []
+		},
+		{
+			"name": "40. TEST CASE 4097_Security check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4097 Passed\", function ()\r",
+							"{ \r",
+							"pm.response.to.have.status(404);\r",
+							"pm.expect(pm.response.headers.get('X-Content-Type-Options')).to.eql('nosniff');\r",
+							"pm.expect(pm.response.headers.get('X-XSS-Protection')).to.eql('1; mode=block'); \r",
+							"pm.response.to.not.have.header(\"Server\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/{{InvalidOrderId}}/{{User_PhoneNumber}}"
+			},
+			"response": []
+		},
+		{
+			"name": "41. TEST CASE 3937_/Order/countBySubscription",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var date=new Date();\r",
+							"date.setDate(date.getDate()-1);\r",
+							"pm.collectionVariables.set(\"cutofTime\", date.toISOString());\r",
+							"console.log(date.toISOString())\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 3937 Passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"      pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"    pm.expect(pm.response.text()).to.eql(\"2\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\": \"{{contentproviderID}}\",\r\n  \"subscriptionId\": \"{{Subscriptionid}}\",\r\n  \"cutoffDateTime\": \"{{cutofTime}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/countBySubscription"
+			},
+			"response": []
+		},
+		{
+			"name": "42. TEST CASE 3938_/Order/countBySubscription (400)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var date=new Date();\r",
+							"date.setDate(date.getDate()-1);\r",
+							"pm.collectionVariables.set(\"cutofTime\", date.toISOString());\r",
+							"console.log(date.toISOString())\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 3938 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\": \"{{contentproviderID}}\",\r\n  \"subscriptionId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"cutoffDateTime\": \"{{cutofTime}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/countBySubscription"
+			},
+			"response": []
+		},
+		{
+			"name": "43. TEST CASE 3976_/Order/countBySubscription (404)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var date=new Date();\r",
+							"date.setDate(date.getDate()-1);\r",
+							"pm.collectionVariables.set(\"cutofTime\", date.toISOString());\r",
+							"console.log(date.toISOString())\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 3976 Passed\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"    \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"subscriptionId\": \"{{Subscriptionid}}\",\r\n  \"cutoffDateTime\": \"{{cutofTime}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/countBySubscription"
+			},
+			"response": []
+		},
+		{
+			"name": "45. TEST CASE 3409_/OrderBasic/redeem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 3409 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(response[0]).to.equal('OMS_ERR_0001-Subscription not found')\r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"subscriptionId\":\"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/redeem"
+			},
+			"response": []
+		},
+		{
+			"name": "46. User A Delete_request for delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/user"
+			},
+			"response": []
+		},
+		{
+			"name": "47. User A Delete_Complete Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/datadelete/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "48. User B Creation_OTP Generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var digits = Math.floor(Math.random() *100) +1310000011\r",
+							"var UserPhoneNumber=\"+91\"+digits;\r",
+							"pm.collectionVariables.set(\"PhoneNumber\", UserPhoneNumber);\r",
+							"pm.collectionVariables.set(\"User_PhoneNumber\", digits);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+							"// pm.test(\"prerequisite 1_SMS generation success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"{{PhoneNumber}}\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\" \r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "49. User B Creation_Auth Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"usertoken\", response.authenticationToken);\r",
+							"// pm.test(\"prerequisite 2_Auth Token generation Success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"{{PhoneNumber}}\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "50. User B Creation_User Registration",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function generateRandomString(length) {\r",
+							"\r",
+							"  var text = \"\";\r",
+							"\r",
+							"  var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\";\r",
+							"   for (var i = 0; i < length; i++)\r",
+							"   text += possible.charAt(Math.floor(Math.random() * possible.length));\r",
+							"   return text;\r",
+							"\r",
+							"}\r",
+							"var name=generateRandomString(6);\r",
+							"console.log(name);\r",
+							"pm.collectionVariables.set(\"UserName\", name);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// pm.test(\"prerequisite 3_New User Registration Success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"{{UserName}}\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "51. TEST CASE 3410_/OrderBasic/redeem(Insufficient Balance)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 3410 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    //pm.expect(response[0]).to.equal('OMS_ERR_0018-Insufficient balance. Balance Required 1 Account Balance 0')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"subscriptionId\":\"{{Subscriptionid}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/redeem"
+			},
+			"response": []
+		},
+		{
+			"name": "52. New Event Creation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var date=new Date();\r",
+							"date.setDate(date.getDate());\r",
+							"pm.collectionVariables.set(\"Time\", date.toISOString());\r",
+							"console.log(date.toISOString())"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"originalTime\": \"{{Time}}\",\r\n  \"contentId\": \"{{freeContent}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/incentiveapi/api/v1/UserIncentiveEvents/recordAppLaunch"
+			},
+			"response": []
+		},
+		{
+			"name": "53. TEST CASE 3408_/OrderBasic/redeem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 3408 passed\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\")  \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"subscriptionId\":\"{{Subscriptionid}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/redeem"
+			},
+			"response": []
+		},
+		{
+			"name": "54. User B Delete_Request for Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/user"
+			},
+			"response": []
+		},
+		{
+			"name": "55. User B Delete_Complete Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/datadelete/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "56. User C Creation_OTP Generation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var digits = Math.floor(Math.random() *10000) +1310000011\r",
+							"var UserPhoneNumber=\"+91\"+digits;\r",
+							"pm.collectionVariables.set(\"PhoneNumber\", UserPhoneNumber);\r",
+							"pm.collectionVariables.set(\"User_PhoneNumber\", digits);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP\", sms.mode);\r",
+							"// pm.test(\"prerequisite 1_SMS generation success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"{{PhoneNumber}}\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\" \r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "57. User C Creation_Auth Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"usertoken\", response.authenticationToken);\r",
+							"// pm.test(\"prerequisite 2_Auth Token generation Success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"{{PhoneNumber}}\", \r\n\r\n    \"pin\":{{OTP}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "58. User C Creation_User Registration",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function generateRandomString(length) {\r",
+							"\r",
+							"  var text = \"\";\r",
+							"\r",
+							"  var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\";\r",
+							"   for (var i = 0; i < length; i++)\r",
+							"   text += possible.charAt(Math.floor(Math.random() * possible.length));\r",
+							"   return text;\r",
+							"\r",
+							"}\r",
+							"var name=generateRandomString(6);\r",
+							"console.log(name);\r",
+							"pm.collectionVariables.set(\"UserName\", name);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// pm.test(\"prerequisite 3_New User Registration Success\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"{{UserName}}\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "59. New Order creation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"var OrderID= pm.response.json();\r",
+							"pm.collectionVariables.set(\"OrderId\", OrderID);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contentProviderId\":\"{{contentproviderID}}\",\r\n  \"subscriptionId\":\"{{Subscriptionid}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/createorder"
+			},
+			"response": []
+		},
+		{
+			"name": "60. TEST CASE 4598_OrderComplete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TEST CASE 4598 Passed\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"    pm.response.to.not.be.error;\r",
+							"    pm.response.to.not.have.jsonBody(\"error\");\r",
+							"    pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var StartDate = new Date();\r",
+							"pm.collectionVariables.set(\"start\", StartDate.toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{Retailertoken11}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"orderId\": \"{{OrderId}}\",\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\",\r\n  \"retailerPhoneNumber\": \"{{Retailer_ph}}\",\r\n  \"amountCollected\": 10,\r\n  \"partnerReferenceNumber\": \"6865458\",\r\n  \"depositDate\": \"{{start}}\",\r\n  \"retailerPartnerProvidedId\": \"{{Retailer}}\",\r\n  \"RetailerPartnerCode\":\"TSTP\"\r\n  \r\n}\r\n  ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/Order/completeorder"
+			},
+			"response": []
+		},
+		{
+			"name": "61. User C Delete_Request for Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{usertoken}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserBasic/user"
+			},
+			"response": []
+		},
+		{
+			"name": "62. User C Delete_complete Delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userPhoneNumber\": \"{{User_PhoneNumber}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/User/datadelete/complete"
+			},
+			"response": []
+		},
+		{
+			"name": "24. TEST CASE 2449 _/OrderBasic/token(400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//var ph =pm.collectionVariables.get(\"User_PhoneNumber\");\r",
+							"//var con=pm.environment.get(\"contentproviderID\");\r",
+							"//var response= pm.response.json();\r",
+							"pm.test(\"TEST CASE 2449 Passed\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    //pm.expect(response[0]).to.equal('OMS_ERR_0012-No Valid Subscription for '+ph+' and '+con )\r",
+							"    \r",
+							"    \r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin04}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/omsapi/api/v1/OrderBasic/token/{{NotfreeContent}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "InvalidRetailer",
+			"value": "AAAA"
+		},
+		{
+			"key": "invalidContent",
+			"value": "2c29f1c9-2f6b-4d1d-94c0-b9a4fdd9397e"
+		},
+		{
+			"key": "InvalidOrderId",
+			"value": "9b34eae3-bbb7-441d-9484-7e7287a63379"
+		},
+		{
+			"key": "OTP",
+			"value": ""
+		},
+		{
+			"key": "SuperAdmin04",
+			"value": ""
+		},
+		{
+			"key": "RetailerManagementToken00",
+			"value": ""
+		},
+		{
+			"key": "Retailertoken11",
+			"value": ""
+		},
+		{
+			"key": "PhoneNumber",
+			"value": ""
+		},
+		{
+			"key": "User_PhoneNumber",
+			"value": ""
+		},
+		{
+			"key": "usertoken",
+			"value": ""
+		},
+		{
+			"key": "UserName",
+			"value": ""
+		},
+		{
+			"key": "start",
+			"value": ""
+		},
+		{
+			"key": "end",
+			"value": ""
+		},
+		{
+			"key": "subscription_name",
+			"value": ""
+		},
+		{
+			"key": "Subscriptionid",
+			"value": ""
+		},
+		{
+			"key": "NotfreeContent",
+			"value": "f76a3be4-eae2-48fa-bb4f-bb49a3848806"
+		},
+		{
+			"key": "freeContent",
+			"value": "3800c522-983d-4ed8-b909-65f5c9700aee"
+		},
+		{
+			"key": "OrderId",
+			"value": ""
+		},
+		{
+			"key": "Inactive OrderID",
+			"value": ""
+		},
+		{
+			"key": "cutofTime",
+			"value": ""
+		},
+		{
+			"key": "Time",
+			"value": ""
+		},
+		{
+			"key": "current_timestamp",
+			"value": ""
+		},
+		{
+			"key": "End_Date",
+			"value": ""
+		},
+		{
+			"key": "Inactive Subscription Id for eros",
+			"value": "2c29f1c9-2f6b-4d1d-94c0-b9a4fdd9397e",
+			"type": "string"
+		},
+		{
+			"key": "Retailer",
+			"value": "TestRetailer",
+			"type": "string"
+		},
+		{
+			"key": "OrderID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "contentproviderID",
+			"value": "8a2f2130-28ad-4943-8267-3eecaa0f5e39",
+			"type": "string"
+		}
+	]
+}

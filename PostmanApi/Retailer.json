@@ -1,0 +1,2375 @@
+{
+	"info": {
+		"_postman_id": "c8aea420-2c4d-4332-9020-f2b9b2baed26",
+		"name": "Retailer API_New",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "14460718"
+	},
+	"item": [
+		{
+			"name": "SuperAdmin_OTP Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP1\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000004\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "SuperAdmin_Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"SuperAdmin\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000004\", \r\n\r\n    \"pin\":{{OTP1}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "AUTO-Retailer Management OTP generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP2\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911111111130\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "AUTO-Retailer Management token generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"RetailerManagementToken1\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911111111130\", \r\n\r\n    \"pin\":{{OTP2}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "User token OTP generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP3\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000012\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "User Token Generation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"BT user\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000012\", \r\n\r\n    \"pin\":{{OTP3}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "Hub token OTP generation Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP4\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+911310000010\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "HUb Token Generation Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"HubToken\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+911310000010\", \r\n\r\n    \"pin\":{{OTP4}}, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "On boarding user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"Jay\",\r\n  \"channelId\": \"ConsumerApp\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/userapi/api/v1/UserOnboarding/user"
+			},
+			"response": []
+		},
+		{
+			"name": "3416 Browse Retailer NearBy Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 \", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken1}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/BrowseRetailer/nearby?lat=17.4292&lng=78.3411&distanceMeters=500&checkForDevice=false",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"retailerapi",
+						"api",
+						"v1",
+						"BrowseRetailer",
+						"nearby"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "17.4292"
+						},
+						{
+							"key": "lng",
+							"value": "78.3411"
+						},
+						{
+							"key": "distanceMeters",
+							"value": "500"
+						},
+						{
+							"key": "checkForDevice",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3417  Retailer NearBy iv lat long",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request,invalid co-ordinates \", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0005-Invalid location co-ordinates\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/BrowseRetailer/nearby?lat=190&lng=-145&distanceMeters=100&checkForDevice=false",
+					"protocol": "https",
+					"host": [
+						"blendnet-{{env}}",
+						"kaiza",
+						"la"
+					],
+					"path": [
+						"retailerapi",
+						"api",
+						"v1",
+						"BrowseRetailer",
+						"nearby"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "190"
+						},
+						{
+							"key": "lng",
+							"value": "-145"
+						},
+						{
+							"key": "distanceMeters",
+							"value": "100"
+						},
+						{
+							"key": "checkForDevice",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4661 Retailer by partnerid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"      var Data=pm.response.json();\r",
+							"     // pm.expect(Data.partnerProvidedId).to.eql(pm.environment.get(\"newretailers\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerId/AUTO-retailer2"
+			},
+			"response": []
+		},
+		{
+			"name": "3419 Retailer by partnerid iv id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not found,invalid Retailer Id\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerId/TSTP6-{{newretailers}}"
+			},
+			"response": []
+		},
+		{
+			"name": "3420 Retailer by Referral Code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"        var Data=pm.response.json();\r",
+							"      //  pm.expect(Data.referralCode).to.eql(pm.environment.get(\"referral_retailer\"));\r",
+							"        setTimeout(function(){},2500); \r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(function(){},2500); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byReferralCode/RN-319151"
+			},
+			"response": []
+		},
+		{
+			"name": "3421 RetailerbyReferral iv code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"       pm.response.to.be.error;\r",
+							"      // pm.response.to.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"  //      var Data=pm.response.json();\r",
+							"//pm.expect(Data.referralCode).to.eql(pm.environment.get(\"referral\"));\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byReferralCode/{{123referral}}"
+			},
+			"response": []
+		},
+		{
+			"name": "3422  Edit Retailer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 no content\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"retailerId\": \"AUTO-retailer2\",\r\n    \"userId\": \"a936136e-68a5-48c6-b077-ded6264f1564\",\r\n    \"phoneNumber\": \"9966397377\",\r\n    \"name\": \"retailer2\",\r\n    \"partnerProvidedId\": \"retailer2\",\r\n    \"partnerId\": \"AUTO-retailer2\",\r\n    \"partnerCode\": \"AUTO\",\r\n    \"address\": {\r\n        \"address1\": \"string\",\r\n        \"address2\": \"string\",\r\n        \"address3\": \"string\",\r\n        \"city\": \"string\",\r\n        \"state\": \"string\",\r\n        \"pinCode\": 524002,\r\n        \"mapLocation\": {\r\n            \"latitude\": 17.4292,\r\n            \"longitude\": 78.3411\r\n        }\r\n    },\r\n    \"services\": [\r\n        \"Media\"\r\n    ],\r\n    \"referralCode\": \"RN-511395\",\r\n    \"startDate\": \"2022-04-22T09:59:58.9192805Z\",\r\n    \"endDate\": \"9999-12-31T23:59:59.9999999\",\r\n    \"type\": \"Retailer\",\r\n    \"additionalAttibutes\": {\r\n        \"additionalProp1\": \"string\",\r\n        \"additionalProp2\": \"string\",\r\n        \"additionalProp3\": \"string\"\r\n    },\r\n    \"deviceAssignments\": [],\r\n    \"hasActiveDevice\": false,\r\n    \"eTag\": \"\\\"0c00b290-0000-2300-0000-62627ca10000\\\"\",\r\n    \"createdByUserId\": \"d49f3c50-a4a2-401a-b5e0-fd0148742119\",\r\n    \"createdDate\": \"2022-04-22T09:59:58.9192805Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/AUTO-retailer2"
+			},
+			"response": []
+		},
+		{
+			"name": "4661 Retailer by partnerid,for check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"      var Data=pm.response.json();\r",
+							"    pm.expect(Data.address.pincode).to.eql(pm.collectionVariables.get(\"pincode\"));\r",
+							"      //pm.expect(Data).to.eql() \r",
+							"\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerId/AUTO-retailer2"
+			},
+			"response": []
+		},
+		{
+			"name": "3424 Edit Retailer iv date,Start date<End Date",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request,invalid Dates \", function () {\r",
+							"        pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"retailerId\": \"AUTO-retailer2\",\r\n    \"userId\": \"a936136e-68a5-48c6-b077-ded6264f1564\",\r\n    \"phoneNumber\": \"9966397377\",\r\n    \"name\": \"retailer2\",\r\n    \"partnerProvidedId\": \"retailer2\",\r\n    \"partnerId\": \"AUTO-retailer2\",\r\n    \"partnerCode\": \"AUTO\",\r\n    \"address\": {\r\n        \"address1\": \"string\",\r\n        \"address2\": \"string\",\r\n        \"address3\": \"string\",\r\n        \"city\": \"string\",\r\n        \"state\": \"string\",\r\n        \"pinCode\": 999999,\r\n        \"mapLocation\": {\r\n            \"latitude\": 0,\r\n            \"longitude\": 0\r\n        }\r\n    },\r\n    \"services\": [\r\n        \"Media\"\r\n    ],\r\n    \"referralCode\": \"RN-511395\",\r\n    \"startDate\": \"2022-04-22T09:59:58.9192805Z\",\r\n    \"endDate\": \"2011-12-31T23:59:59.9999999\",\r\n    \"type\": \"Retailer\",\r\n    \"additionalAttibutes\": {\r\n        \"additionalProp1\": \"string\",\r\n        \"additionalProp2\": \"string\",\r\n        \"additionalProp3\": \"string\"\r\n    },\r\n    \"deviceAssignments\": [],\r\n    \"hasActiveDevice\": false,\r\n    \"eTag\": \"\\\"0c00b290-0000-2300-0000-62627ca10000\\\"\",\r\n    \"createdByUserId\": \"d49f3c50-a4a2-401a-b5e0-fd0148742119\",\r\n    \"createdDate\": \"2022-04-22T09:59:58.9192805Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/AUTO-retailer2"
+			},
+			"response": []
+		},
+		{
+			"name": "OTP for retailernum token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sms = pm.response.json();\r",
+							"pm.collectionVariables.set(\"OTP5\", sms.mode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"phoneNumber\": \"+91 7013794512\", \r\n    \"UseVoice\" : false,\r\n    \"PinFormatType\": \"SixDigit\"\r\n\r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/LoginWithPhoneForPartners"
+			},
+			"response": []
+		},
+		{
+			"name": "Token for retailernum",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"pm.collectionVariables.set(\"retailernumtoken\", response.authenticationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "AppName",
+						"value": "com.microsoft.mobile.polymer.mishtu",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"phoneNumber\": \"+91 7013794512\", \r\n\r\n    \"pin\":562228, \r\n\r\n   \"permissions\": [\"1.1\"], \r\n\r\n    \"UserName\": \"User2\", \r\n\r\n   \"DeviceId\": \"AAAAAAAAA-BBBB-CCCC-1111-222222220000\" \r\n\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api-{{env1}}.kaiza.la/api/Authentication/VerifyPhonePinForPartnerLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "3418 Retailer/me",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"      pm.test(\"Status code is 200 \", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"      var Data=pm.response.json();\r",
+							"      //pm.expect(Data.partnerProvidedId).to.eql(pm.environment.get(\"newretailer\"));\r",
+							"      });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{RetailerManagementToken1}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/TSTP/AutoRetailer/me"
+			},
+			"response": []
+		},
+		{
+			"name": "3644 by Device id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 \", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"      // pm.response.to.have.jsonBody(\"hasActiveDevice\");\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byDeviceid/{{deviceid_retailer}}"
+			},
+			"response": []
+		},
+		{
+			"name": "3645 by iv Device id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not found \", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byDeviceId/G2142000000a62"
+			},
+			"response": []
+		},
+		{
+			"name": "3646 by  Device id BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"    \r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{invalidbt}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byDeviceId/G2142000000162"
+			},
+			"response": []
+		},
+		{
+			"name": "3651 Unassign device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204,no content\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"TestRetailer\",\r\n  \"deviceId\": \"G2142000000069\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/unassignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3647 Assign device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204,no content\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"TestRetailer\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/assignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3650 Already Assigned device assign",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"Device is already assigned to another retailer\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"TestRetailer2\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/assignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3649 Assign device to retailer with device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0011-Retailer already has another device assigned\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"TestRetailer\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/assignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3648 (A)Assign device iv Body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0009-Retailer not found for ID\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"retailer 1\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/assignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3653(A) Unassign device iv Body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0007-Retailer Provider not found for Partner Code\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSoP\",\r\n  \"partnerProvidedRetailerId\": \"retailer1\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/unassignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3648 (B)Assign device iv Body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0007-Retailer Provider not found for Partner Code\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSoP\",\r\n  \"partnerProvidedRetailerId\": \"retailer 1\",\r\n  \"deviceId\": \"G214200000a142\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/assignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3648 (C)Assign device iv Body Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0010-Unknown Device\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"retailer1\",\r\n  \"deviceId\": \"G214200000a142\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/assignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3423 Edit Retailer iv date",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request,invalid Dates \", function () {\r",
+							"        pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"retailerId\": \"AUTO-retailer2\",\r\n    \"userId\": \"a936136e-68a5-48c6-b077-ded6264f1564\",\r\n    \"phoneNumber\": \"9966397377\",\r\n    \"name\": \"retailer2\",\r\n    \"partnerProvidedId\": \"retailer2\",\r\n    \"partnerId\": \"AUTO-retailer2\",\r\n    \"partnerCode\": \"AUTO\",\r\n    \"address\": {\r\n        \"address1\": \"string\",\r\n        \"address2\": \"string\",\r\n        \"address3\": \"string\",\r\n        \"city\": \"string\",\r\n        \"state\": \"string\",\r\n        \"pinCode\": {{pincode}},\r\n        \"mapLocation\": {\r\n            \"latitude\": 0,\r\n            \"longitude\": 0\r\n        }\r\n    },\r\n    \"services\": [\r\n        \"Media\"\r\n    ],\r\n    \"referralCode\": \"RN-511395\",\r\n    \"startDate\": \"2022-45-45T09:59:58.9192805Z\",\r\n    \"endDate\": \"9999-12-31T23:59:59.9999999\",\r\n    \"type\": \"Retailer\",\r\n    \"additionalAttibutes\": {\r\n        \"additionalProp1\": \"string\",\r\n        \"additionalProp2\": \"string\",\r\n        \"additionalProp3\": \"string\"\r\n    },\r\n    \"deviceAssignments\": [],\r\n    \"hasActiveDevice\": false,\r\n    \"eTag\": \"\\\"0c00b290-0000-2300-0000-62627ca10000\\\"\",\r\n    \"createdByUserId\": \"d49f3c50-a4a2-401a-b5e0-fd0148742119\",\r\n    \"createdDate\": \"2022-04-22T09:59:58.9192805Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/AUTO-retailer2"
+			},
+			"response": []
+		},
+		{
+			"name": "3653(B) Unassign device iv Body Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0009-Retailer not found for ID\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"retailer 1\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/unassignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3653(C) Unassign device iv Body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0015-Device assignment not found\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"retailer1\",\r\n  \"deviceId\": \"G214200000b142\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/unassignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3654 Retailer by Partnercode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 \", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"      \r",
+							"    });\r",
+							"\r",
+							"pm.collectionVariables.set(\"continuationToken\",JSON.stringify(pm.response.json().continuationToken));\r",
+							"console.log(pm.response.json().continuationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"{{partnercode}}\",\r\n  \"continuationToken\": \"\",\r\n  \"shouldGetInactiveRetailer\": true,\r\n  \"pageSize\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerCode"
+			},
+			"response": []
+		},
+		{
+			"name": "3654 (B)Continution token Retailer by Partnercode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 \", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"      \r",
+							"    });\r",
+							"\r",
+							"pm.collectionVariables.set(\"continutiontoken\",pm.response.json().continuationToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"{{partnercode}}\",\r\n  \"continuationToken\": {{continuationToken}},\r\n  \"shouldGetInactiveRetailer\": true,\r\n  \"pageSize\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerCode"
+			},
+			"response": []
+		},
+		{
+			"name": "4456 iv Continution token Retailer by Partnercode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"Malformed Continuation Token\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"{{partnercode}}\",\r\n  \"continuationToken\": \"  \",\r\n  \"shouldGetInactiveRetailer\": true,\r\n  \"pageSize\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerCode"
+			},
+			"response": []
+		},
+		{
+			"name": "4456(A) iv partner code Retailer by Partnercode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0007-Retailer Provider not found for Partner Code\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TS0P\",\r\n  \"continuationToken\": \"  \",\r\n  \"shouldGetInactiveRetailer\": true,\r\n  \"pageSize\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerCode"
+			},
+			"response": []
+		},
+		{
+			"name": "4456(B) BT partner code Retailer by Partnercode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"    \r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{invalidbt}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TS0P\",\r\n  \"continuationToken\": \"  \",\r\n  \"shouldGetInactiveRetailer\": true,\r\n  \"pageSize\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerCode"
+			},
+			"response": []
+		},
+		{
+			"name": "4459 List of Retailer ids by Partnercode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 \", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"      \r",
+							"    });\r",
+							"\r",
+							"pm.collectionVariables.set(\"continutiontoken2\",JSON.stringify(pm.response.json().continuationToken));\r",
+							"console.log(JSON.stringify(pm.response.json().continuationToken));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"{{partnercode}}\",\r\n  \"continuationToken\": \"\",\r\n  \"shouldGetInactiveRetailer\": true,\r\n  \"pageSize\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerCode/ids"
+			},
+			"response": []
+		},
+		{
+			"name": "4459 List of Retailer ids by Partnercode Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 \", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"      \r",
+							"    });\r",
+							"\r",
+							"pm.collectionVariables.set(\"continutiontoken2\",JSON.stringify(pm.response.json().continuationToken));\r",
+							"console.log(JSON.stringify(pm.response.json().continuationToken));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"{{partnercode}}\",\r\n  \"continuationToken\": {{continutiontoken2}},\r\n  \"shouldGetInactiveRetailer\": true,\r\n  \"pageSize\": 6\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerCode/ids"
+			},
+			"response": []
+		},
+		{
+			"name": "4460 iv bodyList of Retailer ids by Partnercode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"RMS_ERR_0007-Retailer Provider not found for Partner Code\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSP\",\r\n  \"continuationToken\": \"\",\r\n  \"shouldGetInactiveRetailer\": true,\r\n  \"pageSize\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerCode/ids"
+			},
+			"response": []
+		},
+		{
+			"name": "4460(B) iv bodyList of Retailer ids by Partnercode Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"       pm.expect(pm.response.text()).to.include(\"Malformed Continuation Token\");\r",
+							"       pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"continuationToken\": \"457676\",\r\n  \"shouldGetInactiveRetailer\": true,\r\n  \"pageSize\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/byPartnerCode/ids"
+			},
+			"response": []
+		},
+		{
+			"name": "4483(A)iv pincode Edit Retailer Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 \", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.pinCode);\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"retailerId\": \"AUTO-retailer2\",\r\n    \"userId\": \"a936136e-68a5-48c6-b077-ded6264f1564\",\r\n    \"phoneNumber\": \"9966397377\",\r\n    \"name\": \"retailer2\",\r\n    \"partnerProvidedId\": \"retailer2\",\r\n    \"partnerId\": \"AUTO-retailer2\",\r\n    \"partnerCode\": \"AUTO\",\r\n    \"address\": {\r\n        \"address1\": \"string\",\r\n        \"address2\": \"string\",\r\n        \"address3\": \"string\",\r\n        \"city\": \"string\",\r\n        \"state\": \"string\",\r\n        \"pinCode\": {{pincode}},\r\n        \"mapLocation\": {\r\n            \"latitude\": 0,\r\n            \"longitude\": 0\r\n        }\r\n    },\r\n    \"services\": [\r\n        \"Media\"\r\n    ],\r\n    \"referralCode\": \"RN-511395\",\r\n    \"startDate\": \"2022-04-22T09:59:58.9192805Z\",\r\n    \"endDate\": \"9999-12-31T23:59:59.9999999\",\r\n    \"type\": \"Retailer\",\r\n    \"additionalAttibutes\": {\r\n        \"additionalProp1\": \"string\",\r\n        \"additionalProp2\": \"string\",\r\n        \"additionalProp3\": \"string\"\r\n    },\r\n    \"deviceAssignments\": [],\r\n    \"hasActiveDevice\": false,\r\n    \"eTag\": \"\\\"0c00b290-0000-2300-0000-62627ca10000\\\"\",\r\n    \"createdByUserId\": \"d49f3c50-a4a2-401a-b5e0-fd0148742119\",\r\n    \"createdDate\": \"2022-04-22T09:59:58.9192805Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/AUTO-retailer2"
+			},
+			"response": []
+		},
+		{
+			"name": "4483 iv Body Edit Retailer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 \", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.Address1);\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.Address2);\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.Address3);\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.City);\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.State);\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"retailerId\": \"TSTP-{{newretailer}}\",\r\n    \"userId\": \"68915f95-aaa5-4e38-8c5a-2ab046ede5ab\",\r\n    \"phoneNumber\": \"1310000005\",\r\n    \"name\": \"{{newretailer}}\",\r\n    \"partnerProvidedId\": \"{{newretailer}}\",\r\n    \"partnerId\": \"TSTP-{{newretailer}}\",\r\n    \"partnerCode\": \"TSTP\",\r\n    \"address\": {\r\n        \"address1\": \"hgghg^^\",\r\n        \"address2\": \"str^^%**\",\r\n        \"address3\": \"string***\",\r\n        \"city\": \"strin%^^^%g\",\r\n        \"state\": \"stri5566&^ng\",\r\n        \"pinCode\": 520010,\r\n        \"mapLocation\": {\r\n            \"latitude\": {{latedit_retailer}},\r\n            \"longitude\": {{longedit_retailer}}\r\n        }\r\n    },\r\n    \"services\": [\r\n        \"Media\"\r\n    ],\r\n    \"referralCode\": \"RN-319151\",\r\n    \"startDate\": \"2022-03-25T09:38:53.2330729Z\",\r\n    \"endDate\": \"9999-12-31T23:59:59.9999999\",\r\n    \"type\": \"Retailer\",\r\n    \"additionalAttibutes\": {\r\n        \"additionalProp1\": \"string\",\r\n        \"additionalProp2\": \"string\",\r\n        \"additionalProp3\": \"string\"\r\n    },\r\n    \"deviceAssignments\": [],\r\n    \"hasActiveDevice\": false,\r\n    \"eTag\": \"\\\"420043f3-0000-2300-0000-623d8dad0000\\\"\",\r\n    \"createdByUserId\": \"a3e5f336-fe53-4c16-a78e-b8f18d73967b\",\r\n    \"createdDate\": \"2022-03-25T09:38:53.2330729Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/{{partnercode}}-{{newretailer}}"
+			},
+			"response": []
+		},
+		{
+			"name": "4491 iv body Assign device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 \", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.DeviceId);\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.PartnerProvidedRetailerId);\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"retaile^^r1\",\r\n  \"deviceId\": \"{{deviceid_retaile&&&r}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/assignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "4492 iv body Unassign device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 \", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.DeviceId);\r",
+							"       pm.response.to.have.jsonBody(pm.response.json().errors.PartnerProvidedRetailerId);\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"retaile^^r1\",\r\n  \"deviceId\": \"{{deviceid_retaile&&&r}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/assignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3651 Unassign device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204,no content\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"TestRetailer\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/unassignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "3647 Assign device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204,no content\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"       pm.response.to.not.be.error;\r",
+							"       pm.response.to.not.have.jsonBody(\"error\");\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"TestRetailer\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-{{env}}.kaiza.la/retailerapi/api/v1/Retailer/assignDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "Deploy device to retailer Hub token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 \", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"     //  pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       \r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(function(){},2500); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{HubToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"TestRetailer\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-stage.kaiza.la/retailerapi/api/v1/Retailer/deployDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "Deploy device to retailer BT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 unauthorized & Verify the Bearer Token\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    pm.response.to.have.status(\"Unauthorized\");\r",
+							"    \r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{invalidbt}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"retailer1\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-stage.kaiza.la/retailerapi/api/v1/Retailer/deployDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "(A)Deploy device iv Body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 \", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"        pm.expect(pm.response.text()).to.include(\"RMS_ERR_0007-Retailer Provider not found for Partner Code\");\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TST*P\",\r\n  \"partnerProvidedRetailerId\": \"retailer1\",\r\n  \"deviceId\": \"{{deviceid_retailer}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-stage.kaiza.la/retailerapi/api/v1/Retailer/deployDevice"
+			},
+			"response": []
+		},
+		{
+			"name": "(B)Deploy device iv Body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 \", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"       pm.response.to.be.error;\r",
+							"       pm.response.to.be.an(\"Object\");\r",
+							"       \r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{SuperAdmin}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partnerCode\": \"TSTP\",\r\n  \"partnerProvidedRetailerId\": \"retaile*r1\",\r\n  \"deviceId\": \"{{deviceid_retailer**}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://blendnet-stage.kaiza.la/retailerapi/api/v1/Retailer/deployDevice"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "{{SuperAdmin}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "newuserid",
+			"value": ""
+		},
+		{
+			"key": "continutiontoken",
+			"value": ""
+		},
+		{
+			"key": "continutiontoken2",
+			"value": ""
+		},
+		{
+			"key": "continutiontoken1",
+			"value": ""
+		},
+		{
+			"key": "continuationToken",
+			"value": ""
+		},
+		{
+			"key": "editpincode",
+			"value": "520008"
+		},
+		{
+			"key": "OTP",
+			"value": ""
+		},
+		{
+			"key": "OTP1",
+			"value": ""
+		},
+		{
+			"key": "SuperAdmin",
+			"value": ""
+		},
+		{
+			"key": "OTP2",
+			"value": ""
+		},
+		{
+			"key": "RetailerManagementToken",
+			"value": ""
+		},
+		{
+			"key": "OTP3",
+			"value": ""
+		},
+		{
+			"key": "BT user",
+			"value": ""
+		},
+		{
+			"key": "OTP5",
+			"value": ""
+		},
+		{
+			"key": "retailernumtoken",
+			"value": ""
+		},
+		{
+			"key": "RetailerManagementToken1",
+			"value": ""
+		},
+		{
+			"key": "OTP4",
+			"value": ""
+		},
+		{
+			"key": "HubToken",
+			"value": ""
+		},
+		{
+			"key": "UserToken",
+			"value": ""
+		},
+		{
+			"key": "invalidbt",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cm46bWljcm9zb2Z0OmNyZWRlbnRpYWxzIjoie1wicGhvbmVOdW1iZXJcIjpcIis5MTc5ODEzNzI5NzBcIixcImNJZFwiOlwiOWRkYWUwNjctZmUxOC00NDAxLTllYWEtM2JiNzY1NjhjNmQyXCIsXCJ0ZXN0U2VuZGVyXCI6XCJmYWxzZVwiLFwiYXBwTmFtZVwiOlwiY29tLm1pY3Jvc29mdC5tb2JpbGUucG9seW1lci5taXNodHVcIixcInBlcm1pc3Npb25zXCI6XCIxLjFcIixcImFwcGxpY2F0aW9uVHlwZVwiOjMsXCJ0b2tlblZhbGlkRnJvbVwiOjE2NDYwMzE4NTA2MjN9IiwidWlkIjoiTW9iaWxlQXBwc1NlcnZpY2U6OGEyNjFmMDMtZDI3Zi00YjQ2LWIxMDUtYzc0ZTdlYWQ0ODU1IiwidmVyIjoiMiIsIm5iZiI6MTY0NjAzMTg1MCwiZXhwIjoxNjQ4NjIzODUwLCJpYXQiOjE2NDYwMzE4NTAsImlzcyI6InVybjptaWNyb3NvZnQ6d2luZG93cy1henVyZTp6dW1vIiwiYXVkIjoidXJuOm1pY3Jvc29mdDp3aW5kb3dzLWF6dXJlOnp1bW8ifQ.JWtjJ3xkw41E-XMbsadCjQiwUI_99W"
+		},
+		{
+			"key": "partnercode",
+			"value": "TSTP"
+		}
+	]
+}
