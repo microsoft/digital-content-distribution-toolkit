@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { ContentStatus } from "./content-status.enum";
 
 export class Content {

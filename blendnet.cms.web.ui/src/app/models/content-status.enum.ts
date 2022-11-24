@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 export enum ContentStatus {
     UPLOAD_SUBMITTED ="UploadSubmitted",
     UPLOAD_INPROGRESS ="UploadInProgress", 

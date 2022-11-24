@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { ContentStatus } from "../models/content-status.enum";
 
 export let unprocessedContentFilters = {

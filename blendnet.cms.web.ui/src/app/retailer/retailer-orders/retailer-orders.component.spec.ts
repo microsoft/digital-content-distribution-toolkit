@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RetailerOrdersComponent } from './retailer-orders.component';

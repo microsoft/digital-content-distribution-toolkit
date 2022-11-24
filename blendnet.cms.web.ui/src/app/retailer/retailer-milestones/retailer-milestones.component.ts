@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { RetailerDashboardService } from 'src/app/services/retailer/retailer-dashboard.service'
 import { Router } from '@angular/router';

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { ContentBroadcastDetails } from "./content.model";
 
 export class ContentView {

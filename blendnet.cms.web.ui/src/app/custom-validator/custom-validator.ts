@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { regex } from "../constants/regex";
 
 export class CustomValidator {

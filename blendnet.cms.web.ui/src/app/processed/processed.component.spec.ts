@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ProcessedComponent } from './processed.component';

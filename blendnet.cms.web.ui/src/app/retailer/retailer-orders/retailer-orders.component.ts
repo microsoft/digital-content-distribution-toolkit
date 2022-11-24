@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RetailerRequestService } from 'src/app/services/retailer/retailer-request-service.service';

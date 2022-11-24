@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Injectable } from '@angular/core';
 import { Contentprovider, ContentProviderLtdInfo } from '../models/contentprovider.model';
 import { LogService } from './log.service';

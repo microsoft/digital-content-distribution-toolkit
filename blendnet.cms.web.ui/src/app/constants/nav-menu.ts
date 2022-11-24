@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { environment } from "src/environments/environment";
 import { NavMenu } from "../models/navmenu.model";
 

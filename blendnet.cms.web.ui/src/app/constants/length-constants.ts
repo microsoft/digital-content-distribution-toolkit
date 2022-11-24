@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 export let lengthConstants = {
     titleMinLength: 1,
     titleMaxLength:  100,

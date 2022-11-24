@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LogService } from './log.service';

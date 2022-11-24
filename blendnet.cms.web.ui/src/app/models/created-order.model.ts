@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { OrderStatus } from "./order-status.enum";
 
 export class CreatedOrder {

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import {Component, Inject, LOCALE_ID, ViewChild} from '@angular/core';
 import { SubscriptionService } from '../services/subscription.service';
 import { ToastrService } from 'ngx-toastr';

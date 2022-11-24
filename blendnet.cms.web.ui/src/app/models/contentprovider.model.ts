@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { ContentproviderAdmin } from "./contentprovider-admin";
 
 export class Contentprovider {

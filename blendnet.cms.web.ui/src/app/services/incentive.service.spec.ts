@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { TestBed } from '@angular/core/testing';
 
 import { IncentiveService } from './incentive.service';

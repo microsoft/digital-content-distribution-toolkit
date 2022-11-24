@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Directive, Input } from '@angular/core';
 import { NgControl } from '@angular/forms';
 

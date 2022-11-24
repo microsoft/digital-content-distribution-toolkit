@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import {KaizalaService } from 'src/app/services/kaizala.service'
 import { ActivatedRoute, Router } from '@angular/router';

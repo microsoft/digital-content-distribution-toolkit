@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { PlanDetails } from "./incentive.model";
 
 export class Device {

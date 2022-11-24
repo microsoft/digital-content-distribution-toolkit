@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { SelectionModel } from '@angular/cdk/collections';
 import {AfterViewInit, Component, Inject, QueryList, ViewChildren} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';

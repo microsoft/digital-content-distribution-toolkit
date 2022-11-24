@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'pascalToString'

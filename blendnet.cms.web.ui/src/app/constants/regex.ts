@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 export let regex = {
     alphaNumeric: /^[a-zA-Z0-9]*$/,
     alphaNumericLimitedSplChar: /^[a-zA-Z0-9_@./#&+,()=:!\"-]+( [a-zA-Z0-9_@./#&+,()=:!\"-]+)*$/,

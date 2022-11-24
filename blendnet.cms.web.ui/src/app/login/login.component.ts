@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { KaizalaService } from '../services/kaizala.service';

@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 import { BroadcastRequest, Content } from "./content.model"
 
 export class CommandDetail {
