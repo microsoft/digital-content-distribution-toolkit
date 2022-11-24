@@ -1,4 +1,7 @@
-﻿using Azure.Storage.Blobs;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
 using blendnet.api.proxy.Notification;
 using blendnet.common.dto;

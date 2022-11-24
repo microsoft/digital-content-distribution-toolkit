@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using AutoMapper;
 using blendnet.common.dto.Device;
 using blendnet.cosmos.utility.Repository;
 using blendnet.device.repository.Interfaces;

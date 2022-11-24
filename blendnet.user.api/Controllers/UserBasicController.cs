@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using AutoMapper;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;

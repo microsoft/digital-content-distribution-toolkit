@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.Validation;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.Validation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;

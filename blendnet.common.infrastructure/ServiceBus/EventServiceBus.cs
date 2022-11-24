@@ -1,4 +1,7 @@
-﻿using Azure.Messaging.ServiceBus;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Integration;

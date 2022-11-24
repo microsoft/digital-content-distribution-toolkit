@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.device.api.Model
 {

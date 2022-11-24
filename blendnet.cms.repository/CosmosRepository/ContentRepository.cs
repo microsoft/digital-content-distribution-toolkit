@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using Azure.Storage.Blobs;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;

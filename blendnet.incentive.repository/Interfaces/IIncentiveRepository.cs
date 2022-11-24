@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.Incentive;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.Incentive;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,7 @@
-﻿using Azure.Storage.Blobs;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Azure.Storage.Blobs;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Extensions;

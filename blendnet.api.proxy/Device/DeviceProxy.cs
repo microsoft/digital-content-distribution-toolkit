@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using blendnet.api.proxy.Common;
 using DTO=blendnet.common.dto;
 using Microsoft.Extensions.Caching.Distributed;

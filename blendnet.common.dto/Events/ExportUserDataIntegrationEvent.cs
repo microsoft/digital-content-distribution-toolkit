@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.Integration;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.Integration;
 using blendnet.common.dto.User;
 using System;
 

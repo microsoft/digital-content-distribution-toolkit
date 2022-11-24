@@ -1,4 +1,7 @@
-﻿using blendnet.cms.listener.Model;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.cms.listener.Model;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.cms;

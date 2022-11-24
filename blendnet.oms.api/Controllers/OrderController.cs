@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using AutoMapper;
 using blendnet.api.proxy;
 using blendnet.api.proxy.Cms;
 using blendnet.api.proxy.Device;

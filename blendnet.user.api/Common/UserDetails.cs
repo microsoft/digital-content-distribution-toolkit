@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.User;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.User;
 using blendnet.common.infrastructure.Authentication;
 using blendnet.user.repository.Interfaces;
 using System;

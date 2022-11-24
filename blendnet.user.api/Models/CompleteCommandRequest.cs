@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto;
 using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.user.api.Models

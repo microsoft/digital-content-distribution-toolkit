@@ -1,4 +1,7 @@
-﻿using blendnet.api.proxy.Ses;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.api.proxy.Ses;
 using blendnet.cms.listener.Model;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto.cms;

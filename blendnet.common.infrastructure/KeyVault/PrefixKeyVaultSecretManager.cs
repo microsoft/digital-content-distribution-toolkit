@@ -1,4 +1,7 @@
-﻿using Azure.Extensions.AspNetCore.Configuration.Secrets;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
 using System;

@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.Device;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.Device;
 using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;
 using blendnet.common.infrastructure.ServiceBus;

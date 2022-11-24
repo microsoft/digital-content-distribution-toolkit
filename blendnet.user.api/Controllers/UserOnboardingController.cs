@@ -1,4 +1,7 @@
-﻿using blendnet.api.proxy.Retailer;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Extensions;

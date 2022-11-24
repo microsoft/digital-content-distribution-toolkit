@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.Cms;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.Cms;
 using System;
 using System.Collections.Generic;
 using System.Linq;

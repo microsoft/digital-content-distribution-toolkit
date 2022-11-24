@@ -1,4 +1,7 @@
-﻿namespace blendnet.common.dto.Events
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+namespace blendnet.common.dto.Events
 {
     /// <summary>
     /// UserDataExportCompletedIntegrationEvent

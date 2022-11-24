@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using blendnet.api.proxy.oms;
 using blendnet.cms.api.Model;
 using blendnet.cms.repository.Interfaces;

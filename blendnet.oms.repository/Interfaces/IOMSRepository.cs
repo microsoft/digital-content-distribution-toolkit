@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.Common;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.Common;
 using blendnet.common.dto.Oms;
 using System;
 using System.Collections.Generic;

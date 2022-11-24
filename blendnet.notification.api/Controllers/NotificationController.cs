@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using AutoMapper;
 using blendnet.api.proxy.Kaizala;
 using blendnet.common.dto.Common;
 using blendnet.common.dto.Notification;

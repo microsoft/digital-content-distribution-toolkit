@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using blendnet.common.dto.Cms;
 using blendnet.common.dto.Common;
 using System;

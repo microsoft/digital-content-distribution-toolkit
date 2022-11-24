@@ -1,4 +1,7 @@
-﻿using blendnet.common.infrastructure.Extensions;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.infrastructure.Extensions;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

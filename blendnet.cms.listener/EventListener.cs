@@ -1,4 +1,7 @@
-﻿using blendnet.cms.listener.IntegrationEventHandling;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.cms.listener.IntegrationEventHandling;
 using blendnet.common.dto.cms;
 using blendnet.common.dto.Events;
 using blendnet.common.infrastructure;

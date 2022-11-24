@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;

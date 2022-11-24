@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using blendnet.common.dto;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

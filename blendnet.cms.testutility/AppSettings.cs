@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;

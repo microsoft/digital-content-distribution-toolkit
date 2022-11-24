@@ -1,4 +1,7 @@
-﻿using blendnet.cms.api.Model;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.cms.api.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

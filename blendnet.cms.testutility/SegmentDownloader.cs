@@ -1,4 +1,7 @@
-﻿using Azure.Storage.Blobs;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Azure.Storage.Blobs;
 using Microsoft.IIS.Media.DASH.MPDParser;
 using System;
 using System.Collections.Generic;

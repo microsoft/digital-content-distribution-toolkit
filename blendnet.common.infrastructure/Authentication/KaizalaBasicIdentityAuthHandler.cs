@@ -1,4 +1,7 @@
-﻿using blendnet.api.proxy.KaizalaIdentity;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;

@@ -1,4 +1,7 @@
-﻿using blendnet.api.proxy.Notification;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.api.proxy.Notification;
 using blendnet.common.dto.Notification;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Oms;

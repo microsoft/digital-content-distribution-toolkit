@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.Events;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.Events;
 using blendnet.common.dto.Retailer;
 using blendnet.common.infrastructure;
 using blendnet.retailer.listener.IntegrationEventHandling;

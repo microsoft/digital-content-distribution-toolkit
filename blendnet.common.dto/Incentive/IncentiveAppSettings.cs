@@ -1,4 +1,7 @@
-﻿namespace blendnet.common.dto.Incentive
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+namespace blendnet.common.dto.Incentive
 {
     public class IncentiveAppSettings
     {

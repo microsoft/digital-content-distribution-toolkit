@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using AutoMapper;
 using Azure.Storage.Blobs;
 using blendnet.cms.api.Common;

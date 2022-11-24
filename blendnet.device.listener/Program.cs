@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using blendnet.common.dto.Device;

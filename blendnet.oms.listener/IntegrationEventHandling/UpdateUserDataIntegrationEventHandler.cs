@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto;
 using blendnet.common.dto.Common;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Oms;

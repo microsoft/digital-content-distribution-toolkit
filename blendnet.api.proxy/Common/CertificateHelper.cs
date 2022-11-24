@@ -1,4 +1,7 @@
-﻿using Azure.Security.KeyVault.Certificates;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Azure.Security.KeyVault.Certificates;
 using System;
 using System.Text;
 using System.Threading.Tasks;

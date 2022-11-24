@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using System.ComponentModel.DataAnnotations;
 
 namespace blendnet.user.api.Models

@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.Identity;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.Identity;
 using Microsoft.Net.Http.Headers;
 using System.ComponentModel.DataAnnotations;
 

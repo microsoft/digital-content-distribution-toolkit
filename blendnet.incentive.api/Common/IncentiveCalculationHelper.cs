@@ -1,4 +1,7 @@
-﻿using blendnet.incentive.repository.Interfaces;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.incentive.repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

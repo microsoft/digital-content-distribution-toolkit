@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using AutoMapper;
 using blendnet.common.dto.Cms;
 using blendnet.common.dto.Device;
 using blendnet.cosmos.utility.BroadCastMigration;

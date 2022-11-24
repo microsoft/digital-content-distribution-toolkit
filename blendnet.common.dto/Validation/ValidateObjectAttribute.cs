@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
 using System.Collections.Generic;

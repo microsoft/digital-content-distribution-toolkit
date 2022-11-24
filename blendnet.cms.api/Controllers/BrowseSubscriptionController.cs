@@ -1,4 +1,7 @@
-﻿using blendnet.cms.repository.Interfaces;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

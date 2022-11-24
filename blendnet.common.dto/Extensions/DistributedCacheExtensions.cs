@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;

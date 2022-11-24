@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;

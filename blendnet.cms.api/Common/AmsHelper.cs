@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.cms;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.cms;
 using blendnet.common.infrastructure.Ams;
 using Microsoft.Azure.Management.Media;
 using Microsoft.Azure.Management.Media.Models;

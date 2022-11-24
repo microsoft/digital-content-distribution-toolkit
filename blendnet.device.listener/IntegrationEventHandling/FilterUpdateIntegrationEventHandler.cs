@@ -1,4 +1,7 @@
-﻿using blendnet.api.proxy.IOTCentral;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.api.proxy.IOTCentral;
 using blendnet.common.dto;
 using blendnet.common.dto.Device;
 using blendnet.common.dto.Events;

@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using AutoMapper;
 using blendnet.common.dto.Incentive;
 using blendnet.incentive.api.Common;
 using blendnet.incentive.api.Model;

@@ -1,4 +1,7 @@
-﻿using blendnet.api.proxy.Cms;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.api.proxy.Cms;
 using blendnet.api.proxy.Device;
 using blendnet.api.proxy.Retailer;
 using blendnet.common.dto;

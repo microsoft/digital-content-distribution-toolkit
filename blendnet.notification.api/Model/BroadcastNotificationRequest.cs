@@ -1,4 +1,7 @@
-﻿using blendnet.notification.api.Model;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.notification.api.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

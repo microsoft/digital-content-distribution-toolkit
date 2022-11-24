@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using blendnet.common.dto.Exceptions;
 using Microsoft.Azure.Cosmos;
 using System.Collections.Generic;

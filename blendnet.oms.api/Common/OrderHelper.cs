@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.Oms;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.Oms;
 using blendnet.common.infrastructure.Extensions;
 using blendnet.oms.api.Model;
 using Microsoft.ApplicationInsights;

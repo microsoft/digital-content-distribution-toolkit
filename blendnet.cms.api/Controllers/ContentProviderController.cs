@@ -1,4 +1,7 @@
-﻿using blendnet.cms.api.Model;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.cms.api.Model;
 using blendnet.cms.repository.Interfaces;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;

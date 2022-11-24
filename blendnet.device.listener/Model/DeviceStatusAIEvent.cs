@@ -1,4 +1,7 @@
-﻿using blendnet.common.dto.AIEvents;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.common.dto.AIEvents;
 using blendnet.common.dto.Device;
 using System;
 using System.Collections.Generic;

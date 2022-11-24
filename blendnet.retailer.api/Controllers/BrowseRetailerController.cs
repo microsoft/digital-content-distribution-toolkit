@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
 using AutoMapper;
 using blendnet.common.dto;
 using blendnet.common.dto.Retailer;

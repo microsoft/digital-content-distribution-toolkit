@@ -1,4 +1,7 @@
-﻿using blendnet.api.proxy.KaizalaIdentity;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using blendnet.api.proxy.KaizalaIdentity;
 using blendnet.common.dto;
 using blendnet.common.dto.Events;
 using blendnet.common.dto.Incentive;
