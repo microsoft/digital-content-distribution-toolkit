@@ -68,7 +68,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.device.repository"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.cosmos.utility", "blendnet.cosmos.utility\blendnet.cosmos.utility.csproj", "{B1969CB8-931C-46AE-8014-AB4457224C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blendnet.user.listener", "blendnet.user.listener\blendnet.user.listener.csproj", "{2693E4C3-9E0F-4287-9398-92B9B0A8B5E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blendnet.user.listener", "blendnet.user.listener\blendnet.user.listener.csproj", "{2693E4C3-9E0F-4287-9398-92B9B0A8B5E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
