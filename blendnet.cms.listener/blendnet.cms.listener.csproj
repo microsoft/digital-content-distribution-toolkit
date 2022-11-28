@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker;Microsoft.NET.Sdk.Publish">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker;Microsoft.NET.Sdk.Publish">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-blendnet.cms.listener-9ADA3621-3E4D-43B0-8FD1-8E6BDA430110</UserSecretsId>
