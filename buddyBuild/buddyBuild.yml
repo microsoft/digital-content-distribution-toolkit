@@ -53,3 +53,4 @@ stages:
         command: 'custom'
         workingDir: 'blendnet.cms.web.ui'
         customCommand: 'run build-dev'
+    - task: CredScan@3
